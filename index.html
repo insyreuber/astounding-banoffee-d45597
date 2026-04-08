@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Insy Digital Reception</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --purple: #5C1F8A;
+    --purple-light: #7B3BAD;
+    --purple-dark: #3D1260;
+    --gold: #C9A84C;
+    --gold-light: #E2C47A;
+    --cream: #FBF8F3;
+    --warm-white: #FEFCF9;
+    --text-dark: #1A1025;
+    --text-mid: #4A3F5C;
+    --text-muted: #8B7FA0;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--warm-white);
+    color: var(--text-dark);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    padding: 1.2rem 4rem;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(254,252,249,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+    transition: all 0.3s;
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem; font-weight: 500;
+    color: var(--purple-dark);
+    letter-spacing: 0.01em;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.88rem; font-weight: 400; letter-spacing: 0.04em;
+    color: var(--text-mid); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--purple); }
+  .nav-cta {
+    background: var(--purple); color: white;
+    padding: 0.55rem 1.4rem; border-radius: 50px;
+    font-size: 0.85rem; font-weight: 500; text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    letter-spacing: 0.03em;
+  }
+  .nav-cta:hover { background: var(--purple-light); transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 7rem 4rem 4rem;
+    position: relative; overflow: hidden;
+    background: var(--warm-white);
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 70% at 70% 50%, rgba(92,31,138,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Cherry blossom decorative circles */
+  .hero-deco {
+    position: absolute; right: -60px; top: 50%;
+    transform: translateY(-50%);
+    width: 580px; height: 580px; border-radius: 50%;
+    background: linear-gradient(135deg, rgba(201,168,76,0.08) 0%, rgba(92,31,138,0.12) 100%);
+    border: 1px solid rgba(201,168,76,0.12);
+  }
+  .hero-deco-2 {
+    position: absolute; right: 40px; top: 50%;
+    transform: translateY(-50%);
+    width: 420px; height: 420px; border-radius: 50%;
+    background: linear-gradient(135deg, rgba(92,31,138,0.07) 0%, rgba(201,168,76,0.06) 100%);
+    border: 1px solid rgba(92,31,138,0.1);
+  }
+
+  .hero-content { position: relative; z-index: 2; max-width: 580px; }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 0.78rem; font-weight: 500; letter-spacing: 0.1em;
+    color: var(--gold); text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+  .hero-eyebrow::before {
+    content: ''; display: block;
+    width: 28px; height: 1px; background: var(--gold);
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 4vw, 3.6rem);
+    font-weight: 500; line-height: 1.15;
+    color: var(--purple-dark);
+    margin-bottom: 1.2rem;
+  }
+  .hero h1 em {
+    font-style: normal; color: var(--gold);
+    border-bottom: 2px solid var(--gold-light);
+    padding-bottom: 2px;
+  }
+  .hero-sub {
+    font-size: 1.05rem; line-height: 1.75;
+    color: var(--text-mid); margin-bottom: 2rem;
+    font-weight: 300;
+  }
+  .hero-benefits {
+    display: flex; flex-direction: column; gap: 0.6rem;
+    margin-bottom: 2.5rem;
+  }
+  .hero-benefit {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 0.92rem; color: var(--text-mid);
+  }
+  .hero-benefit::before {
+    content: '';
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--gold); flex-shrink: 0;
+  }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+  .btn-primary {
+    background: var(--purple); color: white;
+    padding: 0.85rem 2rem; border-radius: 50px;
+    font-size: 0.9rem; font-weight: 500; text-decoration: none;
+    transition: all 0.2s; letter-spacing: 0.03em;
+    border: 2px solid var(--purple);
+  }
+  .btn-primary:hover { background: var(--purple-light); border-color: var(--purple-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(92,31,138,0.25); }
+  .btn-secondary {
+    color: var(--purple); border: 2px solid rgba(92,31,138,0.3);
+    padding: 0.85rem 2rem; border-radius: 50px;
+    font-size: 0.9rem; font-weight: 500; text-decoration: none;
+    transition: all 0.2s; letter-spacing: 0.03em;
+    background: transparent;
+  }
+  .btn-secondary:hover { border-color: var(--purple); background: rgba(92,31,138,0.05); transform: translateY(-2px); }
+
+  .hero-visual {
+    position: relative; z-index: 2;
+    display: flex; justify-content: center; align-items: center;
+  }
+  .phone-mockup {
+    width: 240px; height: 480px;
+    background: var(--purple-dark);
+    border-radius: 36px;
+    border: 8px solid #2A0F50;
+    box-shadow: 0 40px 80px rgba(92,31,138,0.35), 0 0 0 1px rgba(201,168,76,0.2);
+    overflow: hidden; position: relative;
+    transform: rotate(-3deg);
+  }
+  .phone-screen { padding: 1.2rem 1rem; }
+  .phone-header {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 1.2rem; padding-bottom: 0.8rem;
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+  }
+  .phone-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--gold); display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 600; color: var(--purple-dark);
+  }
+  .phone-name { font-size: 0.8rem; font-weight: 500; color: white; }
+  .phone-status { font-size: 0.68rem; color: #4CAF50; }
+  .chat-bubble {
+    border-radius: 16px 16px 16px 4px;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.72rem; line-height: 1.5;
+    margin-bottom: 0.6rem; max-width: 85%;
+  }
+  .chat-in { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.9); }
+  .chat-out {
+    background: var(--gold); color: var(--purple-dark);
+    border-radius: 16px 16px 4px 16px;
+    margin-left: auto; font-weight: 500;
+  }
+  .chat-time { font-size: 0.6rem; color: rgba(255,255,255,0.35); text-align: right; margin-top: 4px; }
+
+  /* TRUST BAR */
+  .trust-bar {
+    background: var(--cream);
+    padding: 2rem 4rem;
+    display: flex; align-items: center; justify-content: center;
+    gap: 3rem; flex-wrap: wrap;
+    border-top: 1px solid rgba(201,168,76,0.15);
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+  }
+  .trust-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .trust-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem; font-weight: 500; color: var(--purple-dark);
+  }
+  .trust-label { font-size: 0.78rem; color: var(--text-muted); letter-spacing: 0.04em; }
+  .trust-sep { width: 1px; height: 40px; background: rgba(201,168,76,0.25); }
+
+  /* SECTION BASE */
+  section { padding: 5rem 4rem; }
+  .section-eyebrow {
+    font-size: 0.75rem; font-weight: 500; letter-spacing: 0.1em;
+    color: var(--gold); text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 500; color: var(--purple-dark);
+    line-height: 1.25; margin-bottom: 1rem;
+  }
+  .section-sub {
+    font-size: 1rem; color: var(--text-mid);
+    line-height: 1.7; max-width: 520px; font-weight: 300;
+  }
+
+  /* PROBLEM SECTION */
+  .problem { background: var(--purple-dark); }
+  .problem-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+  }
+  .problem .section-eyebrow { color: var(--gold-light); }
+  .problem .section-title { color: white; }
+  .problem .section-sub { color: rgba(255,255,255,0.65); max-width: 100%; }
+  .problem-cards { display: flex; flex-direction: column; gap: 1rem; }
+  .problem-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 16px; padding: 1.2rem 1.4rem;
+    display: flex; gap: 1rem; align-items: flex-start;
+    transition: background 0.2s;
+  }
+  .problem-card:hover { background: rgba(255,255,255,0.09); }
+  .problem-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: rgba(201,168,76,0.15); display: flex;
+    align-items: center; justify-content: center; flex-shrink: 0;
+    font-size: 18px;
+  }
+  .problem-card h4 { font-size: 0.95rem; font-weight: 500; color: white; margin-bottom: 4px; }
+  .problem-card p { font-size: 0.83rem; color: rgba(255,255,255,0.55); line-height: 1.6; }
+
+  /* HOW IT WORKS */
+  .how { background: var(--warm-white); }
+  .how-inner { max-width: 1100px; margin: 0 auto; }
+  .how-header { text-align: center; margin-bottom: 3.5rem; }
+  .how-header .section-sub { margin: 0 auto; text-align: center; }
+  .steps {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+    position: relative;
+  }
+  .steps::before {
+    content: '';
+    position: absolute; top: 28px; left: 15%; right: 15%; height: 1px;
+    background: linear-gradient(90deg, var(--gold) 0%, transparent 50%, var(--gold) 100%);
+    opacity: 0.3;
+  }
+  .step {
+    background: white;
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 20px; padding: 2rem 1.5rem;
+    text-align: center; position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .step:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(92,31,138,0.1); }
+  .step-num {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--purple-dark); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif; font-size: 1.3rem;
+    margin: 0 auto 1.2rem; border: 3px solid var(--gold);
+  }
+  .step h3 { font-size: 1rem; font-weight: 500; color: var(--purple-dark); margin-bottom: 0.5rem; }
+  .step p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.65; }
+
+  /* SERVICES / ACCORDION */
+  .services { background: var(--cream); }
+  .services-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.2fr; gap: 4rem; align-items: start; }
+  .accordion { margin-top: 1rem; }
+  .accordion-item {
+    border-bottom: 1px solid rgba(201,168,76,0.25);
+    overflow: hidden;
+  }
+  .accordion-trigger {
+    width: 100%; background: none; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.3rem 0; text-align: left;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .accordion-trigger h3 {
+    font-size: 1.05rem; font-weight: 500; color: var(--gold);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .accordion-plus {
+    width: 24px; height: 24px; border-radius: 50%;
+    border: 1.5px solid rgba(201,168,76,0.4);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold); font-size: 1.1rem; flex-shrink: 0;
+    transition: transform 0.3s, background 0.2s;
+  }
+  .accordion-item.open .accordion-plus { transform: rotate(45deg); background: var(--gold); color: var(--purple-dark); }
+  .accordion-body {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+  .accordion-item.open .accordion-body { max-height: 400px; }
+  .accordion-body-inner {
+    padding: 0 0 1.4rem; font-size: 0.88rem;
+    color: var(--text-mid); line-height: 1.75;
+  }
+  .accordion-body-inner ul { padding-left: 1.2rem; margin-top: 0.6rem; }
+  .accordion-body-inner li { margin-bottom: 4px; }
+
+  /* DEMO SECTION */
+  .demo { background: var(--cream); }
+  .demo-inner { max-width: 1100px; margin: 0 auto; }
+  .demo-header { text-align: center; margin-bottom: 3rem; }
+  .demo-header .section-sub { margin: 0 auto; text-align: center; }
+  .demo-cols {
+    display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: 1.2rem;
+    align-items: stretch;
+  }
+  .demo-card {
+    border-radius: 20px; padding: 1.8rem 1.6rem;
+    border: 1.5px solid rgba(201,168,76,0.2);
+    background: white;
+    display: flex; flex-direction: column; gap: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .demo-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(92,31,138,0.1); }
+  .demo-card-icon {
+    width: 48px; height: 48px; border-radius: 13px;
+    background: rgba(92,31,138,0.08);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .demo-card h3 { font-size: 1rem; font-weight: 500; color: var(--purple-dark); }
+  .demo-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; flex: 1; }
+  .demo-number-box {
+    background: var(--cream); border-radius: 12px;
+    padding: 1rem 1.2rem; text-align: center;
+    border: 1px solid rgba(201,168,76,0.2);
+  }
+  .demo-number-label { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 5px; }
+  .demo-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.45rem; font-weight: 500; color: var(--purple-dark);
+    text-decoration: none; display: block; letter-spacing: 0.03em;
+  }
+  .demo-number:hover { color: var(--purple); }
+  .demo-hint { font-size: 0.72rem; color: var(--text-muted); margin-top: 5px; }
+  .demo-qr-wrap {
+    display: flex; flex-direction: column; align-items: center; gap: 0.8rem; flex: 1; justify-content: center;
+  }
+  .demo-qr-frame {
+    width: 130px; height: 130px; border-radius: 12px;
+    border: 2px solid rgba(201,168,76,0.3);
+    background: white; padding: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .demo-qr-label { font-size: 0.75rem; color: var(--text-muted); text-align: center; }
+  .demo-cal-card {
+    border-radius: 20px; overflow: hidden;
+    border: 1.5px solid rgba(201,168,76,0.2);
+    background: white;
+    display: flex; flex-direction: column;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .demo-cal-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(92,31,138,0.1); }
+  .demo-cal-header {
+    padding: 1.2rem 1.6rem;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+  }
+  .demo-cal-header h3 { font-size: 1rem; font-weight: 500; color: var(--purple-dark); }
+  .demo-cal-header p { font-size: 0.78rem; color: var(--text-muted); }
+  .demo-cal-frame { flex: 1; min-height: 340px; }
+  .demo-cal-frame iframe { width: 100%; height: 100%; min-height: 340px; border: none; display: block; }
+
+  /* INTEGRATIONS */
+  .integrations { background: var(--purple-dark); }
+  .integrations-inner { max-width: 1100px; margin: 0 auto; text-align: center; }
+  .integrations .section-title { color: white; }
+  .integrations .section-eyebrow { color: var(--gold); }
+  .integrations .section-sub { color: rgba(255,255,255,0.6); margin: 0 auto 3rem; text-align: center; }
+  .integrations-grid {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .integration-pill {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 50px; padding: 0.7rem 1.4rem;
+    transition: all 0.2s; cursor: default;
+  }
+  .integration-pill:hover { background: rgba(255,255,255,0.12); border-color: rgba(201,168,76,0.5); transform: translateY(-2px); }
+  .integration-pill svg { flex-shrink: 0; }
+  .integration-pill span { font-size: 0.88rem; font-weight: 400; color: rgba(255,255,255,0.85); }
+  .integrations-note {
+    font-size: 0.82rem; color: rgba(255,255,255,0.35);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .integrations-note::before { content: ''; display: block; width: 8px; height: 8px; border-radius: 50%; background: #4CAF50; }
+
+  /* PRICING */
+  .pricing { background: var(--warm-white); padding: 5rem 2rem; }
+  .pricing-inner { max-width: 1100px; margin: 0 auto; text-align: center; }
+  .pricing .section-sub { margin: 0 auto 3rem; text-align: center; max-width: 600px; }
+  .pricing-cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; text-align: left; }
+  .pricing-card {
+    border-radius: 20px; padding: 2rem;
+    border: 1.5px solid rgba(201,168,76,0.2);
+    background: white; transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .pricing-card.featured {
+    background: var(--purple-dark);
+    border-color: var(--gold);
+  }
+  .pricing-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(92,31,138,0.12); }
+  .pricing-tag {
+    font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 0.8rem;
+  }
+  .pricing-card.featured .pricing-tag { color: var(--gold-light); }
+  .pricing-name { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--purple-dark); margin-bottom: 0.5rem; }
+  .pricing-card.featured .pricing-name { color: white; }
+  .pricing-price { font-size: 2.2rem; font-weight: 300; color: var(--purple-dark); margin-bottom: 0.2rem; }
+  .pricing-card.featured .pricing-price { color: white; }
+  .pricing-price span { font-size: 1rem; color: var(--text-muted); }
+  .pricing-card.featured .pricing-price span { color: rgba(255,255,255,0.5); }
+  .pricing-divider { height: 1px; background: rgba(201,168,76,0.2); margin: 1.2rem 0; }
+  .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.5rem; }
+  .pricing-features li {
+    font-size: 0.87rem; color: var(--text-mid);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .pricing-card.featured .pricing-features li { color: rgba(255,255,255,0.75); }
+  .pricing-features li::before { content: '✓'; color: var(--gold); font-weight: 600; flex-shrink: 0; }
+
+  /* TESTIMONIAL */
+
+
+  /* CTA FINAL */
+  .cta-final {
+    background: linear-gradient(135deg, var(--purple-dark) 0%, var(--purple) 100%);
+    padding: 6rem 4rem; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .cta-final::before {
+    content: '';
+    position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 600px; border-radius: 50%;
+    background: rgba(201,168,76,0.06);
+    border: 1px solid rgba(201,168,76,0.1);
+  }
+  .cta-final-inner { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; }
+  .cta-final h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    color: white; margin-bottom: 1rem; font-weight: 500;
+  }
+  .cta-final p { font-size: 1rem; color: rgba(255,255,255,0.65); margin-bottom: 2.5rem; line-height: 1.7; }
+  .cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn-gold {
+    background: var(--gold); color: var(--purple-dark);
+    padding: 0.9rem 2.2rem; border-radius: 50px;
+    font-size: 0.92rem; font-weight: 500; text-decoration: none;
+    transition: all 0.2s; letter-spacing: 0.03em;
+  }
+  .btn-gold:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,168,76,0.35); }
+  .btn-outline-white {
+    border: 1.5px solid rgba(255,255,255,0.35); color: white;
+    padding: 0.9rem 2.2rem; border-radius: 50px;
+    font-size: 0.92rem; font-weight: 400; text-decoration: none;
+    transition: all 0.2s; background: transparent;
+  }
+  .btn-outline-white:hover { border-color: white; background: rgba(255,255,255,0.08); transform: translateY(-2px); }
+
+  /* FOOTER */
+  footer {
+    background: #1A0A2E; padding: 3rem 4rem 2rem;
+    display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 3rem;
+  }
+  .footer-logo {
+    font-family: 'Playfair Display', serif; font-size: 1.1rem;
+    color: white; margin-bottom: 0.8rem;
+  }
+  .footer-logo span { color: var(--gold); }
+  .footer-desc { font-size: 0.83rem; color: rgba(255,255,255,0.4); line-height: 1.7; }
+  .footer-col h4 { font-size: 0.78rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+  .footer-col ul a { font-size: 0.85rem; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.2s; }
+  .footer-col ul a:hover { color: white; }
+  .footer-bottom {
+    background: #1A0A2E;
+    padding: 1.2rem 4rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-bottom p { font-size: 0.78rem; color: rgba(255,255,255,0.25); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero-content > * {
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+  .hero-eyebrow { animation-delay: 0.1s; }
+  .hero h1 { animation-delay: 0.2s; }
+  .hero-sub { animation-delay: 0.3s; }
+  .hero-benefits { animation-delay: 0.35s; }
+  .hero-actions { animation-delay: 0.45s; }
+  .hero-visual { animation: fadeUp 0.8s 0.3s ease forwards; opacity: 0; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Insy <span>Digital</span> Reception</div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#how">So funktioniert's</a></li>
+    <li><a href="#pricing">Preise</a></li>
+    <li><a href="#kontakt">Kontakt</a></li>
+  </ul>
+  <a href="#cta" class="nav-cta">Kostenlos testen</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-deco"></div>
+  <div class="hero-deco-2"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">Digitalisierung für alle mit Termingeschäft</div>
+    <h1>Der digitale Rezeptionist für <em>Salons & mehr</em></h1>
+    <p class="hero-sub">Vom Massage-Salon bis zum Nachhilfelehrer — wenn Sie Termine machen, arbeitet Insy für Sie. Automatisch, über WhatsApp, 24 Stunden am Tag.</p>
+    <div class="hero-benefits">
+      <div class="hero-benefit">Nie wieder verpasste Anrufe während der Arbeit</div>
+      <div class="hero-benefit">Automatische Buchung ohne neue App für Kunden</div>
+      <div class="hero-benefit">Kostenlos starten — für immer</div>
+    </div>
+    <div class="hero-actions">
+      <a href="#onboarding" class="btn-primary">Jetzt kostenlos starten</a>
+      <a href="#how" class="btn-secondary">Demo ansehen</a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <!-- Phone 1: Booking chat -->
+    <div class="phone-mockup" style="transform:rotate(-6deg); margin-right:-30px; z-index:1;">
+      <div class="phone-screen">
+        <div class="phone-header">
+          <div class="phone-avatar">I</div>
+          <div>
+            <div class="phone-name">Insy Rezeption</div>
+            <div class="phone-status">● Online</div>
+          </div>
+        </div>
+        <!-- WhatsApp style: incoming = left gray, outgoing = right gold -->
+        <div style="display:flex;flex-direction:column;gap:4px;padding:4px 0;">
+          <div style="align-self:flex-start;background:rgba(255,255,255,0.12);border-radius:12px 12px 12px 3px;padding:7px 10px;max-width:85%;font-size:0.68rem;color:rgba(255,255,255,0.9);line-height:1.4;">Hallo! Ich möchte einen Termin buchen 🌸</div>
+          <div style="align-self:flex-end;background:var(--gold);border-radius:12px 12px 3px 12px;padding:7px 10px;max-width:85%;font-size:0.68rem;color:var(--purple-dark);line-height:1.4;font-weight:500;">Willkommen! Für welche Behandlung?</div>
+          <div style="align-self:flex-start;background:rgba(255,255,255,0.12);border-radius:12px 12px 12px 3px;padding:7px 10px;max-width:85%;font-size:0.68rem;color:rgba(255,255,255,0.9);line-height:1.4;">Thai-Massage, 60 Minuten bitte.</div>
+          <div style="align-self:flex-end;background:var(--gold);border-radius:12px 12px 3px 12px;padding:7px 10px;max-width:85%;font-size:0.68rem;color:var(--purple-dark);line-height:1.4;font-weight:500;">Di 14 Uhr oder Do 10 Uhr frei?</div>
+          <div style="align-self:flex-start;background:rgba(255,255,255,0.12);border-radius:12px 12px 12px 3px;padding:7px 10px;max-width:85%;font-size:0.68rem;color:rgba(255,255,255,0.9);line-height:1.4;">Donnerstag 10 Uhr, perfekt!</div>
+          <div style="align-self:flex-end;background:var(--gold);border-radius:12px 12px 3px 12px;padding:7px 10px;max-width:85%;font-size:0.68rem;color:var(--purple-dark);line-height:1.4;font-weight:500;">✓ Gebucht! Bestätigung folgt.</div>
+        </div>
+        <div class="chat-time">Heute, 14:23</div>
+      </div>
+    </div>
+    <!-- Phone 2: Missed call + confirmation -->
+    <div class="phone-mockup" style="transform:rotate(3deg); margin-top:40px; z-index:2;">
+      <div class="phone-screen">
+        <div class="phone-header">
+          <div class="phone-avatar">I</div>
+          <div>
+            <div class="phone-name">Insy Rezeption</div>
+            <div class="phone-status">● Online</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;padding:4px 0;">
+          <!-- Missed call notification style -->
+          <div style="align-self:center;background:rgba(255,255,255,0.08);border-radius:8px;padding:6px 10px;font-size:0.62rem;color:rgba(255,255,255,0.5);text-align:center;width:90%;">📵 Verpasster Anruf</div>
+          <div style="align-self:flex-end;background:var(--gold);border-radius:12px 12px 3px 12px;padding:7px 10px;max-width:90%;font-size:0.63rem;color:var(--purple-dark);line-height:1.5;font-weight:500;">
+            <strong>Verpasster Anruf</strong><br>
+            Termin jetzt buchen bei Insy's Massage<br>
+            <span style="opacity:0.7;">Hückhausener Str. 12, Wiehl</span>
+          </div>
+          <div style="align-self:flex-end;background:rgba(255,255,255,0.08);border-radius:8px;padding:5px 10px;font-size:0.62rem;color:var(--gold);text-align:center;">🔗 Termin buchen</div>
+          <div style="align-self:flex-end;background:var(--gold);border-radius:12px 12px 3px 12px;padding:7px 10px;max-width:90%;font-size:0.63rem;color:var(--purple-dark);line-height:1.5;font-weight:500;">
+            <strong>Terminbestätigung</strong><br>
+            Öl Massage · 60 Min<br>
+            06.04. 10:00 Uhr
+          </div>
+          <div style="align-self:flex-end;background:rgba(255,255,255,0.08);border-radius:8px;padding:5px 10px;font-size:0.62rem;color:var(--gold);text-align:center;">📅 Termin Manager</div>
+        </div>
+        <div class="chat-time">Heute, 11:42</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item">
+    <div class="trust-number">24/7</div>
+    <div class="trust-label">Automatisch erreichbar</div>
+  </div>
+  <div class="trust-sep"></div>
+  <div class="trust-item">
+    <div class="trust-number">0</div>
+    <div class="trust-label">Neue Apps für Kunden</div>
+  </div>
+  <div class="trust-sep"></div>
+  <div class="trust-item">
+    <div class="trust-number">2 Min.</div>
+    <div class="trust-label">Einrichtungszeit</div>
+  </div>
+  <div class="trust-sep"></div>
+  <div class="trust-item">
+    <div class="trust-number">100%</div>
+    <div class="trust-label">WhatsApp-basiert</div>
+  </div>
+</div>
+
+<!-- INTEGRATIONS — direkt nach Trust Bar -->
+<section class="integrations">
+  <div class="integrations-inner">
+    <div class="section-eyebrow">Integrationen</div>
+    <h2 class="section-title">Funktioniert mit allem, was Sie kennen</h2>
+    <p class="section-sub">Keine neuen Systeme lernen. Insy verbindet sich nahtlos mit Ihren bestehenden Kalendern und Buchungsplattformen.</p>
+    <div class="integrations-grid">
+      <div class="integration-pill">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" fill="#25D366"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.1.546 4.07 1.5 5.785L0 24l6.388-1.671A11.952 11.952 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.016-1.374l-.36-.214-3.732.977.994-3.634-.235-.374A9.818 9.818 0 1112 21.818z" fill="#25D366"/></svg>
+        <span>WhatsApp</span>
+      </div>
+      <div class="integration-pill">
+        <svg width="22" height="22" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#4285F4"/><rect x="2" y="2" width="20" height="20" rx="3" fill="white"/><rect x="6" y="1" width="2.5" height="5" rx="1.25" fill="#4285F4"/><rect x="15.5" y="1" width="2.5" height="5" rx="1.25" fill="#4285F4"/><rect x="2" y="8" width="20" height="2" fill="#4285F4"/><text x="12" y="19" font-size="8" font-weight="700" fill="#4285F4" text-anchor="middle" font-family="sans-serif">G</text></svg>
+        <span>Google Calendar</span>
+      </div>
+      <div class="integration-pill">
+        <svg width="22" height="22" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="#1C1C1E"/><rect x="2" y="2" width="20" height="20" rx="4" fill="white"/><rect x="6" y="1" width="2.5" height="5" rx="1.25" fill="#FF3B30"/><rect x="15.5" y="1" width="2.5" height="5" rx="1.25" fill="#FF3B30"/><rect x="2" y="8" width="20" height="2" fill="#FF3B30"/><text x="12" y="19" font-size="7.5" font-weight="700" fill="#1C1C1E" text-anchor="middle" font-family="sans-serif">31</text></svg>
+        <span>Apple Calendar</span>
+      </div>
+      <div class="integration-pill">
+        <svg width="22" height="22" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#0078D4"/><rect x="2" y="6" width="12" height="12" rx="2" fill="#fff" opacity="0.9"/><path d="M8 9a3 3 0 100 6 3 3 0 000-6z" fill="#0078D4"/><rect x="14" y="8" width="8" height="1.5" fill="white" opacity="0.8"/><rect x="14" y="11" width="8" height="1.5" fill="white" opacity="0.8"/><rect x="14" y="14" width="6" height="1.5" fill="white" opacity="0.8"/></svg>
+        <span>Outlook</span>
+      </div>
+      <div class="integration-pill">
+        <svg width="22" height="22" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#00B398"/><text x="12" y="16" font-size="6.5" font-weight="700" fill="white" text-anchor="middle" font-family="sans-serif">TW</text></svg>
+        <span>Treatwell</span>
+      </div>
+      <div class="integration-pill">
+        <svg width="22" height="22" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#FF6B35"/><text x="12" y="16" font-size="7" font-weight="700" fill="white" text-anchor="middle" font-family="sans-serif">Shore</text></svg>
+        <span>Shore</span>
+      </div>
+      <div class="integration-pill">
+        <svg width="22" height="22" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#7B2D8B"/><text x="12" y="16" font-size="6.5" font-weight="700" fill="white" text-anchor="middle" font-family="sans-serif">Booksy</text></svg>
+        <span>Booksy</span>
+      </div>
+      <div class="integration-pill">
+        <svg width="22" height="22" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#27AE60"/><text x="12" y="16" font-size="6.5" font-weight="700" fill="white" text-anchor="middle" font-family="sans-serif">Fresha</text></svg>
+        <span>Fresha</span>
+      </div>
+      <div class="integration-pill">
+        <svg width="22" height="22" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#0C6EFC"/><text x="12" y="16.5" font-size="9" font-weight="700" fill="white" text-anchor="middle" font-family="sans-serif">Wix</text></svg>
+        <span>Wix Bookings</span>
+      </div>
+      <div class="integration-pill">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="8" height="8" rx="1.5" stroke="#C9A84C" stroke-width="1.5"/><rect x="4.5" y="4.5" width="3" height="3" fill="#C9A84C"/><rect x="14" y="2" width="8" height="8" rx="1.5" stroke="#C9A84C" stroke-width="1.5"/><rect x="16.5" y="4.5" width="3" height="3" fill="#C9A84C"/><rect x="2" y="14" width="8" height="8" rx="1.5" stroke="#C9A84C" stroke-width="1.5"/><rect x="4.5" y="16.5" width="3" height="3" fill="#C9A84C"/><rect x="14" y="14" width="3" height="3" fill="#C9A84C"/><rect x="19" y="14" width="3" height="3" fill="#C9A84C"/><rect x="14" y="19" width="3" height="3" fill="#C9A84C"/><rect x="19" y="19" width="3" height="3" fill="#C9A84C"/></svg>
+        <span>QR-Code</span>
+      </div>
+      <div class="integration-pill">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C9.6 21 3 14.4 3 6c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z" fill="#C9A84C"/></svg>
+        <span>Rufweiterleitung</span>
+      </div>
+      <div class="integration-pill" style="border-style:dashed; opacity:0.5;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="rgba(201,168,76,0.6)" stroke-width="1.5"/><path d="M12 8v8M8 12h8" stroke="rgba(201,168,76,0.6)" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span style="color:rgba(255,255,255,0.4);">Weitere folgen</span>
+      </div>
+    </div>
+    <p class="integrations-note">Keine neue App für Ihre Kunden — alles über WhatsApp, das sie bereits täglich nutzen</p>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem">
+  <div class="problem-inner">
+    <div>
+      <div class="section-eyebrow">Das Problem</div>
+      <h2 class="section-title">Reden ist Silber, schweigen ist Gold</h2>
+      <p class="section-sub" style="color:rgba(255,255,255,0.6); margin-top:1rem;">Ob Massage, Nachhilfe oder Coaching — jeder Selbstständige kennt es. Das Telefon klingelt genau dann wenn man gerade arbeitet. Jeder verpasste Anruf ist ein verpasster Kunde.</p>
+    </div>
+    <div class="problem-cards">
+      <div class="problem-card">
+        <div class="problem-icon">📵</div>
+        <div>
+          <h4>Verpasste Anrufe</h4>
+          <p>Während Sie behandeln, klingelt das Telefon. Der Anrufer legt auf — und bucht beim Wettbewerber.</p>
+        </div>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon">🔁</div>
+        <div>
+          <h4>Manuelle Terminverwaltung</h4>
+          <p>Termine via Telefon koordinieren kostet täglich wertvolle Zeit, die in Behandlungen fließen sollte.</p>
+        </div>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon">💬</div>
+        <div>
+          <h4>Keine Erinnerungen</h4>
+          <p>Kunden vergessen Termine. Ohne automatische Reminder entstehen teure Lücken im Kalender.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="how-inner">
+    <div class="how-header">
+      <div class="section-eyebrow">So einfach geht's</div>
+      <h2 class="section-title">In 3 Schritten zum digitalen Salon</h2>
+      <p class="section-sub">Kein IT-Wissen nötig. Alles läuft über WhatsApp — das Ihre Kunden bereits kennen und täglich nutzen.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Einrichten</h3>
+        <p>Wir richten Ihren digitalen Rezeptionisten in unter 2 Minuten ein. Ihre Öffnungszeiten, Services und Preise — fertig.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Telefon stummschalten</h3>
+        <p>Schalten Sie das Telefon während der Behandlung stumm. Verpasste Anrufe erhalten automatisch eine WhatsApp-Nachricht.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Im Kreislauf bleiben</h3>
+        <p>Kunden buchen, verschieben und stornieren selbstständig per WhatsApp. Erinnerungen werden automatisch verschickt.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO / TESTEN -->
+<section class="demo" id="demo">
+  <div class="demo-inner">
+    <div class="demo-header">
+      <div class="section-eyebrow">Live erleben</div>
+      <h2 class="section-title">Testen Sie es jetzt selbst</h2>
+      <p class="section-sub">Zwei Wege, ein Erlebnis — genau so, wie Ihre Kunden es erleben werden. Während Sie behandeln, läuft alles automatisch.</p>
+    </div>
+
+    <div class="demo-cols">
+
+      <!-- Spalte 1: Telefon -->
+      <div class="demo-card">
+        <div class="demo-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C9.6 21 3 14.4 3 6c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z" fill="#5C1F8A"/>
+          </svg>
+        </div>
+        <h3>Per Telefon anrufen</h3>
+        <p>Rufen Sie an — die Leitung wird per Rufweiterleitung auf den digitalen Rezeptionisten geschaltet. Kein Mensch nimmt ab. Trotzdem wird Ihr Anliegen sofort bearbeitet.</p>
+        <div class="demo-number-box">
+          <div class="demo-number-label">Demo-Nummer</div>
+          <a href="tel:+4902262796975" class="demo-number">02262 7969975</a>
+          <div class="demo-hint">Rufweiterleitung aktiv · 24 / 7</div>
+        </div>
+        <div style="margin-top:auto; padding-top:0.5rem; display:flex; align-items:center; gap:8px;">
+          <div style="width:8px;height:8px;border-radius:50%;background:#4CAF50;flex-shrink:0;"></div>
+          <span style="font-size:0.75rem;color:var(--text-muted);">Störungsfreie Behandlung garantiert</span>
+        </div>
+      </div>
+
+      <!-- Spalte 2: QR-Code -->
+      <div class="demo-card">
+        <div class="demo-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="2" width="8" height="8" rx="1.5" stroke="#5C1F8A" stroke-width="1.8"/>
+            <rect x="4.5" y="4.5" width="3" height="3" fill="#5C1F8A"/>
+            <rect x="14" y="2" width="8" height="8" rx="1.5" stroke="#5C1F8A" stroke-width="1.8"/>
+            <rect x="16.5" y="4.5" width="3" height="3" fill="#5C1F8A"/>
+            <rect x="2" y="14" width="8" height="8" rx="1.5" stroke="#5C1F8A" stroke-width="1.8"/>
+            <rect x="4.5" y="16.5" width="3" height="3" fill="#5C1F8A"/>
+            <rect x="14" y="14" width="3" height="3" fill="#5C1F8A"/>
+            <rect x="19" y="14" width="3" height="3" fill="#5C1F8A"/>
+            <rect x="14" y="19" width="3" height="3" fill="#5C1F8A"/>
+            <rect x="19" y="19" width="3" height="3" fill="#5C1F8A"/>
+          </svg>
+        </div>
+        <h3>Per QR-Code scannen</h3>
+        <p>Hängen Sie den QR-Code in Ihrem Salon aus. Kunden scannen — und landen direkt im WhatsApp-Chat mit Ihrem digitalen Rezeptionisten.</p>
+        <div class="demo-qr-wrap">
+          <div style="position:relative; width:150px; height:150px; flex-shrink:0;">
+            <!-- Brand color frame -->
+            <div style="position:absolute; inset:-4px; border-radius:16px; background:linear-gradient(135deg, #5C1F8A, #C9A84C); padding:4px; z-index:0;">
+              <div style="width:100%; height:100%; border-radius:12px; background:white;"></div>
+            </div>
+            <!-- Corner accents -->
+            <div style="position:absolute; top:4px; left:4px; width:20px; height:20px; border-top:3px solid #5C1F8A; border-left:3px solid #5C1F8A; border-radius:4px 0 0 0; z-index:2;"></div>
+            <div style="position:absolute; top:4px; right:4px; width:20px; height:20px; border-top:3px solid #5C1F8A; border-right:3px solid #5C1F8A; border-radius:0 4px 0 0; z-index:2;"></div>
+            <div style="position:absolute; bottom:4px; left:4px; width:20px; height:20px; border-bottom:3px solid #5C1F8A; border-left:3px solid #5C1F8A; border-radius:0 0 0 4px; z-index:2;"></div>
+            <div style="position:absolute; bottom:4px; right:4px; width:20px; height:20px; border-bottom:3px solid #C9A84C; border-right:3px solid #C9A84C; border-radius:0 0 4px 0; z-index:2;"></div>
+            <!-- Actual QR code -->
+            <img src="qr-demo.png"
+              style="position:absolute; inset:8px; width:calc(100% - 16px); height:calc(100% - 16px); object-fit:contain; border-radius:6px; z-index:1;"
+              alt="Demo QR-Code">
+          </div>
+          <div class="demo-qr-label" style="margin-top:10px;">QR-Code scannen →<br>direkt zu WhatsApp</div>
+          <div style="display:flex; align-items:center; gap:6px; margin-top:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" fill="#25D366"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.1.546 4.07 1.5 5.785L0 24l6.388-1.671A11.952 11.952 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.016-1.374l-.36-.214-3.732.977.994-3.634-.235-.374A9.818 9.818 0 1112 21.818z" fill="#25D366"/></svg>
+            <span style="font-size:0.72rem; color:var(--text-muted);">Öffnet WhatsApp direkt</span>
+          </div>
+        </div>
+        <div style="margin-top:auto; padding-top:0.5rem; display:flex; align-items:center; gap:8px;">
+          <div style="width:8px;height:8px;border-radius:50%;background:#4CAF50;flex-shrink:0;"></div>
+          <span style="font-size:0.75rem;color:var(--text-muted);">Kein Download · Sofort buchbar</span>
+        </div>
+      </div>
+
+      <!-- Spalte 3: Google Kalender -->
+      <div class="demo-cal-card">
+        <div class="demo-cal-header">
+          <svg width="22" height="22" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#4285F4"/><rect x="2" y="2" width="20" height="20" rx="3" fill="white"/><rect x="6" y="1" width="2.5" height="5" rx="1.25" fill="#4285F4"/><rect x="15.5" y="1" width="2.5" height="5" rx="1.25" fill="#4285F4"/><rect x="2" y="8" width="20" height="2" fill="#4285F4"/><text x="12" y="19" font-size="8" font-weight="700" fill="#4285F4" text-anchor="middle" font-family="sans-serif">G</text></svg>
+          <div style="flex:1;">
+            <h3>Live-Termine</h3>
+            <p>Buchungen in Echtzeit</p>
+          </div>
+          <!-- Auto-refresh indicator -->
+          <div style="display:flex; align-items:center; gap:5px; flex-shrink:0;">
+            <div id="cal-dot" style="width:7px;height:7px;border-radius:50%;background:#4CAF50;animation:pulse-dot 2s infinite;"></div>
+            <span style="font-size:0.68rem; color:var(--text-muted);">Live</span>
+          </div>
+        </div>
+        <!-- Hinweis -->
+        <div style="padding:8px 14px; background:rgba(201,168,76,0.08); border-bottom:1px solid rgba(201,168,76,0.15); display:flex; align-items:center; gap:8px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#C9A84C" stroke-width="1.8"/><path d="M12 8v4l3 3" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span style="font-size:0.72rem; color:#7B5A1A;">Kalender aktualisiert sich alle 5 Min. automatisch — oder klicken Sie auf Aktualisieren.</span>
+          <button onclick="refreshCal()" style="margin-left:auto; font-size:0.7rem; color:#5C1F8A; background:none; border:none; cursor:pointer; font-family:'DM Sans',sans-serif; white-space:nowrap; text-decoration:underline;">↻ Aktualisieren</button>
+        </div>
+        <div class="demo-cal-frame">
+          <iframe id="cal-iframe"
+            src="https://calendar.google.com/calendar/embed?src=insy.reuber%40gmail.com&ctz=Europe%2FBerlin&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=WEEK&bgcolor=%23FBF8F3&color=%235C1F8A"
+            style="border:none; width:100%; height:100%; min-height:340px;"
+            frameborder="0"
+            scrolling="no">
+          </iframe>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Garantie-Banner -->
+    <div style="margin-top:1.5rem; background:var(--purple-dark); border-radius:20px; padding:1.8rem 2rem; display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
+      <div style="width:52px;height:52px;border-radius:50%;background:rgba(201,168,76,0.15);border:1.5px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7L12 2z" fill="rgba(201,168,76,0.3)" stroke="#C9A84C" stroke-width="1.5"/><path d="M8 12l3 3 5-5" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div style="flex:1;min-width:200px;">
+        <h3 style="font-size:1rem;font-weight:500;color:white;margin-bottom:4px;">Nahezu störungsfreie Behandlung — garantiert</h3>
+        <p style="font-size:0.83rem;color:rgba(255,255,255,0.55);line-height:1.6;">Telefon + QR-Code zusammen bedeuten: Jeder Kunde findet einen Weg zu Ihnen — ohne dass Sie einmal unterbrochen werden.</p>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        <div style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);border-radius:50px;padding:5px 14px;font-size:0.75rem;color:#E2C47A;">✓ Rufweiterleitung</div>
+        <div style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);border-radius:50px;padding:5px 14px;font-size:0.75rem;color:#E2C47A;">✓ QR-Code im Salon</div>
+        <div style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);border-radius:50px;padding:5px 14px;font-size:0.75rem;color:#E2C47A;">✓ WhatsApp 24/7</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- INTEGRATIONS section moved to after trust bar -->
+
+<style>
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+</style>
+<script>
+function refreshCal() {
+  const iframe = document.getElementById('cal-iframe');
+  if (iframe) { const src = iframe.src; iframe.src = ''; setTimeout(() => { iframe.src = src; }, 100); }
+}
+setInterval(refreshCal, 5 * 60 * 1000);
+</script>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="pricing-inner" style="max-width:1100px;">
+    <div class="section-eyebrow">Preise</div>
+    <h2 class="section-title">Transparent & fair</h2>
+    <p class="section-sub">Starten Sie kostenlos. Buchungen, Stornierungen und Verschiebungen immer unbegrenzt. Templates kaufen Sie flexibel dazu — für Salons, Therapeuten, Lehrer und jeden der Termine macht.</p>
+
+    <!-- 4 Karten -->
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; text-align:left; margin-bottom:2rem;">
+
+      <!-- Kostenlos -->
+      <div class="pricing-card" style="padding:1.5rem;">
+        <div class="pricing-tag">Einstieg</div>
+        <div class="pricing-name">Free</div>
+        <div class="pricing-price">0€ <span>/ immer</span></div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features" style="margin-bottom:1rem;">
+          <li>Buchungen unbegrenzt</li>
+          <li>Stornierungen unbegrenzt</li>
+          <li>Verschiebungen unbegrenzt</li>
+          <li>QR-Code für den Salon</li>
+          <li>Eigener Buchungslink</li>
+          <li>Google Calendar Sync</li>
+          <li style="opacity:0.35; text-decoration:line-through;">Missed Call Templates</li>
+          <li style="opacity:0.35; text-decoration:line-through;">Terminerinnerungen</li>
+          <li style="opacity:0.35; text-decoration:line-through;">Follow-up Nachrichten</li>
+        </ul>
+        <a href="#onboarding" class="btn-secondary" style="display:block; text-align:center; font-size:0.85rem;">Kostenlos starten</a>
+      </div>
+
+      <!-- Starter -->
+      <div class="pricing-card" style="padding:1.5rem;">
+        <div class="pricing-tag">Klein</div>
+        <div class="pricing-name">Starter</div>
+        <div class="pricing-price">49€ <span>/ Monat</span></div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features" style="margin-bottom:0.5rem;">
+          <li>Alles aus Free</li>
+          <li>30 Missed Call Templates</li>
+          <li>30 Terminerinnerungen</li>
+          <li>30 Follow-up Nachrichten</li>
+          <li style="font-weight:500; color:var(--purple-dark);">= 90 Templates/Monat</li>
+        </ul>
+        <div class="pricing-divider"></div>
+        <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:1rem;">
+          Aufstocken: <strong style="color:var(--gold);">9€</strong> / 30 Templates<br>
+          <span style="font-size:0.7rem; opacity:0.7;">= 0.30€ pro Template</span>
+        </div>
+        <a href="#onboarding" class="btn-secondary" style="display:block; text-align:center; font-size:0.85rem;">30 Tage gratis</a>
+      </div>
+
+      <!-- Pro -->
+      <div class="pricing-card featured" style="padding:1.5rem;">
+        <div class="pricing-tag">Empfohlen</div>
+        <div class="pricing-name" style="color:white;">Pro</div>
+        <div class="pricing-price" style="color:white;">79€ <span style="color:rgba(255,255,255,0.5);">/ Monat</span></div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features" style="margin-bottom:0.5rem;">
+          <li>Alles aus Starter</li>
+          <li>100 Missed Call Templates</li>
+          <li>100 Terminerinnerungen</li>
+          <li>100 Follow-up Nachrichten</li>
+          <li style="font-weight:500; color:var(--gold-light);">= 300 Templates/Monat</li>
+        </ul>
+        <div class="pricing-divider"></div>
+        <div style="font-size:0.75rem; color:rgba(255,255,255,0.55); margin-bottom:1rem;">
+          Aufstocken: <strong style="color:var(--gold-light);">19€</strong> / 100 Templates<br>
+          <span style="font-size:0.7rem; opacity:0.7;">= 0.19€ pro Template</span>
+        </div>
+        <a href="#onboarding" class="btn-gold" style="display:block; text-align:center; font-size:0.85rem;">30 Tage gratis</a>
+      </div>
+
+      <!-- Business -->
+      <div class="pricing-card" style="padding:1.5rem;">
+        <div class="pricing-tag">Groß</div>
+        <div class="pricing-name">Business</div>
+        <div class="pricing-price">119€ <span>/ Monat</span></div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features" style="margin-bottom:0.5rem;">
+          <li>Alles aus Pro</li>
+          <li>300 Missed Call Templates</li>
+          <li>300 Terminerinnerungen</li>
+          <li>300 Follow-up Nachrichten</li>
+          <li style="font-weight:500; color:var(--purple-dark);">= 900 Templates/Monat</li>
+        </ul>
+        <div class="pricing-divider"></div>
+        <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:1rem;">
+          Aufstocken: <strong style="color:var(--gold);">39€</strong> / 300 Templates<br>
+          <span style="font-size:0.7rem; opacity:0.7;">= 0.13€ pro Template</span>
+        </div>
+        <a href="#onboarding" class="btn-secondary" style="display:block; text-align:center; font-size:0.85rem;">30 Tage gratis</a>
+      </div>
+
+    </div>
+
+    <!-- Template Erklärung -->
+    <div style="background:var(--cream); border-radius:16px; border:1px solid rgba(201,168,76,0.2); padding:1.5rem 2rem; text-align:left; max-width:700px; margin:0 auto;">
+      <div style="font-size:0.7rem; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; color:var(--gold); margin-bottom:0.8rem;">Was sind Templates?</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem;">
+        <div>
+          <div style="font-size:0.82rem; font-weight:500; color:var(--purple-dark); margin-bottom:3px;">📵 Missed Call</div>
+          <div style="font-size:0.75rem; color:var(--text-muted); line-height:1.5;">Automatische WhatsApp bei verpasstem Anruf — Kunde bucht direkt</div>
+        </div>
+        <div>
+          <div style="font-size:0.82rem; font-weight:500; color:var(--purple-dark); margin-bottom:3px;">🔔 Erinnerung</div>
+          <div style="font-size:0.75rem; color:var(--text-muted); line-height:1.5;">24h vor dem Termin — verhindert No-Shows und Lücken im Kalender</div>
+        </div>
+        <div>
+          <div style="font-size:0.82rem; font-weight:500; color:var(--purple-dark); margin-bottom:3px;">💬 Follow-up</div>
+          <div style="font-size:0.75rem; color:var(--text-muted); line-height:1.5;">Nach der Behandlung — bringt Wiederbuchungen automatisch</div>
+        </div>
+      </div>
+      <div style="margin-top:1rem; padding-top:1rem; border-top:1px solid rgba(201,168,76,0.15); font-size:0.75rem; color:var(--text-muted);">
+        💡 Buchungen, Stornierungen & Verschiebungen sind in allen Paketen immer unbegrenzt kostenlos — der Kunde initiiert diese selbst per WhatsApp.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ONBOARDING FORM -->
+<section id="onboarding" style="background: var(--cream); padding: 5rem 4rem;">
+<style>
+  .ob-wrap { max-width: 860px; margin: 0 auto; }
+  .ob-header { text-align: center; margin-bottom: 3rem; }
+
+  /* Steps nav */
+  .ob-steps { display: flex; align-items: center; justify-content: center; gap: 0; margin-bottom: 3rem; }
+  .ob-step-item { display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative; flex: 1; max-width: 140px; }
+  .ob-step-item:not(:last-child)::after {
+    content: ''; position: absolute; top: 18px; left: calc(50% + 22px); right: calc(-50% + 22px);
+    height: 1px; background: rgba(201,168,76,0.25);
+  }
+  .ob-step-item.done::after { background: #C9A84C; }
+  .ob-step-dot {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 2px solid rgba(201,168,76,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 500; color: var(--text-muted);
+    background: white; transition: all 0.3s; flex-shrink: 0;
+  }
+  .ob-step-item.active .ob-step-dot { border-color: #5C1F8A; background: #5C1F8A; color: white; }
+  .ob-step-item.done .ob-step-dot { border-color: #C9A84C; background: #C9A84C; color: #3D1260; }
+  .ob-step-label { font-size: 0.7rem; color: var(--text-muted); text-align: center; letter-spacing: 0.03em; }
+  .ob-step-item.active .ob-step-label { color: var(--purple-dark); font-weight: 500; }
+
+  /* Cards / panels */
+  .ob-panel { display: none; }
+  .ob-panel.active { display: block; }
+  .ob-card {
+    background: white; border-radius: 20px;
+    border: 1.5px solid rgba(201,168,76,0.2);
+    padding: 2rem 2.5rem; margin-bottom: 1.2rem;
+  }
+  .ob-card-title {
+    font-size: 0.7rem; font-weight: 500; letter-spacing: 0.09em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 1.2rem;
+  }
+
+  /* Field rows */
+  .ob-field { margin-bottom: 1.2rem; }
+  .ob-field:last-child { margin-bottom: 0; }
+  .ob-label {
+    display: block; font-size: 0.82rem; font-weight: 500;
+    color: var(--text-mid); margin-bottom: 6px;
+  }
+  .ob-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+  .ob-input {
+    width: 100%; border: 1.5px solid rgba(201,168,76,0.25);
+    border-radius: 10px; padding: 0.65rem 1rem;
+    font-size: 0.9rem; font-family: 'DM Sans', sans-serif;
+    color: var(--text-dark); background: var(--warm-white);
+    outline: none; transition: border-color 0.2s;
+  }
+  .ob-input:focus { border-color: #5C1F8A; }
+
+  /* Toggle chips */
+  .ob-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .ob-chip {
+    padding: 6px 16px; border-radius: 50px;
+    border: 1.5px solid rgba(201,168,76,0.25);
+    font-size: 0.82rem; color: var(--text-mid);
+    cursor: pointer; transition: all 0.15s;
+    background: white; user-select: none;
+  }
+  .ob-chip:hover { border-color: #5C1F8A; color: #5C1F8A; }
+  .ob-chip.selected { background: #5C1F8A; border-color: #5C1F8A; color: white; font-weight: 500; }
+  .ob-chip.gold.selected { background: #C9A84C; border-color: #C9A84C; color: #3D1260; }
+
+  /* Toggle switch */
+  .ob-toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.8rem 0; border-bottom: 1px solid rgba(201,168,76,0.12);
+  }
+  .ob-toggle-row:last-child { border-bottom: none; }
+  .ob-toggle-label { font-size: 0.88rem; color: var(--text-mid); }
+  .ob-toggle-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+  .ob-switch { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+  .ob-switch input { opacity: 0; width: 0; height: 0; }
+  .ob-slider {
+    position: absolute; inset: 0; border-radius: 12px;
+    background: rgba(201,168,76,0.2); cursor: pointer;
+    transition: background 0.2s;
+  }
+  .ob-slider::before {
+    content: ''; position: absolute;
+    width: 18px; height: 18px; border-radius: 50%;
+    left: 3px; top: 3px; background: white;
+    transition: transform 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  }
+  .ob-switch input:checked + .ob-slider { background: #5C1F8A; }
+  .ob-switch input:checked + .ob-slider::before { transform: translateX(20px); }
+
+  /* Event type list builder */
+  .ob-event-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1rem; }
+  .ob-event-row {
+    background: var(--cream); border-radius: 12px;
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 1rem 1.2rem;
+    display: grid; grid-template-columns: 1fr auto auto auto; gap: 10px; align-items: center;
+  }
+  .ob-event-row-title { font-size: 0.88rem; font-weight: 500; color: var(--purple-dark); }
+  .ob-event-row-meta { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+  .ob-event-badge {
+    font-size: 0.7rem; padding: 3px 10px; border-radius: 20px;
+    background: rgba(92,31,138,0.08); color: var(--purple-dark);
+  }
+  .ob-event-del {
+    width: 28px; height: 28px; border-radius: 8px;
+    border: 1px solid rgba(201,168,76,0.3);
+    background: white; cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    color: var(--text-muted); font-size: 14px; transition: all 0.15s;
+  }
+  .ob-event-del:hover { border-color: #E24B4A; color: #E24B4A; background: #FFF0F0; }
+
+  /* Add treatment mini-form */
+  .ob-add-form {
+    background: rgba(92,31,138,0.04); border-radius: 14px;
+    border: 1.5px dashed rgba(92,31,138,0.2);
+    padding: 1.2rem; display: none;
+  }
+  .ob-add-form.open { display: block; }
+  .ob-add-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .ob-add-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+  /* Members -->
+  .ob-member-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1rem; }
+  .ob-member-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px; border-radius: 12px;
+    background: var(--cream); border: 1px solid rgba(201,168,76,0.2);
+  }
+  .ob-member-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: #5C1F8A; color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 500; flex-shrink: 0;
+  }
+  .ob-member-name { font-size: 0.88rem; font-weight: 500; color: var(--text-dark); }
+  .ob-member-role { font-size: 0.75rem; color: var(--text-muted); }
+  .ob-member-del { margin-left: auto; }
+
+  /* Nav buttons */
+  .ob-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; }
+  .ob-btn-prev {
+    padding: 0.7rem 1.6rem; border-radius: 50px;
+    border: 1.5px solid rgba(92,31,138,0.25); color: var(--purple-dark);
+    background: white; font-size: 0.88rem; font-weight: 500;
+    cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+  }
+  .ob-btn-prev:hover { border-color: #5C1F8A; }
+  .ob-btn-next {
+    padding: 0.7rem 2rem; border-radius: 50px;
+    background: #5C1F8A; color: white;
+    border: none; font-size: 0.88rem; font-weight: 500;
+    cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+  }
+  .ob-btn-next:hover { background: #7B3BAD; transform: translateY(-1px); }
+  .ob-btn-gold {
+    padding: 0.7rem 1.2rem; border-radius: 50px;
+    background: #C9A84C; color: #3D1260;
+    border: none; font-size: 0.82rem; font-weight: 500;
+    cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+  }
+  .ob-btn-ghost {
+    padding: 0.7rem 1rem; border-radius: 50px;
+    border: 1px solid rgba(201,168,76,0.3); color: var(--text-muted);
+    background: white; font-size: 0.82rem;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+  }
+
+  /* Summary */
+  .ob-summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ob-summary-item { padding: 12px 14px; border-radius: 12px; background: var(--cream); border: 1px solid rgba(201,168,76,0.15); }
+  .ob-summary-key { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gold); margin-bottom: 4px; }
+  .ob-summary-val { font-size: 0.88rem; color: var(--text-dark); font-weight: 500; }
+
+  /* Success state */
+  .ob-success { text-align: center; padding: 3rem 2rem; }
+  .ob-success-icon {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: rgba(92,31,138,0.1); border: 2px solid rgba(201,168,76,0.4);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.5rem; font-size: 28px;
+  }
+</style>
+
+<div class="ob-wrap">
+  <div class="ob-header">
+    <div class="section-eyebrow">Setup</div>
+    <h2 class="section-title">Salon in 4 Schritten einrichten</h2>
+    <p class="section-sub" style="margin:0 auto; text-align:center;">Füllen Sie das Template aus — Insy erstellt automatisch alle Buchungstypen, Einstellungen und Webhooks in Cal.com.</p>
+  </div>
+
+  <!-- Step indicators -->
+  <div class="ob-steps" id="ob-steps">
+    <div class="ob-step-item active" data-step="1">
+      <div class="ob-step-dot">1</div>
+      <div class="ob-step-label">Salon</div>
+    </div>
+    <div class="ob-step-item" data-step="2">
+      <div class="ob-step-dot">2</div>
+      <div class="ob-step-label">Behandlungen</div>
+    </div>
+    <div class="ob-step-item" data-step="3">
+      <div class="ob-step-dot">3</div>
+      <div class="ob-step-label">Einstellungen</div>
+    </div>
+    <div class="ob-step-item" data-step="4">
+      <div class="ob-step-dot">4</div>
+      <div class="ob-step-label">Team</div>
+    </div>
+  </div>
+
+  <!-- ── STEP 1: Salon Info ── -->
+  <div class="ob-panel active" id="ob-panel-1">
+    <div class="ob-card">
+      <div class="ob-card-title">Salon-Informationen</div>
+      <div class="ob-field">
+        <label class="ob-label">Salonname <span style="color:#E24B4A">*</span></label>
+        <input class="ob-input" id="ob-salon-name" type="text" placeholder="z.B. Lotus Thai Massage">
+        <div class="ob-hint">Wird als Titel in Cal.com und in WhatsApp-Nachrichten angezeigt.</div>
+      </div>
+      <div class="ob-field">
+        <label class="ob-label">WhatsApp-Nummer <span style="color:#E24B4A">*</span></label>
+        <input class="ob-input" id="ob-phone" type="tel" placeholder="+49 151 00000000">
+      </div>
+      <div class="ob-field">
+        <label class="ob-label">Buchungs-URL (Slug)</label>
+        <input class="ob-input" id="ob-slug" type="text" placeholder="lotus-thai-massage">
+        <div class="ob-hint">Ihr Buchungslink: insy.de/<span id="ob-slug-preview" style="color:var(--purple)">lotus-thai-massage</span></div>
+      </div>
+    </div>
+
+    <div class="ob-card">
+      <div class="ob-card-title">Öffnungszeiten</div>
+      <div class="ob-field">
+        <label class="ob-label">Arbeitstage & Zeiten</label>
+        <div class="ob-hint" style="margin-bottom:10px;">Klicken Sie auf einen Tag um ihn zu aktivieren — dann individuelle Zeiten setzen.</div>
+        <div id="ob-schedule" style="display:flex; flex-direction:column; gap:8px;">
+          <!-- Tage werden per JS gerendert -->
+        </div>
+      </div>
+    </div>
+
+    <div class="ob-nav">
+      <div></div>
+      <button class="ob-btn-next" onclick="obNext(1)">Weiter → Behandlungen</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 2: Behandlungen ── -->
+  <div class="ob-panel" id="ob-panel-2">
+    <div class="ob-card">
+      <div class="ob-card-title">Behandlungstypen (Event Types)</div>
+      <div class="ob-event-list" id="ob-event-list"></div>
+
+      <!-- Add button -->
+      <button class="ob-btn-gold" onclick="obToggleAddForm()" id="ob-add-btn" style="width:100%; margin-bottom:10px;">+ Behandlung hinzufügen</button>
+
+      <!-- Mini add-form -->
+      <div class="ob-add-form" id="ob-add-form">
+        <div class="ob-add-grid">
+          <div>
+            <label class="ob-label">Titel der Behandlung</label>
+            <input class="ob-input" id="add-title" placeholder="z.B. Thai-Massage">
+          </div>
+          <div>
+            <label class="ob-label">Preis (optional)</label>
+            <input class="ob-input" id="add-price" type="number" placeholder="z.B. 80">
+          </div>
+        </div>
+
+        <div class="ob-field">
+          <label class="ob-label">Dauer — Auswahlmöglichkeiten für den Kunden</label>
+          <div class="ob-chips" id="add-durations">
+            <span class="ob-chip" data-val="30">30 Min</span>
+            <span class="ob-chip selected" data-val="45">45 Min</span>
+            <span class="ob-chip selected" data-val="60">60 Min</span>
+            <span class="ob-chip" data-val="75">75 Min</span>
+            <span class="ob-chip" data-val="90">90 Min</span>
+            <span class="ob-chip" data-val="120">120 Min</span>
+          </div>
+          <div class="ob-hint">Mehrere auswählen = Kunde kann zwischen Dauern wählen.</div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;" class="ob-field">
+          <div>
+            <label class="ob-label">Dauer anzeigen als</label>
+            <div class="ob-chips" id="add-duration-display">
+              <span class="ob-chip selected" data-val="min">Minuten (60 Min)</span>
+              <span class="ob-chip" data-val="h">Stunden (1 Std)</span>
+            </div>
+          </div>
+          <div>
+            <label class="ob-label">Pufferzeit nach Termin</label>
+            <div class="ob-chips" id="add-buffer">
+              <span class="ob-chip selected" data-val="0">Kein Puffer</span>
+              <span class="ob-chip" data-val="10">10 Min</span>
+              <span class="ob-chip" data-val="15">15 Min</span>
+              <span class="ob-chip" data-val="30">30 Min</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ob-add-actions">
+          <button class="ob-btn-ghost" onclick="obToggleAddForm()">Abbrechen</button>
+          <button class="ob-btn-next" onclick="obAddEvent()" style="padding:0.6rem 1.4rem;">Hinzufügen</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ob-nav">
+      <button class="ob-btn-prev" onclick="obPrev(2)">← Zurück</button>
+      <button class="ob-btn-next" onclick="obNext(2)">Weiter → Einstellungen</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 3: Einstellungen ── -->
+  <div class="ob-panel" id="ob-panel-3">
+    <div class="ob-card">
+      <div class="ob-card-title">Buchungseinstellungen</div>
+
+      <div class="ob-toggle-row">
+        <div>
+          <div class="ob-toggle-label">Minuten in Buchungsansicht anzeigen</div>
+          <div class="ob-toggle-sub">z.B. "60 Min" statt nur "1 Stunde"</div>
+        </div>
+        <label class="ob-switch"><input type="checkbox" id="tog-show-minutes" checked><span class="ob-slider"></span></label>
+      </div>
+
+      <div class="ob-toggle-row">
+        <div>
+          <div class="ob-toggle-label">Pufferzeit global aktivieren</div>
+          <div class="ob-toggle-sub">Zusätzliche Zeit zwischen allen Terminen (überschreibt pro-Behandlung)</div>
+        </div>
+        <label class="ob-switch"><input type="checkbox" id="tog-global-buffer"><span class="ob-slider"></span></label>
+      </div>
+
+      <div id="global-buffer-val" style="display:none; padding: 0.8rem 0 0.4rem;">
+        <label class="ob-label">Globale Pufferzeit</label>
+        <div class="ob-chips" id="chips-global-buffer">
+          <span class="ob-chip" data-val="5">5 Min</span>
+          <span class="ob-chip selected" data-val="10">10 Min</span>
+          <span class="ob-chip" data-val="15">15 Min</span>
+          <span class="ob-chip" data-val="20">20 Min</span>
+        </div>
+      </div>
+
+      <div class="ob-toggle-row">
+        <div>
+          <div class="ob-toggle-label">Mindest-Vorlaufzeit für Buchungen</div>
+          <div class="ob-toggle-sub">Verhindert spontane Last-Minute-Buchungen</div>
+        </div>
+        <label class="ob-switch"><input type="checkbox" id="tog-notice"><span class="ob-slider"></span></label>
+      </div>
+      <div id="notice-val" style="display:none; padding:0.8rem 0 0.4rem;">
+        <div class="ob-chips" id="chips-notice">
+          <span class="ob-chip" data-val="60">1 Std vorher</span>
+          <span class="ob-chip selected" data-val="120">2 Std vorher</span>
+          <span class="ob-chip" data-val="1440">1 Tag vorher</span>
+        </div>
+      </div>
+
+      <div class="ob-toggle-row">
+        <div>
+          <div class="ob-toggle-label">Stornierung durch Kunden erlauben</div>
+          <div class="ob-toggle-sub">Kunden können Termine selbst absagen</div>
+        </div>
+        <label class="ob-switch"><input type="checkbox" id="tog-cancel" checked><span class="ob-slider"></span></label>
+      </div>
+
+      <div class="ob-toggle-row">
+        <div>
+          <div class="ob-toggle-label">Umbuchung erlauben</div>
+          <div class="ob-toggle-sub">Kunden können Termine selbst verschieben</div>
+        </div>
+        <label class="ob-switch"><input type="checkbox" id="tog-reschedule" checked><span class="ob-slider"></span></label>
+      </div>
+    </div>
+
+    <div class="ob-card">
+      <div class="ob-card-title">Terminvergabe-Logik</div>
+      <div class="ob-field">
+        <label class="ob-label">Zuweisung bei mehreren Mitarbeitern</label>
+        <div class="ob-chips" id="chips-scheduling">
+          <span class="ob-chip selected" data-val="none">Einzelperson</span>
+          <span class="ob-chip" data-val="roundRobin">Round Robin (gleichmäßig verteilen)</span>
+          <span class="ob-chip" data-val="collective">Collective (alle müssen frei sein)</span>
+        </div>
+        <div class="ob-hint" id="scheduling-hint">Alle Buchungen gehen an einen Mitarbeiter.</div>
+      </div>
+    </div>
+
+    <div class="ob-nav">
+      <button class="ob-btn-prev" onclick="obPrev(3)">← Zurück</button>
+      <button class="ob-btn-next" onclick="obNext(3)">Weiter → Team</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 4: Team ── -->
+  <div class="ob-panel" id="ob-panel-4">
+    <div class="ob-card">
+      <div class="ob-card-title">Team-Mitglieder</div>
+      <div class="ob-member-list" id="ob-member-list"></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr auto; gap:10px; align-items:flex-end;">
+        <div>
+          <label class="ob-label">Name</label>
+          <input class="ob-input" id="add-member-name" placeholder="z.B. Nattida K.">
+        </div>
+        <div>
+          <label class="ob-label">Rolle</label>
+          <input class="ob-input" id="add-member-role" placeholder="z.B. Senior-Therapeutin">
+        </div>
+        <button class="ob-btn-gold" onclick="obAddMember()" style="padding:0.65rem 1.2rem; white-space:nowrap;">+ Hinzufügen</button>
+      </div>
+    </div>
+
+    <div class="ob-card" id="ob-summary-card">
+      <div class="ob-card-title">Zusammenfassung</div>
+      <div class="ob-summary-grid" id="ob-summary-grid"></div>
+    </div>
+
+    <div class="ob-nav">
+      <button class="ob-btn-prev" onclick="obPrev(4)">← Zurück</button>
+      <button class="ob-btn-next" onclick="obSubmit()" style="background:#C9A84C; color:#3D1260;">✓ Jetzt einrichten</button>
+    </div>
+  </div>
+
+  <!-- ── SUCCESS ── -->
+  <div class="ob-panel" id="ob-panel-5">
+    <div class="ob-card">
+      <div class="ob-success">
+        <div class="ob-success-icon">✓</div>
+        <h3 style="font-family:'Playfair Display',serif; font-size:1.6rem; color:var(--purple-dark); margin-bottom:0.8rem;">Ihr Salon ist eingerichtet!</h3>
+        <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:2rem;">Alle Event-Types, Einstellungen und Webhooks wurden automatisch in Cal.com angelegt.</p>
+        <div style="background:var(--cream); border-radius:14px; padding:1.2rem; border:1px solid rgba(201,168,76,0.2); display:inline-block; text-align:left; min-width:280px;">
+          <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--gold); margin-bottom:8px;">Ihr Buchungslink</div>
+          <div id="ob-final-link" style="font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--purple-dark);">insy.de/mein-salon</div>
+        </div>
+        <div style="margin-top:1.5rem;">
+          <p style="font-size:0.8rem; color:var(--text-muted);">Sie erhalten in Kürze eine WhatsApp mit weiteren Infos.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── State ──
+let obState = {
+  currentStep: 1,
+  events: [],
+  members: []
+};
+
+// ── Chip toggling ──
+document.querySelectorAll('.ob-chips').forEach(group => {
+  const isMulti = ['ob-days', 'add-durations'].includes(group.id);
+  group.querySelectorAll('.ob-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      if (isMulti) {
+        chip.classList.toggle('selected');
+      } else {
+        group.querySelectorAll('.ob-chip').forEach(c => c.classList.remove('selected'));
+        chip.classList.add('selected');
+      }
+      // Hints
+      if (group.id === 'chips-scheduling') {
+        const hints = {
+          none: 'Alle Buchungen gehen an einen Mitarbeiter.',
+          roundRobin: 'Buchungen werden gleichmäßig auf alle Mitarbeiter verteilt.',
+          collective: 'Ein Termin wird nur angeboten wenn alle Mitarbeiter gleichzeitig frei sind.'
+        };
+        document.getElementById('scheduling-hint').textContent = hints[chip.dataset.val] || '';
+      }
+    });
+  });
+});
+
+// ── Schedule per Tag ──
+const DAYS = [
+  { key: 'Mo', label: 'Montag' },
+  { key: 'Di', label: 'Dienstag' },
+  { key: 'Mi', label: 'Mittwoch' },
+  { key: 'Do', label: 'Donnerstag' },
+  { key: 'Fr', label: 'Freitag' },
+  { key: 'Sa', label: 'Samstag' },
+  { key: 'So', label: 'Sonntag' }
+];
+
+obState.schedule = {
+  Mo: { active: true,  from: '09:00', to: '19:00' },
+  Di: { active: true,  from: '09:00', to: '19:00' },
+  Mi: { active: true,  from: '09:00', to: '19:00' },
+  Do: { active: true,  from: '09:00', to: '19:00' },
+  Fr: { active: true,  from: '09:00', to: '19:00' },
+  Sa: { active: false, from: '10:00', to: '16:00' },
+  So: { active: false, from: '10:00', to: '16:00' }
+};
+
+function obRenderSchedule() {
+  const container = document.getElementById('ob-schedule');
+  container.innerHTML = DAYS.map(d => {
+    const s = obState.schedule[d.key];
+    return `
+    <div style="display:grid; grid-template-columns:110px 1fr; gap:8px; align-items:center; padding:8px 10px; border-radius:10px; background:${s.active ? 'rgba(92,31,138,0.04)' : 'var(--cream)'}; border:1px solid ${s.active ? 'rgba(92,31,138,0.15)' : 'rgba(201,168,76,0.1)'}; transition:all 0.2s;">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;">
+        <input type="checkbox" ${s.active ? 'checked' : ''} 
+          onchange="obToggleDay('${d.key}', this.checked)"
+          style="width:16px;height:16px;accent-color:#5C1F8A;cursor:pointer;">
+        <span style="font-size:0.88rem;font-weight:${s.active ? '500' : '400'};color:${s.active ? 'var(--purple-dark)' : 'var(--text-muted)'};">${d.label}</span>
+      </label>
+      <div style="display:${s.active ? 'grid' : 'none'}; grid-template-columns:1fr auto 1fr; align-items:center; gap:6px;" id="times-${d.key}">
+        <input type="time" value="${s.from}" 
+          onchange="obState.schedule['${d.key}'].from=this.value"
+          style="border:1.5px solid rgba(201,168,76,0.25);border-radius:8px;padding:6px 10px;font-size:0.85rem;font-family:'DM Sans',sans-serif;color:var(--text-dark);background:white;outline:none;">
+        <span style="font-size:0.75rem;color:var(--text-muted);text-align:center;">bis</span>
+        <input type="time" value="${s.to}"
+          onchange="obState.schedule['${d.key}'].to=this.value"
+          style="border:1.5px solid rgba(201,168,76,0.25);border-radius:8px;padding:6px 10px;font-size:0.85rem;font-family:'DM Sans',sans-serif;color:var(--text-dark);background:white;outline:none;">
+      </div>
+      <div style="display:${s.active ? 'none' : 'flex'}; align-items:center;" id="closed-${d.key}">
+        <span style="font-size:0.78rem;color:var(--text-muted);padding:6px 0;">Geschlossen</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function obToggleDay(key, active) {
+  obState.schedule[key].active = active;
+  obRenderSchedule();
+}
+
+obRenderSchedule();
+document.getElementById('ob-salon-name').addEventListener('input', function() {
+  const slug = this.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g,'');
+  document.getElementById('ob-slug').value = slug;
+  document.getElementById('ob-slug-preview').textContent = slug || 'mein-salon';
+});
+document.getElementById('ob-slug').addEventListener('input', function() {
+  document.getElementById('ob-slug-preview').textContent = this.value || 'mein-salon';
+});
+
+// Toggle-conditional reveals
+document.getElementById('tog-global-buffer').addEventListener('change', function() {
+  document.getElementById('global-buffer-val').style.display = this.checked ? 'block' : 'none';
+});
+document.getElementById('tog-notice').addEventListener('change', function() {
+  document.getElementById('notice-val').style.display = this.checked ? 'block' : 'none';
+});
+
+// ── Add Treatment ──
+function obToggleAddForm() {
+  const f = document.getElementById('ob-add-form');
+  f.classList.toggle('open');
+}
+
+function obAddEvent() {
+  const title = document.getElementById('add-title').value.trim();
+  if (!title) { document.getElementById('add-title').focus(); return; }
+
+  const durations = [...document.querySelectorAll('#add-durations .ob-chip.selected')].map(c => c.dataset.val);
+  const display = document.querySelector('#add-duration-display .ob-chip.selected')?.dataset.val || 'min';
+  const buffer = document.querySelector('#add-buffer .ob-chip.selected')?.dataset.val || '0';
+  const price = document.getElementById('add-price').value;
+
+  const event = { title, durations, display, buffer, price, id: Date.now() };
+  obState.events.push(event);
+  obRenderEvents();
+  document.getElementById('add-title').value = '';
+  document.getElementById('add-price').value = '';
+  document.getElementById('ob-add-form').classList.remove('open');
+}
+
+function obRenderEvents() {
+  const list = document.getElementById('ob-event-list');
+  list.innerHTML = obState.events.map(e => {
+    const durStr = e.durations.map(d => e.display === 'h' ? (d/60).toFixed(1).replace('.0','') + ' Std' : d + ' Min').join(', ');
+    const bufStr = e.buffer === '0' ? 'Kein Puffer' : e.buffer + ' Min Puffer';
+    return `<div class="ob-event-row">
+      <div>
+        <div class="ob-event-row-title">${e.title}</div>
+        <div class="ob-event-row-meta">${durStr} · ${bufStr}${e.price ? ' · ' + e.price + ' €' : ''}</div>
+      </div>
+      <div class="ob-event-badge">${e.durations.length} Dauer${e.durations.length > 1 ? 'n' : ''}</div>
+      <div class="ob-event-badge" style="background:rgba(201,168,76,0.12);color:#7B5A1A;">${e.display === 'h' ? 'in Std' : 'in Min'}</div>
+      <button class="ob-event-del" onclick="obDeleteEvent(${e.id})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function obDeleteEvent(id) {
+  obState.events = obState.events.filter(e => e.id !== id);
+  obRenderEvents();
+}
+
+// ── Add Member ──
+function obAddMember() {
+  const name = document.getElementById('add-member-name').value.trim();
+  const role = document.getElementById('add-member-role').value.trim();
+  if (!name) { document.getElementById('add-member-name').focus(); return; }
+  obState.members.push({ name, role, id: Date.now() });
+  document.getElementById('add-member-name').value = '';
+  document.getElementById('add-member-role').value = '';
+  obRenderMembers();
+}
+
+function obRenderMembers() {
+  const list = document.getElementById('ob-member-list');
+  list.innerHTML = obState.members.map(m => `
+    <div class="ob-member-row">
+      <div class="ob-member-avatar">${m.name.charAt(0).toUpperCase()}</div>
+      <div>
+        <div class="ob-member-name">${m.name}</div>
+        <div class="ob-member-role">${m.role || 'Mitarbeiter'}</div>
+      </div>
+      <button class="ob-event-del ob-member-del" onclick="obDeleteMember(${m.id})">✕</button>
+    </div>`).join('');
+}
+
+function obDeleteMember(id) {
+  obState.members = obState.members.filter(m => m.id !== id);
+  obRenderMembers();
+}
+
+// ── Summary ──
+function obBuildSummary() {
+  const name = document.getElementById('ob-salon-name').value || '—';
+  const slug = document.getElementById('ob-slug').value || '—';
+  const phone = document.getElementById('ob-phone').value || '—';
+  const activeDays = DAYS.filter(d => obState.schedule[d.key].active);
+  const daysStr = activeDays.map(d => {
+    const s = obState.schedule[d.key];
+    return `${d.key} ${s.from}–${s.to}`;
+  }).join(', ') || '—';
+  const scheduling = document.querySelector('#chips-scheduling .ob-chip.selected')?.dataset.val || '—';
+  const schedLabels = { none: 'Einzelperson', roundRobin: 'Round Robin', collective: 'Collective' };
+
+  document.getElementById('ob-summary-grid').innerHTML = `
+    <div class="ob-summary-item"><div class="ob-summary-key">Salonname</div><div class="ob-summary-val">${name}</div></div>
+    <div class="ob-summary-item"><div class="ob-summary-key">Buchungslink</div><div class="ob-summary-val">insy.de/${slug}</div></div>
+    <div class="ob-summary-item"><div class="ob-summary-key">WhatsApp</div><div class="ob-summary-val">${phone}</div></div>
+    <div class="ob-summary-item"><div class="ob-summary-key">Öffnungszeiten</div><div class="ob-summary-val" style="font-size:0.78rem;line-height:1.6;">${daysStr}</div></div>
+    <div class="ob-summary-item"><div class="ob-summary-key">Behandlungen</div><div class="ob-summary-val">${obState.events.length} angelegt</div></div>
+    <div class="ob-summary-item"><div class="ob-summary-key">Terminvergabe</div><div class="ob-summary-val">${schedLabels[scheduling]}</div></div>
+    <div class="ob-summary-item"><div class="ob-summary-key">Team</div><div class="ob-summary-val">${obState.members.length || 1} Mitglied${obState.members.length !== 1 ? 'er' : ''}</div></div>
+    <div class="ob-summary-item"><div class="ob-summary-key">Puffer global</div><div class="ob-summary-val">${document.getElementById('tog-global-buffer').checked ? document.querySelector('#chips-global-buffer .ob-chip.selected')?.dataset.val + ' Min' : 'Pro Behandlung'}</div></div>
+  `;
+}
+
+// ── Navigation ──
+function obSetStep(step) {
+  document.querySelectorAll('.ob-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('ob-panel-' + step).classList.add('active');
+  document.querySelectorAll('.ob-step-item').forEach((item, i) => {
+    item.classList.remove('active', 'done');
+    const s = i + 1;
+    if (s < step) item.classList.add('done');
+    else if (s === step) item.classList.add('active');
+  });
+  obState.currentStep = step;
+  // Replace dot numbers with checkmarks for done steps
+  document.querySelectorAll('.ob-step-item.done .ob-step-dot').forEach(d => { d.textContent = '✓'; });
+  document.querySelectorAll('.ob-step-item:not(.done) .ob-step-dot').forEach((d, i) => {
+    const s = parseInt(d.closest('.ob-step-item').dataset.step);
+    d.textContent = s;
+  });
+}
+
+function obNext(from) {
+  if (from === 1) {
+    if (!document.getElementById('ob-salon-name').value.trim()) {
+      document.getElementById('ob-salon-name').focus();
+      document.getElementById('ob-salon-name').style.borderColor = '#E24B4A';
+      return;
+    }
+    document.getElementById('ob-salon-name').style.borderColor = '';
+  }
+  if (from === 4) { obBuildSummary(); }
+  obSetStep(from + 1);
+  window.scrollTo({ top: document.getElementById('onboarding').offsetTop - 80, behavior: 'smooth' });
+}
+
+function obPrev(from) {
+  obSetStep(from - 1);
+  window.scrollTo({ top: document.getElementById('onboarding').offsetTop - 80, behavior: 'smooth' });
+}
+
+function obSubmit() {
+  const slug = document.getElementById('ob-slug').value || 'mein-salon';
+  document.getElementById('ob-final-link').textContent = 'insy.de/' + slug;
+  // Here you would make the actual API calls to Cal.com
+  obSetStep(5);
+  window.scrollTo({ top: document.getElementById('onboarding').offsetTop - 80, behavior: 'smooth' });
+}
+</script>
+</section>
+
+
+
+<!-- CTA FINAL -->
+<section class="cta-final" id="cta">
+  <div class="cta-final-inner">
+    <h2>Bereit für den digitalen Salon?</h2>
+    <p>Testen Sie Insy Digital Reception 30 Tage kostenlos. Keine Kreditkarte, kein Risiko — starten Sie in 2 Minuten.</p>
+    <div class="cta-actions">
+      <a href="#" class="btn-gold">Jetzt kostenlos starten</a>
+      <a href="#" class="btn-outline-white">Demo ansehen</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="kontakt">
+  <div>
+    <div class="footer-logo">Insy <span>Digital</span> Reception</div>
+    <p class="footer-desc">Der digitale Rezeptionist für alle mit Termingeschäft. Automatisch, freundlich, 24/7.</p>
+  </div>
+  <div class="footer-col">
+    <h4>Navigation</h4>
+    <ul>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#how">So funktioniert's</a></li>
+      <li><a href="#pricing">Preise</a></li>
+      <li><a href="#cta">Kostenlos testen</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Kontakt</h4>
+    <ul>
+      <li><a href="#"><span class="__cf_email__" data-cfemail="741c1118181b341d1a070d5a1011">[email&#160;protected]</span></a></li>
+      <li><a href="#">Impressum</a></li>
+      <li><a href="#">Datenschutz</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <p>© 2025 Insy Digital Reception. Alle Rechte vorbehalten.</p>
+  <p style="color:rgba(255,255,255,0.2); font-size:0.75rem;">Made with ♥ für Salons</p>
+</div>
+
+<script>
+  function toggleAccordion(btn) {
+    const item = btn.closest('.accordion-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    if (nav) nav.style.boxShadow = window.scrollY > 20 ? '0 2px 20px rgba(92,31,138,0.08)' : 'none';
+  });
+</script>
+</body>
+</html>
