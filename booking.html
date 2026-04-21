@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,29 +24,56 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .card{background:#fff;border:1.5px solid #e8e0f0;border-radius:10px;padding:13px}
 .ctitle{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--tpl);font-weight:500;margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .cnum{background:var(--tp);color:#fff;width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0}
+
+/* Dual toggle */
 .dual-tog{display:flex;align-items:center;gap:8px;padding:8px 11px;background:#fff;border:1.5px solid #e8e0f0;border-radius:8px;cursor:pointer;margin-bottom:10px}
 .dual-tog.on{border-color:var(--tp);background:var(--tpp)}
 .tog-box{width:18px;height:18px;border-radius:4px;border:1.5px solid #c8bcd8;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .dual-tog.on .tog-box{background:var(--tp);border-color:var(--tp)}
 .tog-lbl{font-size:13px;font-weight:500;color:var(--td)}
 .tog-sub{font-size:11px;color:#7a6a8a}
+
+/* Service grid */
 .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
-.svc{border:1.5px solid #e8e0f0;border-radius:8px;padding:10px 9px;cursor:pointer}
-.svc:hover{border-color:var(--tpl);background:var(--tpp)}
-.svc.s1{border-color:var(--tp);background:var(--tpp)}
-.svc.s2{border-color:var(--tg);background:var(--tgp)}
+
+/* Normale Service-Karte */
+.svc{border:1.5px solid #e8e0f0;border-radius:8px;padding:10px 9px;cursor:pointer;position:relative;overflow:hidden;background:#fff}
+.svc:hover{border-color:var(--tpl)}
+/* Slot 1 allein */
+.svc.sel1only{border-color:var(--tp);background:var(--tpp)}
+/* Slot 2 allein */
+.svc.sel2only{border-color:var(--tg);background:var(--tgp)}
+/* Beide — Split: linke Hälfte lila, rechte Hälfte gold */
+.svc.selboth{border:none;background:#fff;outline:2px solid var(--tp)}
+.svc.selboth::before{content:'';position:absolute;inset:0;left:0;width:50%;background:var(--tpp);z-index:0}
+.svc.selboth::after{content:'';position:absolute;inset:0;left:50%;width:50%;background:var(--tgp);z-index:0}
+.svc-inner{position:relative;z-index:1}
 .svc-n{font-size:13px;font-weight:500;color:var(--td);margin-bottom:2px}
 .svc-d{font-size:11px;color:#7a6a8a}
 .svc-p{font-size:11px;font-weight:500;color:var(--tg);margin-top:5px}
-.tag1{font-size:10px;padding:1px 6px;border-radius:99px;background:var(--tpp);color:var(--tp)}
-.tag2{font-size:10px;padding:1px 6px;border-radius:99px;background:var(--tgp);color:#7a5a00}
+/* Badge für beide */
+.svc-badges{display:flex;gap:3px;margin-top:5px;position:relative;z-index:1}
+.sbadge-sm{font-size:10px;padding:1px 7px;border-radius:99px;font-weight:500}
+.sbadge-1{background:var(--tp);color:#fff}
+.sbadge-2{background:var(--tg);color:var(--td)}
+/* Next-toggle Indikator */
+.svc-next{position:absolute;top:6px;right:7px;font-size:9px;color:rgba(74,28,107,.4);z-index:2}
+
+/* Dauer */
 .dur-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.dur{border:1.5px solid #e8e0f0;border-radius:8px;padding:9px 4px;text-align:center;cursor:pointer}
-.dur:hover{border-color:var(--tpl);background:var(--tpp)}
-.dur.sel{border-color:var(--tp);background:var(--tpp)}
+.dur{border:1.5px solid #e8e0f0;border-radius:8px;padding:9px 4px;text-align:center;cursor:pointer;position:relative;overflow:hidden;background:#fff}
+.dur:hover{border-color:var(--tpl)}
+.dur.sel1only{border-color:var(--tp);background:var(--tpp)}
+.dur.sel2only{border-color:var(--tg);background:var(--tgp)}
+.dur.selboth{border:none;outline:2px solid var(--tp);background:#fff}
+.dur.selboth::before{content:'';position:absolute;inset:0;width:50%;background:var(--tpp);z-index:0}
+.dur.selboth::after{content:'';position:absolute;inset:0;left:50%;width:50%;background:var(--tgp);z-index:0}
+.dur-inner{position:relative;z-index:1}
 .dur-m{font-size:15px;font-weight:500;color:var(--td)}
 .dur-l{font-size:10px;color:#7a6a8a}
 .dur-p{font-size:11px;color:var(--tg);font-weight:500;margin-top:3px}
+
+/* Akkordion Mitarbeiter */
 .acc-hdr{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
 .acc-hdr-left{display:flex;align-items:center;gap:8px}
 .acc-title{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--tpl);font-weight:500}
@@ -57,23 +83,27 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .acc-body{overflow:hidden;max-height:0;opacity:0;transition:max-height .3s ease,opacity .2s,margin .2s}
 .acc-body.open{max-height:600px;opacity:1;margin-top:10px}
 .staff-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
-.stf{border:1.5px solid #e8e0f0;border-radius:8px;padding:10px 11px;display:flex;align-items:center;gap:9px;cursor:pointer;background:#fff}
-.stf:hover{border-color:var(--tpl);background:var(--tpp)}
-.stf.s1{border-color:var(--tp);background:var(--tpp)}
-.stf.s2{border-color:var(--tg);background:var(--tgp)}
+.stf{border:1.5px solid #e8e0f0;border-radius:8px;padding:10px 11px;display:flex;align-items:center;gap:9px;cursor:pointer;background:#fff;position:relative;overflow:hidden}
+.stf:hover{border-color:var(--tpl)}
+.stf.sel1only{border-color:var(--tp);background:var(--tpp)}
+.stf.sel2only{border-color:var(--tg);background:var(--tgp)}
+.stf.selboth{border:none;outline:2px solid var(--tp);background:#fff}
+.stf.selboth::before{content:'';position:absolute;inset:0;width:50%;background:var(--tpp);z-index:0}
+.stf.selboth::after{content:'';position:absolute;inset:0;left:50%;width:50%;background:var(--tgp);z-index:0}
+.stf-inner{position:relative;z-index:1;display:flex;align-items:center;gap:9px;flex:1;min-width:0}
 .av{width:36px;height:36px;border-radius:50%;background:var(--tpp);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:var(--tp);flex-shrink:0}
 .av.g{background:var(--tgp);color:#7a5a00}
 .stf-n{font-size:13px;font-weight:500;color:var(--td)}
 .stf-r{font-size:11px;color:#7a6a8a;margin-top:1px}
 .stf-av{font-size:10px;color:#3b7a57;margin-top:2px}
 .stf-na{font-size:10px;color:#c8bcd8;margin-top:2px}
+.stf-badges{display:flex;gap:3px;position:relative;z-index:1;flex-shrink:0}
 .sbadge{width:17px;height:17px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:500}
 .sb1{background:var(--tp);color:#fff}
 .sb2{background:var(--tg);color:var(--td)}
 
-/* Kalender + Übersicht nebeneinander */
+/* Kalender */
 .cal-sum-row{display:grid;grid-template-columns:1fr 230px;gap:10px;align-items:start}
-
 .cal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
 .cal-nav{background:none;border:1px solid #e8e0f0;border-radius:6px;padding:2px 9px;cursor:pointer;font-size:14px;color:var(--tp);line-height:1.4}
 .cal-nav:hover{background:var(--tpp)}
@@ -93,15 +123,15 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .sl.ss{background:var(--tp);color:#fff;border-color:var(--tp);font-weight:500}
 .sl.sb{background:#f5f2f8;color:#ccc;pointer-events:none;font-size:9px}
 
-/* Buchungsübersicht + Kontakt Kachel */
-.sumcard{background:#fff;border:1.5px solid #e8e0f0;border-radius:10px;overflow:hidden;position:sticky;top:10px}
+/* Buchungsübersicht */
+.sumcard{background:#fff;border:1.5px solid #e8e0f0;border-radius:10px;overflow:hidden}
 .sum-hdr{background:var(--tp);padding:10px 13px}
 .sum-hdr-t{font-size:10px;font-weight:500;color:rgba(255,255,255,.7);letter-spacing:.05em;text-transform:uppercase}
 .sum-hdr-p{font-size:22px;font-weight:500;color:var(--tg);margin-top:1px}
 .sumrow{display:flex;justify-content:space-between;align-items:center;padding:6px 13px;border-bottom:1px solid #f0eaf7;font-size:12px}
 .sumrow:last-child{border-bottom:none}
 .sl-lbl{color:#7a6a8a}
-.sl-val{font-weight:500;color:var(--td);text-align:right;font-size:12px}
+.sl-val{font-weight:500;color:var(--td);text-align:right}
 .sl-val.emp{color:#ccc;font-weight:400}
 .contact-block{padding:11px 13px;background:#faf8fc;border-top:1.5px solid #f0eaf7}
 .contact-ttl{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--tpl);font-weight:500;margin-bottom:9px}
@@ -130,9 +160,6 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .book-btn:disabled{background:#e8e0f0;color:#aaa;cursor:not-allowed}
 .hint{font-size:10px;color:#7a6a8a;line-height:1.5;margin-top:4px}
 .divider{border:none;border-top:1.5px dashed #e8e0f0;margin:10px 0}
-.sec-hdr{display:flex;align-items:center;gap:7px;margin-bottom:8px}
-.sec-hdr-t{font-size:11px;font-weight:500;color:var(--td)}
-.bigbadge{width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:500}
 .conf{background:var(--tp);border-radius:10px;padding:2.5rem 1.5rem;text-align:center;margin:10px}
 .conf-cc{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
 .conf-t{font-size:17px;font-weight:500;color:#fff;margin-bottom:6px}
@@ -222,21 +249,34 @@ var BASE_SLOTS=['09:00','09:30','10:00','10:30','11:00','11:30','13:00','13:30',
 var BUSY={'10:30':1,'13:00':1,'15:30':1};
 var STAFF_BUSY={p1:{'09:30':1,'14:00':1},p2:{'11:00':1,'13:30':1},p3:{'10:00':1,'15:00':1},p4:{'09:00':1,'11:30':1}};
 
-var st={dual:false,svc1:null,svc2:null,dur1:null,dur2:null,stf1:'any',stf2:'any',day:null,slot:null,name:'',phone:'',country:COUNTRIES[0]};
+// State
+// svc1/svc2: welcher Service für Slot 1 und 2
+// nextSlot: welcher Slot als nächstes beim Klick geändert wird (1 oder 2)
+var st={
+  dual:false,
+  svc1:null,svc2:null,
+  dur1:null,dur2:null,
+  stf1:'any',stf2:'any',
+  day:null,slot:null,
+  name:'',phone:'',country:COUNTRIES[0],
+  nextSvc:1, nextDur:1, nextStf:1
+};
 var calOff=0,staffOpen=false,dropOpen=false,dropSearch='';
 
 function fsvc(id){return SVCS.filter(function(x){return x.id===id;})[0]||null;}
 function fdur(id){return DURS.filter(function(x){return x.id===id;})[0]||null;}
 function fname(id){if(!id||id==='any')return'Ohne Präferenz';var f=STAFF.filter(function(x){return x.id===id;})[0];return f?f.name:null;}
+
 function availSlots(){
   var b1=st.stf1&&STAFF_BUSY[st.stf1]?STAFF_BUSY[st.stf1]:{};
   var b2=st.dual&&st.stf2&&STAFF_BUSY[st.stf2]?STAFF_BUSY[st.stf2]:{};
   return BASE_SLOTS.map(function(s){return{time:s,busy:!!(BUSY[s]||b1[s]||b2[s])};});
 }
+
 function p1(){var s=fsvc(st.svc1),d=fdur(st.dur1);return s&&d?Math.round(s.price*d.mult):null;}
 function p2(){var s=fsvc(st.svc2),d=fdur(st.dur2);return s&&d?Math.round(s.price*d.mult):null;}
 function total(){var a=p1(),b=p2();if(!a)return null;return st.dual&&b?a+b:a;}
-function slot2(){
+function slot2time(){
   if(!st.slot||!st.dur1)return null;
   var d=fdur(st.dur1);if(!d)return null;
   var pts=st.slot.split(':'),mins=parseInt(pts[0])*60+parseInt(pts[1])+d.min;
@@ -263,26 +303,84 @@ function getCalData(){
   return{base:base,firstDow:(base.getDay()+6)%7,dim:new Date(base.getFullYear(),base.getMonth()+1,0).getDate(),now:now};
 }
 
-window.toggleDual=function(){st.dual=!st.dual;if(!st.dual){st.svc2=null;st.dur2=null;st.stf2='any';}render();};
+// ── Kern-Logik: Klick auf Service im Dual-Modus ──────────────
+// Beim ersten Klick: beide bekommen denselben Service → Split-Anzeige
+// Beim Klick auf anderen Service: wechselt abwechselnd Slot 1 oder Slot 2
+window.pickSvc=function(id){
+  if(!st.dual){
+    st.svc1=id;render();return;
+  }
+  if(st.svc1===id&&st.svc2===id){
+    // Beide haben schon diesen Service — kein Wechsel nötig
+    render();return;
+  }
+  if(st.svc1===null&&st.svc2===null){
+    // Erster Klick: beide bekommen diesen Service
+    st.svc1=id;st.svc2=id;st.nextSvc=1;
+  } else if(st.svc1===id||st.svc2===id){
+    // Nochmal auf einen bereits gewählten Service klicken
+    // → den anderen Slot auch auf diesen setzen (beide gleich)
+    st.svc1=id;st.svc2=id;st.nextSvc=1;
+  } else {
+    // Anderer Service: wechselt abwechselnd
+    if(st.nextSvc===1){st.svc1=id;st.nextSvc=2;}
+    else{st.svc2=id;st.nextSvc=1;}
+  }
+  render();
+};
+
+window.pickDur=function(id){
+  if(!st.dual){
+    st.dur1=id;render();return;
+  }
+  if(st.dur1===id&&st.dur2===id){render();return;}
+  if(st.dur1===null&&st.dur2===null){
+    st.dur1=id;st.dur2=id;st.nextDur=1;
+  } else if(st.dur1===id||st.dur2===id){
+    st.dur1=id;st.dur2=id;st.nextDur=1;
+  } else {
+    if(st.nextDur===1){st.dur1=id;st.nextDur=2;}
+    else{st.dur2=id;st.nextDur=1;}
+  }
+  render();
+};
+
+window.pickStf=function(id){
+  if(!st.dual){
+    st.stf1=id;st.slot=null;staffOpen=false;render();return;
+  }
+  if(st.stf1===id&&st.stf2===id){staffOpen=false;render();return;}
+  if(st.stf1==='any'&&st.stf2==='any'){
+    st.stf1=id;st.stf2=id;st.nextStf=1;
+  } else if(st.stf1===id||st.stf2===id){
+    st.stf1=id;st.stf2=id;st.nextStf=1;
+  } else {
+    if(st.nextStf===1){st.stf1=id;st.nextStf=2;}
+    else{st.stf2=id;st.nextStf=1;}
+  }
+  st.slot=null;staffOpen=false;render();
+};
+
+window.toggleDual=function(){
+  st.dual=!st.dual;
+  if(!st.dual){
+    // Zurück zu Einfach: svc2/dur2/stf2 werden gelöscht
+    st.svc2=null;st.dur2=null;st.stf2='any';
+    st.nextSvc=1;st.nextDur=1;st.nextStf=1;
+  } else {
+    // Dual aktiviert: beide starten gleich wie Slot 1
+    st.svc2=st.svc1;st.dur2=st.dur1;st.stf2=st.stf1;
+    st.nextSvc=1;st.nextDur=1;st.nextStf=1;
+  }
+  render();
+};
+
 window.toggleStaff=function(){
   staffOpen=!staffOpen;
   var b=document.getElementById('acc-body');
   var a=document.getElementById('acc-arrow');
   if(b)b.className='acc-body'+(staffOpen?' open':'');
   if(a)a.className='acc-arrow'+(staffOpen?' open':'');
-};
-window.pickSvc=function(f,id){st[f]=id;render();};
-window.pickDur=function(f,id){st[f]=id;render();};
-window.pickStf=function(id){
-  if(!st.dual){st.stf1=id;st.slot=null;}
-  else{
-    if(st.stf1===id||st.stf2===id){render();return;}
-    if(st.stf1==='any'){st.stf1=id;}
-    else if(st.stf2==='any'){st.stf2=id;}
-    else{st.stf1=id;}
-    st.slot=null;
-  }
-  staffOpen=false;render();
 };
 window.pickDay=function(k){st.day=k;st.slot=null;renderCalOnly();renderSumOnly();};
 window.pickSlot=function(s){st.slot=s;renderCalOnly();renderSumOnly();};
@@ -295,38 +393,78 @@ window.selectCountry=function(code){
 };
 window.filterDrop=function(val){dropSearch=val;renderPhoneOnly();};
 
-function mkSvcCards(field){
+// ── Hilfsfunktion: CSS-Klasse für Split-Anzeige ─────────────
+function selClass(val1,val2,id,isDual){
+  if(!isDual)return val1===id?'sel1only':'';
+  var in1=val1===id,in2=val2===id;
+  if(in1&&in2)return'selboth';
+  if(in1)return'sel1only';
+  if(in2)return'sel2only';
+  return'';
+}
+
+function mkSvcCards(){
   return SVCS.map(function(s){
-    var sel1=st.svc1===s.id,sel2=st.svc2===s.id;
-    var cls=field==='svc1'&&sel1?'s1':field==='svc2'&&sel2?'s2':'';
-    var tags='';
-    if(sel1)tags+='<span class="tag1">① Slot 1</span> ';
-    if(sel2)tags+='<span class="tag2">② Slot 2</span>';
-    return'<div class="svc '+cls+'" onclick="pickSvc(\''+field+'\',\''+s.id+'\')">'
-      +'<div class="svc-n">'+s.name+'</div><div class="svc-d">'+s.desc+'</div>'
+    var cls=selClass(st.svc1,st.svc2,s.id,st.dual);
+    var badges='';
+    if(st.dual){
+      var in1=st.svc1===s.id,in2=st.svc2===s.id;
+      if(in1&&in2)badges='<div class="svc-badges"><span class="sbadge-sm sbadge-1">①</span><span class="sbadge-sm sbadge-2">②</span></div>';
+      else if(in1)badges='<div class="svc-badges"><span class="sbadge-sm sbadge-1">① Slot 1</span></div>';
+      else if(in2)badges='<div class="svc-badges"><span class="sbadge-sm sbadge-2">② Slot 2</span></div>';
+    }
+    // Zeige welcher Slot als nächstes wechselt wenn man einen anderen Service klickt
+    var nextHint='';
+    if(st.dual&&cls!=='selboth'&&(st.svc1!==null||st.svc2!==null)){
+      nextHint='<span class="svc-next">nächster: Slot '+st.nextSvc+'</span>';
+    }
+    return'<div class="svc '+cls+'" onclick="pickSvc(\''+s.id+'\')">'
+      +nextHint
+      +'<div class="svc-inner">'
+      +'<div class="svc-n">'+s.name+'</div>'
+      +'<div class="svc-d">'+s.desc+'</div>'
       +'<div class="svc-p">ab '+s.price+' €</div>'
-      +(tags?'<div style="margin-top:4px">'+tags+'</div>':'')+'</div>';
+      +badges
+      +'</div></div>';
   }).join('');}
 
-function mkDurCards(field,svcId){
-  var svc=fsvc(svcId);
+function mkDurCards(){
+  var svc1=fsvc(st.svc1);
   return DURS.map(function(d){
-    var p=svc?Math.round(svc.price*d.mult):null;
-    return'<div class="dur '+(st[field]===d.id?'sel':'')+'" onclick="pickDur(\''+field+'\',\''+d.id+'\')">'
+    var cls=selClass(st.dur1,st.dur2,d.id,st.dual);
+    var p=svc1?Math.round(svc1.price*d.mult):null;
+    var badges='';
+    if(st.dual){
+      var in1=st.dur1===d.id,in2=st.dur2===d.id;
+      if(in1&&in2)badges='<div style="display:flex;gap:2px;justify-content:center;margin-top:3px;position:relative;z-index:1"><span class="sbadge-sm sbadge-1" style="font-size:9px">①</span><span class="sbadge-sm sbadge-2" style="font-size:9px">②</span></div>';
+      else if(in1)badges='<div style="text-align:center;margin-top:2px;position:relative;z-index:1"><span class="sbadge-sm sbadge-1" style="font-size:9px">①</span></div>';
+      else if(in2)badges='<div style="text-align:center;margin-top:2px;position:relative;z-index:1"><span class="sbadge-sm sbadge-2" style="font-size:9px">②</span></div>';
+    }
+    return'<div class="dur '+cls+'" onclick="pickDur(\''+d.id+'\')">'
+      +'<div class="dur-inner">'
       +'<div class="dur-m">'+d.min+'</div><div class="dur-l">Min</div>'
-      +'<div class="dur-p">'+(p?p+' €':'—')+'</div></div>';
+      +'<div class="dur-p">'+(p?p+' €':'—')+'</div>'
+      +'</div>'
+      +badges
+      +'</div>';
   }).join('');}
 
 function mkStaffGrid(){
   return'<div class="staff-grid">'+STAFF.map(function(p){
-    var isSel1=st.stf1===p.id,isSel2=st.dual&&st.stf2===p.id;
-    var cls=isSel1?'s1':isSel2?'s2':'';
-    var badges=(isSel1?'<span class="sbadge sb1">①</span>':'')+(isSel2?'<span class="sbadge sb2">②</span>':'');
+    var cls=selClass(st.stf1,st.stf2,p.id,st.dual);
+    var in1=st.stf1===p.id,in2=st.dual&&st.stf2===p.id;
+    var badges='<div class="stf-badges">'
+      +(in1?'<span class="sbadge sb1">①</span>':'')
+      +(in2?'<span class="sbadge sb2">②</span>':'')
+      +'</div>';
     var availHtml=p.id==='any'?'':(p.avail?'<div class="stf-av">● Verfügbar</div>':'<div class="stf-na">● Heute belegt</div>');
     return'<div class="stf '+cls+'" onclick="pickStf(\''+p.id+'\')">'
+      +'<div class="stf-inner">'
       +'<div class="av '+(p.gold?'g':'')+'">'+p.ini+'</div>'
-      +'<div style="flex:1;min-width:0"><div class="stf-n">'+p.name+'</div><div class="stf-r">'+p.role+'</div>'+availHtml+'</div>'
-      +'<div style="display:flex;gap:3px">'+badges+'</div></div>';
+      +'<div><div class="stf-n">'+p.name+'</div><div class="stf-r">'+p.role+'</div>'+availHtml+'</div>'
+      +'</div>'
+      +badges
+      +'</div>';
   }).join('')+'</div>';}
 
 function mkCal(){
@@ -354,7 +492,7 @@ function mkCal(){
     +'<div class="cal-grid">'
     +['Mo','Di','Mi','Do','Fr','Sa','So'].map(function(x){return'<div class="cdl">'+x+'</div>';}).join('')
     +days+'</div>'+slotsHtml
-    +(st.dual&&slot2()?'<p class="hint">② startet ca. '+slot2()+' Uhr</p>':'');
+    +(st.dual&&slot2time()?'<p class="hint">② startet ca. '+slot2time()+' Uhr</p>':'');
 }
 
 function mkPhone(){
@@ -392,27 +530,27 @@ function mkSumCard(){
   var dp=st.day?st.day.split('-'):null;
   var dayStr=dp?dp[2]+'. '+new Date(+dp[0],+dp[1],1).toLocaleDateString('de-DE',{month:'short'})+' '+dp[0]:'';
   var tot=total();
-  function row(lbl,val){
-    return'<div class="sumrow"><span class="sl-lbl">'+lbl+'</span><span class="sl-val '+(val?'':'emp')+'">'+(val||'—')+'</span></div>';
-  }
-  var rows=row('① Service',s1?s1.name:null)
-    +row('① Dauer',d1?d1.min+' Min':null)
-    +row('① Team',fname(st.stf1))
-    +row('① Zeit',st.slot?st.slot+' Uhr':null);
+  function row(lbl,val){return'<div class="sumrow"><span class="sl-lbl">'+lbl+'</span><span class="sl-val '+(val?'':'emp')+'">'+(val||'—')+'</span></div>';}
+
+  var rows='';
   if(st.dual){
-    rows+='<div style="border-top:1px dashed #e8e0f0;margin:2px 0"></div>';
-    rows+=row('② Service',s2?s2.name:null)
-      +row('② Dauer',d2?d2.min+' Min':null)
-      +row('② Team',fname(st.stf2))
-      +row('② Zeit',slot2()?slot2()+' Uhr':null);
+    // Wenn beide gleich: kombiniert anzeigen
+    rows+=row('Service',s1?s1.name+(s2&&s2.id!==s1.id?' / '+s2.name:''):null);
+    rows+=row('Dauer',d1?d1.min+' Min'+(d2&&d2.id!==d1.id?' / '+d2.min+' Min':''):null);
+    rows+=row('Team',fname(st.stf1)+(st.stf2&&st.stf2!==st.stf1?' / '+fname(st.stf2):''));
+    rows+=row('① Zeit',st.slot?st.slot+' Uhr':null);
+    rows+=row('② Zeit',slot2time()?slot2time()+' Uhr':null);
+  } else {
+    rows+=row('Service',s1?s1.name:null);
+    rows+=row('Dauer',d1?d1.min+' Min':null);
+    rows+=row('Team',fname(st.stf1));
+    rows+=row('Zeit',st.slot?st.slot+' Uhr':null);
   }
   rows+=row('Datum',dayStr||null);
 
   return'<div class="sumcard">'
-    +'<div class="sum-hdr">'
-    +'<div class="sum-hdr-t">Buchungsübersicht</div>'
-    +'<div class="sum-hdr-p">'+(tot!==null?tot+' €':'—')+'</div>'
-    +'</div>'
+    +'<div class="sum-hdr"><div class="sum-hdr-t">Buchungsübersicht</div>'
+    +'<div class="sum-hdr-p">'+(tot!==null?tot+' €':'—')+'</div></div>'
     +rows
     +'<div class="contact-block">'
     +'<div class="contact-ttl">Kontaktdaten</div>'
@@ -421,54 +559,36 @@ function mkSumCard(){
     +'<div class="field"><label>Mobilnummer *</label>'
     +'<div id="phone-outer">'+mkPhone()+'</div></div>'
     +'<p class="hint">* Pflichtfelder · Bestätigung per SMS</p>'
-    +'</div>'
-    +'</div>'
+    +'</div></div>'
     +'<button class="book-btn" '+(canBook()?'':'disabled')+' onclick="submitBooking()">Termin buchen →</button>';
 }
 
-function renderCalOnly(){
-  var el=document.getElementById('cal-inner');
-  if(el)el.innerHTML=mkCal();
-}
-function renderPhoneOnly(){
-  var el=document.getElementById('phone-outer');
-  if(el)el.innerHTML=mkPhone();
-}
-function renderSumOnly(){
-  var el=document.getElementById('sum-col');
-  if(el)el.innerHTML=mkSumCard();
-}
+function renderCalOnly(){var el=document.getElementById('cal-inner');if(el)el.innerHTML=mkCal();}
+function renderPhoneOnly(){var el=document.getElementById('phone-outer');if(el)el.innerHTML=mkPhone();}
+function renderSumOnly(){var el=document.getElementById('sum-col');if(el)el.innerHTML=mkSumCard();}
 
 function render(){
-  var s1=fsvc(st.svc1),s2=fsvc(st.svc2);
   var stfLabel=st.dual
-    ?(fname(st.stf1)||'—')+' / '+(fname(st.stf2)||'—')
-    :fname(st.stf1)||'Noch nicht gewählt';
-
-  var svcBlock='<div class="dual-tog '+(st.dual?'on':'')+'" onclick="toggleDual()">'
-    +'<div class="tog-box">'+(st.dual?'<svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="10 3 5 9 2 6"/></svg>':'')+'</div>'
-    +'<div><div class="tog-lbl">Doppeltermin</div><div class="tog-sub">Zwei Services auf einmal buchen</div></div></div>';
-  if(st.dual){
-    svcBlock+='<div class="sec-hdr"><div class="bigbadge" style="background:var(--tp);color:#fff">1</div><div class="sec-hdr-t">Erster Service</div></div>'
-      +'<div class="svc-grid" style="margin-bottom:10px">'+mkSvcCards('svc1')+'</div>'
-      +'<hr class="divider">'
-      +'<div class="sec-hdr"><div class="bigbadge" style="background:var(--tg);color:var(--td)">2</div><div class="sec-hdr-t">Zweiter Service</div></div>'
-      +'<div class="svc-grid">'+mkSvcCards('svc2')+'</div>';
-  }else{
-    svcBlock+='<div class="svc-grid">'+mkSvcCards('svc1')+'</div>';
-  }
-
-  var durBlock=st.dual
-    ?'<div class="sec-hdr"><div class="bigbadge" style="background:var(--tp);color:#fff">1</div><div class="sec-hdr-t">'+(s1?s1.name:'Slot 1')+'</div></div>'
-      +'<div class="dur-row" style="margin-bottom:10px">'+mkDurCards('dur1',st.svc1)+'</div>'
-      +'<hr class="divider">'
-      +'<div class="sec-hdr"><div class="bigbadge" style="background:var(--tg);color:var(--td)">2</div><div class="sec-hdr-t">'+(s2?s2.name:'Slot 2')+'</div></div>'
-      +'<div class="dur-row">'+mkDurCards('dur2',st.svc2)+'</div>'
-    :'<div class="dur-row">'+mkDurCards('dur1',st.svc1)+'</div>';
+    ?(fname(st.stf1))+(st.stf2&&st.stf2!==st.stf1?' / '+fname(st.stf2):'')
+    :fname(st.stf1);
 
   document.getElementById('app').innerHTML=
-    '<div class="card"><div class="ctitle"><span class="cnum">1</span>Service</div>'+svcBlock+'</div>'
-    +'<div class="card"><div class="ctitle"><span class="cnum">2</span>Dauer</div>'+durBlock+'</div>'
+    // 1. Service
+    '<div class="card">'
+      +'<div class="ctitle"><span class="cnum">1</span>Service</div>'
+      +'<div class="dual-tog '+(st.dual?'on':'')+'" onclick="toggleDual()">'
+        +'<div class="tog-box">'+(st.dual?'<svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="10 3 5 9 2 6"/></svg>':'')+'</div>'
+        +'<div><div class="tog-lbl">Doppeltermin</div><div class="tog-sub">Zwei Services auf einmal buchen</div></div>'
+      +'</div>'
+      +'<div class="svc-grid">'+mkSvcCards()+'</div>'
+    +'</div>'
+
+    // 2. Dauer
+    +'<div class="card"><div class="ctitle"><span class="cnum">2</span>Dauer</div>'
+      +'<div class="dur-row">'+mkDurCards()+'</div>'
+    +'</div>'
+
+    // 3. Mitarbeiter Akkordion
     +'<div class="card">'
       +'<div class="acc-hdr" onclick="toggleStaff()">'
         +'<div class="acc-hdr-left">'
@@ -479,10 +599,12 @@ function render(){
         +'<span class="acc-arrow '+(staffOpen?'open':'')+'" id="acc-arrow">⌄</span>'
       +'</div>'
       +'<div class="acc-body '+(staffOpen?'open':'')+'" id="acc-body">'
-        +(st.dual?'<p class="hint" style="margin-bottom:8px">① tippen, dann ② tippen</p>':'')
+        +(st.dual?'<p class="hint" style="margin-bottom:8px">Klick = beide · Nochmal klicken wechselt abwechselnd</p>':'')
         +mkStaffGrid()
       +'</div>'
     +'</div>'
+
+    // 4. Datum + Übersicht nebeneinander
     +'<div class="card"><div class="ctitle"><span class="cnum">4</span>Datum & Uhrzeit</div>'
       +'<div class="cal-sum-row">'
         +'<div id="cal-inner">'+mkCal()+'</div>'
@@ -496,20 +618,20 @@ function render(){
 }
 
 window.submitBooking=function(){
-  var s1=fsvc(st.svc1),s2=st.dual?fsvc(st.svc2):null;
+  var s1=fsvc(st.svc1),s2=st.dual&&st.svc2&&st.svc2!==st.svc1?fsvc(st.svc2):null;
   var dp=st.day?st.day.split('-'):null;
   var dayStr=dp?dp[2]+'. '+new Date(+dp[0],+dp[1],1).toLocaleDateString('de-DE',{month:'short'})+' '+dp[0]:'';
   document.getElementById('app').innerHTML='<div class="conf">'
     +'<div class="conf-cc"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>'
     +'<div class="conf-t">Buchung eingegangen!</div>'
-    +'<p class="conf-s">Bestätigung per SMS an <strong style="color:#fff">'+normPhone(st.phone)+'</strong><br>Wir freuen uns auf deinen Besuch!</p>'
-    +'<div><span class="cpill">① '+(s1?s1.name:'')+'</span>'
-    +(s2?'<span class="cpill">② '+s2.name+'</span>':'')
+    +'<p class="conf-s">Bestätigung per SMS an <strong style="color:#fff">'+normPhone(st.phone)+'</strong></p>'
+    +'<div><span class="cpill">'+(s1?s1.name:'')+(s2?' + '+s2.name:'')+'</span>'
     +'<span class="cpill g">'+(st.slot||'')+' Uhr · '+dayStr+'</span></div>'
     +'<button class="reset-btn" onclick="resetAll()">Neuen Termin buchen</button></div>';
 };
 window.resetAll=function(){
-  st={dual:false,svc1:null,svc2:null,dur1:null,dur2:null,stf1:'any',stf2:'any',day:null,slot:null,name:'',phone:'',country:COUNTRIES[0]};
+  st={dual:false,svc1:null,svc2:null,dur1:null,dur2:null,stf1:'any',stf2:'any',
+    day:null,slot:null,name:'',phone:'',country:COUNTRIES[0],nextSvc:1,nextDur:1,nextStf:1};
   calOff=0;staffOpen=false;dropOpen=false;render();
 };
 render();
