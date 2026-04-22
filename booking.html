@@ -685,11 +685,10 @@ render();
         data.telefonnummer ||
         '';
 
-      const salonAddress =
-        data.adresse ||
-        data.address ||
-        data.anschrift ||
-        '';
+      const salonAddress = [
+  [data.strasse, data.hausnummer].filter(Boolean).join(' '),
+  [data.plz, data.ort].filter(Boolean).join(' ')
+].filter(Boolean).join(', ');
 
       const nameEl = document.getElementById('salon-name');
       const phoneEl = document.getElementById('salon-phone');
