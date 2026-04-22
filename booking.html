@@ -673,11 +673,9 @@ render();
       console.log('Salon Profil:', data);
 
       const salonName =
-        data.name ||
-        data.salon_name ||
-        data.unternehmensname ||
-        data.business_name ||
-        '';
+  data.brand_name ||
+  data.name ||
+  '';
 
       const salonPhone =
         data.telefon ||
@@ -686,7 +684,7 @@ render();
         '';
 
       const salonAddress = [
-  [data.strasse, data.hausnummer].filter(Boolean).join(' '),
+  [data.street, data.hausnummer].filter(Boolean).join(' '),
   [data.plz, data.ort].filter(Boolean).join(' ')
 ].filter(Boolean).join(', ');
 
