@@ -684,8 +684,8 @@ render();
         '';
 
       const salonAddress = [
-  [data.street, data.hausnummer].filter(Boolean).join(' '),
-  [data.plz, data.ort].filter(Boolean).join(' ')
+  [data.street, data.house_number].filter(Boolean).join(' '),
+  [data.postal_code, data.city].filter(Boolean).join(' ')
 ].filter(Boolean).join(', ');
 
       const nameEl = document.getElementById('salon-name');
