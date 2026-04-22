@@ -174,23 +174,27 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 <div class="hd">
   <div class="hd-inner">
     <div>
-      
-      <div class="hd-logo" id="brand-name">Insy Reception</div>
-<div class="hd-name" id="salon-name">Salonname</div>
+      <div class="hd-logo" id="brand-name">INSY RECEPTION</div>
+      <div class="hd-name" id="salon-name">Salonname</div>
 
-<div class="hd-meta">
-  <div class="hd-chip" id="salon-address">
-    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-    Adresse
-  </div>
-  <div class="hd-chip" id="salon-phone">
-    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.79 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-    Telefonnummer
-  </div>
-</div>
-      
+      <div class="hd-meta">
+        <div class="hd-chip" id="salon-address">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          Adresse
+        </div>
+
+        <div class="hd-chip" id="salon-phone">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.79 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+          </svg>
+          Telefonnummer
+        </div>
       </div>
     </div>
+
     <div class="hd-right">
       <div class="hd-open"><div class="hd-open-dot"></div>Heute geöffnet</div>
       <div class="hd-hours-pill" id="hours-pill" onclick="toggleHours()">
@@ -211,439 +215,12 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 
 <div class="wrap" id="app"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-var hoursOpen=false;
-window.toggleHours=function(){
-  hoursOpen=!hoursOpen;
-  document.getElementById('hours-drop').style.display=hoursOpen?'block':'none';
-};
-document.addEventListener('click',function(e){
-  if(hoursOpen&&!e.target.closest('#hours-pill')){
-    hoursOpen=false;
-    var d=document.getElementById('hours-drop');
-    if(d)d.style.display='none';
-  }
-});
-
-var SVCS=[
-  {id:'s1',name:'Klassische Massage',desc:'Entspannung & Verspannungen',price:65},
-  {id:'s2',name:'Hot-Stone Massage',desc:'Tiefenwärme & Vulkansteine',price:85},
-  {id:'s3',name:'Maniküre & Nail-Art',desc:'Pflege, Form & Designs',price:45},
-  {id:'s4',name:'Gesichtsbehandlung',desc:'Reinigung & Peeling',price:70},
-  {id:'s5',name:'Pediküre',desc:'Fußpflege & Lackierung',price:40},
-  {id:'s6',name:'Aromatherapie',desc:'Ätherische Öle & Entspannung',price:75},
-];
-var DURS=[{id:'d1',min:30,mult:.5},{id:'d2',min:60,mult:1},{id:'d3',min:90,mult:1.5},{id:'d4',min:120,mult:2}];
-var STAFF=[
-  {id:'any',name:'Ohne Präferenz',role:'Nächste verfügbare Person',ini:'?',gold:true,avail:true},
-  {id:'p1',name:'Niran T.',role:'Wellness-Therapeutin',ini:'NT',avail:true},
-  {id:'p2',name:'Arisa K.',role:'Nail-Artistin',ini:'AK',avail:true},
-  {id:'p3',name:'Piyada M.',role:'Massagetherapeutin',ini:'PM',avail:false},
-  {id:'p4',name:'Somsak W.',role:'Spa-Spezialist',ini:'SW',avail:true},
-];
-var COUNTRIES=[
-  {code:'DE',flag:'🇩🇪',name:'Deutschland',dial:'+49',re:/^(\+49|0049|0)?1[5-7]\d{8,9}$/},
-  {code:'AT',flag:'🇦🇹',name:'Österreich',dial:'+43',re:/^(\+43|0043|0)?6\d{8,12}$/},
-  {code:'CH',flag:'🇨🇭',name:'Schweiz',dial:'+41',re:/^(\+41|0041|0)?7[5-9]\d{7}$/},
-  {code:'TR',flag:'🇹🇷',name:'Türkei',dial:'+90',re:/^(\+90|0090|0)?5\d{9}$/},
-  {code:'GB',flag:'🇬🇧',name:'Großbritannien',dial:'+44',re:/^(\+44|0044|0)?7\d{9}$/},
-  {code:'NL',flag:'🇳🇱',name:'Niederlande',dial:'+31',re:/^(\+31|0031|0)?6\d{8}$/},
-];
-var BASE_SLOTS=['09:00','09:30','10:00','10:30','11:00','11:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00'];
-var BUSY={'10:30':1,'13:00':1,'15:30':1};
-var STAFF_BUSY={p1:{'09:30':1,'14:00':1},p2:{'11:00':1,'13:30':1},p3:{'10:00':1,'15:00':1},p4:{'09:00':1,'11:30':1}};
-
-// State
-// svc1/svc2: welcher Service für Slot 1 und 2
-// nextSlot: welcher Slot als nächstes beim Klick geändert wird (1 oder 2)
-var st={
-  dual:false,
-  svc1:null,svc2:null,
-  dur1:null,dur2:null,
-  stf1:'any',stf2:'any',
-  day:null,slot:null,
-  name:'',phone:'',country:COUNTRIES[0],
-  nextSvc:1, nextDur:1, nextStf:1
-};
-var calOff=0,staffOpen=false,dropOpen=false,dropSearch='';
-
-function fsvc(id){return SVCS.filter(function(x){return x.id===id;})[0]||null;}
-function fdur(id){return DURS.filter(function(x){return x.id===id;})[0]||null;}
-function fname(id){if(!id||id==='any')return'Ohne Präferenz';var f=STAFF.filter(function(x){return x.id===id;})[0];return f?f.name:null;}
-
-function availSlots(){
-  var b1=st.stf1&&STAFF_BUSY[st.stf1]?STAFF_BUSY[st.stf1]:{};
-  var b2=st.dual&&st.stf2&&STAFF_BUSY[st.stf2]?STAFF_BUSY[st.stf2]:{};
-  return BASE_SLOTS.map(function(s){return{time:s,busy:!!(BUSY[s]||b1[s]||b2[s])};});
-}
-
-function p1(){var s=fsvc(st.svc1),d=fdur(st.dur1);return s&&d?Math.round(s.price*d.mult):null;}
-function p2(){var s=fsvc(st.svc2),d=fdur(st.dur2);return s&&d?Math.round(s.price*d.mult):null;}
-function total(){var a=p1(),b=p2();if(!a)return null;return st.dual&&b?a+b:a;}
-function slot2time(){
-  if(!st.slot||!st.dur1)return null;
-  var d=fdur(st.dur1);if(!d)return null;
-  var pts=st.slot.split(':'),mins=parseInt(pts[0])*60+parseInt(pts[1])+d.min;
-  return('0'+Math.floor(mins/60)).slice(-2)+':'+('0'+(mins%60)).slice(-2);
-}
-function normPhone(raw){
-  var c=raw.replace(/[\s\-\(\)]/g,'');
-  if(c.startsWith('0')&&!c.startsWith('00'))c=st.country.dial+c.slice(1);
-  if(!c.startsWith('+'))c=st.country.dial+c;
-  return c;
-}
-function phoneStatus(){
-  if(!st.phone.trim())return'empty';
-  return st.country.re.test(normPhone(st.phone))?'ok':'err';
-}
-function canBook(){
-  if(!st.svc1||!st.dur1||!st.day||!st.slot||!st.name.trim()||phoneStatus()!=='ok')return false;
-  if(st.dual&&(!st.svc2||!st.dur2))return false;
-  return true;
-}
-function getCalData(){
-  var now=new Date();
-  var base=new Date(now.getFullYear(),now.getMonth()+calOff,1);
-  return{base:base,firstDow:(base.getDay()+6)%7,dim:new Date(base.getFullYear(),base.getMonth()+1,0).getDate(),now:now};
-}
-
-// ── Kern-Logik: Klick auf Service im Dual-Modus ──────────────
-// Beim ersten Klick: beide bekommen denselben Service → Split-Anzeige
-// Beim Klick auf anderen Service: wechselt abwechselnd Slot 1 oder Slot 2
-window.pickSvc=function(id){
-  if(!st.dual){
-    st.svc1=id;render();return;
-  }
-  if(st.svc1===id&&st.svc2===id){
-    // Beide haben schon diesen Service — kein Wechsel nötig
-    render();return;
-  }
-  if(st.svc1===null&&st.svc2===null){
-    // Erster Klick: beide bekommen diesen Service
-    st.svc1=id;st.svc2=id;st.nextSvc=1;
-  } else if(st.svc1===id||st.svc2===id){
-    // Nochmal auf einen bereits gewählten Service klicken
-    // → den anderen Slot auch auf diesen setzen (beide gleich)
-    st.svc1=id;st.svc2=id;st.nextSvc=1;
-  } else {
-    // Anderer Service: wechselt abwechselnd
-    if(st.nextSvc===1){st.svc1=id;st.nextSvc=2;}
-    else{st.svc2=id;st.nextSvc=1;}
-  }
-  render();
-};
-
-window.pickDur=function(id){
-  if(!st.dual){
-    st.dur1=id;render();return;
-  }
-  if(st.dur1===id&&st.dur2===id){render();return;}
-  if(st.dur1===null&&st.dur2===null){
-    st.dur1=id;st.dur2=id;st.nextDur=1;
-  } else if(st.dur1===id||st.dur2===id){
-    st.dur1=id;st.dur2=id;st.nextDur=1;
-  } else {
-    if(st.nextDur===1){st.dur1=id;st.nextDur=2;}
-    else{st.dur2=id;st.nextDur=1;}
-  }
-  render();
-};
-
-window.pickStf=function(id){
-  if(!st.dual){
-    st.stf1=id;st.slot=null;staffOpen=false;render();return;
-  }
-  if(st.stf1===id&&st.stf2===id){staffOpen=false;render();return;}
-  if(st.stf1==='any'&&st.stf2==='any'){
-    st.stf1=id;st.stf2=id;st.nextStf=1;
-  } else if(st.stf1===id||st.stf2===id){
-    st.stf1=id;st.stf2=id;st.nextStf=1;
-  } else {
-    if(st.nextStf===1){st.stf1=id;st.nextStf=2;}
-    else{st.stf2=id;st.nextStf=1;}
-  }
-  st.slot=null;staffOpen=false;render();
-};
-
-window.toggleDual=function(){
-  st.dual=!st.dual;
-  if(!st.dual){
-    // Zurück zu Einfach: svc2/dur2/stf2 werden gelöscht
-    st.svc2=null;st.dur2=null;st.stf2='any';
-    st.nextSvc=1;st.nextDur=1;st.nextStf=1;
-  } else {
-    // Dual aktiviert: beide starten gleich wie Slot 1
-    st.svc2=st.svc1;st.dur2=st.dur1;st.stf2=st.stf1;
-    st.nextSvc=1;st.nextDur=1;st.nextStf=1;
-  }
-  render();
-};
-
-window.toggleStaff=function(){
-  staffOpen=!staffOpen;
-  var b=document.getElementById('acc-body');
-  var a=document.getElementById('acc-arrow');
-  if(b)b.className='acc-body'+(staffOpen?' open':'');
-  if(a)a.className='acc-arrow'+(staffOpen?' open':'');
-};
-window.pickDay=function(k){st.day=k;st.slot=null;renderCalOnly();renderSumOnly();};
-window.pickSlot=function(s){st.slot=s;renderCalOnly();renderSumOnly();};
-window.calPrev=function(){calOff--;render();};
-window.calNext=function(){calOff++;render();};
-window.toggleDrop=function(e){e&&e.stopPropagation();dropOpen=!dropOpen;dropSearch='';renderPhoneOnly();};
-window.selectCountry=function(code){
-  var c=COUNTRIES.filter(function(x){return x.code===code;})[0];
-  if(c){st.country=c;dropOpen=false;}renderPhoneOnly();renderSumOnly();
-};
-window.filterDrop=function(val){dropSearch=val;renderPhoneOnly();};
-
-// ── Hilfsfunktion: CSS-Klasse für Split-Anzeige ─────────────
-function selClass(val1,val2,id,isDual){
-  if(!isDual)return val1===id?'sel1only':'';
-  var in1=val1===id,in2=val2===id;
-  if(in1&&in2)return'selboth';
-  if(in1)return'sel1only';
-  if(in2)return'sel2only';
-  return'';
-}
-
-function mkSvcCards(){
-  return SVCS.map(function(s){
-    var cls=selClass(st.svc1,st.svc2,s.id,st.dual);
-    var badges='';
-    if(st.dual){
-      var in1=st.svc1===s.id,in2=st.svc2===s.id;
-      if(in1&&in2)badges='<div class="svc-badges"><span class="sbadge-sm sbadge-1">①</span><span class="sbadge-sm sbadge-2">②</span></div>';
-      else if(in1)badges='<div class="svc-badges"><span class="sbadge-sm sbadge-1">① Slot 1</span></div>';
-      else if(in2)badges='<div class="svc-badges"><span class="sbadge-sm sbadge-2">② Slot 2</span></div>';
-    }
-    // Zeige welcher Slot als nächstes wechselt wenn man einen anderen Service klickt
-    var nextHint='';
-    if(st.dual&&cls!=='selboth'&&(st.svc1!==null||st.svc2!==null)){
-      nextHint='<span class="svc-next">nächster: Slot '+st.nextSvc+'</span>';
-    }
-    return'<div class="svc '+cls+'" onclick="pickSvc(\''+s.id+'\')">'
-      +nextHint
-      +'<div class="svc-inner">'
-      +'<div class="svc-n">'+s.name+'</div>'
-      +'<div class="svc-d">'+s.desc+'</div>'
-      +'<div class="svc-p">ab '+s.price+' €</div>'
-      +badges
-      +'</div></div>';
-  }).join('');}
-
-function mkDurCards(){
-  var svc1=fsvc(st.svc1);
-  return DURS.map(function(d){
-    var cls=selClass(st.dur1,st.dur2,d.id,st.dual);
-    var p=svc1?Math.round(svc1.price*d.mult):null;
-    var badges='';
-    if(st.dual){
-      var in1=st.dur1===d.id,in2=st.dur2===d.id;
-      if(in1&&in2)badges='<div style="display:flex;gap:2px;justify-content:center;margin-top:3px;position:relative;z-index:1"><span class="sbadge-sm sbadge-1" style="font-size:9px">①</span><span class="sbadge-sm sbadge-2" style="font-size:9px">②</span></div>';
-      else if(in1)badges='<div style="text-align:center;margin-top:2px;position:relative;z-index:1"><span class="sbadge-sm sbadge-1" style="font-size:9px">①</span></div>';
-      else if(in2)badges='<div style="text-align:center;margin-top:2px;position:relative;z-index:1"><span class="sbadge-sm sbadge-2" style="font-size:9px">②</span></div>';
-    }
-    return'<div class="dur '+cls+'" onclick="pickDur(\''+d.id+'\')">'
-      +'<div class="dur-inner">'
-      +'<div class="dur-m">'+d.min+'</div><div class="dur-l">Min</div>'
-      +'<div class="dur-p">'+(p?p+' €':'—')+'</div>'
-      +'</div>'
-      +badges
-      +'</div>';
-  }).join('');}
-
-function mkStaffGrid(){
-  return'<div class="staff-grid">'+STAFF.map(function(p){
-    var cls=selClass(st.stf1,st.stf2,p.id,st.dual);
-    var in1=st.stf1===p.id,in2=st.dual&&st.stf2===p.id;
-    var badges='<div class="stf-badges">'
-      +(in1?'<span class="sbadge sb1">①</span>':'')
-      +(in2?'<span class="sbadge sb2">②</span>':'')
-      +'</div>';
-    var availHtml=p.id==='any'?'':(p.avail?'<div class="stf-av">● Verfügbar</div>':'<div class="stf-na">● Heute belegt</div>');
-    return'<div class="stf '+cls+'" onclick="pickStf(\''+p.id+'\')">'
-      +'<div class="stf-inner">'
-      +'<div class="av '+(p.gold?'g':'')+'">'+p.ini+'</div>'
-      +'<div><div class="stf-n">'+p.name+'</div><div class="stf-r">'+p.role+'</div>'+availHtml+'</div>'
-      +'</div>'
-      +badges
-      +'</div>';
-  }).join('')+'</div>';}
-
-function mkCal(){
-  var cd=getCalData();
-  var mo=cd.base.toLocaleDateString('de-DE',{month:'long',year:'numeric'});
-  var days='<div class="cd ce"></div>'.repeat(cd.firstDow);
-  for(var d=1;d<=cd.dim;d++){
-    var isPast=calOff<0||(calOff===0&&d<cd.now.getDate());
-    var isToday=calOff===0&&d===cd.now.getDate();
-    var key=cd.base.getFullYear()+'-'+cd.base.getMonth()+'-'+d;
-    var isSel=st.day===key;
-    days+='<div class="cd '+(isPast?'cp':'')+' '+(isToday&&!isSel?'ct':'')+' '+(isSel?'cs':'')+'" onclick="pickDay(\''+key+'\')">'+d+'</div>';
-  }
-  var slots=availSlots();
-  var slotsHtml=st.day
-    ?'<div class="slot-lbl">Verfügbare Zeiten'+(st.stf1&&st.stf1!=='any'?' — '+fname(st.stf1):'')+'</div>'
-      +'<div class="slots">'+slots.map(function(s){
-        return'<div class="sl '+(s.busy?'sb':'')+' '+(st.slot===s.time?'ss':'')+'" onclick="'+(s.busy?'':'pickSlot(\''+s.time+'\')')+'">'
-          +s.time+(s.busy?'<br><span style="font-size:8px">belegt</span>':'')+'</div>';
-      }).join('')+'</div>'
-    :'<div style="font-size:11px;color:#7a6a8a;padding:5px 0">Wähle zuerst ein Datum</div>';
-  return'<div class="cal-hdr"><button class="cal-nav" onclick="calPrev()">&#8249;</button>'
-    +'<span class="cal-mo">'+mo+'</span>'
-    +'<button class="cal-nav" onclick="calNext()">&#8250;</button></div>'
-    +'<div class="cal-grid">'
-    +['Mo','Di','Mi','Do','Fr','Sa','So'].map(function(x){return'<div class="cdl">'+x+'</div>';}).join('')
-    +days+'</div>'+slotsHtml
-    +(st.dual&&slot2time()?'<p class="hint">② startet ca. '+slot2time()+' Uhr</p>':'');
-}
-
-function mkPhone(){
-  var raw=st.phone||'';
-  var status=raw.trim()?phoneStatus():'empty';
-  var wCls=raw.trim()?(status==='ok'?'ok':'err'):'';
-  var filtered=COUNTRIES.filter(function(c){
-    return!dropSearch||c.name.toLowerCase().indexOf(dropSearch.toLowerCase())>=0||c.dial.indexOf(dropSearch)>=0;
-  });
-  var drop=dropOpen?'<div class="country-drop" onclick="event.stopPropagation()">'
-    +'<div class="country-search"><input type="text" placeholder="Land suchen…" value="'+dropSearch+'" oninput="filterDrop(this.value)" autofocus></div>'
-    +'<div class="country-list">'+filtered.map(function(c){
-      return'<div class="country-item '+(c.code===st.country.code?'sel':'')+'" onclick="selectCountry(\''+c.code+'\')">'
-        +'<span style="font-size:14px">'+c.flag+'</span><span>'+c.name+'</span>'
-        +'<span style="margin-left:auto;font-size:11px;color:#7a6a8a">'+c.dial+'</span></div>';
-    }).join('')+'</div></div>':'';
-  var statusMsg=raw.trim()?(status==='ok'
-    ?'<div class="phone-status ok">Gültige Mobilnummer</div>'
-    :'<div class="phone-status err">Ungültige Nummer für '+st.country.name+'</div>')
-    :'<div class="phone-status hint">z.B. 0151 12345678</div>';
-  return'<div style="position:relative">'
-    +'<div class="phone-wrap '+wCls+'">'
-    +'<div class="phone-country" onclick="toggleDrop(event)">'
-    +'<span style="font-size:14px">'+st.country.flag+'</span>'
-    +'<span class="phone-dial">'+st.country.dial+'</span>'
-    +'<span style="font-size:9px;color:#7a6a8a">▾</span>'
-    +drop+'</div>'
-    +'<input class="phone-input" type="tel" placeholder="0151 12345678" value="'+raw+'" oninput="st.phone=this.value;renderPhoneOnly();renderSumOnly()">'
-    +'</div>'+statusMsg+'</div>';
-}
-
-function mkSumCard(){
-  var s1=fsvc(st.svc1),s2=fsvc(st.svc2);
-  var d1=fdur(st.dur1),d2=fdur(st.dur2);
-  var dp=st.day?st.day.split('-'):null;
-  var dayStr=dp?dp[2]+'. '+new Date(+dp[0],+dp[1],1).toLocaleDateString('de-DE',{month:'short'})+' '+dp[0]:'';
-  var tot=total();
-  function row(lbl,val){return'<div class="sumrow"><span class="sl-lbl">'+lbl+'</span><span class="sl-val '+(val?'':'emp')+'">'+(val||'—')+'</span></div>';}
-
-  var rows='';
-  if(st.dual){
-    // Wenn beide gleich: kombiniert anzeigen
-    rows+=row('Service',s1?s1.name+(s2&&s2.id!==s1.id?' / '+s2.name:''):null);
-    rows+=row('Dauer',d1?d1.min+' Min'+(d2&&d2.id!==d1.id?' / '+d2.min+' Min':''):null);
-    rows+=row('Team',fname(st.stf1)+(st.stf2&&st.stf2!==st.stf1?' / '+fname(st.stf2):''));
-    rows+=row('① Zeit',st.slot?st.slot+' Uhr':null);
-    rows+=row('② Zeit',slot2time()?slot2time()+' Uhr':null);
-  } else {
-    rows+=row('Service',s1?s1.name:null);
-    rows+=row('Dauer',d1?d1.min+' Min':null);
-    rows+=row('Team',fname(st.stf1));
-    rows+=row('Zeit',st.slot?st.slot+' Uhr':null);
-  }
-  rows+=row('Datum',dayStr||null);
-
-  return'<div class="sumcard">'
-    +'<div class="sum-hdr"><div class="sum-hdr-t">Buchungsübersicht</div>'
-    +'<div class="sum-hdr-p">'+(tot!==null?tot+' €':'—')+'</div></div>'
-    +rows
-    +'<div class="contact-block">'
-    +'<div class="contact-ttl">Kontaktdaten</div>'
-    +'<div class="field"><label>Name *</label>'
-    +'<input type="text" placeholder="Lena Müller" value="'+st.name+'" oninput="st.name=this.value;renderSumOnly()"></div>'
-    +'<div class="field"><label>Mobilnummer *</label>'
-    +'<div id="phone-outer">'+mkPhone()+'</div></div>'
-    +'<p class="hint">* Pflichtfelder · Bestätigung per SMS</p>'
-    +'</div></div>'
-    +'<button class="book-btn" '+(canBook()?'':'disabled')+' onclick="submitBooking()">Termin buchen →</button>';
-}
-
-function renderCalOnly(){var el=document.getElementById('cal-inner');if(el)el.innerHTML=mkCal();}
-function renderPhoneOnly(){var el=document.getElementById('phone-outer');if(el)el.innerHTML=mkPhone();}
-function renderSumOnly(){var el=document.getElementById('sum-col');if(el)el.innerHTML=mkSumCard();}
-
-function render(){
-  var stfLabel=st.dual
-    ?(fname(st.stf1))+(st.stf2&&st.stf2!==st.stf1?' / '+fname(st.stf2):'')
-    :fname(st.stf1);
-
-  document.getElementById('app').innerHTML=
-    // 1. Service
-    '<div class="card">'
-      +'<div class="ctitle"><span class="cnum">1</span>Service</div>'
-      +'<div class="dual-tog '+(st.dual?'on':'')+'" onclick="toggleDual()">'
-        +'<div class="tog-box">'+(st.dual?'<svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="10 3 5 9 2 6"/></svg>':'')+'</div>'
-        +'<div><div class="tog-lbl">Doppeltermin</div><div class="tog-sub">Zwei Services auf einmal buchen</div></div>'
-      +'</div>'
-      +'<div class="svc-grid">'+mkSvcCards()+'</div>'
-    +'</div>'
-
-    // 2. Dauer
-    +'<div class="card"><div class="ctitle"><span class="cnum">2</span>Dauer</div>'
-      +'<div class="dur-row">'+mkDurCards()+'</div>'
-    +'</div>'
-
-    // 3. Mitarbeiter Akkordion
-    +'<div class="card">'
-      +'<div class="acc-hdr" onclick="toggleStaff()">'
-        +'<div class="acc-hdr-left">'
-          +'<span class="cnum">3</span>'
-          +'<span class="acc-title">Mitarbeiter</span>'
-          +'<span class="acc-current">'+stfLabel+'</span>'
-        +'</div>'
-        +'<span class="acc-arrow '+(staffOpen?'open':'')+'" id="acc-arrow">⌄</span>'
-      +'</div>'
-      +'<div class="acc-body '+(staffOpen?'open':'')+'" id="acc-body">'
-        +(st.dual?'<p class="hint" style="margin-bottom:8px">Klick = beide · Nochmal klicken wechselt abwechselnd</p>':'')
-        +mkStaffGrid()
-      +'</div>'
-    +'</div>'
-
-    // 4. Datum + Übersicht nebeneinander
-    +'<div class="card"><div class="ctitle"><span class="cnum">4</span>Datum & Uhrzeit</div>'
-      +'<div class="cal-sum-row">'
-        +'<div id="cal-inner">'+mkCal()+'</div>'
-        +'<div id="sum-col">'+mkSumCard()+'</div>'
-      +'</div>'
-    +'</div>';
-
-  document.addEventListener('click',function(e){
-    if(dropOpen&&!e.target.closest('.phone-country')){dropOpen=false;renderPhoneOnly();}
-  },{once:true});
-}
-
-window.submitBooking=function(){
-  var s1=fsvc(st.svc1),s2=st.dual&&st.svc2&&st.svc2!==st.svc1?fsvc(st.svc2):null;
-  var dp=st.day?st.day.split('-'):null;
-  var dayStr=dp?dp[2]+'. '+new Date(+dp[0],+dp[1],1).toLocaleDateString('de-DE',{month:'short'})+' '+dp[0]:'';
-  document.getElementById('app').innerHTML='<div class="conf">'
-    +'<div class="conf-cc"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>'
-    +'<div class="conf-t">Buchung eingegangen!</div>'
-    +'<p class="conf-s">Bestätigung per SMS an <strong style="color:#fff">'+normPhone(st.phone)+'</strong></p>'
-    +'<div><span class="cpill">'+(s1?s1.name:'')+(s2?' + '+s2.name:'')+'</span>'
-    +'<span class="cpill g">'+(st.slot||'')+' Uhr · '+dayStr+'</span></div>'
-    +'<button class="reset-btn" onclick="resetAll()">Neuen Termin buchen</button></div>';
-};
-window.resetAll=function(){
-  st={dual:false,svc1:null,svc2:null,dur1:null,dur2:null,stf1:'any',stf2:'any',
-    day:null,slot:null,name:'',phone:'',country:COUNTRIES[0],nextSvc:1,nextDur:1,nextStf:1};
-  calOff=0;staffOpen=false;dropOpen=false;render();
-};
-render();
-</script>
-
-  const supabaseUrl = 'https://uzemgxfjgjwqfgfwbboi.supabase.co';
-  const supabaseKey = 'sb_publishable__XubcF5yPDyIMpfE7kO9Rg_Xp7kj0hL';
-  const sb = window.supabase.createClient(supabaseUrl, supabaseKey);
+  const sb = window.supabase.createClient(
+    'https://uzemgxfjgjwqfgfwbboi.supabase.co',
+    'sb_publishable__XubcF5yPDyIMpfE7kO9Rg_Xp7kj0hL'
+  );
 
   function getSalonId() {
     const params = new URLSearchParams(window.location.search);
@@ -672,42 +249,45 @@ render();
 
       console.log('Salon Profil:', data);
 
-      const salonName =
-  data.brand_name ||
-  data.name ||
-  '';
-
-      const salonPhone =
-        data.telefon ||
-        data.phone ||
-        data.telefonnummer ||
-        '';
-
+      const salonName = data.brand_name || data.name || 'Salonname';
+      const salonPhone = data.phone || 'Telefonnummer';
       const salonAddress = [
-  [data.street, data.house_number].filter(Boolean).join(' '),
-  [data.postal_code, data.city].filter(Boolean).join(' ')
-].filter(Boolean).join(', ');
+        [data.street, data.house_number].filter(Boolean).join(' '),
+        [data.postal_code, data.city].filter(Boolean).join(' ')
+      ].filter(Boolean).join(', ') || 'Adresse';
 
+      const brandEl = document.getElementById('brand-name');
       const nameEl = document.getElementById('salon-name');
       const phoneEl = document.getElementById('salon-phone');
       const addressEl = document.getElementById('salon-address');
 
-      if (nameEl) nameEl.textContent = salonName || 'Salonname';
-      if (phoneEl) phoneEl.innerHTML = `
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.79 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-        ${salonPhone || 'Telefonnummer'}
-      `;
-      if (addressEl) addressEl.innerHTML = `
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        ${salonAddress || 'Adresse'}
-      `;
+      if (brandEl) brandEl.textContent = 'INSY RECEPTION';
+      if (nameEl) nameEl.textContent = salonName;
+
+      if (phoneEl) {
+        phoneEl.innerHTML = `
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.79 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+          </svg>
+          ${salonPhone}
+        `;
+      }
+
+      if (addressEl) {
+        addressEl.innerHTML = `
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          ${salonAddress}
+        `;
+      }
     } catch (err) {
       console.error('JS Fehler:', err);
     }
   }
 
   loadSalonProfile();
-  
 </script>
 </body>
 </html>
