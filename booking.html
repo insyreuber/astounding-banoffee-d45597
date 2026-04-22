@@ -646,9 +646,97 @@ const supabaseUrl = 'https://uzemgxfjgjwqfgfwbboi.supabase.co';
 const supabaseKey = 'sb_publishable__XubcF5yPDyIMpfE7kO9Rg_Xp7kj0hL';
 const sb = window.supabase.createClient(supabaseUrl, supabaseKey);
 
+const DAY_ORDER = [
+  'monday',
+  'tuesday',
+  'wednesday',
+  'thursday',
+  'friday',
+  'saturday',
+  'sunday'
+];
+
+const DAY_LABELS = {
+  monday: 'Montag',
+  tuesday: 'Dienstag',
+  wednesday: 'Mittwoch',
+  thursday: 'Donnerstag',
+  friday: 'Freitag',
+  saturday: 'Samstag',
+  sunday: 'Sonntag'
+};
+
 function getSalonId() {
   const params = new URLSearchParams(window.location.search);
   return params.get('salon_id');
+}
+
+function getTodayKey() {
+  const jsDay = new Date().getDay(); // 0=Sonntag
+  const map = {
+    0: 'sunday',
+    1: 'monday',
+    2: 'tuesday',
+    3: 'wednesday',
+    4: 'thursday',
+    5: 'friday',
+    6: 'saturday'
+  };
+  return map[jsDay];
+}
+
+function formatHours(dayData) {
+  if (!dayData) return '—';
+  if (!dayData.aktiv) return 'Geschlossen';
+  return `${dayData.start} – ${dayData.end}`;
+}
+
+function renderWorkingHours(arbeitszeiten) {
+  if (!arbeitszeiten) return;
+
+  const todayKey = getTodayKey();
+  const todayData = arbeitszeiten[todayKey];
+
+  const openEl = document.querySelector('.hd-open');
+  const hoursPillEl = document.getElementById('hours-pill');
+  const hoursDropEl = document.getElementById('hours-drop');
+
+  if (openEl) {
+    const isOpen = !!todayData?.aktiv;
+    openEl.innerHTML = `
+      <div class="hd-open-dot" style="background:${isOpen ? '#7fe8b0' : '#c8bcd8'}"></div>
+      ${isOpen ? 'Heute geöffnet' : 'Heute geschlossen'}
+    `;
+    openEl.style.color = isOpen ? '#7fe8b0' : '#c8bcd8';
+  }
+
+  if (hoursPillEl) {
+    hoursPillEl.innerHTML = `
+      ${formatHours(todayData)} ▾
+      <div class="hd-hours-drop" id="hours-drop"></div>
+    `;
+  }
+
+  const newHoursDropEl = document.getElementById('hours-drop');
+
+  if (newHoursDropEl) {
+    newHoursDropEl.innerHTML = DAY_ORDER.map((dayKey) => {
+      const dayData = arbeitszeiten[dayKey];
+      const isToday = dayKey === todayKey;
+      const isClosed = !dayData?.aktiv;
+
+      let rowClass = 'hd-hour-row';
+      if (isToday) rowClass += ' hd-hour-today';
+      if (isClosed) rowClass += ' hd-hour-closed';
+
+      return `
+        <div class="${rowClass}">
+          <span>${DAY_LABELS[dayKey]}</span>
+          <span>${formatHours(dayData)}</span>
+        </div>
+      `;
+    }).join('');
+  }
 }
 
 async function loadSalonProfile() {
@@ -673,25 +761,27 @@ async function loadSalonProfile() {
 
     console.log('Salon Profil:', data);
 
-    const salonName = data.brand_name || data.name || '';
-    const salonPhone = data.phone || '';
+    const salonName = data.brand_name || data.name || 'Salonname';
+    const salonPhone = data.phone || 'Telefonnummer';
     const salonAddress = [
       [data.street, data.house_number].filter(Boolean).join(' '),
       [data.postal_code, data.city].filter(Boolean).join(' ')
-    ].filter(Boolean).join(', ');
+    ].filter(Boolean).join(', ') || 'Adresse';
 
+    const brandEl = document.getElementById('brand-name');
     const nameEl = document.getElementById('salon-name');
     const phoneEl = document.getElementById('salon-phone');
     const addressEl = document.getElementById('salon-address');
 
-    if (nameEl) nameEl.textContent = salonName || 'Salonname';
+    if (brandEl) brandEl.textContent = 'INSY RECEPTION';
+    if (nameEl) nameEl.textContent = salonName;
 
     if (phoneEl) {
       phoneEl.innerHTML = `
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.79 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.79 0 013.07 9.81 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
         </svg>
-        ${salonPhone || 'Telefonnummer'}
+        ${salonPhone}
       `;
     }
 
@@ -701,9 +791,12 @@ async function loadSalonProfile() {
           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
           <circle cx="12" cy="10" r="3"/>
         </svg>
-        ${salonAddress || 'Adresse'}
+        ${salonAddress}
       `;
     }
+
+    renderWorkingHours(data.arbeitszeiten);
+
   } catch (err) {
     console.error('JS Fehler:', err);
   }
