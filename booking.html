@@ -206,8 +206,80 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 </div>
 
 <div class="wrap" id="app"></div>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+const supabaseUrl = 'https://uzemgxfjgjwqfgfwbboi.supabase.co';
+const supabaseKey = 'sb_publishable__XubcF5yPDyIMpfE7kO9Rg_Xp7kj0hL';
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+function getSalonId() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('salon_id');
+}
+
+async function loadSalonProfile() {
+  const salonId = getSalonId();
+  if (!salonId) {
+    console.warn('Keine salon_id in der URL gefunden.');
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from('kunden_profile')
+    .select('*')
+    .eq('id', salonId)
+    .single();
+
+  if (error) {
+    console.error('Fehler beim Laden des Salon-Profils:', error);
+    return;
+  }
+
+  console.log('Salon Profil geladen:', data);
+
+  const salonName =
+    data.name ||
+    data.salon_name ||
+    data.unternehmensname ||
+    data.business_name ||
+    '';
+
+  const salonPhone =
+    data.telefon ||
+    data.phone ||
+    data.telefonnummer ||
+    '';
+
+  const salonAddress =
+    data.adresse ||
+    data.address ||
+    data.anschrift ||
+    '';
+
+  const nameEl = document.querySelector('.hd-name');
+  if (nameEl) nameEl.textContent = salonName;
+
+  const chips = document.querySelectorAll('.hd-chip');
+  if (chips[0] && salonAddress) {
+    chips[0].innerHTML = `
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+        <circle cx="12" cy="10" r="3"/>
+      </svg>
+      ${salonAddress}
+    `;
+  }
+
+  if (chips[1] && salonPhone) {
+    chips[1].innerHTML = `
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+      </svg>
+      ${salonPhone}
+    `;
+  }
+}
+
 var hoursOpen=false;
 window.toggleHours=function(){
   hoursOpen=!hoursOpen;
@@ -250,8 +322,6 @@ var BUSY={'10:30':1,'13:00':1,'15:30':1};
 var STAFF_BUSY={p1:{'09:30':1,'14:00':1},p2:{'11:00':1,'13:30':1},p3:{'10:00':1,'15:00':1},p4:{'09:00':1,'11:30':1}};
 
 // State
-// svc1/svc2: welcher Service für Slot 1 und 2
-// nextSlot: welcher Slot als nächstes beim Klick geändert wird (1 oder 2)
 var st={
   dual:false,
   svc1:null,svc2:null,
@@ -303,26 +373,18 @@ function getCalData(){
   return{base:base,firstDow:(base.getDay()+6)%7,dim:new Date(base.getFullYear(),base.getMonth()+1,0).getDate(),now:now};
 }
 
-// ── Kern-Logik: Klick auf Service im Dual-Modus ──────────────
-// Beim ersten Klick: beide bekommen denselben Service → Split-Anzeige
-// Beim Klick auf anderen Service: wechselt abwechselnd Slot 1 oder Slot 2
 window.pickSvc=function(id){
   if(!st.dual){
     st.svc1=id;render();return;
   }
   if(st.svc1===id&&st.svc2===id){
-    // Beide haben schon diesen Service — kein Wechsel nötig
     render();return;
   }
   if(st.svc1===null&&st.svc2===null){
-    // Erster Klick: beide bekommen diesen Service
     st.svc1=id;st.svc2=id;st.nextSvc=1;
   } else if(st.svc1===id||st.svc2===id){
-    // Nochmal auf einen bereits gewählten Service klicken
-    // → den anderen Slot auch auf diesen setzen (beide gleich)
     st.svc1=id;st.svc2=id;st.nextSvc=1;
   } else {
-    // Anderer Service: wechselt abwechselnd
     if(st.nextSvc===1){st.svc1=id;st.nextSvc=2;}
     else{st.svc2=id;st.nextSvc=1;}
   }
@@ -364,11 +426,9 @@ window.pickStf=function(id){
 window.toggleDual=function(){
   st.dual=!st.dual;
   if(!st.dual){
-    // Zurück zu Einfach: svc2/dur2/stf2 werden gelöscht
     st.svc2=null;st.dur2=null;st.stf2='any';
     st.nextSvc=1;st.nextDur=1;st.nextStf=1;
   } else {
-    // Dual aktiviert: beide starten gleich wie Slot 1
     st.svc2=st.svc1;st.dur2=st.dur1;st.stf2=st.stf1;
     st.nextSvc=1;st.nextDur=1;st.nextStf=1;
   }
@@ -393,7 +453,6 @@ window.selectCountry=function(code){
 };
 window.filterDrop=function(val){dropSearch=val;renderPhoneOnly();};
 
-// ── Hilfsfunktion: CSS-Klasse für Split-Anzeige ─────────────
 function selClass(val1,val2,id,isDual){
   if(!isDual)return val1===id?'sel1only':'';
   var in1=val1===id,in2=val2===id;
@@ -413,7 +472,6 @@ function mkSvcCards(){
       else if(in1)badges='<div class="svc-badges"><span class="sbadge-sm sbadge-1">① Slot 1</span></div>';
       else if(in2)badges='<div class="svc-badges"><span class="sbadge-sm sbadge-2">② Slot 2</span></div>';
     }
-    // Zeige welcher Slot als nächstes wechselt wenn man einen anderen Service klickt
     var nextHint='';
     if(st.dual&&cls!=='selboth'&&(st.svc1!==null||st.svc2!==null)){
       nextHint='<span class="svc-next">nächster: Slot '+st.nextSvc+'</span>';
@@ -426,7 +484,8 @@ function mkSvcCards(){
       +'<div class="svc-p">ab '+s.price+' €</div>'
       +badges
       +'</div></div>';
-  }).join('');}
+  }).join('');
+}
 
 function mkDurCards(){
   var svc1=fsvc(st.svc1);
@@ -447,7 +506,8 @@ function mkDurCards(){
       +'</div>'
       +badges
       +'</div>';
-  }).join('');}
+  }).join('');
+}
 
 function mkStaffGrid(){
   return'<div class="staff-grid">'+STAFF.map(function(p){
@@ -465,7 +525,8 @@ function mkStaffGrid(){
       +'</div>'
       +badges
       +'</div>';
-  }).join('')+'</div>';}
+  }).join('')+'</div>';
+}
 
 function mkCal(){
   var cd=getCalData();
@@ -534,7 +595,6 @@ function mkSumCard(){
 
   var rows='';
   if(st.dual){
-    // Wenn beide gleich: kombiniert anzeigen
     rows+=row('Service',s1?s1.name+(s2&&s2.id!==s1.id?' / '+s2.name:''):null);
     rows+=row('Dauer',d1?d1.min+' Min'+(d2&&d2.id!==d1.id?' / '+d2.min+' Min':''):null);
     rows+=row('Team',fname(st.stf1)+(st.stf2&&st.stf2!==st.stf1?' / '+fname(st.stf2):''));
@@ -573,7 +633,6 @@ function render(){
     :fname(st.stf1);
 
   document.getElementById('app').innerHTML=
-    // 1. Service
     '<div class="card">'
       +'<div class="ctitle"><span class="cnum">1</span>Service</div>'
       +'<div class="dual-tog '+(st.dual?'on':'')+'" onclick="toggleDual()">'
@@ -583,12 +642,10 @@ function render(){
       +'<div class="svc-grid">'+mkSvcCards()+'</div>'
     +'</div>'
 
-    // 2. Dauer
     +'<div class="card"><div class="ctitle"><span class="cnum">2</span>Dauer</div>'
       +'<div class="dur-row">'+mkDurCards()+'</div>'
     +'</div>'
 
-    // 3. Mitarbeiter Akkordion
     +'<div class="card">'
       +'<div class="acc-hdr" onclick="toggleStaff()">'
         +'<div class="acc-hdr-left">'
@@ -604,17 +661,12 @@ function render(){
       +'</div>'
     +'</div>'
 
-    // 4. Datum + Übersicht nebeneinander
     +'<div class="card"><div class="ctitle"><span class="cnum">4</span>Datum & Uhrzeit</div>'
       +'<div class="cal-sum-row">'
         +'<div id="cal-inner">'+mkCal()+'</div>'
         +'<div id="sum-col">'+mkSumCard()+'</div>'
       +'</div>'
     +'</div>';
-
-  document.addEventListener('click',function(e){
-    if(dropOpen&&!e.target.closest('.phone-country')){dropOpen=false;renderPhoneOnly();}
-  },{once:true});
 }
 
 window.submitBooking=function(){
@@ -634,7 +686,9 @@ window.resetAll=function(){
     day:null,slot:null,name:'',phone:'',country:COUNTRIES[0],nextSvc:1,nextDur:1,nextStf:1};
   calOff=0;staffOpen=false;dropOpen=false;render();
 };
+
 render();
+loadSalonProfile();
 </script>
 </body>
 </html>
