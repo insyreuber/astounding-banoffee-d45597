@@ -639,80 +639,14 @@ window.resetAll=function(){
   calOff=0;staffOpen=false;dropOpen=false;render();
 };
 render();
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 const supabaseUrl = 'https://uzemgxfjgjwqfgfwbboi.supabase.co';
-const supabaseKey = 'sb_publishable__XubcF5yPDyIMpfE7kO9Rg_Xp7kj0hL';
+const supabaseKey = 'DEIN_KEY';
 const sb = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-function getSalonId() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get('salon_id');
-}
-
-async function loadSalonProfile() {
-  try {
-    const salonId = getSalonId();
-
-    if (!salonId) {
-      console.warn('Keine salon_id in der URL gefunden.');
-      return;
-    }
-
-    const { data, error } = await sb
-      .from('kunden_profile')
-      .select('*')
-      .eq('id', salonId)
-      .single();
-
-    if (error) {
-      console.error('Supabase Fehler:', error);
-      return;
-    }
-
-    console.log('Salon Profil:', data);
-
-    const salonName = data.brand_name || data.name || '';
-    const salonPhone = data.phone || '';
-
-    const salonAddress = [
-      [data.street, data.house_number].filter(Boolean).join(' '),
-      [data.postal_code, data.city].filter(Boolean).join(' ')
-    ].filter(Boolean).join(', ');
-
-    const nameEl = document.getElementById('salon-name');
-    const phoneEl = document.getElementById('salon-phone');
-    const addressEl = document.getElementById('salon-address');
-
-    console.log('nameEl:', nameEl);
-    console.log('phoneEl:', phoneEl);
-    console.log('addressEl:', addressEl);
-
-    console.log('salonName:', salonName);
-    console.log('salonPhone:', salonPhone);
-    console.log('salonAddress:', salonAddress);
-
-    if (nameEl) nameEl.textContent = salonName || 'Salonname';
-
-    if (phoneEl) {
-      phoneEl.innerHTML = `
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.79 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-        ${salonPhone || 'Telefonnummer'}
-      `;
-    }
-
-    if (addressEl) {
-      addressEl.innerHTML = `
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        ${salonAddress || 'Adresse'}
-      `;
-    }
-
-  } catch (err) {
-    console.error('JS Fehler:', err);
-  }
-}
-
-loadSalonProfile();
+console.log("Supabase verbunden");
 </script>
 </body>
 </html>
