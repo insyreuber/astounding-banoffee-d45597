@@ -174,17 +174,21 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 <div class="hd">
   <div class="hd-inner">
     <div>
-      <div class="hd-logo">Insy Reception</div>
-      <div class="hd-name">Wellness Center Gummersbach</div>
-      <div class="hd-meta">
-        <div class="hd-chip">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          Moltkestr. 12, 51643 Gummersbach
-        </div>
-        <div class="hd-chip">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-          +49 2261 123456
-        </div>
+      
+      <div class="hd-logo" id="brand-name">Insy Reception</div>
+<div class="hd-name" id="salon-name">Salonname</div>
+
+<div class="hd-meta">
+  <div class="hd-chip" id="salon-address">
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+    Adresse
+  </div>
+  <div class="hd-chip" id="salon-phone">
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.79 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+    Telefonnummer
+  </div>
+</div>
+      
       </div>
     </div>
     <div class="hd-right">
@@ -636,29 +640,77 @@ window.resetAll=function(){
 };
 render();
 </script>
-  <script>
+
   const supabaseUrl = 'https://uzemgxfjgjwqfgfwbboi.supabase.co';
   const supabaseKey = 'sb_publishable__XubcF5yPDyIMpfE7kO9Rg_Xp7kj0hL';
   const sb = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-  async function testSupabase() {
+  function getSalonId() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('salon_id');
+  }
+
+  async function loadSalonProfile() {
     try {
+      const salonId = getSalonId();
+
+      if (!salonId) {
+        console.warn('Keine salon_id in der URL gefunden.');
+        return;
+      }
+
       const { data, error } = await sb
         .from('kunden_profile')
         .select('*')
-        .limit(1);
+        .eq('id', salonId)
+        .single();
 
       if (error) {
         console.error('Supabase Fehler:', error);
-      } else {
-        console.log('Supabase ok:', data);
+        return;
       }
+
+      console.log('Salon Profil:', data);
+
+      const salonName =
+        data.name ||
+        data.salon_name ||
+        data.unternehmensname ||
+        data.business_name ||
+        '';
+
+      const salonPhone =
+        data.telefon ||
+        data.phone ||
+        data.telefonnummer ||
+        '';
+
+      const salonAddress =
+        data.adresse ||
+        data.address ||
+        data.anschrift ||
+        '';
+
+      const nameEl = document.getElementById('salon-name');
+      const phoneEl = document.getElementById('salon-phone');
+      const addressEl = document.getElementById('salon-address');
+
+      if (nameEl) nameEl.textContent = salonName || 'Salonname';
+      if (phoneEl) phoneEl.innerHTML = `
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.79 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        ${salonPhone || 'Telefonnummer'}
+      `;
+      if (addressEl) addressEl.innerHTML = `
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        ${salonAddress || 'Adresse'}
+      `;
     } catch (err) {
       console.error('JS Fehler:', err);
     }
   }
 
-  testSupabase();
+  loadSalonProfile();
+  
 </script>
 </body>
 </html>
