@@ -692,6 +692,15 @@ render();
       const phoneEl = document.getElementById('salon-phone');
       const addressEl = document.getElementById('salon-address');
 
+console.log('Salon Profil:', data);
+console.log('nameEl:', nameEl);
+console.log('phoneEl:', phoneEl);
+console.log('addressEl:', addressEl);
+
+  console.log('salonName:', salonName);
+console.log('salonPhone:', salonPhone);
+console.log('salonAddress:', salonAddress);
+  
       if (nameEl) nameEl.textContent = salonName || 'Salonname';
       if (phoneEl) phoneEl.innerHTML = `
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.79 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
