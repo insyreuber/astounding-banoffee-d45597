@@ -192,7 +192,6 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
       </div>
     </div>
     <div class="hd-right">
-      <div class="hd-open"><div class="hd-open-dot"></div>Heute geöffnet</div>
       <div class="hd-hours-pill" id="hours-pill" onclick="toggleHours()">
         09:00 – 19:00 ▾
         <div class="hd-hours-drop" id="hours-drop">
@@ -697,18 +696,11 @@ function renderWorkingHours(arbeitszeiten) {
   const todayKey = getTodayKey();
   const todayData = arbeitszeiten[todayKey];
 
-  const openEl = document.querySelector('.hd-open');
+  
   const hoursPillEl = document.getElementById('hours-pill');
   const hoursDropEl = document.getElementById('hours-drop');
 
-  if (openEl) {
-    const isOpen = !!todayData?.aktiv;
-    openEl.innerHTML = `
-      <div class="hd-open-dot" style="background:${isOpen ? '#7fe8b0' : '#c8bcd8'}"></div>
-      ${isOpen ? 'Heute geöffnet' : 'Heute geschlossen'}
-    `;
-    openEl.style.color = isOpen ? '#7fe8b0' : '#c8bcd8';
-  }
+
 
   if (hoursPillEl) {
     hoursPillEl.innerHTML = `
