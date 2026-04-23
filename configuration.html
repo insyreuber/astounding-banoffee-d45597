@@ -98,12 +98,14 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .item-body.open{display:block}
 
 /* ── VARIANTEN (service edit) ── */
-.var-header{display:grid;grid-template-columns:1fr 90px 90px 90px 36px;gap:8px;padding:0 12px;margin-bottom:4px}
+.var-header{display:grid;grid-template-columns:90px 90px 90px 34px 34px 34px 36px;gap:8px;padding:0 12px;margin-bottom:4px}
 .var-col-lbl{font-size:10px;color:var(--muted);text-align:center;letter-spacing:.05em}
 .var-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
-.var-row{display:grid;grid-template-columns:1fr 90px 90px 90px 36px;gap:8px;align-items:center;background:#faf8fc;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px}
-.var-row input{border:1.5px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;font-family:inherit;color:var(--td);outline:none;background:var(--white);width:100%}
-.var-row input:focus{border-color:var(--tpl)}
+.var-row{display:grid;grid-template-columns:90px 90px 90px 34px 34px 34px 36px;gap:8px;align-items:center;background:#faf8fc;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px}
+.var-row input[type="number"]{border:1.5px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;font-family:inherit;color:var(--td);outline:none;background:var(--white);width:100%;text-align:center}
+.var-row input[type="number"]:focus{border-color:var(--tpl)}
+.var-toggle{display:flex;flex-direction:column;align-items:center;gap:3px}
+.var-toggle-lbl{font-size:9px;color:var(--muted);text-align:center;line-height:1.1}
 
 /* ── MITARBEITER GRID ── */
 .staff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
@@ -553,25 +555,22 @@ function renderSvcBody(s,vars){
   return'<div style="display:flex;gap:10px;margin-bottom:12px;align-items:flex-end">'
     +'<div class="field" style="flex:1"><label>Name</label><input type="text" id="svc-f-name-'+s.id+'" value="'+esc(s.name)+'"></div>'
     +'<div class="field" style="flex:2"><label>Beschreibung</label><input type="text" id="svc-f-desc-'+s.id+'" value="'+esc(s.beschreibung||'')+'"></div>'
-  +'</div>'
-  // Anzeige-Einstellungen (wie im Erstellen-Modal)
-  +'<div style="background:var(--bg);border-radius:10px;padding:10px 12px;margin-bottom:12px">'
-    +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Anzeige-Einstellungen</div>'
-    +'<div class="disp-row">'
-      +'<div class="disp-opt '+(s.aktiv?'on':'')+'" id="disp-aktiv-'+s.id+'" onclick="toggleDispOpt(\''+s.id+'\',\'aktiv\')">'
-        +'<label class="toggle-sw" style="pointer-events:none"><input type="checkbox" id="svc-f-aktiv-'+s.id+'" '+(s.aktiv?'checked':'')+' ><span class="slider"></span></label>Im Widget aktiv'
-      +'</div>'
-      +'<div class="disp-opt '+((s.preis_anzeigen!==false)?'on':'')+'" id="disp-preis-'+s.id+'" onclick="toggleDispOpt(\''+s.id+'\',\'preis\')">'
-        +'<label class="toggle-sw" style="pointer-events:none"><input type="checkbox" id="svc-f-preis-'+s.id+'" '+((s.preis_anzeigen!==false)?'checked':'')+' ><span class="slider"></span></label>Preis anzeigen'
-      +'</div>'
-      +'<div class="disp-opt '+((s.dauer_anzeigen!==false)?'on':'')+'" id="disp-dauer-'+s.id+'" onclick="toggleDispOpt(\''+s.id+'\',\'dauer\')">'
-        +'<label class="toggle-sw" style="pointer-events:none"><input type="checkbox" id="svc-f-dauer-'+s.id+'" '+((s.dauer_anzeigen!==false)?'checked':'')+' ><span class="slider"></span></label>Dauer anzeigen'
-      +'</div>'
+    +'<div style="padding-bottom:2px;display:flex;flex-direction:column;align-items:center;gap:3px">'
+      +'<label class="toggle-sw" title="Im Widget aktiv"><input type="checkbox" id="svc-f-aktiv-'+s.id+'" '+(s.aktiv?'checked':'')+' ><span class="slider"></span></label>'
+      +'<span style="font-size:9px;color:var(--muted)">Aktiv</span>'
     +'</div>'
   +'</div>'
   +'<hr class="div">'
   +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Varianten</div>'
-  +'<div class="var-header"><span class="var-col-lbl" style="text-align:left">Bezeichnung</span><span class="var-col-lbl">Min</span><span class="var-col-lbl">Preis €</span><span class="var-col-lbl">Puffer Min</span><span></span></div>'
+  +'<div class="var-header">'
+    +'<span class="var-col-lbl">Min</span>'
+    +'<span class="var-col-lbl">Preis €</span>'
+    +'<span class="var-col-lbl">Puffer</span>'
+    +'<span class="var-col-lbl">Preis<br>anz.</span>'
+    +'<span class="var-col-lbl">Dauer<br>anz.</span>'
+    +'<span class="var-col-lbl">Puffer<br>aktiv</span>'
+    +'<span></span>'
+  +'</div>'
   +'<div class="var-list" id="varlist-'+s.id+'">'
     +(vars.map(function(v){return mkVarRow(v,s.id);}).join('')||'<div style="font-size:12px;color:var(--muted);padding:6px 0">Noch keine Varianten</div>')
   +'</div>'
@@ -598,10 +597,12 @@ function mkVarRow(v,svcId){
   var durVal=(v.dauer_minuten&&v.dauer_minuten<9000)?v.dauer_minuten:'';
   var preisVal=(v.preis!=null&&v.preis>0)?v.preis:'';
   return'<div class="var-row" id="var-'+v.id+'">'
-    +'<input data-field="bezeichnung" type="text" placeholder="z.B. Standard" value="'+esc(v.bezeichnung||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'bezeichnung\',this.value)">'
-    +'<input data-field="dauer_minuten" type="number" min="0" placeholder="Min" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value)" style="text-align:center">'
-    +'<input data-field="preis" type="number" min="0" step="0.5" placeholder="€" value="'+preisVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis\',this.value)" style="text-align:center">'
-    +'<input data-field="puffer_minuten" type="number" min="0" placeholder="0" value="'+(v.puffer_minuten||0)+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'puffer_minuten\',this.value)" style="text-align:center">'
+    +'<input data-field="dauer_minuten" type="number" min="0" placeholder="Min" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value)">'
+    +'<input data-field="preis" type="number" min="0" step="0.5" placeholder="€" value="'+preisVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis\',this.value)">'
+    +'<input data-field="puffer_minuten" type="number" min="0" placeholder="0" value="'+(v.puffer_minuten||0)+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'puffer_minuten\',this.value)">'
+    +'<div class="var-toggle"><label class="toggle-sw" title="Preis anzeigen"><input data-field="preis_anzeigen" type="checkbox" '+(v.preis_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label></div>'
+    +'<div class="var-toggle"><label class="toggle-sw" title="Dauer anzeigen"><input data-field="dauer_anzeigen" type="checkbox" '+(v.dauer_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label></div>'
+    +'<div class="var-toggle"><label class="toggle-sw" title="Puffer aktiv"><input data-field="puffer_aktiv" type="checkbox" '+(v.puffer_aktiv?'checked':'')+' ><span class="slider"></span></label></div>'
     +'<button class="btn btn-sm btn-danger" style="padding:6px 8px" onclick="deleteVar(\''+v.id+'\',\''+svcId+'\')">✕</button>'
   +'</div>';
 }
@@ -637,29 +638,30 @@ async function saveSvcAll(id){
   var name=document.getElementById('svc-f-name-'+id).value.trim();
   if(!name){toast('Name darf nicht leer sein','error');return;}
   var aktiv=document.getElementById('svc-f-aktiv-'+id).checked;
-  var preisAn=document.getElementById('svc-f-preis-'+id).checked;
-  var dauerAn=document.getElementById('svc-f-dauer-'+id).checked;
-  var desc=document.getElementById('svc-f-desc-'+id).value.trim();
+  var preisAn=true; // wird jetzt pro Variante gesetzt
+  var dauerAn=true; // wird jetzt pro Variante gesetzt
 
-  // 1. Service speichern
+  // 1. Service speichern (nur Name, Beschreibung, aktiv)
   var sRes=await sb.from('services').update({
-    name:name, beschreibung:desc, aktiv:aktiv,
-    preis_anzeigen:preisAn, dauer_anzeigen:dauerAn
+    name:name, beschreibung:desc, aktiv:aktiv
   }).eq('id',id);
   if(sRes.error){toast('Fehler: '+sRes.error.message,'error');return;}
 
-  // 2. Alle Varianten speichern
+  // 2. Alle Varianten speichern inkl. Toggles
   var varRows=document.querySelectorAll('#varlist-'+id+' .var-row');
   var errs=[];
   for(var i=0;i<varRows.length;i++){
     var row=varRows[i];
     var vid=row.id.replace('var-','');
-    var bez=row.querySelector('[data-field="bezeichnung"]').value.trim();
     var min=parseInt(row.querySelector('[data-field="dauer_minuten"]').value)||1;
     var preis=parseFloat(row.querySelector('[data-field="preis"]').value)||0;
     var puffer=parseInt(row.querySelector('[data-field="puffer_minuten"]').value)||0;
+    var preisAnz=row.querySelector('[data-field="preis_anzeigen"]').checked;
+    var dauerAnz=row.querySelector('[data-field="dauer_anzeigen"]').checked;
+    var pufferAkt=row.querySelector('[data-field="puffer_aktiv"]').checked;
     var vRes=await sb.from('service_varianten').update({
-      bezeichnung:bez, dauer_minuten:min, preis:preis, puffer_minuten:puffer
+      dauer_minuten:min, preis:preis, puffer_minuten:puffer,
+      preis_anzeigen:preisAnz, dauer_anzeigen:dauerAnz, puffer_aktiv:pufferAkt
     }).eq('id',vid);
     if(vRes.error)errs.push(vRes.error.message);
   }
