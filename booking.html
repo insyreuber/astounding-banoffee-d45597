@@ -5,27 +5,39 @@
 :root{--tp:#4a1c6b;--tpl:#6b3fa0;--tpp:#f0eaf7;--tg:#c9a84c;--tgl:#e8d08a;--tgp:#fdf8ec;--td:#1a0a2e}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:100%}
-.hd{background:var(--tp);padding:10px 16px}
-.hd-inner{display:flex;align-items:center;justify-content:space-between;gap:12px}
+
+/* ── HEADER – stabil, kein Layout-Einfluss auf den Rest ── */
+.hd{
+  background:var(--tp);
+  padding:10px 16px;
+  width:100%;
+  position:relative; /* Stacking-Context für das Hours-Dropdown */
+}
+.hd-inner{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  flex-wrap:wrap;       /* bricht um statt sich zu verzerren */
+}
 .hd-logo{font-size:9px;letter-spacing:.16em;color:var(--tg);font-weight:500;text-transform:uppercase;margin-bottom:1px}
 .hd-name{font-size:15px;font-weight:500;color:#fff;margin-bottom:3px}
 .hd-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .hd-chip{font-size:11px;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:4px}
-.hd-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
-.hd-open{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;color:#7fe8b0}
-.hd-open-dot{width:6px;height:6px;border-radius:50%;background:#7fe8b0}
-.hd-hours-pill{background:rgba(255,255,255,.1);border-radius:99px;padding:4px 10px;font-size:11px;color:rgba(255,255,255,.75);white-space:nowrap;cursor:pointer;position:relative;user-select:none}
-.hd-hours-pill:hover{background:rgba(255,255,255,.15)}
-.hd-hours-drop{position:absolute;top:calc(100% + 6px);right:0;background:#fff;border:1.5px solid #e8e0f0;border-radius:10px;padding:10px 14px;min-width:200px;z-index:100;box-shadow:0 4px 16px rgba(74,28,107,.12);display:none}
-.hd-hour-row{display:flex;justify-content:space-between;gap:16px;font-size:12px;color:#7a6a8a;padding:3px 0}
-.hd-hour-today{color:var(--td);font-weight:500}
-.hd-hour-closed{color:#c8bcd8}
-.wrap{padding:10px;display:flex;flex-direction:column;gap:10px}
+
+/* ── Haupt-Layout – volle Breite ── */
+.wrap{
+  width:100%;
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+/* ── Karten & Komponenten ── */
 .card{background:#fff;border:1.5px solid #e8e0f0;border-radius:10px;padding:13px}
 .ctitle{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--tpl);font-weight:500;margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .cnum{background:var(--tp);color:#fff;width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0}
 
-/* Dual toggle */
 .dual-tog{display:flex;align-items:center;gap:8px;padding:8px 11px;background:#fff;border:1.5px solid #e8e0f0;border-radius:8px;cursor:pointer;margin-bottom:10px}
 .dual-tog.on{border-color:var(--tp);background:var(--tpp)}
 .tog-box{width:18px;height:18px;border-radius:4px;border:1.5px solid #c8bcd8;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -33,17 +45,11 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .tog-lbl{font-size:13px;font-weight:500;color:var(--td)}
 .tog-sub{font-size:11px;color:#7a6a8a}
 
-/* Service grid */
 .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
-
-/* Normale Service-Karte */
 .svc{border:1.5px solid #e8e0f0;border-radius:8px;padding:10px 9px;cursor:pointer;position:relative;overflow:hidden;background:#fff}
 .svc:hover{border-color:var(--tpl)}
-/* Slot 1 allein */
 .svc.sel1only{border-color:var(--tp);background:var(--tpp)}
-/* Slot 2 allein */
 .svc.sel2only{border-color:var(--tg);background:var(--tgp)}
-/* Beide — Split: linke Hälfte lila, rechte Hälfte gold */
 .svc.selboth{border:none;background:#fff;outline:2px solid var(--tp)}
 .svc.selboth::before{content:'';position:absolute;inset:0;left:0;width:50%;background:var(--tpp);z-index:0}
 .svc.selboth::after{content:'';position:absolute;inset:0;left:50%;width:50%;background:var(--tgp);z-index:0}
@@ -51,15 +57,12 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .svc-n{font-size:13px;font-weight:500;color:var(--td);margin-bottom:2px}
 .svc-d{font-size:11px;color:#7a6a8a}
 .svc-p{font-size:11px;font-weight:500;color:var(--tg);margin-top:5px}
-/* Badge für beide */
 .svc-badges{display:flex;gap:3px;margin-top:5px;position:relative;z-index:1}
 .sbadge-sm{font-size:10px;padding:1px 7px;border-radius:99px;font-weight:500}
 .sbadge-1{background:var(--tp);color:#fff}
 .sbadge-2{background:var(--tg);color:var(--td)}
-/* Next-toggle Indikator */
 .svc-next{position:absolute;top:6px;right:7px;font-size:9px;color:rgba(74,28,107,.4);z-index:2}
 
-/* Dauer */
 .dur-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .dur{border:1.5px solid #e8e0f0;border-radius:8px;padding:9px 4px;text-align:center;cursor:pointer;position:relative;overflow:hidden;background:#fff}
 .dur:hover{border-color:var(--tpl)}
@@ -73,7 +76,6 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .dur-l{font-size:10px;color:#7a6a8a}
 .dur-p{font-size:11px;color:var(--tg);font-weight:500;margin-top:3px}
 
-/* Akkordion Mitarbeiter */
 .acc-hdr{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
 .acc-hdr-left{display:flex;align-items:center;gap:8px}
 .acc-title{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--tpl);font-weight:500}
@@ -102,7 +104,6 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .sb1{background:var(--tp);color:#fff}
 .sb2{background:var(--tg);color:var(--td)}
 
-/* Kalender */
 .cal-sum-row{display:grid;grid-template-columns:1fr 230px;gap:10px;align-items:start}
 .cal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
 .cal-nav{background:none;border:1px solid #e8e0f0;border-radius:6px;padding:2px 9px;cursor:pointer;font-size:14px;color:var(--tp);line-height:1.4}
@@ -123,7 +124,6 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .sl.ss{background:var(--tp);color:#fff;border-color:var(--tp);font-weight:500}
 .sl.sb{background:#f5f2f8;color:#ccc;pointer-events:none;font-size:9px}
 
-/* Buchungsübersicht */
 .sumcard{background:#fff;border:1.5px solid #e8e0f0;border-radius:10px;overflow:hidden}
 .sum-hdr{background:var(--tp);padding:10px 13px}
 .sum-hdr-t{font-size:10px;font-weight:500;color:rgba(255,255,255,.7);letter-spacing:.05em;text-transform:uppercase}
@@ -167,52 +167,60 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .cpill{display:inline-flex;font-size:11px;padding:3px 10px;border-radius:99px;background:rgba(255,255,255,.15);color:#fff;margin:2px}
 .cpill.g{background:var(--tgp);color:#7a5a00}
 .reset-btn{background:none;border:1.5px solid rgba(255,255,255,.3);border-radius:8px;padding:8px 18px;font-size:13px;color:#fff;cursor:pointer;font-family:inherit;margin-top:1rem}
-.hd-hours-inline{
-  cursor:pointer;
-  position:relative;
-  user-select:none;
-}
 
-.hd-hours-inline:hover{
-  color:rgba(255,255,255,.82);
-}
-
-.hd-hours-inline .hd-hours-drop{
+/* Hours dropdown – bleibt innerhalb des Headers */
+.hd-hours-inline{cursor:pointer;position:relative;user-select:none}
+.hd-hours-inline:hover{color:rgba(255,255,255,.82)}
+.hd-hours-drop{
   position:absolute;
   top:calc(100% + 6px);
   left:0;
-  right:auto;
+  background:#fff;
+  border:1.5px solid #e8e0f0;
+  border-radius:10px;
+  padding:10px 14px;
+  min-width:200px;
+  z-index:300;
+  box-shadow:0 4px 16px rgba(74,28,107,.12);
+  display:none;
 }
+.hd-hour-row{display:flex;justify-content:space-between;gap:16px;font-size:12px;color:#7a6a8a;padding:3px 0}
+.hd-hour-today{color:var(--td);font-weight:500}
+.hd-hour-closed{color:#c8bcd8}
 </style>
 </head>
 <body>
 
+<!-- ── HEADER ─────────────────────────────────────────── -->
 <div class="hd">
   <div class="hd-inner">
     <div>
-      
       <div class="hd-logo" id="brand-name">Insy Reception</div>
-<div class="hd-name" id="salon-name">Salonname</div>
-
-<div class="hd-meta">
-  <div class="hd-chip" id="salon-address">
-    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-    Adresse
+      <div class="hd-name" id="salon-name">Salonname</div>
+      <div class="hd-meta">
+        <div class="hd-chip" id="salon-address">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Adresse
+        </div>
+        <div class="hd-chip" id="salon-phone">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.79 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          Telefonnummer
+        </div>
+        <div class="hd-chip hd-hours-inline" id="hours-pill" onclick="toggleHours()">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span id="today-hours-label">09:00 – 17:00 ▾</span>
+          <div class="hd-hours-drop" id="hours-drop"></div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="hd-chip" id="salon-phone">
-    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.79 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-    Telefonnummer
-  </div>
-<div class="hd-chip hd-hours-inline" id="hours-pill" onclick="toggleHours()">
-    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="10"></circle>
-      <polyline points="12 6 12 12 16 14"></polyline>
-    </svg>
-    <span id="today-hours-label">09:00 – 17:00 ▾</span>
-    <div class="hd-hours-drop" id="hours-drop"></div>
-  </div></div>
+</div>
 
 <div class="wrap" id="app"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 var hoursOpen=false;
@@ -256,9 +264,6 @@ var BASE_SLOTS=['09:00','09:30','10:00','10:30','11:00','11:30','13:00','13:30',
 var BUSY={'10:30':1,'13:00':1,'15:30':1};
 var STAFF_BUSY={p1:{'09:30':1,'14:00':1},p2:{'11:00':1,'13:30':1},p3:{'10:00':1,'15:00':1},p4:{'09:00':1,'11:30':1}};
 
-// State
-// svc1/svc2: welcher Service für Slot 1 und 2
-// nextSlot: welcher Slot als nächstes beim Klick geändert wird (1 oder 2)
 var st={
   dual:false,
   svc1:null,svc2:null,
@@ -310,78 +315,36 @@ function getCalData(){
   return{base:base,firstDow:(base.getDay()+6)%7,dim:new Date(base.getFullYear(),base.getMonth()+1,0).getDate(),now:now};
 }
 
-// ── Kern-Logik: Klick auf Service im Dual-Modus ──────────────
-// Beim ersten Klick: beide bekommen denselben Service → Split-Anzeige
-// Beim Klick auf anderen Service: wechselt abwechselnd Slot 1 oder Slot 2
 window.pickSvc=function(id){
-  if(!st.dual){
-    st.svc1=id;render();return;
-  }
-  if(st.svc1===id&&st.svc2===id){
-    // Beide haben schon diesen Service — kein Wechsel nötig
-    render();return;
-  }
-  if(st.svc1===null&&st.svc2===null){
-    // Erster Klick: beide bekommen diesen Service
-    st.svc1=id;st.svc2=id;st.nextSvc=1;
-  } else if(st.svc1===id||st.svc2===id){
-    // Nochmal auf einen bereits gewählten Service klicken
-    // → den anderen Slot auch auf diesen setzen (beide gleich)
-    st.svc1=id;st.svc2=id;st.nextSvc=1;
-  } else {
-    // Anderer Service: wechselt abwechselnd
-    if(st.nextSvc===1){st.svc1=id;st.nextSvc=2;}
-    else{st.svc2=id;st.nextSvc=1;}
-  }
+  if(!st.dual){st.svc1=id;render();return;}
+  if(st.svc1===id&&st.svc2===id){render();return;}
+  if(st.svc1===null&&st.svc2===null){st.svc1=id;st.svc2=id;st.nextSvc=1;}
+  else if(st.svc1===id||st.svc2===id){st.svc1=id;st.svc2=id;st.nextSvc=1;}
+  else{if(st.nextSvc===1){st.svc1=id;st.nextSvc=2;}else{st.svc2=id;st.nextSvc=1;}}
   render();
 };
-
 window.pickDur=function(id){
-  if(!st.dual){
-    st.dur1=id;render();return;
-  }
+  if(!st.dual){st.dur1=id;render();return;}
   if(st.dur1===id&&st.dur2===id){render();return;}
-  if(st.dur1===null&&st.dur2===null){
-    st.dur1=id;st.dur2=id;st.nextDur=1;
-  } else if(st.dur1===id||st.dur2===id){
-    st.dur1=id;st.dur2=id;st.nextDur=1;
-  } else {
-    if(st.nextDur===1){st.dur1=id;st.nextDur=2;}
-    else{st.dur2=id;st.nextDur=1;}
-  }
+  if(st.dur1===null&&st.dur2===null){st.dur1=id;st.dur2=id;st.nextDur=1;}
+  else if(st.dur1===id||st.dur2===id){st.dur1=id;st.dur2=id;st.nextDur=1;}
+  else{if(st.nextDur===1){st.dur1=id;st.nextDur=2;}else{st.dur2=id;st.nextDur=1;}}
   render();
 };
-
 window.pickStf=function(id){
-  if(!st.dual){
-    st.stf1=id;st.slot=null;staffOpen=false;render();return;
-  }
+  if(!st.dual){st.stf1=id;st.slot=null;staffOpen=false;render();return;}
   if(st.stf1===id&&st.stf2===id){staffOpen=false;render();return;}
-  if(st.stf1==='any'&&st.stf2==='any'){
-    st.stf1=id;st.stf2=id;st.nextStf=1;
-  } else if(st.stf1===id||st.stf2===id){
-    st.stf1=id;st.stf2=id;st.nextStf=1;
-  } else {
-    if(st.nextStf===1){st.stf1=id;st.nextStf=2;}
-    else{st.stf2=id;st.nextStf=1;}
-  }
+  if(st.stf1==='any'&&st.stf2==='any'){st.stf1=id;st.stf2=id;st.nextStf=1;}
+  else if(st.stf1===id||st.stf2===id){st.stf1=id;st.stf2=id;st.nextStf=1;}
+  else{if(st.nextStf===1){st.stf1=id;st.nextStf=2;}else{st.stf2=id;st.nextStf=1;}}
   st.slot=null;staffOpen=false;render();
 };
-
 window.toggleDual=function(){
   st.dual=!st.dual;
-  if(!st.dual){
-    // Zurück zu Einfach: svc2/dur2/stf2 werden gelöscht
-    st.svc2=null;st.dur2=null;st.stf2='any';
-    st.nextSvc=1;st.nextDur=1;st.nextStf=1;
-  } else {
-    // Dual aktiviert: beide starten gleich wie Slot 1
-    st.svc2=st.svc1;st.dur2=st.dur1;st.stf2=st.stf1;
-    st.nextSvc=1;st.nextDur=1;st.nextStf=1;
-  }
+  if(!st.dual){st.svc2=null;st.dur2=null;st.stf2='any';st.nextSvc=1;st.nextDur=1;st.nextStf=1;}
+  else{st.svc2=st.svc1;st.dur2=st.dur1;st.stf2=st.stf1;st.nextSvc=1;st.nextDur=1;st.nextStf=1;}
   render();
 };
-
 window.toggleStaff=function(){
   staffOpen=!staffOpen;
   var b=document.getElementById('acc-body');
@@ -400,7 +363,6 @@ window.selectCountry=function(code){
 };
 window.filterDrop=function(val){dropSearch=val;renderPhoneOnly();};
 
-// ── Hilfsfunktion: CSS-Klasse für Split-Anzeige ─────────────
 function selClass(val1,val2,id,isDual){
   if(!isDual)return val1===id?'sel1only':'';
   var in1=val1===id,in2=val2===id;
@@ -420,7 +382,6 @@ function mkSvcCards(){
       else if(in1)badges='<div class="svc-badges"><span class="sbadge-sm sbadge-1">① Slot 1</span></div>';
       else if(in2)badges='<div class="svc-badges"><span class="sbadge-sm sbadge-2">② Slot 2</span></div>';
     }
-    // Zeige welcher Slot als nächstes wechselt wenn man einen anderen Service klickt
     var nextHint='';
     if(st.dual&&cls!=='selboth'&&(st.svc1!==null||st.svc2!==null)){
       nextHint='<span class="svc-next">nächster: Slot '+st.nextSvc+'</span>';
@@ -538,10 +499,8 @@ function mkSumCard(){
   var dayStr=dp?dp[2]+'. '+new Date(+dp[0],+dp[1],1).toLocaleDateString('de-DE',{month:'short'})+' '+dp[0]:'';
   var tot=total();
   function row(lbl,val){return'<div class="sumrow"><span class="sl-lbl">'+lbl+'</span><span class="sl-val '+(val?'':'emp')+'">'+(val||'—')+'</span></div>';}
-
   var rows='';
   if(st.dual){
-    // Wenn beide gleich: kombiniert anzeigen
     rows+=row('Service',s1?s1.name+(s2&&s2.id!==s1.id?' / '+s2.name:''):null);
     rows+=row('Dauer',d1?d1.min+' Min'+(d2&&d2.id!==d1.id?' / '+d2.min+' Min':''):null);
     rows+=row('Team',fname(st.stf1)+(st.stf2&&st.stf2!==st.stf1?' / '+fname(st.stf2):''));
@@ -554,7 +513,6 @@ function mkSumCard(){
     rows+=row('Zeit',st.slot?st.slot+' Uhr':null);
   }
   rows+=row('Datum',dayStr||null);
-
   return'<div class="sumcard">'
     +'<div class="sum-hdr"><div class="sum-hdr-t">Buchungsübersicht</div>'
     +'<div class="sum-hdr-p">'+(tot!==null?tot+' €':'—')+'</div></div>'
@@ -580,7 +538,6 @@ function render(){
     :fname(st.stf1);
 
   document.getElementById('app').innerHTML=
-    // 1. Service
     '<div class="card">'
       +'<div class="ctitle"><span class="cnum">1</span>Service</div>'
       +'<div class="dual-tog '+(st.dual?'on':'')+'" onclick="toggleDual()">'
@@ -589,13 +546,9 @@ function render(){
       +'</div>'
       +'<div class="svc-grid">'+mkSvcCards()+'</div>'
     +'</div>'
-
-    // 2. Dauer
     +'<div class="card"><div class="ctitle"><span class="cnum">2</span>Dauer</div>'
       +'<div class="dur-row">'+mkDurCards()+'</div>'
     +'</div>'
-
-    // 3. Mitarbeiter Akkordion
     +'<div class="card">'
       +'<div class="acc-hdr" onclick="toggleStaff()">'
         +'<div class="acc-hdr-left">'
@@ -610,8 +563,6 @@ function render(){
         +mkStaffGrid()
       +'</div>'
     +'</div>'
-
-    // 4. Datum + Übersicht nebeneinander
     +'<div class="card"><div class="ctitle"><span class="cnum">4</span>Datum & Uhrzeit</div>'
       +'<div class="cal-sum-row">'
         +'<div id="cal-inner">'+mkCal()+'</div>'
@@ -649,147 +600,50 @@ const supabaseUrl = 'https://uzemgxfjgjwqfgfwbboi.supabase.co';
 const supabaseKey = 'sb_publishable__XubcF5yPDyIMpfE7kO9Rg_Xp7kj0hL';
 const sb = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-const DAY_ORDER = [
-  'monday',
-  'tuesday',
-  'wednesday',
-  'thursday',
-  'friday',
-  'saturday',
-  'sunday'
-];
+const DAY_ORDER = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+const DAY_LABELS = {monday:'Montag',tuesday:'Dienstag',wednesday:'Mittwoch',thursday:'Donnerstag',friday:'Freitag',saturday:'Samstag',sunday:'Sonntag'};
 
-const DAY_LABELS = {
-  monday: 'Montag',
-  tuesday: 'Dienstag',
-  wednesday: 'Mittwoch',
-  thursday: 'Donnerstag',
-  friday: 'Freitag',
-  saturday: 'Samstag',
-  sunday: 'Sonntag'
-};
+function getSalonId(){return new URLSearchParams(window.location.search).get('salon_id');}
+function getTodayKey(){var m={0:'sunday',1:'monday',2:'tuesday',3:'wednesday',4:'thursday',5:'friday',6:'saturday'};return m[new Date().getDay()];}
+function formatHours(d){if(!d)return'—';if(!d.aktiv)return'Geschlossen';return d.start+' – '+d.end;}
 
-function getSalonId() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get('salon_id');
-}
-
-function getTodayKey() {
-  const jsDay = new Date().getDay(); // 0=Sonntag
-  const map = {
-    0: 'sunday',
-    1: 'monday',
-    2: 'tuesday',
-    3: 'wednesday',
-    4: 'thursday',
-    5: 'friday',
-    6: 'saturday'
-  };
-  return map[jsDay];
-}
-
-function formatHours(dayData) {
-  if (!dayData) return '—';
-  if (!dayData.aktiv) return 'Geschlossen';
-  return `${dayData.start} – ${dayData.end}`;
-}
-
-function renderWorkingHours(arbeitszeiten) {
-  if (!arbeitszeiten) return;
-
-  const todayKey = getTodayKey();
-  const todayData = arbeitszeiten[todayKey];
-
-  const todayHoursLabelEl = document.getElementById('today-hours-label');
-  const hoursDropEl = document.getElementById('hours-drop');
-
-  if (todayHoursLabelEl) {
-    todayHoursLabelEl.textContent = `${formatHours(todayData)} ▾`;
-  }
-
-  if (hoursDropEl) {
-    hoursDropEl.innerHTML = DAY_ORDER.map((dayKey) => {
-      const dayData = arbeitszeiten[dayKey];
-      const isToday = dayKey === todayKey;
-      const isClosed = !dayData?.aktiv;
-
-      let rowClass = 'hd-hour-row';
-      if (isToday) rowClass += ' hd-hour-today';
-      if (isClosed) rowClass += ' hd-hour-closed';
-
-      return `
-        <div class="${rowClass}">
-          <span>${DAY_LABELS[dayKey]}</span>
-          <span>${formatHours(dayData)}</span>
-        </div>
-      `;
+function renderWorkingHours(arbeitszeiten){
+  if(!arbeitszeiten)return;
+  var todayKey=getTodayKey();
+  var todayData=arbeitszeiten[todayKey];
+  var lbl=document.getElementById('today-hours-label');
+  var drop=document.getElementById('hours-drop');
+  if(lbl)lbl.textContent=formatHours(todayData)+' ▾';
+  if(drop){
+    drop.innerHTML=DAY_ORDER.map(function(k){
+      var d=arbeitszeiten[k],isToday=k===todayKey,isClosed=!d||!d.aktiv;
+      var cls='hd-hour-row'+(isToday?' hd-hour-today':'')+(isClosed?' hd-hour-closed':'');
+      return'<div class="'+cls+'"><span>'+DAY_LABELS[k]+'</span><span>'+formatHours(d)+'</span></div>';
     }).join('');
   }
 }
 
-async function loadSalonProfile() {
-  try {
-    const salonId = getSalonId();
-
-    if (!salonId) {
-      console.warn('Keine salon_id in der URL gefunden.');
-      return;
-    }
-
-    const { data, error } = await sb
-      .from('kunden_profile')
-      .select('*')
-      .eq('id', salonId)
-      .single();
-
-    if (error) {
-      console.error('Supabase Fehler:', error);
-      return;
-    }
-
-    console.log('Salon Profil:', data);
-
-    const salonName = data.brand_name || data.name || 'Salonname';
-    const salonPhone = data.phone || 'Telefonnummer';
-    const salonAddress = [
-      [data.street, data.house_number].filter(Boolean).join(' '),
-      [data.postal_code, data.city].filter(Boolean).join(' ')
-    ].filter(Boolean).join(', ') || 'Adresse';
-
-    const brandEl = document.getElementById('brand-name');
-    const nameEl = document.getElementById('salon-name');
-    const phoneEl = document.getElementById('salon-phone');
-    const addressEl = document.getElementById('salon-address');
-
-    if (brandEl) brandEl.textContent = 'INSY RECEPTION';
-    if (nameEl) nameEl.textContent = salonName;
-
-    if (phoneEl) {
-      phoneEl.innerHTML = `
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.79 0 013.07 9.81 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
-        </svg>
-        ${salonPhone}
-      `;
-    }
-
-    if (addressEl) {
-      addressEl.innerHTML = `
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
-          <circle cx="12" cy="10" r="3"/>
-        </svg>
-        ${salonAddress}
-      `;
-    }
-
+async function loadSalonProfile(){
+  try{
+    var salonId=getSalonId();
+    if(!salonId){console.warn('Keine salon_id in der URL.');return;}
+    var res=await sb.from('kunden_profile').select('*').eq('id',salonId).single();
+    if(res.error){console.error('Supabase Fehler:',res.error);return;}
+    var data=res.data;
+    var salonName=data.brand_name||data.name||'Salonname';
+    var salonPhone=data.phone||'Telefonnummer';
+    var salonAddress=[[data.street,data.house_number].filter(Boolean).join(' '),[data.postal_code,data.city].filter(Boolean).join(' ')].filter(Boolean).join(', ')||'Adresse';
+    var brandEl=document.getElementById('brand-name');
+    var nameEl=document.getElementById('salon-name');
+    var phoneEl=document.getElementById('salon-phone');
+    var addressEl=document.getElementById('salon-address');
+    if(brandEl)brandEl.textContent='INSY RECEPTION';
+    if(nameEl)nameEl.textContent=salonName;
+    if(phoneEl)phoneEl.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.79 0 013.07 9.81 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>'+salonPhone;
+    if(addressEl)addressEl.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>'+salonAddress;
     renderWorkingHours(data.arbeitszeiten);
-
-  } catch (err) {
-    console.error('JS Fehler:', err);
-  }
+  }catch(err){console.error('JS Fehler:',err);}
 }
-
 loadSalonProfile();
 </script>
 </body>
