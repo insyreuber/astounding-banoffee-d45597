@@ -98,14 +98,16 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .item-body.open{display:block}
 
 /* ── VARIANTEN (service edit) ── */
-.var-header{display:grid;grid-template-columns:90px 90px 90px 34px 34px 34px 36px;gap:8px;padding:0 12px;margin-bottom:4px}
+.var-header{display:grid;grid-template-columns:1fr 1fr 1fr 36px;gap:8px;padding:0 12px;margin-bottom:4px}
 .var-col-lbl{font-size:10px;color:var(--muted);text-align:center;letter-spacing:.05em}
 .var-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
-.var-row{display:grid;grid-template-columns:90px 90px 90px 34px 34px 34px 36px;gap:8px;align-items:center;background:#faf8fc;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px}
-.var-row input[type="number"]{border:1.5px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;font-family:inherit;color:var(--td);outline:none;background:var(--white);width:100%;text-align:center}
-.var-row input[type="number"]:focus{border-color:var(--tpl)}
-.var-toggle{display:flex;flex-direction:column;align-items:center;gap:3px}
-.var-toggle-lbl{font-size:9px;color:var(--muted);text-align:center;line-height:1.1}
+.var-row{display:grid;grid-template-columns:1fr 1fr 1fr 36px;gap:8px;align-items:center;background:#faf8fc;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px}
+/* Jede Gruppe = Input + Toggle nebeneinander */
+.var-group{display:flex;align-items:center;gap:5px;background:var(--white);border:1.5px solid var(--border);border-radius:6px;padding:0 6px 0 0;overflow:hidden}
+.var-group input[type="number"]{border:none;outline:none;padding:6px 6px;font-size:12px;font-family:inherit;color:var(--td);background:transparent;width:100%;text-align:center;min-width:0}
+.var-group input[type="number"]:focus{outline:none}
+.var-group:focus-within{border-color:var(--tpl)}
+.var-group .toggle-sw{flex-shrink:0}
 
 /* ── MITARBEITER GRID ── */
 .staff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
@@ -130,12 +132,9 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .modal-body{overflow-y:auto;padding:20px 24px;flex:1}
 .modal-footer{padding:14px 24px;border-top:1.5px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-shrink:0;background:#fff;border-radius:0 0 14px 14px}
 
-/* Modal Varianten */
-.mvar-header{display:grid;grid-template-columns:1fr 76px 76px 76px 76px 32px;gap:7px;padding:0 10px;margin-bottom:4px}
-.mvar-row{display:grid;grid-template-columns:1fr 76px 76px 76px 76px 32px;gap:7px;align-items:center;background:#faf8fc;border:1.5px solid var(--border);border-radius:8px;padding:8px 10px}
-.mvar-row input{border:1.5px solid var(--border);border-radius:6px;padding:5px 7px;font-size:12px;font-family:inherit;color:var(--td);outline:none;background:var(--white);width:100%;text-align:center}
-.mvar-row input:first-child{text-align:left}
-.mvar-row input:focus{border-color:var(--tpl)}
+/* Modal Varianten — gleiche Gruppen wie var-row */
+.mvar-header{display:grid;grid-template-columns:1fr 1fr 1fr 32px;gap:7px;padding:0 10px;margin-bottom:4px}
+.mvar-row{display:grid;grid-template-columns:1fr 1fr 1fr 32px;gap:7px;align-items:center;background:#faf8fc;border:1.5px solid var(--border);border-radius:8px;padding:8px 10px}
 
 /* Disp opts */
 .disp-row{display:flex;gap:10px;flex-wrap:wrap}
@@ -312,31 +311,19 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
     <button class="modal-close" onclick="closeSvcModal()">×</button>
   </div>
   <div class="modal-body">
-    <div class="frow frow-2" style="margin-bottom:12px">
-      <div class="field"><label>Name *</label><input type="text" id="m-name" placeholder="z.B. Klassische Massage"></div>
-      <div class="field"><label>Beschreibung</label><input type="text" id="m-desc" placeholder="z.B. Entspannung & Verspannungen"></div>
-    </div>
-    <div style="background:var(--bg);border-radius:10px;padding:12px 14px;margin-bottom:16px">
-      <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:10px">Anzeige</div>
-      <div class="disp-row">
-        <div class="disp-opt on" id="opt-aktiv" onclick="toggleOpt('aktiv')">
-          <label class="toggle-sw" style="pointer-events:none"><input type="checkbox" id="m-aktiv" checked><span class="slider"></span></label>Im Widget aktiv
-        </div>
-        <div class="disp-opt on" id="opt-preis" onclick="toggleOpt('preis')">
-          <label class="toggle-sw" style="pointer-events:none"><input type="checkbox" id="m-zeige-preis" checked><span class="slider"></span></label>Preis anzeigen
-        </div>
-        <div class="disp-opt on" id="opt-dauer" onclick="toggleOpt('dauer')">
-          <label class="toggle-sw" style="pointer-events:none"><input type="checkbox" id="m-zeige-dauer" checked><span class="slider"></span></label>Dauer anzeigen
-        </div>
+    <div style="display:flex;gap:10px;margin-bottom:12px;align-items:flex-end">
+      <div class="field" style="flex:1"><label>Name *</label><input type="text" id="m-name" placeholder="z.B. Klassische Massage"></div>
+      <div class="field" style="flex:2"><label>Beschreibung</label><input type="text" id="m-desc" placeholder="z.B. Entspannung & Verspannungen"></div>
+      <div style="padding-bottom:2px;display:flex;flex-direction:column;align-items:center;gap:3px">
+        <label class="toggle-sw" title="Im Widget aktiv"><input type="checkbox" id="m-aktiv" checked><span class="slider"></span></label>
+        <span style="font-size:9px;color:var(--muted)">Aktiv</span>
       </div>
     </div>
     <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Varianten (Dauer & Preis)</div>
     <div class="mvar-header">
-      <span class="var-col-lbl" style="text-align:left">Bezeichnung</span>
-      <span class="var-col-lbl">Min *</span>
-      <span class="var-col-lbl">Preis € *</span>
-      <span class="var-col-lbl">Puffer Min</span>
-      <span class="var-col-lbl">Puffer ✓</span>
+      <span class="var-col-lbl">Dauer Min · anz.</span>
+      <span class="var-col-lbl">Preis € · anz.</span>
+      <span class="var-col-lbl">Puffer Min · aktiv</span>
       <span></span>
     </div>
     <div id="m-var-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"></div>
@@ -563,12 +550,9 @@ function renderSvcBody(s,vars){
   +'<hr class="div">'
   +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Varianten</div>'
   +'<div class="var-header">'
-    +'<span class="var-col-lbl">Min</span>'
-    +'<span class="var-col-lbl">Preis €</span>'
-    +'<span class="var-col-lbl">Puffer</span>'
-    +'<span class="var-col-lbl">Preis<br>anz.</span>'
-    +'<span class="var-col-lbl">Dauer<br>anz.</span>'
-    +'<span class="var-col-lbl">Puffer<br>aktiv</span>'
+    +'<span class="var-col-lbl">Dauer Min · anz.</span>'
+    +'<span class="var-col-lbl">Preis € · anz.</span>'
+    +'<span class="var-col-lbl">Puffer Min · aktiv</span>'
     +'<span></span>'
   +'</div>'
   +'<div class="var-list" id="varlist-'+s.id+'">'
@@ -597,12 +581,21 @@ function mkVarRow(v,svcId){
   var durVal=(v.dauer_minuten&&v.dauer_minuten<9000)?v.dauer_minuten:'';
   var preisVal=(v.preis!=null&&v.preis>0)?v.preis:'';
   return'<div class="var-row" id="var-'+v.id+'">'
-    +'<input data-field="dauer_minuten" type="number" min="0" placeholder="Min" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value)">'
-    +'<input data-field="preis" type="number" min="0" step="0.5" placeholder="€" value="'+preisVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis\',this.value)">'
-    +'<input data-field="puffer_minuten" type="number" min="0" placeholder="0" value="'+(v.puffer_minuten||0)+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'puffer_minuten\',this.value)">'
-    +'<div class="var-toggle"><label class="toggle-sw" title="Preis anzeigen"><input data-field="preis_anzeigen" type="checkbox" '+(v.preis_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label></div>'
-    +'<div class="var-toggle"><label class="toggle-sw" title="Dauer anzeigen"><input data-field="dauer_anzeigen" type="checkbox" '+(v.dauer_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label></div>'
-    +'<div class="var-toggle"><label class="toggle-sw" title="Puffer aktiv"><input data-field="puffer_aktiv" type="checkbox" '+(v.puffer_aktiv?'checked':'')+' ><span class="slider"></span></label></div>'
+    // Gruppe 1: Dauer + Toggle "Dauer anzeigen"
+    +'<div class="var-group">'
+      +'<input data-field="dauer_minuten" type="number" min="0" placeholder="Min" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value)">'
+      +'<label class="toggle-sw" title="Dauer anzeigen"><input data-field="dauer_anzeigen" type="checkbox" '+(v.dauer_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'
+    +'</div>'
+    // Gruppe 2: Preis + Toggle "Preis anzeigen"
+    +'<div class="var-group">'
+      +'<input data-field="preis" type="number" min="0" step="0.5" placeholder="€" value="'+preisVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis\',this.value)">'
+      +'<label class="toggle-sw" title="Preis anzeigen"><input data-field="preis_anzeigen" type="checkbox" '+(v.preis_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'
+    +'</div>'
+    // Gruppe 3: Puffer + Toggle "Puffer aktiv"
+    +'<div class="var-group">'
+      +'<input data-field="puffer_minuten" type="number" min="0" placeholder="Puffer" value="'+(v.puffer_minuten||0)+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'puffer_minuten\',this.value)">'
+      +'<label class="toggle-sw" title="Puffer aktiv"><input data-field="puffer_aktiv" type="checkbox" '+(v.puffer_aktiv?'checked':'')+' ><span class="slider"></span></label>'
+    +'</div>'
     +'<button class="btn btn-sm btn-danger" style="padding:6px 8px" onclick="deleteVar(\''+v.id+'\',\''+svcId+'\')">✕</button>'
   +'</div>';
 }
@@ -737,34 +730,56 @@ function toggleOpt(key){
 }
 
 function addModalVar(defaults){
-  var d=defaults||{};var idx=++mVarCount;
+  var idx=++mVarCount;
   var row=document.createElement('div');row.className='mvar-row';row.id='mvar-'+idx;
   row.innerHTML=
-    '<input type="text" placeholder="z.B. Standard" value="'+(d.bez||'')+'">'
-   +'<input type="number" min="1" placeholder="60" value="'+(d.min||60)+'">'
-   +'<input type="number" min="0" step="0.5" placeholder="0.00" value="'+(d.preis||0)+'">'
-   +'<input type="number" min="0" placeholder="0" value="'+(d.puffer||0)+'">'
-   +'<div style="display:flex;justify-content:center"><label class="toggle-sw"><input type="checkbox" '+(d.pufferAktiv?'checked':'')+' title="Puffer aktiv"><span class="slider"></span></label></div>'
-   +'<button type="button" onclick="this.closest(\'.mvar-row\').remove()" style="background:none;border:none;cursor:pointer;font-size:16px;color:#ccc;line-height:1">×</button>';
+    '<div class="var-group">'
+      +'<input type="number" min="1" placeholder="Min" style="text-align:center">'
+      +'<label class="toggle-sw" title="Dauer anzeigen"><input type="checkbox" checked><span class="slider"></span></label>'
+    +'</div>'
+    +'<div class="var-group">'
+      +'<input type="number" min="0" step="0.5" placeholder="€" style="text-align:center">'
+      +'<label class="toggle-sw" title="Preis anzeigen"><input type="checkbox" checked><span class="slider"></span></label>'
+    +'</div>'
+    +'<div class="var-group">'
+      +'<input type="number" min="0" placeholder="Puffer" style="text-align:center">'
+      +'<label class="toggle-sw" title="Puffer aktiv"><input type="checkbox"><span class="slider"></span></label>'
+    +'</div>'
+    +'<button type="button" onclick="this.closest(\'.mvar-row\').remove()" style="background:none;border:none;cursor:pointer;font-size:16px;color:#ccc;line-height:1">×</button>';
   document.getElementById('m-var-list').appendChild(row);
 }
 
 function readModalVars(){
-  var rows=document.querySelectorAll('.mvar-row');var result=[];
+  var rows=document.querySelectorAll('.mvar-row');
+  var result=[];
   rows.forEach(function(row){
-    var inputs=row.querySelectorAll('input');var min=parseInt(inputs[1].value)||0;
-    if(min>0)result.push({bezeichnung:inputs[0].value.trim(),dauer_minuten:min,preis:parseFloat(inputs[2].value)||0,puffer_minuten:parseInt(inputs[3].value)||0,puffer_aktiv:inputs[4].checked,aktiv:true,sortierung:result.length});
+    var nums=row.querySelectorAll('input[type="number"]');
+    var checks=row.querySelectorAll('input[type="checkbox"]');
+    var min=parseInt(nums[0].value)||0;
+    if(min>0){
+      result.push({
+        dauer_minuten:min,
+        preis:parseFloat(nums[1].value)||0,
+        puffer_minuten:parseInt(nums[2].value)||0,
+        preis_anzeigen:checks[0].checked,
+        dauer_anzeigen:checks[1].checked,
+        puffer_aktiv:checks[2].checked,
+        aktiv:true,
+        sortierung:result.length
+      });
+    }
   });
   return result;
 }
 
 function openSvcModal(){
   mVarCount=0;
-  document.getElementById('m-name').value='';document.getElementById('m-desc').value='';
-  document.getElementById('m-aktiv').checked=true;document.getElementById('m-zeige-preis').checked=true;document.getElementById('m-zeige-dauer').checked=true;
-  ['aktiv','preis','dauer'].forEach(function(k){document.getElementById('opt-'+k).classList.add('on');});
-  document.getElementById('m-var-list').innerHTML='';addModalVar({min:60,preis:0});
-  document.getElementById('svc-overlay').style.display='block';document.getElementById('svc-modal').classList.add('open');
+  document.getElementById('m-name').value='';
+  document.getElementById('m-desc').value='';
+  document.getElementById('m-var-list').innerHTML='';
+  addModalVar();
+  document.getElementById('svc-overlay').style.display='block';
+  document.getElementById('svc-modal').classList.add('open');
   setTimeout(function(){document.getElementById('m-name').focus();},80);
 }
 function closeSvcModal(){document.getElementById('svc-overlay').style.display='none';document.getElementById('svc-modal').classList.remove('open');}
@@ -772,13 +787,24 @@ function closeSvcModal(){document.getElementById('svc-overlay').style.display='n
 async function saveNewService(){
   var name=document.getElementById('m-name').value.trim();
   if(!name){toast('Name ist Pflichtfeld','error');return;}
-  var vars=readModalVars();var btn=document.getElementById('btn-svc-save');btn.disabled=true;
-  var res=await sb.from('services').insert({salon_id:SALON_ID,name:name,beschreibung:document.getElementById('m-desc').value.trim(),aktiv:document.getElementById('m-aktiv').checked,dauer_anzeigen:document.getElementById('m-zeige-dauer').checked,preis_anzeigen:document.getElementById('m-zeige-preis').checked,sortierung:servicesData.length}).select().single();
+  var vars=readModalVars();
+  if(!vars.length){toast('Mindestens eine Variante mit Dauer erforderlich','error');return;}
+  var btn=document.getElementById('btn-svc-save');btn.disabled=true;
+  var res=await sb.from('services').insert({
+    salon_id:SALON_ID,name:name,
+    beschreibung:document.getElementById('m-desc').value.trim(),
+    aktiv:document.getElementById('m-aktiv').checked,
+    sortierung:servicesData.length
+  }).select().single();
   btn.disabled=false;
   if(res.error){toast('Fehler: '+res.error.message,'error');return;}
   var svc=res.data;var savedVars=[];
-  if(vars.length){var vRes=await sb.from('service_varianten').insert(vars.map(function(v){return Object.assign({service_id:svc.id},v);})).select();if(!vRes.error)savedVars=vRes.data||[];}
-  servicesData.push({service:svc,varianten:savedVars});renderSvcList();closeSvcModal();
+  if(vars.length){
+    var vRes=await sb.from('service_varianten').insert(vars.map(function(v){return Object.assign({service_id:svc.id},v);})).select();
+    if(!vRes.error)savedVars=vRes.data||[];
+  }
+  servicesData.push({service:svc,varianten:savedVars});
+  renderSvcList();closeSvcModal();
   toast('Service angelegt ✓','success');
   setTimeout(function(){toggleItem(svc.id,'svc');},80);
 }
