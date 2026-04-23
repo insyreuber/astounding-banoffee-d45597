@@ -167,6 +167,22 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .cpill{display:inline-flex;font-size:11px;padding:3px 10px;border-radius:99px;background:rgba(255,255,255,.15);color:#fff;margin:2px}
 .cpill.g{background:var(--tgp);color:#7a5a00}
 .reset-btn{background:none;border:1.5px solid rgba(255,255,255,.3);border-radius:8px;padding:8px 18px;font-size:13px;color:#fff;cursor:pointer;font-family:inherit;margin-top:1rem}
+.hd-hours-inline{
+  cursor:pointer;
+  position:relative;
+  user-select:none;
+}
+
+.hd-hours-inline:hover{
+  color:rgba(255,255,255,.82);
+}
+
+.hd-hours-inline .hd-hours-drop{
+  position:absolute;
+  top:calc(100% + 6px);
+  left:0;
+  right:auto;
+}
 </style>
 </head>
 <body>
