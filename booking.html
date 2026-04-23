@@ -187,26 +187,16 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.79 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
     Telefonnummer
   </div>
-</div>
-      
-      </div>
-    </div>
-    <div class="hd-right">
-      <div class="hd-hours-pill" id="hours-pill" onclick="toggleHours()">
-        09:00 – 19:00 ▾
-        <div class="hd-hours-drop" id="hours-drop">
-          <div class="hd-hour-row"><span>Montag</span><span>09:00 – 19:00</span></div>
-          <div class="hd-hour-row hd-hour-today"><span>Dienstag</span><span>09:00 – 19:00</span></div>
-          <div class="hd-hour-row"><span>Mittwoch</span><span>09:00 – 19:00</span></div>
-          <div class="hd-hour-row"><span>Donnerstag</span><span>09:00 – 20:00</span></div>
-          <div class="hd-hour-row"><span>Freitag</span><span>09:00 – 20:00</span></div>
-          <div class="hd-hour-row"><span>Samstag</span><span>10:00 – 17:00</span></div>
-          <div class="hd-hour-row hd-hour-closed"><span>Sonntag</span><span>Geschlossen</span></div>
-        </div>
-      </div>
-    </div>
+<div class="hd-chip hd-hours-inline" id="hours-pill" onclick="toggleHours()">
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <polyline points="12 6 12 12 16 14"></polyline>
+    </svg>
+    <span id="today-hours-label">09:00 – 17:00 ▾</span>
+    <div class="hd-hours-drop" id="hours-drop"></div>
   </div>
 </div>
+    
 
 <div class="wrap" id="app"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -696,23 +686,15 @@ function renderWorkingHours(arbeitszeiten) {
   const todayKey = getTodayKey();
   const todayData = arbeitszeiten[todayKey];
 
-  
-  const hoursPillEl = document.getElementById('hours-pill');
+  const todayHoursLabelEl = document.getElementById('today-hours-label');
   const hoursDropEl = document.getElementById('hours-drop');
 
-
-
-  if (hoursPillEl) {
-    hoursPillEl.innerHTML = `
-      ${formatHours(todayData)} ▾
-      <div class="hd-hours-drop" id="hours-drop"></div>
-    `;
+  if (todayHoursLabelEl) {
+    todayHoursLabelEl.textContent = `${formatHours(todayData)} ▾`;
   }
 
-  const newHoursDropEl = document.getElementById('hours-drop');
-
-  if (newHoursDropEl) {
-    newHoursDropEl.innerHTML = DAY_ORDER.map((dayKey) => {
+  if (hoursDropEl) {
+    hoursDropEl.innerHTML = DAY_ORDER.map((dayKey) => {
       const dayData = arbeitszeiten[dayKey];
       const isToday = dayKey === todayKey;
       const isClosed = !dayData?.aktiv;
