@@ -640,33 +640,45 @@ async function saveSvcAll(id){
   }).eq('id',id);
   if(sRes.error){toast('Fehler: '+sRes.error.message,'error');return;}
 
-  // 2. Alle Varianten speichern inkl. Toggles
+  // 2. Alle Varianten speichern
   var varRows=document.querySelectorAll('#varlist-'+id+' .var-row');
   var errs=[];
   for(var i=0;i<varRows.length;i++){
     var row=varRows[i];
     var vid=row.id.replace('var-','');
-    var min=parseInt(row.querySelector('[data-field="dauer_minuten"]').value)||1;
-    var preis=parseFloat(row.querySelector('[data-field="preis"]').value)||0;
-    var puffer=parseInt(row.querySelector('[data-field="puffer_minuten"]').value)||0;
-    var preisAnz=row.querySelector('[data-field="preis_anzeigen"]').checked;
-    var dauerAnz=row.querySelector('[data-field="dauer_anzeigen"]').checked;
-    var pufferAkt=row.querySelector('[data-field="puffer_aktiv"]').checked;
+    var groups=row.querySelectorAll('.var-group');
+    // Gruppe 0: Dauer + Dauer anzeigen
+    var min=parseInt(groups[0].querySelector('input[type="number"]').value)||1;
+    var dauerAnz=groups[0].querySelector('input[type="checkbox"]').checked;
+    // Gruppe 1: Preis + Preis anzeigen
+    var preis=parseFloat(groups[1].querySelector('input[type="number"]').value)||0;
+    var preisAnz=groups[1].querySelector('input[type="checkbox"]').checked;
+    // Gruppe 2: Puffer + Puffer aktiv
+    var puffer=parseInt(groups[2].querySelector('input[type="number"]').value)||0;
+    var pufferAkt=groups[2].querySelector('input[type="checkbox"]').checked;
     var vRes=await sb.from('service_varianten').update({
       dauer_minuten:min, preis:preis, puffer_minuten:puffer,
-      preis_anzeigen:preisAnz, dauer_anzeigen:dauerAnz, puffer_aktiv:pufferAkt
+      dauer_anzeigen:dauerAnz, preis_anzeigen:preisAnz, puffer_aktiv:pufferAkt
     }).eq('id',vid);
     if(vRes.error)errs.push(vRes.error.message);
+    else{
+      // Lokalen State updaten
+      var item2=servicesData.filter(function(x){return x.service.id===id;})[0];
+      if(item2)item2.varianten.forEach(function(v){
+        if(v.id===vid){v.dauer_minuten=min;v.preis=preis;v.puffer_minuten=puffer;v.dauer_anzeigen=dauerAnz;v.preis_anzeigen=preisAnz;v.puffer_aktiv=pufferAkt;}
+      });
+    }
   }
 
   // 3. Lokalen State + Header aktualisieren
-  item.service.name=name;item.service.beschreibung=desc;
-  item.service.aktiv=aktiv;item.service.preis_anzeigen=preisAn;item.service.dauer_anzeigen=dauerAn;
+  item.service.name=name;item.service.beschreibung=desc;item.service.aktiv=aktiv;
   var nameEl=document.querySelector('#svc-item-'+id+' .svc-item-name');if(nameEl)nameEl.textContent=name;
   var metaEl=document.querySelector('#svc-item-'+id+' .svc-item-meta');if(metaEl)metaEl.textContent=desc;
   var badgeEl=document.querySelector('#svc-item-'+id+' .badge');
   if(badgeEl){badgeEl.textContent=aktiv?'Aktiv':'Inaktiv';badgeEl.className='badge '+(aktiv?'':'off');}
-  var minP=item.varianten.length?Math.min.apply(null,item.varianten.map(function(v){return parseFloat(v.preis)||0;})):null;
+  // ab-Preis aus aktuellem lokalen State (bereits durch Schritt 2 aktualisiert)
+  var updatedItem=servicesData.filter(function(x){return x.service.id===id;})[0];
+  var minP=updatedItem&&updatedItem.varianten.length?Math.min.apply(null,updatedItem.varianten.map(function(v){return parseFloat(v.preis)||0;})):null;
   var preisBadge=document.querySelector('#svc-item-'+id+' .svc-item-hdr span[style*="color:var(--tg)"]');
   if(preisBadge&&minP!==null)preisBadge.textContent='ab '+minP+' €';
 
