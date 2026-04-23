@@ -109,46 +109,63 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .var-group:focus-within{border-color:var(--tpl)}
 .var-group .toggle-sw{flex-shrink:0}
 
-/* ── WOCHENPLAN ── */
-.week-plan{background:var(--white);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px}
-.week-plan-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1.5px solid var(--border);background:#faf8fc}
-.week-plan-title{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600}
-.week-plan-legend{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
-.legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
-.legend-chip{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--td);padding:3px 10px 3px 6px;border-radius:99px;border:1.5px solid;cursor:pointer;user-select:none;transition:all .15s;font-weight:500}
-.legend-chip:hover{opacity:.8}
-.legend-chip-off{opacity:.35;text-decoration:line-through;background:transparent!important}
-.week-grid{display:grid;grid-template-columns:52px repeat(7,1fr);position:relative}
-.week-time-col{border-right:1.5px solid var(--border)}
-.week-time-label{height:48px;display:flex;align-items:flex-start;justify-content:flex-end;padding:4px 8px 0 0;font-size:10px;font-family:'DM Mono',monospace;color:#c8bcd8}
-.week-day-col{border-right:1px solid var(--border);position:relative;min-height:576px}
-.week-day-col:last-child{border-right:none}
-.week-day-hdr{text-align:center;padding:8px 4px 6px;border-bottom:1.5px solid var(--border);background:#faf8fc;position:sticky;top:0}
-.week-day-name{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
-.week-day-date{font-size:12px;font-weight:500;color:var(--td);margin-top:1px}
-.week-day-today .week-day-name{color:var(--tpl)}
-.week-day-today .week-day-date{color:var(--white);background:var(--tp);border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:11px}
-.week-hour-line{position:absolute;left:0;right:0;border-top:1px solid #f0eaf7;pointer-events:none}
-.week-block{position:absolute;left:3px;right:3px;border-radius:5px;padding:3px 5px;font-size:10px;font-weight:500;overflow:hidden;cursor:default;transition:opacity .15s}
-.week-block:hover{opacity:.85}
-.week-block-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.week-block-time{font-size:9px;opacity:.8;margin-top:1px;font-family:'DM Mono',monospace}
-.week-salon-block{background:rgba(74,28,107,.1);border:1.5px solid rgba(74,28,107,.25);color:var(--tp)}
-.week-closed{background:repeating-linear-gradient(45deg,#f5f2f8,#f5f2f8 4px,#eeebf5 4px,#eeebf5 8px)}
-.staff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
-.staff-card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s}
+/* ── MITARBEITER TAB LAYOUT ── */
+.ma-layout{display:grid;grid-template-columns:200px 1fr;gap:14px;align-items:start}
+.ma-sidebar{display:flex;flex-direction:column;gap:8px}
+.staff-card{background:var(--white);border:1.5px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .2s;cursor:pointer}
 .staff-card:hover{border-color:var(--tpl)}
-.staff-card-top{padding:16px;display:flex;align-items:center;gap:12px}
-.staff-avatar{width:42px;height:42px;border-radius:50%;background:var(--tpp);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:var(--tpl);flex-shrink:0}
-.staff-name{font-size:14px;font-weight:500;color:var(--td)}
-.staff-role{font-size:11px;color:var(--muted);margin-top:2px}
-.staff-card-actions{display:flex;border-top:1.5px solid var(--border)}
-.staff-action{flex:1;padding:9px;font-size:11px;font-weight:500;color:var(--muted);cursor:pointer;text-align:center;transition:all .15s;background:none;border:none;font-family:inherit}
+.staff-card-body{padding:11px 12px;display:flex;align-items:center;gap:9px}
+.staff-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+.staff-name{font-size:13px;font-weight:500;color:var(--td);line-height:1.2}
+.staff-role{font-size:10px;color:var(--muted);margin-top:1px}
+.staff-card-actions{display:flex;border-top:1px solid var(--border)}
+.staff-action{flex:1;padding:7px;font-size:10px;font-weight:500;color:var(--muted);cursor:pointer;text-align:center;transition:all .15s;background:none;border:none;font-family:inherit}
 .staff-action:hover{background:var(--tpp);color:var(--tpl)}
-.staff-action+.staff-action{border-left:1.5px solid var(--border)}
+.staff-action+.staff-action{border-left:1px solid var(--border)}
+.staff-add-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:9px;border:1.5px dashed var(--border);border-radius:10px;font-size:11px;color:var(--muted);cursor:pointer;background:none;font-family:inherit;width:100%;transition:all .15s}
+.staff-add-btn:hover{border-color:var(--tpl);color:var(--tpl);background:var(--tpp)}
 
-/* ── MODAL ── */
+/* ── WOCHENPLAN ── */
+.week-plan{background:var(--white);border:1.5px solid var(--border);border-radius:12px;overflow:hidden}
+.week-plan-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1.5px solid var(--border);background:#faf8fc;flex-wrap:wrap;gap:8px}
+.week-plan-title{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600}
+.week-plan-legend{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.legend-chip{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:500;color:var(--td);padding:2px 8px 2px 5px;border-radius:99px;border:1.5px solid;cursor:pointer;user-select:none;transition:all .15s}
+.legend-chip:hover{opacity:.75}
+.legend-chip-off{opacity:.3;text-decoration:line-through;background:transparent!important}
+
+/* Kompaktes Kalender-Grid */
+.week-scroll{overflow-x:auto}
+.week-grid{display:grid;grid-template-columns:36px repeat(7,1fr);border-top:1px solid var(--border)}
+.week-time-col{border-right:1px solid var(--border)}
+.week-time-label{height:36px;display:flex;align-items:flex-start;padding:3px 5px 0 0;font-size:9px;font-family:'DM Mono',monospace;color:#c8bcd8;justify-content:flex-end}
+.week-day-col{border-right:1px solid var(--border);position:relative}
+.week-day-col:last-child{border-right:none}
+.week-day-hdr{text-align:center;padding:5px 2px 4px;border-bottom:1px solid var(--border);background:#faf8fc}
+.week-day-name{font-size:9px;font-weight:600;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+.week-day-date{font-size:11px;font-weight:500;color:var(--td);margin-top:1px}
+.week-day-today .week-day-name{color:var(--tpl)}
+.week-day-today .week-day-date{background:var(--tp);color:#fff;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:10px}
+.week-hour-line{position:absolute;left:0;right:0;border-top:1px solid #f5f2f8;pointer-events:none}
+.week-hour-line.full{border-top-color:#e8e0f0}
+
+/* Salon-Hintergrund — volle Spaltenbreite, sehr subtil */
+.week-salon-bg{position:absolute;left:0;right:0;background:rgba(74,28,107,.06);border-top:2px solid rgba(74,28,107,.2);border-bottom:2px solid rgba(74,28,107,.2);pointer-events:none}
+.week-closed-bg{position:absolute;inset:0;background:repeating-linear-gradient(45deg,#f8f6fb,#f8f6fb 3px,#f0edf5 3px,#f0edf5 6px);pointer-events:none;opacity:.7}
+
+/* Mitarbeiter-Streifen — gestreift mit ihrer Farbe */
+.week-staff-stripe{position:absolute;left:1px;right:1px;border-radius:3px;overflow:hidden;pointer-events:none}
+
+/* Abdeckungs-Balken oben */
+.week-coverage-bar{height:5px;display:flex;border-bottom:1px solid var(--border)}
+.week-coverage-seg{height:100%;transition:opacity .15s}
+
+/* Color swatches */
+.color-swatch{width:26px;height:26px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:transform .15s,border-color .15s;flex-shrink:0}
+.color-swatch:hover{transform:scale(1.15)}
+.color-swatch.selected{border-color:var(--td);transform:scale(1.1)}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(26,10,46,.45);z-index:500;backdrop-filter:blur(2px)}
 .modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:14px;width:660px;max-width:96vw;max-height:90vh;display:none;flex-direction:column;z-index:600;box-shadow:0 20px 60px rgba(74,28,107,.22)}
 .modal.open{display:flex}
@@ -294,29 +311,24 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
   <!-- ════ MITARBEITER ════ -->
   <div class="tab-panel" id="panel-mitarbeiter">
-    <div class="sec-hdr" style="display:flex;align-items:flex-start;justify-content:space-between">
-      <div><div class="sec-title">Mitarbeiter</div><div class="sec-sub">Team verwalten, Arbeitszeiten & Services zuweisen</div></div>
-      <button class="btn btn-outline" onclick="openStaffModal()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Mitarbeiter hinzufügen
-      </button>
+    <div class="sec-hdr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div><div class="sec-title">Mitarbeiter</div><div class="sec-sub">Team & Wochenplan</div></div>
     </div>
-
-    <!-- Wochenplan -->
-    <div class="week-plan" id="week-plan">
-      <div class="week-plan-hdr">
-        <div class="week-plan-title">Wochenübersicht</div>
-        <div class="week-plan-legend" id="week-legend">
-          <div class="legend-item"><div class="legend-dot" style="background:rgba(74,28,107,.2);border:1.5px solid rgba(74,28,107,.4)"></div>Salon-Öffnungszeiten</div>
+    <div class="ma-layout">
+      <!-- Sidebar: Mitarbeiter-Kacheln -->
+      <div class="ma-sidebar" id="staff-sidebar">
+        <div class="empty" style="padding:20px 10px"><div class="empty-text">Wird geladen…</div></div>
+      </div>
+      <!-- Wochenplan rechts -->
+      <div class="week-plan" id="week-plan">
+        <div class="week-plan-hdr">
+          <div class="week-plan-title">Wochenübersicht</div>
+          <div class="week-plan-legend" id="week-legend"></div>
+        </div>
+        <div class="week-scroll">
+          <div id="week-grid-wrap"></div>
         </div>
       </div>
-      <div style="overflow-x:auto">
-        <div id="week-grid-wrap" style="min-width:600px"></div>
-      </div>
-    </div>
-
-    <div class="staff-grid" id="staff-grid">
-      <div class="empty" style="grid-column:1/-1"><div class="empty-icon">⟳</div><div class="empty-text">Wird geladen…</div></div>
     </div>
   </div>
 
@@ -398,6 +410,23 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
     <div class="frow frow-2" style="margin-bottom:12px">
       <div class="field"><label>Rolle / Berufsbezeichnung</label><input type="text" id="s-role" placeholder="z.B. Massagetherapeutin"></div>
       <div class="field"><label>E-Mail</label><input type="email" id="s-email" placeholder="niran@salon.de"></div>
+    </div>
+    <!-- Farbe -->
+    <div style="margin-bottom:12px">
+      <div style="font-size:11px;font-weight:500;color:var(--muted);margin-bottom:6px">Farbe im Wochenplan</div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap" id="color-picker">
+        <div class="color-swatch" data-color="#e74c3c" style="background:#e74c3c" onclick="pickColor('#e74c3c')"></div>
+        <div class="color-swatch" data-color="#e67e22" style="background:#e67e22" onclick="pickColor('#e67e22')"></div>
+        <div class="color-swatch" data-color="#f1c40f" style="background:#f1c40f" onclick="pickColor('#f1c40f')"></div>
+        <div class="color-swatch" data-color="#2ecc71" style="background:#2ecc71" onclick="pickColor('#2ecc71')"></div>
+        <div class="color-swatch" data-color="#1abc9c" style="background:#1abc9c" onclick="pickColor('#1abc9c')"></div>
+        <div class="color-swatch" data-color="#3498db" style="background:#3498db" onclick="pickColor('#3498db')"></div>
+        <div class="color-swatch" data-color="#9b59b6" style="background:#9b59b6" onclick="pickColor('#9b59b6')"></div>
+        <div class="color-swatch" data-color="#e91e8c" style="background:#e91e8c" onclick="pickColor('#e91e8c')"></div>
+        <div class="color-swatch" data-color="#607d8b" style="background:#607d8b" onclick="pickColor('#607d8b')"></div>
+        <div class="color-swatch" data-color="#795548" style="background:#795548" onclick="pickColor('#795548')"></div>
+      </div>
+      <input type="hidden" id="s-color" value="#3498db">
     </div>
     <div class="frow frow-1" style="margin-bottom:4px">
       <div class="field"><label>Google Kalender ID</label><input type="text" id="s-cal" placeholder="name@gmail.com oder Kalender-ID"></div>
@@ -886,15 +915,13 @@ function timeToMin(t){
   var p=t.split(':');return parseInt(p[0])*60+parseInt(p[1]);
 }
 
-var hiddenStaff={};  // { mitarbeiter_id: true } wenn ausgeblendet
+var hiddenStaff={};
 
 function toggleStaffVisibility(staffId){
   hiddenStaff[staffId]=!hiddenStaff[staffId];
-  // Chip-Style aktualisieren
   var chip=document.getElementById('legend-chip-'+staffId);
   if(chip)chip.classList.toggle('legend-chip-off',hiddenStaff[staffId]);
-  // Alle Blöcke dieses Mitarbeiters zeigen/verstecken
-  document.querySelectorAll('.week-staff-block-'+staffId).forEach(function(el){
+  document.querySelectorAll('.ws-'+staffId).forEach(function(el){
     el.style.display=hiddenStaff[staffId]?'none':'block';
   });
 }
@@ -903,8 +930,9 @@ function renderWeekPlan(salonAz){
   var wrap=document.getElementById('week-grid-wrap');
   if(!wrap)return;
 
-  // Früheste / späteste Zeit über alle Mitarbeiter + Salon ermitteln
+  var PX_PER_MIN=0.9; // kompakter: 60min = 54px
   var earliest=480,latest=1080;
+
   function checkAz(az){
     if(!az)return;
     WEEK_DAYS.forEach(function(d){
@@ -921,103 +949,124 @@ function renderWeekPlan(salonAz){
   earliest=Math.floor(earliest/60)*60;
   latest=Math.ceil(latest/60)*60;
   var totalMins=latest-earliest;
-  var PX_PER_MIN=1.6;
+  var totalH=totalMins*PX_PER_MIN;
 
   var weekStart=getWeekStart();
   var today=new Date();today.setHours(0,0,0,0);
 
-  // Legende — klickbare Chips
+  // Legende
   var legend=document.getElementById('week-legend');
-  var legendHtml='<div class="legend-item"><div class="legend-dot" style="background:rgba(74,28,107,.15);border:1.5px solid rgba(74,28,107,.4)"></div>Salon</div>';
-  staffData.forEach(function(item,idx){
-    var col=STAFF_COLORS[idx%STAFF_COLORS.length];
-    var name=item.mitarbeiter.display_name||item.mitarbeiter.name;
-    var mid=item.mitarbeiter.id;
-    var isOff=hiddenStaff[mid];
-    legendHtml+='<div class="legend-chip '+(isOff?'legend-chip-off':'')+'" id="legend-chip-'+mid+'" onclick="toggleStaffVisibility(\''+mid+'\')" style="border-color:'+col.border+';background:'+(isOff?'transparent':col.bg)+'">'
-      +'<div class="legend-dot" style="background:'+col.border+';flex-shrink:0"></div>'
-      +esc(name)
+  var lHtml='<div class="legend-item"><div class="legend-dot" style="background:rgba(74,28,107,.15);border:1.5px solid rgba(74,28,107,.3)"></div>Salon</div>';
+  staffData.forEach(function(item){
+    var m=item.mitarbeiter;var color=getStaffColor(m);
+    lHtml+='<div class="legend-chip '+(hiddenStaff[m.id]?'legend-chip-off':'')+'" id="legend-chip-'+m.id+'" onclick="toggleStaffVisibility(\''+m.id+'\')" style="border-color:'+color+';background:'+hexToRgba(color,.1)+'">'
+      +'<div class="legend-dot" style="background:'+color+'"></div>'+esc(m.display_name||m.name)
     +'</div>';
   });
-  if(legend)legend.innerHTML=legendHtml;
+  if(legend)legend.innerHTML=lHtml;
 
   // Stunden-Labels
-  var timeLabels='';
-  for(var m=earliest;m<=latest;m+=60){
-    var h=Math.floor(m/60);
-    timeLabels+='<div class="week-time-label">'+('0'+h).slice(-2)+':00</div>';
+  var timeHtml='<div style="height:42px"></div>'; // header height
+  for(var m=earliest;m<latest;m+=60){
+    timeHtml+='<div class="week-time-label">'+('0'+Math.floor(m/60)).slice(-2)+'</div>';
   }
 
-  // Tages-Spalten
-  var dayCols='';
+  // Tage
+  var daysHtml='';
   WEEK_DAYS.forEach(function(d,dayIdx){
     var date=new Date(weekStart);date.setDate(weekStart.getDate()+dayIdx);
     var isToday=date.getTime()===today.getTime();
-    var dateStr=date.getDate()+'.'+(date.getMonth()+1)+'.';
-
-    var lines='';
-    for(var m=0;m<totalMins;m+=60){
-      lines+='<div class="week-hour-line" style="top:'+(m*PX_PER_MIN)+'px"></div>';
-    }
-
-    // Salon-Block
-    var salonBlock='';
     var sh=salonAz&&salonAz[d.key];
-    if(sh&&sh.aktiv){
-      var sStart=timeToMin(sh.start)-earliest;
-      var sEnd=timeToMin(sh.end)-earliest;
-      salonBlock='<div class="week-block week-salon-block" style="top:'+(sStart*PX_PER_MIN)+'px;height:'+((sEnd-sStart)*PX_PER_MIN)+'px">'
-        +'<div class="week-block-name">Salon</div>'
-        +'<div class="week-block-time">'+sh.start+' – '+sh.end+'</div>'
-      +'</div>';
+    var salonOpen=sh&&sh.aktiv;
+
+    // Abdeckungs-Balken: welche Mitarbeiter arbeiten heute
+    var activeTodayColors=[];
+    staffData.forEach(function(item){
+      if(hiddenStaff[item.mitarbeiter.id])return;
+      var az=item.mitarbeiter.arbeitszeiten||salonAz;
+      var mh=az&&az[d.key];
+      if(mh&&mh.aktiv)activeTodayColors.push(getStaffColor(item.mitarbeiter));
+    });
+    var coverBar='<div class="week-coverage-bar">';
+    if(activeTodayColors.length){
+      activeTodayColors.forEach(function(c){
+        coverBar+='<div class="week-coverage-seg" style="flex:1;background:'+c+'"></div>';
+      });
     } else {
-      salonBlock='<div class="week-closed" style="position:absolute;inset:0;opacity:.5"></div>';
+      coverBar+='<div style="flex:1;background:#f0edf5"></div>';
+    }
+    coverBar+='</div>';
+
+    // Stunden-Linien
+    var lines='';
+    for(var min=0;min<totalMins;min+=60){
+      lines+='<div class="week-hour-line'+(min%120===0?' full':'')+'" style="top:'+(min*PX_PER_MIN)+'px"></div>';
     }
 
-    // Mitarbeiter-Blöcke
-    var visibleStaff=staffData.filter(function(item){return !hiddenStaff[item.mitarbeiter.id];});
-    var colWidth=visibleStaff.length>0?Math.floor(94/visibleStaff.length):94;
-    var staffBlocks='';
+    // Salon-Hintergrund
+    var salonBg='';
+    if(salonOpen){
+      var sS=timeToMin(sh.start)-earliest;
+      var sE=timeToMin(sh.end)-earliest;
+      salonBg='<div class="week-salon-bg" style="top:'+(sS*PX_PER_MIN)+'px;height:'+((sE-sS)*PX_PER_MIN)+'px"></div>';
+    } else {
+      salonBg='<div class="week-closed-bg"></div>';
+    }
+
+    // Mitarbeiter-Streifen (alle nebeneinander innerhalb ihrer Zeiten)
+    var totalVisible=staffData.filter(function(i){return !hiddenStaff[i.mitarbeiter.id];}).length;
+    var stripeW=totalVisible>0?Math.floor(94/totalVisible):94;
     var visIdx=0;
+    var stripes='';
     staffData.forEach(function(item,sIdx){
       var mid=item.mitarbeiter.id;
-      var m=item.mitarbeiter;
-      var az=m.arbeitszeiten||salonAz;
+      var m2=item.mitarbeiter;
+      var az=m2.arbeitszeiten||salonAz;
       var mh=az&&az[d.key];
-      var col=STAFF_COLORS[sIdx%STAFF_COLORS.length];
+      var color=getStaffColor(m2);
       var display=hiddenStaff[mid]?'none':'block';
-      if(!mh||!mh.aktiv){visIdx++;return;}
-      var mStart=timeToMin(mh.start)-earliest;
-      var mEnd=timeToMin(mh.end)-earliest;
-      var top=mStart*PX_PER_MIN;
-      var height=(mEnd-mStart)*PX_PER_MIN;
-      var left=3+(visIdx*colWidth);
-      var right=3+((staffData.length-1-visIdx)*colWidth);
-      staffBlocks+='<div class="week-block week-staff-block-'+mid+'" style="'
-        +'top:'+top+'px;height:'+height+'px;'
-        +'left:'+left+'%;right:'+right+'%;'
-        +'display:'+display+';'
-        +'background:'+col.bg+';border:1.5px solid '+col.border+';color:'+col.text+'">'
-        +'<div class="week-block-name">'+esc(m.display_name||m.name)+'</div>'
-        +'<div class="week-block-time">'+mh.start+' – '+mh.end+'</div>'
-      +'</div>';
-      visIdx++;
+      if(mh&&mh.aktiv){
+        var mS=timeToMin(mh.start)-earliest;
+        var mE=timeToMin(mh.end)-earliest;
+        var top=mS*PX_PER_MIN;
+        var height=(mE-mS)*PX_PER_MIN;
+        var left=3+visIdx*stripeW;
+        // Gestreifter Hintergrund in Mitarbeiterfarbe
+        stripes+='<div class="week-staff-stripe ws-'+mid+'" style="'
+          +'display:'+display+';'
+          +'top:'+top+'px;height:'+height+'px;'
+          +'left:'+left+'%;width:'+(stripeW-1)+'%;'
+          +'background:repeating-linear-gradient(45deg,'
+            +hexToRgba(color,.25)+','
+            +hexToRgba(color,.25)+' 4px,'
+            +hexToRgba(color,.08)+' 4px,'
+            +hexToRgba(color,.08)+' 8px);'
+          +'border-left:3px solid '+color+';'
+          +'border-radius:3px;overflow:hidden">'
+          +'<div style="font-size:9px;font-weight:600;color:'+color+';padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:'+hexToRgba(color,.15)+'">'
+            +esc(m2.display_name||m2.name)
+          +'</div>'
+          +(height>40?'<div style="font-size:9px;color:'+color+';padding:0 4px;font-family:DM Mono,monospace;opacity:.8">'+mh.start+'–'+mh.end+'</div>':'')
+        +'</div>';
+      }
+      if(!hiddenStaff[mid])visIdx++;
     });
 
-    dayCols+='<div class="week-day-col'+(isToday?' week-day-today':'')+'">'
+    daysHtml+='<div class="week-day-col'+(isToday?' week-day-today':'')+'">'
       +'<div class="week-day-hdr">'
         +'<div class="week-day-name">'+d.short+'</div>'
-        +'<div class="week-day-date">'+dateStr+'</div>'
+        +'<div class="week-day-date">'+(isToday?'<span style="background:var(--tp);color:#fff;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:10px">'+date.getDate()+'</span>':date.getDate()+'.')+'</div>'
       +'</div>'
-      +'<div style="position:relative;height:'+(totalMins*PX_PER_MIN)+'px">'
-        +lines+salonBlock+staffBlocks
+      +coverBar
+      +'<div style="position:relative;height:'+totalH+'px">'
+        +lines+salonBg+stripes
       +'</div>'
     +'</div>';
   });
 
   wrap.innerHTML='<div class="week-grid">'
-    +'<div class="week-time-col"><div style="height:53px"></div>'+timeLabels+'</div>'
-    +dayCols
+    +'<div class="week-time-col">'+timeHtml+'</div>'
+    +daysHtml
   +'</div>';
 }
 async function loadStaff(){
@@ -1036,49 +1085,51 @@ async function loadStaff(){
       varianteIds:assigns.filter(function(a){return a.mitarbeiter_id===s.id&&a.aktiv;}).map(function(a){return a.service_variante_id;})
     };
   });
-  renderStaffGrid();
-  // Salon-Öffnungszeiten für Wochenplan holen (aus bereits geladenem Profil)
+  renderStaffSidebar();
+  // Salon-Öffnungszeiten für Wochenplan holen
   var pRes=await sb.from('kunden_profile').select('arbeitszeiten').eq('id',SALON_ID).single();
   renderWeekPlan(pRes.error?null:pRes.data.arbeitszeiten);
 }
 
-function renderStaffGrid(){
-  var grid=document.getElementById('staff-grid');
+function getStaffColor(m){
+  // Eigene Farbe aus DB bevorzugen, sonst Fallback
+  return m.farbe||'#3498db';
+}
+
+function hexToRgba(hex,alpha){
+  var r=parseInt(hex.slice(1,3),16);
+  var g=parseInt(hex.slice(3,5),16);
+  var b=parseInt(hex.slice(5,7),16);
+  return'rgba('+r+','+g+','+b+','+alpha+')';
+}
+
+function renderStaffSidebar(){
+  var sidebar=document.getElementById('staff-sidebar');
   if(!staffData.length){
-    grid.innerHTML='<div class="empty" style="grid-column:1/-1"><div class="empty-icon">✦</div><div class="empty-text">Noch keine Mitarbeiter — füge dein Team hinzu</div></div>';
+    sidebar.innerHTML='<div style="font-size:12px;color:var(--muted);padding:12px 4px">Noch kein Team</div>';
+    sidebar.insertAdjacentHTML('beforeend','<button class="staff-add-btn" onclick="openStaffModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Hinzufügen</button>');
     return;
   }
-  grid.innerHTML=staffData.map(function(item,idx){
+  sidebar.innerHTML=staffData.map(function(item){
     var m=item.mitarbeiter;
-    var col=STAFF_COLORS[idx%STAFF_COLORS.length];
+    var color=getStaffColor(m);
     var ini=(m.display_name||m.name||'?').split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
-    var vCount=item.varianteIds.length;
-    var svcIds=[];
-    item.varianteIds.forEach(function(vid){
-      servicesData.forEach(function(si){
-        si.varianten.forEach(function(v){if(v.id===vid&&svcIds.indexOf(si.service.id)<0)svcIds.push(si.service.id);});
-      });
-    });
     return'<div class="staff-card" id="staff-card-'+m.id+'">'
-      +'<div style="height:4px;background:'+col.border+'"></div>'
-      +'<div class="staff-card-top">'
-        +'<div class="staff-avatar" style="background:'+col.bg+';color:'+col.text+';border:1.5px solid '+col.border+'">'+ini+'</div>'
-        +'<div style="flex:1;min-width:0">'
+      +'<div style="height:3px;background:'+color+'"></div>'
+      +'<div class="staff-card-body">'
+        +'<div class="staff-avatar" style="background:'+hexToRgba(color,.15)+';color:'+color+'">'+ini+'</div>'
+        +'<div style="min-width:0">'
           +'<div class="staff-name">'+esc(m.display_name||m.name)+'</div>'
-          +'<div class="staff-role">'+esc(m.role||'')+'</div>'
-          +'<div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap">'
-            +'<span class="badge '+(m.aktiv?'':'off')+'" style="font-size:9px">'+(m.aktiv?'Aktiv':'Inaktiv')+'</span>'
-            +(m.google_calendar_id?'<span class="badge" style="font-size:9px;background:var(--tgp);color:#7a5a00">Google ✓</span>':'')
-          +'</div>'
+          +'<div class="staff-role">'+esc(m.role||'—')+'</div>'
         +'</div>'
       +'</div>'
-      +'<div style="padding:0 14px 10px;font-size:11px;color:var(--muted)">'+svcIds.length+' Service'+(svcIds.length!==1?'s':'')+(vCount?' · '+vCount+' Variante'+(vCount!==1?'n':''):'')+'</div>'
       +'<div class="staff-card-actions">'
-        +'<button class="staff-action" onclick="editStaff(\''+m.id+'\')">✎ Bearbeiten</button>'
-        +'<button class="staff-action" onclick="deleteStaff(\''+m.id+'\')" style="color:var(--danger)">✕ Löschen</button>'
+        +'<button class="staff-action" onclick="editStaff(\''+m.id+'\')">✎</button>'
+        +'<button class="staff-action" onclick="deleteStaff(\''+m.id+'\')" style="color:var(--danger)">✕</button>'
       +'</div>'
     +'</div>';
   }).join('');
+  sidebar.insertAdjacentHTML('beforeend','<button class="staff-add-btn" onclick="openStaffModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Hinzufügen</button>');
 }
 
 // ── MITARBEITER MODAL ─────────────────────────────────────────
@@ -1135,6 +1186,13 @@ function getCheckedVarianten(){
   return ids;
 }
 
+function pickColor(hex){
+  document.getElementById('s-color').value=hex;
+  document.querySelectorAll('.color-swatch').forEach(function(el){
+    el.classList.toggle('selected',el.dataset.color===hex);
+  });
+}
+
 function openStaffModal(data){
   editingStaffId=data?data.mitarbeiter.id:null;
   document.getElementById('staff-modal-title').textContent=data?'Mitarbeiter bearbeiten':'Mitarbeiter hinzufügen';
@@ -1144,6 +1202,8 @@ function openStaffModal(data){
   document.getElementById('s-role').value=m.role||'';
   document.getElementById('s-email').value=m.email||'';
   document.getElementById('s-cal').value=m.google_calendar_id||'';
+  // Farbe setzen
+  pickColor(m.farbe||'#3498db');
   var hasCustom=!!(data&&m.arbeitszeiten);
   document.getElementById('s-custom-hours').checked=hasCustom;
   var wrap=document.getElementById('s-hours-wrap');
@@ -1179,6 +1239,7 @@ async function saveStaff(){
     email:document.getElementById('s-email').value.trim(),
     google_calendar_id:document.getElementById('s-cal').value.trim(),
     arbeitszeiten:hasCustom?readHours('s-'):null,
+    farbe:document.getElementById('s-color').value,
     aktiv:true,
     sortierung:editingStaffId?undefined:nextSort
   };
@@ -1203,8 +1264,7 @@ async function saveStaff(){
   }
   closeStaffModal();
   toast((editingStaffId?'Mitarbeiter aktualisiert':'Mitarbeiter angelegt')+' ✓','success');
-  await loadStaff();
-}
+  await loadStaff();}
 
 async function deleteStaff(id){
   if(!confirm('Mitarbeiter wirklich löschen?'))return;
@@ -1213,7 +1273,7 @@ async function deleteStaff(id){
   if(res.error){toast('Fehler: '+res.error.message,'error');return;}
   staffData=staffData.filter(function(i){return i.mitarbeiter.id!==id;});
   var el=document.getElementById('staff-card-'+id);if(el)el.remove();
-  if(!staffData.length)renderStaffGrid();
+  if(!staffData.length)renderStaffSidebar();
   toast('Mitarbeiter gelöscht','success');
 }
 
