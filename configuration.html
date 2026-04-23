@@ -484,7 +484,7 @@ async function loadProfil(){
   if(!SALON_ID){toast('Keine salon_id in der URL','error');buildHoursCols(null,'hours-cols','h-',false);return;}
   document.getElementById('nav-salon-id').textContent='salon_id: '+SALON_ID.slice(0,8)+'…';
   var bookingBtn=document.getElementById('nav-booking-link');
-  if(bookingBtn)bookingBtn.href='insy-reception.html?salon_id='+SALON_ID;
+  if(bookingBtn)bookingBtn.href='https://insy-reception.com/booking?salon_id='+SALON_ID;
   var res=await sb.from('kunden_profile').select('*').eq('id',SALON_ID).single();
   if(res.error){toast('Profil nicht gefunden','error');buildHoursCols(null,'hours-cols','h-',false);return;}
   var d=res.data;
@@ -597,9 +597,9 @@ function toggleDispOpt(svcId, key){
 function mkVarRow(v,svcId){
   return'<div class="var-row" id="var-'+v.id+'">'
     +'<input type="text" placeholder="z.B. Standard" value="'+esc(v.bezeichnung||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'bezeichnung\',this.value)">'
-    +'<input type="number" min="1" value="'+v.dauer_minuten+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value)" style="text-align:center">'
-    +'<input type="number" min="0" step="0.5" value="'+v.preis+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis\',this.value)" style="text-align:center">'
-    +'<input type="number" min="0" value="'+(v.puffer_minuten||0)+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'puffer_minuten\',this.value)" style="text-align:center">'
+    +'<input type="number" min="0" placeholder="Min" value="'+(v.dauer_minuten!=null?v.dauer_minuten:'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value)" style="text-align:center">'
+    +'<input type="number" min="0" step="0.5" placeholder="€" value="'+(v.preis!=null?v.preis:'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis\',this.value)" style="text-align:center">'
+    +'<input type="number" min="0" placeholder="0" value="'+(v.puffer_minuten||0)+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'puffer_minuten\',this.value)" style="text-align:center">'
     +'<button class="btn btn-sm btn-danger" style="padding:6px 8px" onclick="deleteVar(\''+v.id+'\',\''+svcId+'\')">✕</button>'
   +'</div>';
 }
@@ -684,10 +684,15 @@ async function updateVar(id,field,value){
 }
 
 async function addVariante(svcId){
-  var res=await sb.from('service_varianten').insert({service_id:svcId,dauer_minuten:60,preis:0,puffer_aktiv:false,puffer_minuten:0,aktiv:true,sortierung:0}).select().single();
+  var item=servicesData.filter(function(i){return i.service.id===svcId;})[0];
+  var sortierung=item?item.varianten.length:0;
+  var res=await sb.from('service_varianten').insert({
+    service_id:svcId,bezeichnung:'',dauer_minuten:null,preis:null,
+    puffer_aktiv:false,puffer_minuten:0,aktiv:true,sortierung:sortierung
+  }).select().single();
   if(res.error){toast('Fehler: '+res.error.message,'error');return;}
   var v=res.data;
-  servicesData.forEach(function(i){if(i.service.id===svcId)i.varianten.push(v);});
+  if(item)item.varianten.push(v);
   var vl=document.getElementById('varlist-'+svcId);
   if(vl){var old=vl.querySelector('[style*="color:var(--muted)"]');if(old)old.remove();vl.insertAdjacentHTML('beforeend',mkVarRow(v,svcId));}
   toast('Variante hinzugefügt ✓','success');
