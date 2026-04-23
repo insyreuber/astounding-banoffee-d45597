@@ -143,11 +143,11 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .week-time-label{height:36px;display:flex;align-items:flex-start;padding:3px 5px 0 0;font-size:9px;font-family:'DM Mono',monospace;color:#c8bcd8;justify-content:flex-end}
 .week-day-col{border-right:1px solid var(--border);position:relative}
 .week-day-col:last-child{border-right:none}
-.week-day-hdr{text-align:center;padding:5px 2px 4px;border-bottom:1px solid var(--border);background:#faf8fc}
+.week-day-hdr{text-align:center;padding:5px 2px 4px;border-bottom:1px solid var(--border);background:#faf8fc;height:42px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .week-day-name{font-size:9px;font-weight:600;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
-.week-day-date{font-size:11px;font-weight:500;color:var(--td);margin-top:1px}
+.week-day-date{font-size:11px;font-weight:500;color:var(--td);width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;margin-top:2px}
 .week-day-today .week-day-name{color:var(--tpl)}
-.week-day-today .week-day-date{background:var(--tp);color:#fff;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:10px}
+.week-day-today .week-day-date{background:var(--tp);color:#fff;font-size:10px}
 .week-hour-line{position:absolute;left:0;right:0;border-top:1px solid #f5f2f8;pointer-events:none}
 .week-hour-line.full{border-top-color:#e8e0f0}
 
@@ -966,7 +966,7 @@ function renderWeekPlan(salonAz){
   if(legend)legend.innerHTML=lHtml;
 
   // Stunden-Labels
-  var timeHtml='<div style="height:42px"></div>'; // header height
+  var timeHtml='<div style="height:42px;border-bottom:1px solid var(--border);background:#faf8fc"></div>';
   for(var m=earliest;m<latest;m+=60){
     timeHtml+='<div class="week-time-label">'+('0'+Math.floor(m/60)).slice(-2)+'</div>';
   }
@@ -1055,7 +1055,7 @@ function renderWeekPlan(salonAz){
     daysHtml+='<div class="week-day-col'+(isToday?' week-day-today':'')+'">'
       +'<div class="week-day-hdr">'
         +'<div class="week-day-name">'+d.short+'</div>'
-        +'<div class="week-day-date">'+(isToday?'<span style="background:var(--tp);color:#fff;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:10px">'+date.getDate()+'</span>':date.getDate()+'.')+'</div>'
+        +'<div class="week-day-date">'+date.getDate()+'</div>'
       +'</div>'
       +coverBar
       +'<div style="position:relative;height:'+totalH+'px">'
