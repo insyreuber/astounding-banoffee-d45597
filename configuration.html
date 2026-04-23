@@ -79,7 +79,7 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border)}.btn-ghost:hover{border-color:var(--tpl);color:var(--tpl)}
 
 /* ── SAVE BAR ── */
-.save-bar{position:sticky;bottom:0;background:var(--white);border-top:1.5px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;margin:0 -20px;box-shadow:0 -4px 20px rgba(74,28,107,.06)}
+.save-bar{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;box-shadow:0 2px 8px rgba(74,28,107,.04)}
 .save-status{font-size:12px;color:var(--muted)}
 .save-status.saved{color:var(--success)}.save-status.saving{color:var(--tpl)}.save-status.error{color:var(--danger)}
 
@@ -266,7 +266,10 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       </div>
       <div class="frow frow-2">
         <div class="field"><label>Salonname (im Widget)</label><input type="text" id="f-brand" placeholder="z.B. Wellness Store Weiershagen"></div>
-        <div class="field"><label>Telefonnummer</label><input type="tel" id="f-phone" placeholder="+49 2262 79679975"></div>
+        <div class="field" style="display:grid;grid-template-columns:70px 1fr;gap:8px;align-items:end">
+          <div><label style="font-size:11px;font-weight:500;color:var(--muted);display:block;margin-bottom:5px">Vorwahl</label><input type="text" id="f-area-code" placeholder="02262"></div>
+          <div><label style="font-size:11px;font-weight:500;color:var(--muted);display:block;margin-bottom:5px">Telefonnummer</label><input type="text" id="f-phone-number" placeholder="79679975"></div>
+        </div>
       </div>
       <div class="frow frow-3">
         <div class="field"><label>Straße</label><input type="text" id="f-street" placeholder="Hückhausener Str."></div>
@@ -281,9 +284,27 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
     <div class="card">
       <div class="card-title">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        Öffnungszeiten
+        Öffnungszeiten <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;margin-left:6px">— offizielle Stammzeiten</span>
       </div>
       <div class="hours-cols" id="hours-cols"></div>
+    </div>
+
+    <!-- Temporäre Öffnungszeiten -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div class="card-title" style="margin-bottom:0">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Temporäre Öffnungszeiten
+        </div>
+        <button class="btn btn-sm btn-outline" onclick="addTempEntry()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Weitere KW hinzufügen
+        </button>
+      </div>
+      <div id="temp-entries-list" style="display:flex;flex-direction:column;gap:14px"></div>
+      <div id="temp-empty" style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0">
+        Noch keine temporären Zeiten — klicke "Weitere KW hinzufügen"
+      </div>
     </div>
 
     <div class="save-bar">
@@ -495,11 +516,13 @@ var DAYS=[
   {key:'thursday',label:'Do'},{key:'friday',label:'Fr'},{key:'saturday',label:'Sa'},{key:'sunday',label:'So'}
 ];
 
-function buildHoursCols(az,containerId,prefix,small){
+function buildHoursCols(az,containerId,prefix,small,allActive){
   var cls=small?'hours-col-sm':'hours-col';
   var cols=document.getElementById(containerId);
+  if(!cols)return;
   cols.innerHTML=DAYS.map(function(d){
-    var h=az&&az[d.key]?az[d.key]:{aktiv:d.key!=='sunday',start:'09:00',end:'18:00'};
+    var defaultAktiv=allActive?true:d.key!=='sunday';
+    var h=az&&az[d.key]?az[d.key]:{aktiv:defaultAktiv,start:'09:00',end:'18:00'};
     return'<div class="'+cls+' '+(h.aktiv?'aktiv':'')+'" id="'+prefix+'col-'+d.key+'">'
       +'<div class="'+(small?'hours-col-sm-day':'hours-col-day')+'">'+d.label+'</div>'
       +'<label class="toggle-sw"><input type="checkbox" id="'+prefix+'aktiv-'+d.key+'" '+(h.aktiv?'checked':'')+' onchange="toggleHourCol(\''+d.key+'\',\''+prefix+'\')" ><span class="slider"></span></label>'
@@ -537,7 +560,148 @@ function readHours(prefix){
   return az;
 }
 
-// ── PROFIL LOAD/SAVE ──────────────────────────────────────────
+// ── TEMPORÄRE ÖFFNUNGSZEITEN ──────────────────────────────────
+var tempEntries=[]; // [{id, kw, year, zeiten}]
+var tempIdCounter=0;
+var tempCalOffset={}; // {entryId: monthOffset}
+
+function getISOWeek(date){
+  var d=new Date(date);d.setHours(0,0,0,0);
+  d.setDate(d.getDate()+3-(d.getDay()+6)%7);
+  var w1=new Date(d.getFullYear(),0,4);
+  return 1+Math.round(((d-w1)/86400000-3+(w1.getDay()+6)%7)/7);
+}
+function getYearOfISOWeek(date){
+  var d=new Date(date);d.setDate(d.getDate()+3-(d.getDay()+6)%7);return d.getFullYear();
+}
+function getMonday(year,week){
+  var jan4=new Date(year,0,4);
+  var dow=(jan4.getDay()+6)%7;
+  var mon=new Date(jan4);mon.setDate(jan4.getDate()-dow+(week-1)*7);return mon;
+}
+function kwLabel(kw,year){
+  var mon=getMonday(year,kw);
+  var sun=new Date(mon);sun.setDate(mon.getDate()+6);
+  var f=function(d){return('0'+d.getDate()).slice(-2)+'.'+('0'+(d.getMonth()+1)).slice(-2)+'.';};
+  return'KW '+kw+' · '+f(mon)+' – '+f(sun)+year;
+}
+
+function addTempEntry(data){
+  var id=++tempIdCounter;
+  var now=new Date();
+  var kw=data?data.kw:getISOWeek(new Date(now.getTime()+7*86400000));
+  var year=data?data.year:getYearOfISOWeek(new Date(now.getTime()+7*86400000));
+  var zeiten=data?data.zeiten:null;
+  tempEntries.push({id:id,kw:kw,year:year,zeiten:zeiten});
+  tempCalOffset[id]=0;
+  renderTempEntries();
+}
+
+function removeTempEntry(id){
+  tempEntries=tempEntries.filter(function(e){return e.id!==id;});
+  delete tempCalOffset[id];
+  renderTempEntries();
+}
+
+function renderTempEntries(){
+  var list=document.getElementById('temp-entries-list');
+  var empty=document.getElementById('temp-empty');
+  if(!tempEntries.length){list.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  list.innerHTML=tempEntries.map(function(entry){
+    return'<div id="temp-entry-'+entry.id+'" style="border:1.5px solid var(--border);border-radius:10px;overflow:hidden">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#faf8fc;border-bottom:1px solid var(--border)">'
+        +'<div style="font-size:12px;font-weight:500;color:var(--tpl)" id="temp-label-'+entry.id+'">'+kwLabel(entry.kw,entry.year)+'</div>'
+        +'<button onclick="removeTempEntry('+entry.id+')" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--muted);padding:2px 6px" title="Entfernen">✕</button>'
+      +'</div>'
+      +'<div style="padding:14px;display:flex;flex-direction:column;gap:14px">'
+        +'<div id="temp-cal-'+entry.id+'">'+buildKwCal(entry.id,entry.kw,entry.year)+'</div>'
+        +'<div>'
+          +'<div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px">Zeiten für diese Woche</div>'
+          +'<div class="hours-cols" id="temp-hcols-'+entry.id+'"></div>'
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  }).join('');
+  // Stunden-Cols rendern
+  tempEntries.forEach(function(entry){
+    buildHoursCols(entry.zeiten||null,'temp-hcols-'+entry.id,'te'+entry.id+'-',false,true);
+  });
+}
+
+function buildKwCal(entryId,selKw,selYear){
+  var off=tempCalOffset[entryId]||0;
+  var now=new Date();
+  var base=new Date(now.getFullYear(),now.getMonth()+off,1);
+  var year=base.getFullYear();
+  var month=base.getMonth();
+  var moName=base.toLocaleDateString('de-DE',{month:'long',year:'numeric'});
+  var firstDow=(new Date(year,month,1).getDay()+6)%7;
+  var dim=new Date(year,month+1,0).getDate();
+  var selMon=getMonday(selYear,selKw);
+  var selSun=new Date(selMon);selSun.setDate(selMon.getDate()+6);
+  var today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+
+  // Nur Tages-Zellen (kein eigener Grid-Wrapper)
+  var cells='';
+  // Leere Zellen für Offset
+  for(var i=0;i<firstDow;i++)cells+='<div></div>';
+
+  for(var d=1;d<=dim;d++){
+    var date=new Date(year,month,d);
+    var dow=(date.getDay()+6)%7; // 0=Mo,6=So
+    var isMonday=dow===0;
+    var kw=getISOWeek(date);
+    var kwYear=getYearOfISOWeek(date);
+    var isSel=selKw===kw&&selYear===kwYear&&isMonday;
+    var inRange=date>=selMon&&date<=selSun;
+    var isPast=date<today;
+    var bg=inRange?(isSel?'var(--tp)':'var(--tpp)'):'transparent';
+    var color=inRange?(isSel?'#fff':'var(--tpl)'):(isPast?'#ccc':'var(--td)');
+    var fw=isSel?'600':'400';
+    var br=isSel?'4px':(dow===0?'4px 0 0 4px':dow===6?'0 4px 4px 0':'0');
+    var cursor=isPast?'default':(isMonday?'pointer':'default');
+    var oc=(!isPast&&isMonday)?'onclick="selectTempKw('+entryId+','+kw+','+kwYear+')"':'';
+    cells+='<div '+oc+' style="text-align:center;padding:5px 2px;font-size:12px;border-radius:'+br+';background:'+bg+';color:'+color+';font-weight:'+fw+';cursor:'+cursor+'">'+d+'</div>';
+  }
+
+  return'<div style="width:100%">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'
+      +'<button onclick="tempCalNav('+entryId+',-1)" style="background:none;border:1px solid var(--border);border-radius:5px;padding:2px 10px;cursor:pointer;font-size:14px;color:var(--tpl)">‹</button>'
+      +'<span style="font-size:12px;font-weight:500;color:var(--td)">'+moName+'</span>'
+      +'<button onclick="tempCalNav('+entryId+',1)" style="background:none;border:1px solid var(--border);border-radius:5px;padding:2px 10px;cursor:pointer;font-size:14px;color:var(--tpl)">›</button>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px">'
+      +['Mo','Di','Mi','Do','Fr','Sa','So'].map(function(l){return'<div style="text-align:center;font-size:10px;color:var(--muted);padding:3px 0;font-weight:600">'+l+'</div>';}).join('')
+      +cells
+    +'</div>'
+  +'</div>';
+}
+
+function tempCalNav(entryId,dir){
+  tempCalOffset[entryId]=(tempCalOffset[entryId]||0)+dir;
+  var entry=tempEntries.filter(function(e){return e.id===entryId;})[0];
+  if(entry){
+    var cal=document.getElementById('temp-cal-'+entryId);
+    if(cal)cal.innerHTML=buildKwCal(entryId,entry.kw,entry.year);
+  }
+}
+
+function selectTempKw(entryId,kw,year){
+  var entry=tempEntries.filter(function(e){return e.id===entryId;})[0];
+  if(!entry)return;
+  entry.kw=kw;entry.year=year;
+  var lbl=document.getElementById('temp-label-'+entryId);
+  if(lbl)lbl.textContent=kwLabel(kw,year);
+  var cal=document.getElementById('temp-cal-'+entryId);
+  if(cal)cal.innerHTML=buildKwCal(entryId,kw,year);
+}
+
+function readTempEntries(){
+  return tempEntries.map(function(entry){
+    return{kw:entry.kw,year:entry.year,zeiten:readHours('te'+entry.id+'-')};
+  });
+}
 async function loadProfil(){
   if(!SALON_ID){toast('Keine salon_id in der URL','error');buildHoursCols(null,'hours-cols','h-',false);return;}
   document.getElementById('nav-salon-id').textContent='salon_id: '+SALON_ID.slice(0,8)+'…';
@@ -547,12 +711,21 @@ async function loadProfil(){
   if(res.error){toast('Profil nicht gefunden','error');buildHoursCols(null,'hours-cols','h-',false);return;}
   var d=res.data;
   document.getElementById('f-brand').value=d.brand_name||d.name||'';
-  document.getElementById('f-phone').value=d.phone||'';
+  document.getElementById('f-area-code').value=d.area_code||'';
+  document.getElementById('f-phone-number').value=d.phone_number||'';
   document.getElementById('f-street').value=d.street||'';
   document.getElementById('f-house').value=d.house_number||'';
   document.getElementById('f-plz').value=d.postal_code||'';
   document.getElementById('f-city').value=d.city||'';
   buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
+  // Temporäre Öffnungszeiten laden
+  tempEntries=[];tempIdCounter=0;tempCalOffset={};
+  var tempData=d.temp_arbeitszeiten;
+  if(tempData&&Array.isArray(tempData)&&tempData.length){
+    tempData.forEach(function(t){addTempEntry(t);});
+  } else {
+    renderTempEntries();
+  }
 }
 
 async function saveProfil(){
@@ -560,14 +733,17 @@ async function saveProfil(){
   var btn=document.getElementById('btn-save-profil');
   var st=document.getElementById('profil-status');
   btn.disabled=true;st.className='save-status saving';st.textContent='Wird gespeichert…';
+
   var res=await sb.from('kunden_profile').update({
     brand_name:document.getElementById('f-brand').value.trim(),
-    phone:document.getElementById('f-phone').value.trim(),
+    area_code:document.getElementById('f-area-code').value.trim(),
+    phone_number:document.getElementById('f-phone-number').value.trim(),
     street:document.getElementById('f-street').value.trim(),
     house_number:document.getElementById('f-house').value.trim(),
     postal_code:document.getElementById('f-plz').value.trim(),
     city:document.getElementById('f-city').value.trim(),
-    arbeitszeiten:readHours('h-')
+    arbeitszeiten:readHours('h-'),
+    temp_arbeitszeiten:readTempEntries()
   }).eq('id',SALON_ID);
   btn.disabled=false;
   if(res.error){st.className='save-status error';st.textContent='Fehler: '+res.error.message;toast('Speichern fehlgeschlagen','error');}
@@ -1236,7 +1412,7 @@ async function saveStaff(){
     name:name,
     display_name:document.getElementById('s-display').value.trim()||name,
     role:document.getElementById('s-role').value.trim(),
-    email:document.getElementById('s-email').value.trim(),
+    email:document.getElementById('s-email').value.trim()||null,
     google_calendar_id:document.getElementById('s-cal').value.trim(),
     arbeitszeiten:hasCustom?readHours('s-'):null,
     farbe:document.getElementById('s-color').value,
