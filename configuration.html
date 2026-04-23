@@ -109,7 +109,33 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .var-group:focus-within{border-color:var(--tpl)}
 .var-group .toggle-sw{flex-shrink:0}
 
-/* ── MITARBEITER GRID ── */
+/* ── WOCHENPLAN ── */
+.week-plan{background:var(--white);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px}
+.week-plan-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1.5px solid var(--border);background:#faf8fc}
+.week-plan-title{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600}
+.week-plan-legend{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.legend-chip{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--td);padding:3px 10px 3px 6px;border-radius:99px;border:1.5px solid;cursor:pointer;user-select:none;transition:all .15s;font-weight:500}
+.legend-chip:hover{opacity:.8}
+.legend-chip-off{opacity:.35;text-decoration:line-through;background:transparent!important}
+.week-grid{display:grid;grid-template-columns:52px repeat(7,1fr);position:relative}
+.week-time-col{border-right:1.5px solid var(--border)}
+.week-time-label{height:48px;display:flex;align-items:flex-start;justify-content:flex-end;padding:4px 8px 0 0;font-size:10px;font-family:'DM Mono',monospace;color:#c8bcd8}
+.week-day-col{border-right:1px solid var(--border);position:relative;min-height:576px}
+.week-day-col:last-child{border-right:none}
+.week-day-hdr{text-align:center;padding:8px 4px 6px;border-bottom:1.5px solid var(--border);background:#faf8fc;position:sticky;top:0}
+.week-day-name{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.week-day-date{font-size:12px;font-weight:500;color:var(--td);margin-top:1px}
+.week-day-today .week-day-name{color:var(--tpl)}
+.week-day-today .week-day-date{color:var(--white);background:var(--tp);border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:11px}
+.week-hour-line{position:absolute;left:0;right:0;border-top:1px solid #f0eaf7;pointer-events:none}
+.week-block{position:absolute;left:3px;right:3px;border-radius:5px;padding:3px 5px;font-size:10px;font-weight:500;overflow:hidden;cursor:default;transition:opacity .15s}
+.week-block:hover{opacity:.85}
+.week-block-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.week-block-time{font-size:9px;opacity:.8;margin-top:1px;font-family:'DM Mono',monospace}
+.week-salon-block{background:rgba(74,28,107,.1);border:1.5px solid rgba(74,28,107,.25);color:var(--tp)}
+.week-closed{background:repeating-linear-gradient(45deg,#f5f2f8,#f5f2f8 4px,#eeebf5 4px,#eeebf5 8px)}
 .staff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
 .staff-card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s}
 .staff-card:hover{border-color:var(--tpl)}
@@ -275,6 +301,20 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
         Mitarbeiter hinzufügen
       </button>
     </div>
+
+    <!-- Wochenplan -->
+    <div class="week-plan" id="week-plan">
+      <div class="week-plan-hdr">
+        <div class="week-plan-title">Wochenübersicht</div>
+        <div class="week-plan-legend" id="week-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:rgba(74,28,107,.2);border:1.5px solid rgba(74,28,107,.4)"></div>Salon-Öffnungszeiten</div>
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <div id="week-grid-wrap" style="min-width:600px"></div>
+      </div>
+    </div>
+
     <div class="staff-grid" id="staff-grid">
       <div class="empty" style="grid-column:1/-1"><div class="empty-icon">⟳</div><div class="empty-text">Wird geladen…</div></div>
     </div>
@@ -815,7 +855,171 @@ async function saveNewService(){
   setTimeout(function(){toggleItem(svc.id,'svc');},80);
 }
 
-// ── MITARBEITER LOAD/RENDER ───────────────────────────────────
+// ── WOCHENPLAN ───────────────────────────────────────────────
+// Farben pro Mitarbeiter (rotierend)
+var STAFF_COLORS=[
+  {bg:'rgba(74,28,107,.15)',border:'rgba(74,28,107,.5)',text:'#4a1c6b'},   // lila
+  {bg:'rgba(201,168,76,.18)',border:'rgba(201,168,76,.6)',text:'#7a5a00'}, // gold
+  {bg:'rgba(39,174,96,.15)',border:'rgba(39,174,96,.5)',text:'#1a6b3a'},   // grün
+  {bg:'rgba(41,128,185,.15)',border:'rgba(41,128,185,.5)',text:'#1a4a6b'}, // blau
+  {bg:'rgba(192,57,43,.15)',border:'rgba(192,57,43,.5)',text:'#6b1a1a'},   // rot
+  {bg:'rgba(142,68,173,.15)',border:'rgba(142,68,173,.5)',text:'#5a1a6b'}, // violett
+];
+
+var WEEK_DAYS=[
+  {key:'monday',short:'Mo'},{key:'tuesday',short:'Di'},{key:'wednesday',short:'Mi'},
+  {key:'thursday',short:'Do'},{key:'friday',short:'Fr'},{key:'saturday',short:'Sa'},{key:'sunday',short:'So'}
+];
+
+// Montag der aktuellen Woche
+function getWeekStart(){
+  var now=new Date();
+  var day=now.getDay();
+  var diff=(day===0?-6:1-day);
+  var mon=new Date(now);mon.setDate(now.getDate()+diff);mon.setHours(0,0,0,0);
+  return mon;
+}
+
+// "08:00" → Minuten seit Mitternacht
+function timeToMin(t){
+  if(!t)return null;
+  var p=t.split(':');return parseInt(p[0])*60+parseInt(p[1]);
+}
+
+var hiddenStaff={};  // { mitarbeiter_id: true } wenn ausgeblendet
+
+function toggleStaffVisibility(staffId){
+  hiddenStaff[staffId]=!hiddenStaff[staffId];
+  // Chip-Style aktualisieren
+  var chip=document.getElementById('legend-chip-'+staffId);
+  if(chip)chip.classList.toggle('legend-chip-off',hiddenStaff[staffId]);
+  // Alle Blöcke dieses Mitarbeiters zeigen/verstecken
+  document.querySelectorAll('.week-staff-block-'+staffId).forEach(function(el){
+    el.style.display=hiddenStaff[staffId]?'none':'block';
+  });
+}
+
+function renderWeekPlan(salonAz){
+  var wrap=document.getElementById('week-grid-wrap');
+  if(!wrap)return;
+
+  // Früheste / späteste Zeit über alle Mitarbeiter + Salon ermitteln
+  var earliest=480,latest=1080;
+  function checkAz(az){
+    if(!az)return;
+    WEEK_DAYS.forEach(function(d){
+      var h=az[d.key];
+      if(h&&h.aktiv){
+        var s=timeToMin(h.start),e=timeToMin(h.end);
+        if(s!==null&&s<earliest)earliest=s;
+        if(e!==null&&e>latest)latest=e;
+      }
+    });
+  }
+  checkAz(salonAz);
+  staffData.forEach(function(item){checkAz(item.mitarbeiter.arbeitszeiten);});
+  earliest=Math.floor(earliest/60)*60;
+  latest=Math.ceil(latest/60)*60;
+  var totalMins=latest-earliest;
+  var PX_PER_MIN=1.6;
+
+  var weekStart=getWeekStart();
+  var today=new Date();today.setHours(0,0,0,0);
+
+  // Legende — klickbare Chips
+  var legend=document.getElementById('week-legend');
+  var legendHtml='<div class="legend-item"><div class="legend-dot" style="background:rgba(74,28,107,.15);border:1.5px solid rgba(74,28,107,.4)"></div>Salon</div>';
+  staffData.forEach(function(item,idx){
+    var col=STAFF_COLORS[idx%STAFF_COLORS.length];
+    var name=item.mitarbeiter.display_name||item.mitarbeiter.name;
+    var mid=item.mitarbeiter.id;
+    var isOff=hiddenStaff[mid];
+    legendHtml+='<div class="legend-chip '+(isOff?'legend-chip-off':'')+'" id="legend-chip-'+mid+'" onclick="toggleStaffVisibility(\''+mid+'\')" style="border-color:'+col.border+';background:'+(isOff?'transparent':col.bg)+'">'
+      +'<div class="legend-dot" style="background:'+col.border+';flex-shrink:0"></div>'
+      +esc(name)
+    +'</div>';
+  });
+  if(legend)legend.innerHTML=legendHtml;
+
+  // Stunden-Labels
+  var timeLabels='';
+  for(var m=earliest;m<=latest;m+=60){
+    var h=Math.floor(m/60);
+    timeLabels+='<div class="week-time-label">'+('0'+h).slice(-2)+':00</div>';
+  }
+
+  // Tages-Spalten
+  var dayCols='';
+  WEEK_DAYS.forEach(function(d,dayIdx){
+    var date=new Date(weekStart);date.setDate(weekStart.getDate()+dayIdx);
+    var isToday=date.getTime()===today.getTime();
+    var dateStr=date.getDate()+'.'+(date.getMonth()+1)+'.';
+
+    var lines='';
+    for(var m=0;m<totalMins;m+=60){
+      lines+='<div class="week-hour-line" style="top:'+(m*PX_PER_MIN)+'px"></div>';
+    }
+
+    // Salon-Block
+    var salonBlock='';
+    var sh=salonAz&&salonAz[d.key];
+    if(sh&&sh.aktiv){
+      var sStart=timeToMin(sh.start)-earliest;
+      var sEnd=timeToMin(sh.end)-earliest;
+      salonBlock='<div class="week-block week-salon-block" style="top:'+(sStart*PX_PER_MIN)+'px;height:'+((sEnd-sStart)*PX_PER_MIN)+'px">'
+        +'<div class="week-block-name">Salon</div>'
+        +'<div class="week-block-time">'+sh.start+' – '+sh.end+'</div>'
+      +'</div>';
+    } else {
+      salonBlock='<div class="week-closed" style="position:absolute;inset:0;opacity:.5"></div>';
+    }
+
+    // Mitarbeiter-Blöcke
+    var visibleStaff=staffData.filter(function(item){return !hiddenStaff[item.mitarbeiter.id];});
+    var colWidth=visibleStaff.length>0?Math.floor(94/visibleStaff.length):94;
+    var staffBlocks='';
+    var visIdx=0;
+    staffData.forEach(function(item,sIdx){
+      var mid=item.mitarbeiter.id;
+      var m=item.mitarbeiter;
+      var az=m.arbeitszeiten||salonAz;
+      var mh=az&&az[d.key];
+      var col=STAFF_COLORS[sIdx%STAFF_COLORS.length];
+      var display=hiddenStaff[mid]?'none':'block';
+      if(!mh||!mh.aktiv){visIdx++;return;}
+      var mStart=timeToMin(mh.start)-earliest;
+      var mEnd=timeToMin(mh.end)-earliest;
+      var top=mStart*PX_PER_MIN;
+      var height=(mEnd-mStart)*PX_PER_MIN;
+      var left=3+(visIdx*colWidth);
+      var right=3+((staffData.length-1-visIdx)*colWidth);
+      staffBlocks+='<div class="week-block week-staff-block-'+mid+'" style="'
+        +'top:'+top+'px;height:'+height+'px;'
+        +'left:'+left+'%;right:'+right+'%;'
+        +'display:'+display+';'
+        +'background:'+col.bg+';border:1.5px solid '+col.border+';color:'+col.text+'">'
+        +'<div class="week-block-name">'+esc(m.display_name||m.name)+'</div>'
+        +'<div class="week-block-time">'+mh.start+' – '+mh.end+'</div>'
+      +'</div>';
+      visIdx++;
+    });
+
+    dayCols+='<div class="week-day-col'+(isToday?' week-day-today':'')+'">'
+      +'<div class="week-day-hdr">'
+        +'<div class="week-day-name">'+d.short+'</div>'
+        +'<div class="week-day-date">'+dateStr+'</div>'
+      +'</div>'
+      +'<div style="position:relative;height:'+(totalMins*PX_PER_MIN)+'px">'
+        +lines+salonBlock+staffBlocks
+      +'</div>'
+    +'</div>';
+  });
+
+  wrap.innerHTML='<div class="week-grid">'
+    +'<div class="week-time-col"><div style="height:53px"></div>'+timeLabels+'</div>'
+    +dayCols
+  +'</div>';
+}
 async function loadStaff(){
   if(!SALON_ID)return;
   var res=await sb.from('mitarbeiter').select('*').eq('salon_id',SALON_ID).order('sortierung');
@@ -829,11 +1033,13 @@ async function loadStaff(){
   staffData=staff.map(function(s){
     return{
       mitarbeiter:s,
-      // service_variante_id Liste
       varianteIds:assigns.filter(function(a){return a.mitarbeiter_id===s.id&&a.aktiv;}).map(function(a){return a.service_variante_id;})
     };
   });
   renderStaffGrid();
+  // Salon-Öffnungszeiten für Wochenplan holen (aus bereits geladenem Profil)
+  var pRes=await sb.from('kunden_profile').select('arbeitszeiten').eq('id',SALON_ID).single();
+  renderWeekPlan(pRes.error?null:pRes.data.arbeitszeiten);
 }
 
 function renderStaffGrid(){
@@ -842,11 +1048,11 @@ function renderStaffGrid(){
     grid.innerHTML='<div class="empty" style="grid-column:1/-1"><div class="empty-icon">✦</div><div class="empty-text">Noch keine Mitarbeiter — füge dein Team hinzu</div></div>';
     return;
   }
-  grid.innerHTML=staffData.map(function(item){
+  grid.innerHTML=staffData.map(function(item,idx){
     var m=item.mitarbeiter;
+    var col=STAFF_COLORS[idx%STAFF_COLORS.length];
     var ini=(m.display_name||m.name||'?').split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
     var vCount=item.varianteIds.length;
-    // Unique Services zählen
     var svcIds=[];
     item.varianteIds.forEach(function(vid){
       servicesData.forEach(function(si){
@@ -854,8 +1060,9 @@ function renderStaffGrid(){
       });
     });
     return'<div class="staff-card" id="staff-card-'+m.id+'">'
+      +'<div style="height:4px;background:'+col.border+'"></div>'
       +'<div class="staff-card-top">'
-        +'<div class="staff-avatar '+(m.aktiv?'':'off')+'">'+ini+'</div>'
+        +'<div class="staff-avatar" style="background:'+col.bg+';color:'+col.text+';border:1.5px solid '+col.border+'">'+ini+'</div>'
         +'<div style="flex:1;min-width:0">'
           +'<div class="staff-name">'+esc(m.display_name||m.name)+'</div>'
           +'<div class="staff-role">'+esc(m.role||'')+'</div>'
