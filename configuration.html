@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Insy · Einstellungen</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tp:#4a1c6b;--tpl:#6b3fa0;--tpp:#f0eaf7;--tg:#c9a84c;--tgl:#e8d08a;--tgp:#fdf8ec;--td:#1a0a2e;
+  --bg:#f5f2f8;--white:#fff;--border:#e8e0f0;--muted:#7a6a8a;--danger:#c0392b;--success:#27ae60;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--td);min-height:100vh}
+
+/* ── NAV ── */
+.nav{background:var(--tp);padding:0 24px;display:flex;align-items:center;border-bottom:1px solid rgba(255,255,255,.08)}
+.nav-brand{padding:14px 20px 14px 0;border-right:1px solid rgba(255,255,255,.1);margin-right:4px;flex-shrink:0}
+.nav-logo{font-size:9px;letter-spacing:.2em;color:var(--tg);font-weight:600;text-transform:uppercase}
+.nav-title{font-size:13px;font-weight:500;color:rgba(255,255,255,.9)}
+.nav-tabs{display:flex}
+.nav-tab{padding:16px 18px;font-size:12px;font-weight:500;color:rgba(255,255,255,.45);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.nav-tab:hover{color:rgba(255,255,255,.75)}
+.nav-tab.active{color:#fff;border-bottom-color:var(--tg)}
+.nav-right{margin-left:auto;flex-shrink:0;display:flex;align-items:center;gap:10px}
+.salon-pill{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.35);background:rgba(255,255,255,.06);padding:4px 10px;border-radius:99px;border:1px solid rgba(255,255,255,.1)}
+.nav-booking-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:8px;font-size:11px;font-weight:500;color:var(--td);background:var(--tg);text-decoration:none;border:none;cursor:pointer;font-family:inherit;transition:background .15s;white-space:nowrap}
+.nav-booking-btn:hover{background:var(--tgl)}
+
+/* ── LAYOUT ── */
+.main{max-width:900px;margin:0 auto;padding:28px 20px}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.sec-hdr{margin-bottom:20px}
+.sec-title{font-size:18px;font-weight:600;color:var(--td);margin-bottom:4px}
+.sec-sub{font-size:13px;color:var(--muted)}
+
+/* ── CARDS ── */
+.card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.card-title{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:7px}
+
+/* ── FORM ── */
+.frow{display:grid;gap:12px;margin-bottom:12px}
+.frow-2{grid-template-columns:1fr 1fr}
+.frow-3{grid-template-columns:1fr 1fr 1fr}
+.frow-1{grid-template-columns:1fr}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:11px;font-weight:500;color:var(--muted)}
+.field input,.field textarea,.field select{border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--td);background:var(--white);font-family:inherit;transition:border-color .15s;outline:none}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--tpl)}
+.field textarea{resize:vertical;min-height:68px}
+
+/* ── TOGGLE ── */
+.toggle-sw{position:relative;width:34px;height:18px;flex-shrink:0;display:inline-block}
+.toggle-sw input{opacity:0;width:0;height:0;position:absolute}
+.toggle-sw .slider{position:absolute;inset:0;background:#ddd;border-radius:99px;cursor:pointer;transition:.2s}
+.toggle-sw .slider:before{content:'';position:absolute;width:12px;height:12px;border-radius:50%;background:#fff;left:3px;top:3px;transition:.2s}
+.toggle-sw input:checked+.slider{background:var(--tp)}
+.toggle-sw input:checked+.slider:before{transform:translateX(16px)}
+
+/* ── ÖFFNUNGSZEITEN – SPALTEN ── */
+.hours-cols{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.hours-col{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;transition:border-color .2s}
+.hours-col.aktiv{border-color:var(--tpl);background:var(--tpp)}
+.hours-col-day{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.hours-col.aktiv .hours-col-day{color:var(--tpl)}
+.hours-col input[type="time"]{border:1.5px solid var(--border);border-radius:6px;padding:5px 4px;font-size:11px;font-family:'DM Mono',monospace;color:var(--td);outline:none;background:var(--white);width:100%;text-align:center}
+.hours-col input[type="time"]:focus{border-color:var(--tpl)}
+.hours-col-sep{font-size:10px;color:var(--muted)}
+.hours-col-closed{font-size:10px;color:#c8bcd8;font-style:italic}
+.hours-time-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;width:100%}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
+.btn-primary{background:var(--tg);color:var(--td)}.btn-primary:hover{background:var(--tgl)}
+.btn-primary:disabled{background:var(--border);color:#aaa;cursor:not-allowed}
+.btn-outline{background:transparent;color:var(--tpl);border:1.5px solid var(--tpl)}.btn-outline:hover{background:var(--tpp)}
+.btn-danger{background:transparent;color:var(--danger);border:1.5px solid #f5c6c6}.btn-danger:hover{background:#fef2f2}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border)}.btn-ghost:hover{border-color:var(--tpl);color:var(--tpl)}
+
+/* ── SAVE BAR ── */
+.save-bar{position:sticky;bottom:0;background:var(--white);border-top:1.5px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;margin:0 -20px;box-shadow:0 -4px 20px rgba(74,28,107,.06)}
+.save-status{font-size:12px;color:var(--muted)}
+.save-status.saved{color:var(--success)}.save-status.saving{color:var(--tpl)}.save-status.error{color:var(--danger)}
+
+/* ── SERVICE LIST ── */
+.svc-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.svc-item{background:var(--white);border:1.5px solid var(--border);border-radius:10px;overflow:hidden}
+.svc-item-hdr{display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;user-select:none}
+.svc-item-hdr:hover{background:#faf8fc}
+.svc-item-name{font-size:14px;font-weight:500;color:var(--td);flex:1}
+.svc-item-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.badge{font-size:10px;padding:2px 8px;border-radius:99px;background:var(--tpp);color:var(--tpl);font-weight:500}
+.badge.off{background:#f5f2f8;color:#bbb}
+.chevron{color:var(--muted);transition:transform .2s;font-size:14px;flex-shrink:0}
+.chevron.open{transform:rotate(180deg)}
+.item-body{border-top:1.5px solid var(--border);padding:16px;display:none}
+.item-body.open{display:block}
+
+/* ── VARIANTEN (service edit) ── */
+.var-header{display:grid;grid-template-columns:1fr 90px 90px 90px 36px;gap:8px;padding:0 12px;margin-bottom:4px}
+.var-col-lbl{font-size:10px;color:var(--muted);text-align:center;letter-spacing:.05em}
+.var-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.var-row{display:grid;grid-template-columns:1fr 90px 90px 90px 36px;gap:8px;align-items:center;background:#faf8fc;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px}
+.var-row input{border:1.5px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;font-family:inherit;color:var(--td);outline:none;background:var(--white);width:100%}
+.var-row input:focus{border-color:var(--tpl)}
+
+/* ── MITARBEITER GRID ── */
+.staff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.staff-card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s}
+.staff-card:hover{border-color:var(--tpl)}
+.staff-card-top{padding:16px;display:flex;align-items:center;gap:12px}
+.staff-avatar{width:42px;height:42px;border-radius:50%;background:var(--tpp);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:var(--tpl);flex-shrink:0}
+.staff-name{font-size:14px;font-weight:500;color:var(--td)}
+.staff-role{font-size:11px;color:var(--muted);margin-top:2px}
+.staff-card-actions{display:flex;border-top:1.5px solid var(--border)}
+.staff-action{flex:1;padding:9px;font-size:11px;font-weight:500;color:var(--muted);cursor:pointer;text-align:center;transition:all .15s;background:none;border:none;font-family:inherit}
+.staff-action:hover{background:var(--tpp);color:var(--tpl)}
+.staff-action+.staff-action{border-left:1.5px solid var(--border)}
+
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(26,10,46,.45);z-index:500;backdrop-filter:blur(2px)}
+.modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:14px;width:660px;max-width:96vw;max-height:90vh;display:none;flex-direction:column;z-index:600;box-shadow:0 20px 60px rgba(74,28,107,.22)}
+.modal.open{display:flex}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1.5px solid var(--border);flex-shrink:0}
+.modal-title{font-size:15px;font-weight:600;color:var(--td)}
+.modal-close{background:none;border:none;cursor:pointer;font-size:22px;color:var(--muted);line-height:1;padding:0 4px}
+.modal-body{overflow-y:auto;padding:20px 24px;flex:1}
+.modal-footer{padding:14px 24px;border-top:1.5px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-shrink:0;background:#fff;border-radius:0 0 14px 14px}
+
+/* Modal Varianten */
+.mvar-header{display:grid;grid-template-columns:1fr 76px 76px 76px 76px 32px;gap:7px;padding:0 10px;margin-bottom:4px}
+.mvar-row{display:grid;grid-template-columns:1fr 76px 76px 76px 76px 32px;gap:7px;align-items:center;background:#faf8fc;border:1.5px solid var(--border);border-radius:8px;padding:8px 10px}
+.mvar-row input{border:1.5px solid var(--border);border-radius:6px;padding:5px 7px;font-size:12px;font-family:inherit;color:var(--td);outline:none;background:var(--white);width:100%;text-align:center}
+.mvar-row input:first-child{text-align:left}
+.mvar-row input:focus{border-color:var(--tpl)}
+
+/* Disp opts */
+.disp-row{display:flex;gap:10px;flex-wrap:wrap}
+.disp-opt{display:flex;align-items:center;gap:7px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;color:var(--td);user-select:none;transition:all .15s}
+.disp-opt:hover{border-color:var(--tpl)}
+.disp-opt.on{border-color:var(--tp);background:var(--tpp);color:var(--tp)}
+
+/* Mitarbeiter hours cols (smaller) */
+.hours-cols-sm{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.hours-col-sm{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:8px 5px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:border-color .2s}
+.hours-col-sm.aktiv{border-color:var(--tpl);background:var(--tpp)}
+.hours-col-sm-day{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+.hours-col-sm.aktiv .hours-col-sm-day{color:var(--tpl)}
+.hours-col-sm input[type="time"]{border:1.5px solid var(--border);border-radius:5px;padding:4px 2px;font-size:10px;font-family:'DM Mono',monospace;color:var(--td);outline:none;background:var(--white);width:100%;text-align:center}
+.hours-col-sm input[type="time"]:focus{border-color:var(--tpl)}
+
+/* Service checklist in Mitarbeiter modal */
+.svc-check-list{display:flex;flex-direction:column;gap:6px}
+.svc-check-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s}
+.svc-check-item:hover{border-color:var(--tpl);background:var(--tpp)}
+.svc-check-item.checked{border-color:var(--tp);background:var(--tpp)}
+.svc-check-box{width:18px;height:18px;border-radius:4px;border:1.5px solid #c8bcd8;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.svc-check-item.checked .svc-check-box{background:var(--tp);border-color:var(--tp)}
+.svc-check-name{font-size:13px;font-weight:500;color:var(--td);flex:1}
+.svc-check-desc{font-size:11px;color:var(--muted)}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--td);color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:500;opacity:0;transform:translateY(10px);transition:all .25s;z-index:999;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.success{background:var(--success)}.toast.error{background:var(--danger)}
+
+/* EMPTY */
+.empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty-icon{font-size:28px;margin-bottom:8px;opacity:.35}
+.empty-text{font-size:13px}
+hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-logo">Insy Reception</div>
+    <div class="nav-title">Einstellungen</div>
+  </div>
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="switchTab('profil')" id="tab-profil">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Salon-Profil
+    </div>
+    <div class="nav-tab" onclick="switchTab('services')" id="tab-services">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14"/><path d="M4.93 4.93a10 10 0 000 14.14"/></svg>
+      Services
+    </div>
+    <div class="nav-tab" onclick="switchTab('mitarbeiter')" id="tab-mitarbeiter">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      Mitarbeiter
+    </div>
+    <div class="nav-tab" onclick="switchTab('pakete')" id="tab-pakete">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+      Pakete
+    </div>
+  </div>
+  <div class="nav-right">
+    <span class="salon-pill" id="nav-salon-id">salon_id: —</span>
+    <a class="nav-booking-btn" id="nav-booking-link" href="#" target="_blank">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Buchungsseite öffnen
+    </a>
+  </div>
+</nav>
+
+<div class="main">
+
+  <!-- ════ PROFIL ════ -->
+  <div class="tab-panel active" id="panel-profil">
+    <div class="sec-hdr">
+      <div class="sec-title">Salon-Profil</div>
+      <div class="sec-sub">Wird im Header des Buchungswidgets angezeigt</div>
+    </div>
+    <div class="card">
+      <div class="card-title">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Allgemein
+      </div>
+      <div class="frow frow-2">
+        <div class="field"><label>Salonname (im Widget)</label><input type="text" id="f-brand" placeholder="z.B. Wellness Store Weiershagen"></div>
+        <div class="field"><label>Telefonnummer</label><input type="tel" id="f-phone" placeholder="+49 2262 79679975"></div>
+      </div>
+      <div class="frow frow-3">
+        <div class="field"><label>Straße</label><input type="text" id="f-street" placeholder="Hückhausener Str."></div>
+        <div class="field"><label>Hausnummer</label><input type="text" id="f-house" placeholder="234"></div>
+        <div class="field"><label>PLZ</label><input type="text" id="f-plz" placeholder="51674"></div>
+      </div>
+      <div class="frow frow-1">
+        <div class="field"><label>Stadt</label><input type="text" id="f-city" placeholder="Wiehl"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Öffnungszeiten
+      </div>
+      <div class="hours-cols" id="hours-cols"></div>
+    </div>
+
+    <div class="save-bar">
+      <div class="save-status" id="profil-status"></div>
+      <button class="btn btn-primary" onclick="saveProfil()" id="btn-save-profil">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Speichern
+      </button>
+    </div>
+  </div>
+
+  <!-- ════ SERVICES ════ -->
+  <div class="tab-panel" id="panel-services">
+    <div class="sec-hdr" style="display:flex;align-items:flex-start;justify-content:space-between">
+      <div><div class="sec-title">Services</div><div class="sec-sub">Dienstleistungen und Varianten verwalten</div></div>
+      <button class="btn btn-outline" onclick="openSvcModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Service hinzufügen
+      </button>
+    </div>
+    <div class="svc-list" id="svc-list">
+      <div class="empty"><div class="empty-icon">⟳</div><div class="empty-text">Wird geladen…</div></div>
+    </div>
+  </div>
+
+  <!-- ════ MITARBEITER ════ -->
+  <div class="tab-panel" id="panel-mitarbeiter">
+    <div class="sec-hdr" style="display:flex;align-items:flex-start;justify-content:space-between">
+      <div><div class="sec-title">Mitarbeiter</div><div class="sec-sub">Team verwalten, Arbeitszeiten & Services zuweisen</div></div>
+      <button class="btn btn-outline" onclick="openStaffModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Mitarbeiter hinzufügen
+      </button>
+    </div>
+    <div class="staff-grid" id="staff-grid">
+      <div class="empty" style="grid-column:1/-1"><div class="empty-icon">⟳</div><div class="empty-text">Wird geladen…</div></div>
+    </div>
+  </div>
+
+  <!-- ════ PAKETE ════ -->
+  <div class="tab-panel" id="panel-pakete">
+    <div class="sec-hdr">
+      <div class="sec-title">Pakete</div>
+      <div class="sec-sub">Abonnements, Mehrfachkarten und Preis-Pakete</div>
+    </div>
+    <div class="card" style="text-align:center;padding:48px 24px">
+      <div style="width:52px;height:52px;border-radius:14px;background:var(--tpp);display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+      </div>
+      <div style="font-size:15px;font-weight:600;color:var(--td);margin-bottom:6px">Pakete & Abonnements</div>
+      <div style="font-size:13px;color:var(--muted);max-width:360px;margin:0 auto;line-height:1.6">
+        Hier kannst du bald Pakete wie 10er-Karten, Monatspässe oder Preis-Stufen (Basic / Premium / VIP) konfigurieren, die direkt im Buchungswidget erscheinen.
+      </div>
+      <div style="margin-top:20px;display:inline-flex;align-items:center;gap:6px;background:var(--tgp);color:#7a5a00;padding:6px 14px;border-radius:99px;font-size:11px;font-weight:500">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        In Entwicklung
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ── MODAL SERVICE ── -->
+<div class="modal-overlay" id="svc-overlay" onclick="closeSvcModal()"></div>
+<div class="modal" id="svc-modal">
+  <div class="modal-hdr">
+    <div class="modal-title">Service hinzufügen</div>
+    <button class="modal-close" onclick="closeSvcModal()">×</button>
+  </div>
+  <div class="modal-body">
+    <div class="frow frow-2" style="margin-bottom:12px">
+      <div class="field"><label>Name *</label><input type="text" id="m-name" placeholder="z.B. Klassische Massage"></div>
+      <div class="field"><label>Beschreibung</label><input type="text" id="m-desc" placeholder="z.B. Entspannung & Verspannungen"></div>
+    </div>
+    <div style="background:var(--bg);border-radius:10px;padding:12px 14px;margin-bottom:16px">
+      <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:10px">Anzeige</div>
+      <div class="disp-row">
+        <div class="disp-opt on" id="opt-aktiv" onclick="toggleOpt('aktiv')">
+          <label class="toggle-sw" style="pointer-events:none"><input type="checkbox" id="m-aktiv" checked><span class="slider"></span></label>Im Widget aktiv
+        </div>
+        <div class="disp-opt on" id="opt-preis" onclick="toggleOpt('preis')">
+          <label class="toggle-sw" style="pointer-events:none"><input type="checkbox" id="m-zeige-preis" checked><span class="slider"></span></label>Preis anzeigen
+        </div>
+        <div class="disp-opt on" id="opt-dauer" onclick="toggleOpt('dauer')">
+          <label class="toggle-sw" style="pointer-events:none"><input type="checkbox" id="m-zeige-dauer" checked><span class="slider"></span></label>Dauer anzeigen
+        </div>
+      </div>
+    </div>
+    <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Varianten (Dauer & Preis)</div>
+    <div class="mvar-header">
+      <span class="var-col-lbl" style="text-align:left">Bezeichnung</span>
+      <span class="var-col-lbl">Min *</span>
+      <span class="var-col-lbl">Preis € *</span>
+      <span class="var-col-lbl">Puffer Min</span>
+      <span class="var-col-lbl">Puffer ✓</span>
+      <span></span>
+    </div>
+    <div id="m-var-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"></div>
+    <button class="btn btn-sm btn-ghost" onclick="addModalVar()" type="button">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Variante hinzufügen
+    </button>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-ghost" onclick="closeSvcModal()">Abbrechen</button>
+    <button class="btn btn-primary" onclick="saveNewService()" id="btn-svc-save">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      Service anlegen
+    </button>
+  </div>
+</div>
+
+<!-- ── MODAL MITARBEITER ── -->
+<div class="modal-overlay" id="staff-overlay" onclick="closeStaffModal()"></div>
+<div class="modal" id="staff-modal">
+  <div class="modal-hdr">
+    <div class="modal-title" id="staff-modal-title">Mitarbeiter hinzufügen</div>
+    <button class="modal-close" onclick="closeStaffModal()">×</button>
+  </div>
+  <div class="modal-body">
+
+    <!-- Name & Anzeigename -->
+    <div class="frow frow-2" style="margin-bottom:12px">
+      <div class="field"><label>Vollständiger Name *</label><input type="text" id="s-name" placeholder="z.B. Niran Thepsombat"></div>
+      <div class="field"><label>Anzeigename (im Buchungswidget)</label><input type="text" id="s-display" placeholder="z.B. Niran T."></div>
+    </div>
+    <div class="frow frow-2" style="margin-bottom:12px">
+      <div class="field"><label>Rolle / Berufsbezeichnung</label><input type="text" id="s-role" placeholder="z.B. Massagetherapeutin"></div>
+      <div class="field"><label>E-Mail</label><input type="email" id="s-email" placeholder="niran@salon.de"></div>
+    </div>
+    <div class="frow frow-1" style="margin-bottom:4px">
+      <div class="field"><label>Google Kalender ID</label><input type="text" id="s-cal" placeholder="name@gmail.com oder Kalender-ID"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;font-size:11px;color:var(--muted);background:var(--bg);padding:9px 12px;border-radius:8px">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Google Kalender ID: Google Calendar → Einstellungen → Deinen Kalender → Kalender-ID
+    </div>
+
+    <!-- Arbeitszeiten -->
+    <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:10px">Persönliche Arbeitszeiten</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <label class="toggle-sw"><input type="checkbox" id="s-custom-hours" onchange="toggleCustomHours()"><span class="slider"></span></label>
+      <span style="font-size:12px;color:var(--td)">Eigene Arbeitszeiten (abweichend vom Salon)</span>
+    </div>
+    <div id="s-hours-wrap" style="opacity:.4;pointer-events:none">
+      <div class="hours-cols-sm" id="s-hours-cols"></div>
+    </div>
+
+    <hr class="div">
+
+    <!-- Services zuweisen -->
+    <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:10px">Services zuweisen</div>
+    <div class="svc-check-list" id="s-svc-list"></div>
+
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-ghost" onclick="closeStaffModal()">Abbrechen</button>
+    <button class="btn btn-primary" onclick="saveStaff()" id="btn-staff-save">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      Speichern
+    </button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SB_URL='https://uzemgxfjgjwqfgfwbboi.supabase.co';
+const SB_KEY='sb_publishable__XubcF5yPDyIMpfE7kO9Rg_Xp7kj0hL';
+const sb=window.supabase.createClient(SB_URL,SB_KEY);
+var SALON_ID=new URLSearchParams(window.location.search).get('salon_id');
+var servicesData=[];
+var staffData=[];      // [{mitarbeiter, services:[id,...]}]
+var editingStaffId=null;
+
+// ── TABS ──────────────────────────────────────────────────────
+function switchTab(n){
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.nav-tab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById('panel-'+n).classList.add('active');
+  document.getElementById('tab-'+n).classList.add('active');
+}
+
+// ── TOAST ─────────────────────────────────────────────────────
+function toast(msg,type){
+  var el=document.getElementById('toast');
+  el.textContent=msg;el.className='toast '+(type||'');el.classList.add('show');
+  setTimeout(function(){el.classList.remove('show');},2800);
+}
+
+// ── ÖFFNUNGSZEITEN SPALTEN ────────────────────────────────────
+var DAYS=[
+  {key:'monday',label:'Mo'},{key:'tuesday',label:'Di'},{key:'wednesday',label:'Mi'},
+  {key:'thursday',label:'Do'},{key:'friday',label:'Fr'},{key:'saturday',label:'Sa'},{key:'sunday',label:'So'}
+];
+
+function buildHoursCols(az,containerId,prefix,small){
+  var cls=small?'hours-col-sm':'hours-col';
+  var cols=document.getElementById(containerId);
+  cols.innerHTML=DAYS.map(function(d){
+    var h=az&&az[d.key]?az[d.key]:{aktiv:d.key!=='sunday',start:'09:00',end:'18:00'};
+    return'<div class="'+cls+' '+(h.aktiv?'aktiv':'')+'" id="'+prefix+'col-'+d.key+'">'
+      +'<div class="'+(small?'hours-col-sm-day':'hours-col-day')+'">'+d.label+'</div>'
+      +'<label class="toggle-sw"><input type="checkbox" id="'+prefix+'aktiv-'+d.key+'" '+(h.aktiv?'checked':'')+' onchange="toggleHourCol(\''+d.key+'\',\''+prefix+'\')" ><span class="slider"></span></label>'
+      +'<div class="hours-time-wrap" id="'+prefix+'times-'+d.key+'" style="'+(h.aktiv?'':'opacity:.3;pointer-events:none')+'">'
+        +'<input type="time" id="'+prefix+'start-'+d.key+'" value="'+(h.start||'09:00')+'">'
+        +'<span style="font-size:9px;color:var(--muted)">–</span>'
+        +'<input type="time" id="'+prefix+'end-'+d.key+'" value="'+(h.end||'18:00')+'">'
+      +'</div>'
+      +(h.aktiv?'':'<div style="font-size:9px;color:#c8bcd8;font-style:italic">Geschl.</div>')
+    +'</div>';
+  }).join('');
+}
+
+function toggleHourCol(key,prefix){
+  var aktiv=document.getElementById(prefix+'aktiv-'+key).checked;
+  var col=document.getElementById(prefix+'col-'+key);
+  var times=document.getElementById(prefix+'times-'+key);
+  col.classList.toggle('aktiv',aktiv);
+  if(times){times.style.opacity=aktiv?'1':'0.3';times.style.pointerEvents=aktiv?'auto':'none';}
+  // Update geschlossen text
+  var closedEl=col.querySelector('[style*="font-style:italic"]');
+  if(aktiv&&closedEl)closedEl.remove();
+  if(!aktiv&&!col.querySelector('[style*="font-style:italic"]'))col.insertAdjacentHTML('beforeend','<div style="font-size:9px;color:#c8bcd8;font-style:italic">Geschl.</div>');
+}
+
+function readHours(prefix){
+  var az={};
+  DAYS.forEach(function(d){
+    az[d.key]={
+      aktiv:document.getElementById(prefix+'aktiv-'+d.key).checked,
+      start:document.getElementById(prefix+'start-'+d.key).value||'09:00',
+      end:document.getElementById(prefix+'end-'+d.key).value||'18:00'
+    };
+  });
+  return az;
+}
+
+// ── PROFIL LOAD/SAVE ──────────────────────────────────────────
+async function loadProfil(){
+  if(!SALON_ID){toast('Keine salon_id in der URL','error');buildHoursCols(null,'hours-cols','h-',false);return;}
+  document.getElementById('nav-salon-id').textContent='salon_id: '+SALON_ID.slice(0,8)+'…';
+  var bookingBtn=document.getElementById('nav-booking-link');
+  if(bookingBtn)bookingBtn.href='insy-reception.html?salon_id='+SALON_ID;
+  var res=await sb.from('kunden_profile').select('*').eq('id',SALON_ID).single();
+  if(res.error){toast('Profil nicht gefunden','error');buildHoursCols(null,'hours-cols','h-',false);return;}
+  var d=res.data;
+  document.getElementById('f-brand').value=d.brand_name||d.name||'';
+  document.getElementById('f-phone').value=d.phone||'';
+  document.getElementById('f-street').value=d.street||'';
+  document.getElementById('f-house').value=d.house_number||'';
+  document.getElementById('f-plz').value=d.postal_code||'';
+  document.getElementById('f-city').value=d.city||'';
+  buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
+}
+
+async function saveProfil(){
+  if(!SALON_ID){toast('Keine salon_id','error');return;}
+  var btn=document.getElementById('btn-save-profil');
+  var st=document.getElementById('profil-status');
+  btn.disabled=true;st.className='save-status saving';st.textContent='Wird gespeichert…';
+  var res=await sb.from('kunden_profile').update({
+    brand_name:document.getElementById('f-brand').value.trim(),
+    phone:document.getElementById('f-phone').value.trim(),
+    street:document.getElementById('f-street').value.trim(),
+    house_number:document.getElementById('f-house').value.trim(),
+    postal_code:document.getElementById('f-plz').value.trim(),
+    city:document.getElementById('f-city').value.trim(),
+    arbeitszeiten:readHours('h-')
+  }).eq('id',SALON_ID);
+  btn.disabled=false;
+  if(res.error){st.className='save-status error';st.textContent='Fehler: '+res.error.message;toast('Speichern fehlgeschlagen','error');}
+  else{st.className='save-status saved';st.textContent='✓ Gespeichert';toast('Profil gespeichert ✓','success');setTimeout(function(){st.textContent='';st.className='save-status';},3000);}
+}
+
+// ── SERVICES LOAD/RENDER ──────────────────────────────────────
+async function loadServices(){
+  if(!SALON_ID){document.getElementById('svc-list').innerHTML='<div class="empty"><div class="empty-text">Keine salon_id</div></div>';return;}
+  var sRes=await sb.from('services').select('*').eq('salon_id',SALON_ID).order('sortierung');
+  if(sRes.error){toast('Services Fehler','error');return;}
+  var svcs=sRes.data||[];
+  var allVars=[];
+  if(svcs.length){
+    var vRes=await sb.from('service_varianten').select('*').in('service_id',svcs.map(function(s){return s.id;})).order('sortierung');
+    if(!vRes.error)allVars=vRes.data||[];
+  }
+  servicesData=svcs.map(function(s){return{service:s,varianten:allVars.filter(function(v){return v.service_id===s.id;})};});
+  renderSvcList();
+}
+
+function renderSvcList(){
+  var list=document.getElementById('svc-list');
+  if(!servicesData.length){list.innerHTML='<div class="empty"><div class="empty-icon">✦</div><div class="empty-text">Noch keine Services</div></div>';return;}
+  list.innerHTML=servicesData.map(function(item){
+    var s=item.service,vars=item.varianten;
+    var minP=vars.length?Math.min.apply(null,vars.map(function(v){return parseFloat(v.preis)||0;})):null;
+    return'<div class="svc-item" id="svc-item-'+s.id+'">'
+      +'<div class="svc-item-hdr" onclick="toggleItem(\''+s.id+'\',\'svc\')">'
+        +'<div style="flex:1"><div class="svc-item-name">'+esc(s.name)+'</div>'+(s.beschreibung?'<div class="svc-item-meta">'+esc(s.beschreibung)+'</div>':'')+'</div>'
+        +(minP!==null?'<span style="font-size:12px;color:var(--tg);font-weight:500;margin-right:8px">ab '+minP+' €</span>':'')
+        +'<span class="badge '+(s.aktiv?'':'off')+'">'+(s.aktiv?'Aktiv':'Inaktiv')+'</span>'
+        +'<span class="chevron" id="chev-svc-'+s.id+'">⌄</span>'
+      +'</div>'
+      +'<div class="item-body" id="body-svc-'+s.id+'">'+renderSvcBody(s,vars)+'</div>'
+    +'</div>';
+  }).join('');
+}
+
+function renderSvcBody(s,vars){
+  return'<div style="display:flex;gap:10px;margin-bottom:14px;align-items:flex-end">'
+    +'<div class="field" style="flex:1"><label>Name</label><input type="text" value="'+esc(s.name)+'" onchange="updateSvc(\''+s.id+'\',\'name\',this.value)"></div>'
+    +'<div class="field" style="flex:2"><label>Beschreibung</label><input type="text" value="'+esc(s.beschreibung||'')+'" onchange="updateSvc(\''+s.id+'\',\'beschreibung\',this.value)"></div>'
+    +'<div style="padding-bottom:2px"><label class="toggle-sw" title="Aktiv"><input type="checkbox" '+(s.aktiv?'checked':'')+' onchange="updateSvc(\''+s.id+'\',\'aktiv\',this.checked)"><span class="slider"></span></label></div>'
+  +'</div>'
+  +'<hr class="div">'
+  +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Varianten</div>'
+  +'<div class="var-header"><span class="var-col-lbl" style="text-align:left">Bezeichnung</span><span class="var-col-lbl">Min</span><span class="var-col-lbl">Preis €</span><span class="var-col-lbl">Puffer Min</span><span></span></div>'
+  +'<div class="var-list" id="varlist-'+s.id+'">'
+    +(vars.map(function(v){return mkVarRow(v,s.id);}).join('')||'<div style="font-size:12px;color:var(--muted);padding:6px 0">Noch keine Varianten</div>')
+  +'</div>'
+  +'<div style="display:flex;gap:8px">'
+    +'<button class="btn btn-sm btn-ghost" onclick="addVariante(\''+s.id+'\')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Variante hinzufügen</button>'
+    +'<button class="btn btn-sm btn-danger" onclick="deleteSvc(\''+s.id+'\')" style="margin-left:auto">Service löschen</button>'
+  +'</div>';
+}
+
+function mkVarRow(v,svcId){
+  return'<div class="var-row" id="var-'+v.id+'">'
+    +'<input type="text" placeholder="z.B. Standard" value="'+esc(v.bezeichnung||'')+'" onchange="updateVar(\''+v.id+'\',\'bezeichnung\',this.value)">'
+    +'<input type="number" min="1" value="'+v.dauer_minuten+'" onchange="updateVar(\''+v.id+'\',\'dauer_minuten\',this.value)" style="text-align:center">'
+    +'<input type="number" min="0" step="0.5" value="'+v.preis+'" onchange="updateVar(\''+v.id+'\',\'preis\',this.value)" style="text-align:center">'
+    +'<input type="number" min="0" value="'+(v.puffer_minuten||0)+'" onchange="updateVar(\''+v.id+'\',\'puffer_minuten\',this.value)" style="text-align:center">'
+    +'<button class="btn btn-sm btn-danger" style="padding:6px 8px" onclick="deleteVar(\''+v.id+'\',\''+svcId+'\')">✕</button>'
+  +'</div>';
+}
+
+function toggleItem(id,type){
+  var b=document.getElementById('body-'+type+'-'+id);
+  var c=document.getElementById('chev-'+type+'-'+id);
+  var open=b.classList.contains('open');
+  b.classList.toggle('open',!open);c.classList.toggle('open',!open);
+}
+
+async function updateSvc(id,field,value){
+  var payload={};payload[field]=value;
+  var res=await sb.from('services').update(payload).eq('id',id);
+  if(res.error){toast('Fehler: '+res.error.message,'error');return;}
+  servicesData.forEach(function(i){if(i.service.id===id)i.service[field]=value;});
+  if(field==='name'){var el=document.querySelector('#svc-item-'+id+' .svc-item-name');if(el)el.textContent=value;}
+  if(field==='aktiv'){var b=document.querySelector('#svc-item-'+id+' .badge');if(b){b.textContent=value?'Aktiv':'Inaktiv';b.className='badge '+(value?'':'off');}}
+  toast('Gespeichert ✓','success');
+}
+
+async function updateVar(id,field,value){
+  var payload={};payload[field]=(field==='preis'||field==='dauer_minuten'||field==='puffer_minuten')?parseFloat(value)||0:value;
+  var res=await sb.from('service_varianten').update(payload).eq('id',id);
+  if(res.error){toast('Fehler: '+res.error.message,'error');return;}
+  toast('Variante gespeichert ✓','success');
+}
+
+async function addVariante(svcId){
+  var res=await sb.from('service_varianten').insert({service_id:svcId,dauer_minuten:60,preis:0,puffer_aktiv:false,puffer_minuten:0,aktiv:true,sortierung:0}).select().single();
+  if(res.error){toast('Fehler: '+res.error.message,'error');return;}
+  var v=res.data;
+  servicesData.forEach(function(i){if(i.service.id===svcId)i.varianten.push(v);});
+  var vl=document.getElementById('varlist-'+svcId);
+  if(vl){var old=vl.querySelector('[style*="color:var(--muted)"]');if(old)old.remove();vl.insertAdjacentHTML('beforeend',mkVarRow(v,svcId));}
+  toast('Variante hinzugefügt ✓','success');
+}
+
+async function deleteVar(varId,svcId){
+  if(!confirm('Variante löschen?'))return;
+  var res=await sb.from('service_varianten').delete().eq('id',varId);
+  if(res.error){toast('Fehler: '+res.error.message,'error');return;}
+  servicesData.forEach(function(i){if(i.service.id===svcId)i.varianten=i.varianten.filter(function(v){return v.id!==varId;});});
+  var el=document.getElementById('var-'+varId);if(el)el.remove();
+  toast('Variante gelöscht','success');
+}
+
+async function deleteSvc(id){
+  if(!confirm('Service und alle Varianten wirklich löschen?'))return;
+  await sb.from('service_varianten').delete().eq('service_id',id);
+  var res=await sb.from('services').delete().eq('id',id);
+  if(res.error){toast('Fehler: '+res.error.message,'error');return;}
+  servicesData=servicesData.filter(function(i){return i.service.id!==id;});
+  var el=document.getElementById('svc-item-'+id);if(el)el.remove();
+  if(!servicesData.length)renderSvcList();
+  toast('Service gelöscht','success');
+}
+
+// ── SERVICE MODAL ─────────────────────────────────────────────
+var mVarCount=0;
+
+function toggleOpt(key){
+  var opt=document.getElementById('opt-'+key);
+  var cb=document.getElementById('m-'+(key==='aktiv'?'aktiv':key==='preis'?'zeige-preis':'zeige-dauer'));
+  var on=opt.classList.contains('on');
+  opt.classList.toggle('on',!on);if(cb)cb.checked=!on;
+}
+
+function addModalVar(defaults){
+  var d=defaults||{};var idx=++mVarCount;
+  var row=document.createElement('div');row.className='mvar-row';row.id='mvar-'+idx;
+  row.innerHTML=
+    '<input type="text" placeholder="z.B. Standard" value="'+(d.bez||'')+'">'
+   +'<input type="number" min="1" placeholder="60" value="'+(d.min||60)+'">'
+   +'<input type="number" min="0" step="0.5" placeholder="0.00" value="'+(d.preis||0)+'">'
+   +'<input type="number" min="0" placeholder="0" value="'+(d.puffer||0)+'">'
+   +'<div style="display:flex;justify-content:center"><label class="toggle-sw"><input type="checkbox" '+(d.pufferAktiv?'checked':'')+' title="Puffer aktiv"><span class="slider"></span></label></div>'
+   +'<button type="button" onclick="this.closest(\'.mvar-row\').remove()" style="background:none;border:none;cursor:pointer;font-size:16px;color:#ccc;line-height:1">×</button>';
+  document.getElementById('m-var-list').appendChild(row);
+}
+
+function readModalVars(){
+  var rows=document.querySelectorAll('.mvar-row');var result=[];
+  rows.forEach(function(row){
+    var inputs=row.querySelectorAll('input');var min=parseInt(inputs[1].value)||0;
+    if(min>0)result.push({bezeichnung:inputs[0].value.trim(),dauer_minuten:min,preis:parseFloat(inputs[2].value)||0,puffer_minuten:parseInt(inputs[3].value)||0,puffer_aktiv:inputs[4].checked,aktiv:true,sortierung:result.length});
+  });
+  return result;
+}
+
+function openSvcModal(){
+  mVarCount=0;
+  document.getElementById('m-name').value='';document.getElementById('m-desc').value='';
+  document.getElementById('m-aktiv').checked=true;document.getElementById('m-zeige-preis').checked=true;document.getElementById('m-zeige-dauer').checked=true;
+  ['aktiv','preis','dauer'].forEach(function(k){document.getElementById('opt-'+k).classList.add('on');});
+  document.getElementById('m-var-list').innerHTML='';addModalVar({min:60,preis:0});
+  document.getElementById('svc-overlay').style.display='block';document.getElementById('svc-modal').classList.add('open');
+  setTimeout(function(){document.getElementById('m-name').focus();},80);
+}
+function closeSvcModal(){document.getElementById('svc-overlay').style.display='none';document.getElementById('svc-modal').classList.remove('open');}
+
+async function saveNewService(){
+  var name=document.getElementById('m-name').value.trim();
+  if(!name){toast('Name ist Pflichtfeld','error');return;}
+  var vars=readModalVars();var btn=document.getElementById('btn-svc-save');btn.disabled=true;
+  var res=await sb.from('services').insert({salon_id:SALON_ID,name:name,beschreibung:document.getElementById('m-desc').value.trim(),aktiv:document.getElementById('m-aktiv').checked,dauer_anzeigen:document.getElementById('m-zeige-dauer').checked,preis_anzeigen:document.getElementById('m-zeige-preis').checked,sortierung:servicesData.length}).select().single();
+  btn.disabled=false;
+  if(res.error){toast('Fehler: '+res.error.message,'error');return;}
+  var svc=res.data;var savedVars=[];
+  if(vars.length){var vRes=await sb.from('service_varianten').insert(vars.map(function(v){return Object.assign({service_id:svc.id},v);})).select();if(!vRes.error)savedVars=vRes.data||[];}
+  servicesData.push({service:svc,varianten:savedVars});renderSvcList();closeSvcModal();
+  toast('Service angelegt ✓','success');
+  setTimeout(function(){toggleItem(svc.id,'svc');},80);
+}
+
+// ── MITARBEITER LOAD/RENDER ───────────────────────────────────
+async function loadStaff(){
+  if(!SALON_ID)return;
+  var res=await sb.from('mitarbeiter').select('*').eq('salon_id',SALON_ID).order('sortierung');
+  if(res.error){staffData=[];renderStaffGrid();return;}
+  var staff=res.data||[];
+  var assigns=[];
+  if(staff.length){
+    var aRes=await sb.from('mitarbeiter_services').select('*').in('mitarbeiter_id',staff.map(function(s){return s.id;}));
+    if(!aRes.error)assigns=aRes.data||[];
+  }
+  staffData=staff.map(function(s){
+    return{
+      mitarbeiter:s,
+      // service_variante_id Liste
+      varianteIds:assigns.filter(function(a){return a.mitarbeiter_id===s.id&&a.aktiv;}).map(function(a){return a.service_variante_id;})
+    };
+  });
+  renderStaffGrid();
+}
+
+function renderStaffGrid(){
+  var grid=document.getElementById('staff-grid');
+  if(!staffData.length){
+    grid.innerHTML='<div class="empty" style="grid-column:1/-1"><div class="empty-icon">✦</div><div class="empty-text">Noch keine Mitarbeiter — füge dein Team hinzu</div></div>';
+    return;
+  }
+  grid.innerHTML=staffData.map(function(item){
+    var m=item.mitarbeiter;
+    var ini=(m.display_name||m.name||'?').split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
+    var vCount=item.varianteIds.length;
+    // Unique Services zählen
+    var svcIds=[];
+    item.varianteIds.forEach(function(vid){
+      servicesData.forEach(function(si){
+        si.varianten.forEach(function(v){if(v.id===vid&&svcIds.indexOf(si.service.id)<0)svcIds.push(si.service.id);});
+      });
+    });
+    return'<div class="staff-card" id="staff-card-'+m.id+'">'
+      +'<div class="staff-card-top">'
+        +'<div class="staff-avatar '+(m.aktiv?'':'off')+'">'+ini+'</div>'
+        +'<div style="flex:1;min-width:0">'
+          +'<div class="staff-name">'+esc(m.display_name||m.name)+'</div>'
+          +'<div class="staff-role">'+esc(m.role||'')+'</div>'
+          +'<div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap">'
+            +'<span class="badge '+(m.aktiv?'':'off')+'" style="font-size:9px">'+(m.aktiv?'Aktiv':'Inaktiv')+'</span>'
+            +(m.google_calendar_id?'<span class="badge" style="font-size:9px;background:var(--tgp);color:#7a5a00">Google ✓</span>':'')
+          +'</div>'
+        +'</div>'
+      +'</div>'
+      +'<div style="padding:0 14px 10px;font-size:11px;color:var(--muted)">'+svcIds.length+' Service'+(svcIds.length!==1?'s':'')+(vCount?' · '+vCount+' Variante'+(vCount!==1?'n':''):'')+'</div>'
+      +'<div class="staff-card-actions">'
+        +'<button class="staff-action" onclick="editStaff(\''+m.id+'\')">✎ Bearbeiten</button>'
+        +'<button class="staff-action" onclick="deleteStaff(\''+m.id+'\')" style="color:var(--danger)">✕ Löschen</button>'
+      +'</div>'
+    +'</div>';
+  }).join('');
+}
+
+// ── MITARBEITER MODAL ─────────────────────────────────────────
+function toggleCustomHours(){
+  var on=document.getElementById('s-custom-hours').checked;
+  var wrap=document.getElementById('s-hours-wrap');
+  wrap.style.opacity=on?'1':'0.4';wrap.style.pointerEvents=on?'auto':'none';
+}
+
+// Service-Varianten Checkliste aufbauen
+// Zeigt: Service-Name als Gruppe → Varianten darunter
+function buildStaffSvcList(selectedVarianteIds){
+  var list=document.getElementById('s-svc-list');
+  if(!servicesData.length){
+    list.innerHTML='<div style="font-size:12px;color:var(--muted)">Keine Services vorhanden — zuerst Services anlegen</div>';
+    return;
+  }
+  var html='';
+  servicesData.forEach(function(item){
+    var s=item.service;
+    var vars=item.varianten;
+    if(!vars.length)return;
+    // Service-Gruppe Header
+    html+='<div style="font-size:11px;font-weight:600;color:var(--td);margin:10px 0 5px;padding-left:2px">'+esc(s.name)+'</div>';
+    vars.forEach(function(v){
+      var checked=selectedVarianteIds.indexOf(v.id)>=0;
+      var label=v.bezeichnung?v.bezeichnung:v.dauer_minuten+' Min';
+      var preis=v.preis?'· '+parseFloat(v.preis).toFixed(2)+' €':'';
+      html+='<div class="svc-check-item '+(checked?'checked':'')+'" id="sc-'+v.id+'" onclick="toggleVarCheck(\''+v.id+'\')">'
+        +'<div class="svc-check-box">'+(checked?'<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="10 3 5 9 2 6"/></svg>':'')+'</div>'
+        +'<div><div class="svc-check-name">'+esc(label)+'<span style="font-weight:400;color:var(--muted);font-size:11px"> '+preis+'</span></div></div>'
+        +'</div>';
+    });
+  });
+  list.innerHTML=html||'<div style="font-size:12px;color:var(--muted)">Keine Varianten vorhanden</div>';
+}
+
+function toggleVarCheck(varId){
+  var el=document.getElementById('sc-'+varId);
+  if(!el)return;
+  var on=el.classList.contains('checked');
+  el.classList.toggle('checked',!on);
+  el.querySelector('.svc-check-box').innerHTML=!on?'<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="10 3 5 9 2 6"/></svg>':'';
+}
+
+function getCheckedVarianten(){
+  var ids=[];
+  servicesData.forEach(function(item){
+    item.varianten.forEach(function(v){
+      var el=document.getElementById('sc-'+v.id);
+      if(el&&el.classList.contains('checked'))ids.push(v.id);
+    });
+  });
+  return ids;
+}
+
+function openStaffModal(data){
+  editingStaffId=data?data.mitarbeiter.id:null;
+  document.getElementById('staff-modal-title').textContent=data?'Mitarbeiter bearbeiten':'Mitarbeiter hinzufügen';
+  var m=data?data.mitarbeiter:{};
+  document.getElementById('s-name').value=m.name||'';
+  document.getElementById('s-display').value=m.display_name||'';
+  document.getElementById('s-role').value=m.role||'';
+  document.getElementById('s-email').value=m.email||'';
+  document.getElementById('s-cal').value=m.google_calendar_id||'';
+  var hasCustom=!!(data&&m.arbeitszeiten);
+  document.getElementById('s-custom-hours').checked=hasCustom;
+  var wrap=document.getElementById('s-hours-wrap');
+  wrap.style.opacity=hasCustom?'1':'0.4';
+  wrap.style.pointerEvents=hasCustom?'auto':'none';
+  buildHoursCols(hasCustom?m.arbeitszeiten:null,'s-hours-cols','s-',true);
+  buildStaffSvcList(data?data.varianteIds:[]);
+  document.getElementById('staff-overlay').style.display='block';
+  document.getElementById('staff-modal').classList.add('open');
+  setTimeout(function(){document.getElementById('s-name').focus();},80);
+}
+function closeStaffModal(){
+  document.getElementById('staff-overlay').style.display='none';
+  document.getElementById('staff-modal').classList.remove('open');
+  editingStaffId=null;
+}
+function editStaff(id){
+  var item=staffData.filter(function(i){return i.mitarbeiter.id===id;})[0];
+  if(item)openStaffModal(item);
+}
+
+async function saveStaff(){
+  var name=document.getElementById('s-name').value.trim();
+  if(!name){toast('Name ist Pflichtfeld','error');return;}
+  var btn=document.getElementById('btn-staff-save');btn.disabled=true;
+  var hasCustom=document.getElementById('s-custom-hours').checked;
+  var nextSort=staffData.length;
+  var payload={
+    salon_id:SALON_ID,
+    name:name,
+    display_name:document.getElementById('s-display').value.trim()||name,
+    role:document.getElementById('s-role').value.trim(),
+    email:document.getElementById('s-email').value.trim(),
+    google_calendar_id:document.getElementById('s-cal').value.trim(),
+    arbeitszeiten:hasCustom?readHours('s-'):null,
+    aktiv:true,
+    sortierung:editingStaffId?undefined:nextSort
+  };
+  // sortierung nur beim Insert
+  if(editingStaffId)delete payload.sortierung;
+  var res;
+  if(editingStaffId){
+    res=await sb.from('mitarbeiter').update(payload).eq('id',editingStaffId).select().single();
+  }else{
+    res=await sb.from('mitarbeiter').insert(payload).select().single();
+  }
+  btn.disabled=false;
+  if(res.error){toast('Fehler: '+res.error.message,'error');return;}
+  var staffId=res.data.id;
+  var checkedVarianten=getCheckedVarianten();
+  // Alle alten Einträge löschen, neue einfügen
+  await sb.from('mitarbeiter_services').delete().eq('mitarbeiter_id',staffId);
+  if(checkedVarianten.length){
+    await sb.from('mitarbeiter_services').insert(
+      checkedVarianten.map(function(vid){return{mitarbeiter_id:staffId,service_variante_id:vid,aktiv:true};})
+    );
+  }
+  closeStaffModal();
+  toast((editingStaffId?'Mitarbeiter aktualisiert':'Mitarbeiter angelegt')+' ✓','success');
+  await loadStaff();
+}
+
+async function deleteStaff(id){
+  if(!confirm('Mitarbeiter wirklich löschen?'))return;
+  await sb.from('mitarbeiter_services').delete().eq('mitarbeiter_id',id);
+  var res=await sb.from('mitarbeiter').delete().eq('id',id);
+  if(res.error){toast('Fehler: '+res.error.message,'error');return;}
+  staffData=staffData.filter(function(i){return i.mitarbeiter.id!==id;});
+  var el=document.getElementById('staff-card-'+id);if(el)el.remove();
+  if(!staffData.length)renderStaffGrid();
+  toast('Mitarbeiter gelöscht','success');
+}
+
+// ── UTILS ─────────────────────────────────────────────────────
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// ── INIT ──────────────────────────────────────────────────────
+loadProfil();
+loadServices().then(function(){loadStaff();});
+</script>
+</body>
+</html>
