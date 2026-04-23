@@ -236,15 +236,9 @@ document.addEventListener('click',function(e){
   }
 });
 
-var SVCS=[
-  {id:'s1',name:'Klassische Massage',desc:'Entspannung & Verspannungen',price:65},
-  {id:'s2',name:'Hot-Stone Massage',desc:'Tiefenwärme & Vulkansteine',price:85},
-  {id:'s3',name:'Maniküre & Nail-Art',desc:'Pflege, Form & Designs',price:45},
-  {id:'s4',name:'Gesichtsbehandlung',desc:'Reinigung & Peeling',price:70},
-  {id:'s5',name:'Pediküre',desc:'Fußpflege & Lackierung',price:40},
-  {id:'s6',name:'Aromatherapie',desc:'Ätherische Öle & Entspannung',price:75},
-];
-var DURS=[{id:'d1',min:30,mult:.5},{id:'d2',min:60,mult:1},{id:'d3',min:90,mult:1.5},{id:'d4',min:120,mult:2}];
+// Dynamisch aus Supabase befüllt
+var SVCS=[];
+var VARIANTEN={}; // { service_id: [{id, min, preis, puffer_aktiv, puffer_minuten}] }
 var STAFF=[
   {id:'any',name:'Ohne Präferenz',role:'Nächste verfügbare Person',ini:'?',gold:true,avail:true},
   {id:'p1',name:'Niran T.',role:'Wellness-Therapeutin',ini:'NT',avail:true},
@@ -276,7 +270,17 @@ var st={
 var calOff=0,staffOpen=false,dropOpen=false,dropSearch='';
 
 function fsvc(id){return SVCS.filter(function(x){return x.id===id;})[0]||null;}
-function fdur(id){return DURS.filter(function(x){return x.id===id;})[0]||null;}
+// Variante anhand ihrer ID suchen (über alle Services)
+function fdur(id){
+  var all=[];
+  Object.keys(VARIANTEN).forEach(function(k){all=all.concat(VARIANTEN[k]);});
+  return all.filter(function(x){return x.id===id;})[0]||null;
+}
+// Varianten für den aktuell gewählten Service
+function currentVarianten(svcId){
+  if(!svcId)return[];
+  return VARIANTEN[svcId]||[];
+}
 function fname(id){if(!id||id==='any')return'Ohne Präferenz';var f=STAFF.filter(function(x){return x.id===id;})[0];return f?f.name:null;}
 
 function availSlots(){
@@ -285,8 +289,8 @@ function availSlots(){
   return BASE_SLOTS.map(function(s){return{time:s,busy:!!(BUSY[s]||b1[s]||b2[s])};});
 }
 
-function p1(){var s=fsvc(st.svc1),d=fdur(st.dur1);return s&&d?Math.round(s.price*d.mult):null;}
-function p2(){var s=fsvc(st.svc2),d=fdur(st.dur2);return s&&d?Math.round(s.price*d.mult):null;}
+function p1(){var d=fdur(st.dur1);return d?d.preis:null;}
+function p2(){var d=fdur(st.dur2);return d?d.preis:null;}
 function total(){var a=p1(),b=p2();if(!a)return null;return st.dual&&b?a+b:a;}
 function slot2time(){
   if(!st.slot||!st.dur1)return null;
@@ -316,11 +320,17 @@ function getCalData(){
 }
 
 window.pickSvc=function(id){
-  if(!st.dual){st.svc1=id;render();return;}
+  if(!st.dual){
+    if(st.svc1!==id){st.dur1=null;} // Dauer zurücksetzen wenn anderer Service
+    st.svc1=id;render();return;
+  }
   if(st.svc1===id&&st.svc2===id){render();return;}
-  if(st.svc1===null&&st.svc2===null){st.svc1=id;st.svc2=id;st.nextSvc=1;}
-  else if(st.svc1===id||st.svc2===id){st.svc1=id;st.svc2=id;st.nextSvc=1;}
-  else{if(st.nextSvc===1){st.svc1=id;st.nextSvc=2;}else{st.svc2=id;st.nextSvc=1;}}
+  if(st.svc1===null&&st.svc2===null){st.svc1=id;st.svc2=id;st.dur1=null;st.dur2=null;st.nextSvc=1;}
+  else if(st.svc1===id||st.svc2===id){st.svc1=id;st.svc2=id;st.dur1=null;st.dur2=null;st.nextSvc=1;}
+  else{
+    if(st.nextSvc===1){st.svc1=id;st.dur1=null;st.nextSvc=2;}
+    else{st.svc2=id;st.dur2=null;st.nextSvc=1;}
+  }
   render();
 };
 window.pickDur=function(id){
@@ -373,6 +383,7 @@ function selClass(val1,val2,id,isDual){
 }
 
 function mkSvcCards(){
+  if(!SVCS.length)return'<div style="font-size:12px;color:#7a6a8a;padding:8px">Services werden geladen…</div>';
   return SVCS.map(function(s){
     var cls=selClass(st.svc1,st.svc2,s.id,st.dual);
     var badges='';
@@ -386,32 +397,42 @@ function mkSvcCards(){
     if(st.dual&&cls!=='selboth'&&(st.svc1!==null||st.svc2!==null)){
       nextHint='<span class="svc-next">nächster: Slot '+st.nextSvc+'</span>';
     }
+    // Günstigste Variante für "ab X €"
+    var vars=VARIANTEN[s.id]||[];
+    var minPreis=vars.length?Math.min.apply(null,vars.map(function(v){return v.preis;})):null;
     return'<div class="svc '+cls+'" onclick="pickSvc(\''+s.id+'\')">'
       +nextHint
       +'<div class="svc-inner">'
       +'<div class="svc-n">'+s.name+'</div>'
       +'<div class="svc-d">'+s.desc+'</div>'
-      +'<div class="svc-p">ab '+s.price+' €</div>'
+      +(minPreis!==null?'<div class="svc-p">ab '+minPreis+' €</div>':'')
       +badges
       +'</div></div>';
   }).join('');}
 
 function mkDurCards(){
-  var svc1=fsvc(st.svc1);
-  return DURS.map(function(d){
-    var cls=selClass(st.dur1,st.dur2,d.id,st.dual);
-    var p=svc1?Math.round(svc1.price*d.mult):null;
+  // Varianten des gewählten Services (Slot 1 hat Priorität, sonst Slot 2)
+  var activeSvcId=st.svc1||st.svc2||null;
+  var vars=activeSvcId?currentVarianten(activeSvcId):[];
+  if(!activeSvcId){
+    return'<div style="font-size:12px;color:#7a6a8a;padding:4px 0">Wähle zuerst einen Service</div>';
+  }
+  if(!vars.length){
+    return'<div style="font-size:12px;color:#7a6a8a;padding:4px 0">Keine Varianten verfügbar</div>';
+  }
+  return vars.map(function(v){
+    var cls=selClass(st.dur1,st.dur2,v.id,st.dual);
     var badges='';
     if(st.dual){
-      var in1=st.dur1===d.id,in2=st.dur2===d.id;
+      var in1=st.dur1===v.id,in2=st.dur2===v.id;
       if(in1&&in2)badges='<div style="display:flex;gap:2px;justify-content:center;margin-top:3px;position:relative;z-index:1"><span class="sbadge-sm sbadge-1" style="font-size:9px">①</span><span class="sbadge-sm sbadge-2" style="font-size:9px">②</span></div>';
       else if(in1)badges='<div style="text-align:center;margin-top:2px;position:relative;z-index:1"><span class="sbadge-sm sbadge-1" style="font-size:9px">①</span></div>';
       else if(in2)badges='<div style="text-align:center;margin-top:2px;position:relative;z-index:1"><span class="sbadge-sm sbadge-2" style="font-size:9px">②</span></div>';
     }
-    return'<div class="dur '+cls+'" onclick="pickDur(\''+d.id+'\')">'
+    return'<div class="dur '+cls+'" onclick="pickDur(\''+v.id+'\')">'
       +'<div class="dur-inner">'
-      +'<div class="dur-m">'+d.min+'</div><div class="dur-l">Min</div>'
-      +'<div class="dur-p">'+(p?p+' €':'—')+'</div>'
+      +'<div class="dur-m">'+v.min+'</div><div class="dur-l">Min</div>'
+      +'<div class="dur-p">'+v.preis+' €</div>'
       +'</div>'
       +badges
       +'</div>';
@@ -494,16 +515,14 @@ function mkPhone(){
 
 function mkSumCard(){
   var s1=fsvc(st.svc1),s2=fsvc(st.svc2);
-  var d1=fdur(st.dur1),d2=fdur(st.dur2);
-  var dp=st.day?st.day.split('-'):null;
+  var d1=fdur(st.dur1),d2=fdur(st.dur2);  var dp=st.day?st.day.split('-'):null;
   var dayStr=dp?dp[2]+'. '+new Date(+dp[0],+dp[1],1).toLocaleDateString('de-DE',{month:'short'})+' '+dp[0]:'';
   var tot=total();
   function row(lbl,val){return'<div class="sumrow"><span class="sl-lbl">'+lbl+'</span><span class="sl-val '+(val?'':'emp')+'">'+(val||'—')+'</span></div>';}
   var rows='';
   if(st.dual){
     rows+=row('Service',s1?s1.name+(s2&&s2.id!==s1.id?' / '+s2.name:''):null);
-    rows+=row('Dauer',d1?d1.min+' Min'+(d2&&d2.id!==d1.id?' / '+d2.min+' Min':''):null);
-    rows+=row('Team',fname(st.stf1)+(st.stf2&&st.stf2!==st.stf1?' / '+fname(st.stf2):''));
+    rows+=row('Dauer',d1?d1.min+' Min'+(d2&&d2.id!==d1.id?' / '+d2.min+' Min':''):null);    rows+=row('Team',fname(st.stf1)+(st.stf2&&st.stf2!==st.stf1?' / '+fname(st.stf2):''));
     rows+=row('① Zeit',st.slot?st.slot+' Uhr':null);
     rows+=row('② Zeit',slot2time()?slot2time()+' Uhr':null);
   } else {
@@ -642,8 +661,42 @@ async function loadSalonProfile(){
     if(phoneEl)phoneEl.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.79 0 013.07 9.81 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>'+salonPhone;
     if(addressEl)addressEl.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>'+salonAddress;
     renderWorkingHours(data.arbeitszeiten);
+    await loadServices(salonId); // Services + Varianten nachladen
   }catch(err){console.error('JS Fehler:',err);}
 }
+async function loadServices(salonId){
+  try{
+    // 1. Services laden
+    var sRes=await sb.from('services').select('*').eq('salon_id',salonId).eq('aktiv',true).order('sortierung');
+    if(sRes.error){console.error('Services Fehler:',sRes.error);return;}
+    var services=sRes.data||[];
+    SVCS=services.map(function(s){
+      return{id:s.id,name:s.name,desc:s.beschreibung||'',dauer_anzeigen:s.dauer_anzeigen};
+    });
+
+    // 2. Varianten für alle Services laden
+    var svcIds=services.map(function(s){return s.id;});
+    if(svcIds.length){
+      var vRes=await sb.from('service_varianten').select('*').in('service_id',svcIds).eq('aktiv',true).order('sortierung');
+      if(vRes.error){console.error('Varianten Fehler:',vRes.error);}else{
+        var allVars=vRes.data||[];
+        VARIANTEN={};
+        allVars.forEach(function(v){
+          if(!VARIANTEN[v.service_id])VARIANTEN[v.service_id]=[];
+          VARIANTEN[v.service_id].push({
+            id:v.id,
+            min:v.dauer_minuten,
+            preis:parseFloat(v.preis)||0,
+            puffer_aktiv:v.puffer_aktiv,
+            puffer_minuten:v.puffer_minuten||0
+          });
+        });
+      }
+    }
+    render(); // neu rendern mit echten Daten
+  }catch(err){console.error('loadServices Fehler:',err);}
+}
+
 loadSalonProfile();
 </script>
 </body>
