@@ -491,6 +491,12 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       <div class="week-plan" id="week-plan">
         <div class="week-plan-hdr">
           <div class="week-plan-title">Wochenübersicht</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <button onclick="weekPlanNav(-1)" style="background:none;border:1px solid rgba(255,255,255,.2);border-radius:5px;padding:2px 9px;cursor:pointer;font-size:13px;color:rgba(255,255,255,.7)">‹</button>
+            <span id="week-plan-label" style="font-size:11px;color:rgba(255,255,255,.6);font-family:'DM Mono',monospace;min-width:60px;text-align:center"></span>
+            <button onclick="weekPlanNav(1)" style="background:none;border:1px solid rgba(255,255,255,.2);border-radius:5px;padding:2px 9px;cursor:pointer;font-size:13px;color:rgba(255,255,255,.7)">›</button>
+            <button onclick="weekPlanNav(0)" style="background:none;border:1px solid rgba(255,255,255,.2);border-radius:5px;padding:2px 9px;cursor:pointer;font-size:10px;color:rgba(255,255,255,.6)">Heute</button>
+          </div>
           <div class="week-plan-legend" id="week-legend"></div>
         </div>
         <div class="week-scroll">
@@ -606,13 +612,26 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
     <!-- Arbeitszeiten -->
     <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:10px">Persönliche Arbeitszeiten</div>
+
+    <!-- Stammzeiten -->
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
       <label class="toggle-sw"><input type="checkbox" id="s-custom-hours" onchange="toggleCustomHours()"><span class="slider"></span></label>
-      <span style="font-size:12px;color:var(--td)">Eigene Arbeitszeiten (abweichend vom Salon)</span>
+      <span style="font-size:12px;color:var(--td)">Eigene Stammzeiten (abweichend vom Salon)</span>
     </div>
-    <div id="s-hours-wrap" style="opacity:.4;pointer-events:none">
+    <div id="s-hours-wrap" style="opacity:.4;pointer-events:none;margin-bottom:14px">
       <div class="hours-cols-sm" id="s-hours-cols"></div>
     </div>
+
+    <!-- Temporäre Abweichungen pro KW -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div style="font-size:11px;font-weight:600;color:var(--td)">Abweichende Zeiten pro KW</div>
+      <button class="btn btn-sm btn-ghost" onclick="addStaffTempEntry()" type="button">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        KW hinzufügen
+      </button>
+    </div>
+    <div id="s-temp-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:4px"></div>
+    <div id="s-temp-empty" style="font-size:12px;color:var(--muted);padding:6px 0 10px">Keine abweichenden KW-Zeiten</div>
 
     <hr class="div">
 
@@ -639,8 +658,13 @@ const SB_KEY='sb_publishable__XubcF5yPDyIMpfE7kO9Rg_Xp7kj0hL';
 const sb=window.supabase.createClient(SB_URL,SB_KEY);
 var SALON_ID=new URLSearchParams(window.location.search).get('salon_id');
 var servicesData=[];
-var staffData=[];      // [{mitarbeiter, services:[id,...]}]
+var staffData=[];
 var editingStaffId=null;
+var staffTempEntries=[];
+var staffTempIdCounter=0;
+var staffTempCalOffset={};
+var weekPlanOffset=0; // KW-Offset für Wochenplan-Navigation
+var cachedSalonAz=null;
 
 // ── TABS ──────────────────────────────────────────────────────
 function switchTab(n){
@@ -1317,8 +1341,130 @@ function getWeekStart(){
   var now=new Date();
   var day=now.getDay();
   var diff=(day===0?-6:1-day);
-  var mon=new Date(now);mon.setDate(now.getDate()+diff);mon.setHours(0,0,0,0);
+  var mon=new Date(now);
+  mon.setDate(now.getDate()+diff+(weekPlanOffset*7));
+  mon.setHours(0,0,0,0);
   return mon;
+}
+
+function updateWeekPlanLabel(){
+  var ws=getWeekStart();
+  var kw=getISOWeek(ws);
+  var year=getYearOfISOWeek(ws);
+  var el=document.getElementById('week-plan-label');
+  if(el)el.textContent='KW '+kw+' · '+year;
+}
+
+function weekPlanNav(dir){
+  if(dir===0)weekPlanOffset=0;
+  else weekPlanOffset+=dir;
+  updateWeekPlanLabel();
+  renderWeekPlan(cachedSalonAz);
+}
+
+// ── STAFF TEMP ENTRIES (wie temp Öffnungszeiten) ──────────────
+function addStaffTempEntry(data){
+  var id=++staffTempIdCounter;
+  var now=new Date();
+  var kw=data?data.kw:getISOWeek(new Date(now.getTime()+7*86400000));
+  var year=data?data.year:getYearOfISOWeek(new Date(now.getTime()+7*86400000));
+  staffTempEntries.push({id:id,kw:kw,year:year,zeiten:data?data.zeiten:null});
+  staffTempCalOffset[id]=0;
+  renderStaffTempEntries();
+}
+
+function removeStaffTempEntry(id){
+  staffTempEntries=staffTempEntries.filter(function(e){return e.id!==id;});
+  delete staffTempCalOffset[id];
+  renderStaffTempEntries();
+}
+
+function renderStaffTempEntries(){
+  var list=document.getElementById('s-temp-list');
+  var empty=document.getElementById('s-temp-empty');
+  if(!list)return;
+  if(!staffTempEntries.length){list.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  list.innerHTML=staffTempEntries.map(function(entry){
+    return'<div id="st-entry-'+entry.id+'" style="border:1.5px solid var(--border);border-radius:10px;overflow:hidden">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#faf8fc;border-bottom:1px solid var(--border)">'
+        +'<div style="font-size:11px;font-weight:500;color:var(--tpl)" id="st-label-'+entry.id+'">'+kwLabel(entry.kw,entry.year)+'</div>'
+        +'<button onclick="removeStaffTempEntry('+entry.id+')" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--muted)">✕</button>'
+      +'</div>'
+      +'<div style="padding:12px;display:flex;flex-direction:column;gap:10px">'
+        +'<div id="st-cal-'+entry.id+'">'+buildStaffKwCal(entry.id,entry.kw,entry.year)+'</div>'
+        +'<div>'
+          +'<div style="font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:6px">Zeiten für diese Woche</div>'
+          +'<div class="hours-cols-sm" id="st-hcols-'+entry.id+'"></div>'
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  }).join('');
+  staffTempEntries.forEach(function(entry){
+    buildHoursCols(entry.zeiten||null,'st-hcols-'+entry.id,'ste'+entry.id+'-',true,true);
+  });
+}
+
+function buildStaffKwCal(entryId,selKw,selYear){
+  var off=staffTempCalOffset[entryId]||0;
+  var now=new Date();
+  var base=new Date(now.getFullYear(),now.getMonth()+off,1);
+  var year=base.getFullYear();var month=base.getMonth();
+  var moName=base.toLocaleDateString('de-DE',{month:'long',year:'numeric'});
+  var firstDow=(new Date(year,month,1).getDay()+6)%7;
+  var dim=new Date(year,month+1,0).getDate();
+  var selMon=getMonday(selYear,selKw);
+  var selSun=new Date(selMon);selSun.setDate(selMon.getDate()+6);
+  var today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  var cells='';
+  for(var i=0;i<firstDow;i++)cells+='<div></div>';
+  for(var d=1;d<=dim;d++){
+    var date=new Date(year,month,d);
+    var dow=(date.getDay()+6)%7;
+    var isMonday=dow===0;
+    var kw=getISOWeek(date);var kwYear=getYearOfISOWeek(date);
+    var isSel=selKw===kw&&selYear===kwYear&&isMonday;
+    var inRange=date>=selMon&&date<=selSun;
+    var isPast=date<today;
+    var bg=inRange?(isSel?'var(--tp)':'var(--tpp)'):'transparent';
+    var color=inRange?(isSel?'#fff':'var(--tpl)'):(isPast?'#ccc':'var(--td)');
+    var fw=isSel?'600':'400';
+    var br=isSel?'4px':(dow===0?'4px 0 0 4px':dow===6?'0 4px 4px 0':'0');
+    var cursor=isPast?'default':(isMonday?'pointer':'default');
+    var oc=(!isPast&&isMonday)?'onclick="selectStaffKw('+entryId+','+kw+','+kwYear+')"':'';
+    cells+='<div '+oc+' style="text-align:center;padding:4px 1px;font-size:11px;border-radius:'+br+';background:'+bg+';color:'+color+';font-weight:'+fw+';cursor:'+cursor+'">'+d+'</div>';
+  }
+  return'<div>'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">'
+      +'<button onclick="staffCalNav('+entryId+',-1)" style="background:none;border:1px solid var(--border);border-radius:4px;padding:1px 7px;cursor:pointer;font-size:12px;color:var(--tpl)">‹</button>'
+      +'<span style="font-size:11px;font-weight:500;color:var(--td)">'+moName+'</span>'
+      +'<button onclick="staffCalNav('+entryId+',1)" style="background:none;border:1px solid var(--border);border-radius:4px;padding:1px 7px;cursor:pointer;font-size:12px;color:var(--tpl)">›</button>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px">'
+      +['Mo','Di','Mi','Do','Fr','Sa','So'].map(function(l){return'<div style="text-align:center;font-size:9px;color:var(--muted);padding:2px 0;font-weight:600">'+l+'</div>';}).join('')
+      +cells
+    +'</div>'
+  +'</div>';
+}
+
+function staffCalNav(entryId,dir){
+  staffTempCalOffset[entryId]=(staffTempCalOffset[entryId]||0)+dir;
+  var entry=staffTempEntries.filter(function(e){return e.id===entryId;})[0];
+  if(entry){var cal=document.getElementById('st-cal-'+entryId);if(cal)cal.innerHTML=buildStaffKwCal(entryId,entry.kw,entry.year);}
+}
+
+function selectStaffKw(entryId,kw,year){
+  var entry=staffTempEntries.filter(function(e){return e.id===entryId;})[0];
+  if(!entry)return;
+  entry.kw=kw;entry.year=year;
+  var lbl=document.getElementById('st-label-'+entryId);if(lbl)lbl.textContent=kwLabel(kw,year);
+  var cal=document.getElementById('st-cal-'+entryId);if(cal)cal.innerHTML=buildStaffKwCal(entryId,kw,year);
+}
+
+function readStaffTempEntries(){
+  return staffTempEntries.map(function(entry){
+    return{kw:entry.kw,year:entry.year,zeiten:readHours('ste'+entry.id+'-')};
+  });
 }
 
 // "08:00" → Minuten seit Mitternacht
@@ -1500,7 +1646,9 @@ async function loadStaff(){
   renderStaffSidebar();
   // Salon-Öffnungszeiten für Wochenplan holen
   var pRes=await sb.from('kunden_profile').select('arbeitszeiten').eq('id',SALON_ID).single();
-  renderWeekPlan(pRes.error?null:pRes.data.arbeitszeiten);
+  cachedSalonAz=pRes.error?null:pRes.data.arbeitszeiten;
+  updateWeekPlanLabel();
+  renderWeekPlan(cachedSalonAz);
 }
 
 function getStaffColor(m){
@@ -1622,6 +1770,14 @@ function openStaffModal(data){
   wrap.style.opacity=hasCustom?'1':'0.4';
   wrap.style.pointerEvents=hasCustom?'auto':'none';
   buildHoursCols(hasCustom?m.arbeitszeiten:null,'s-hours-cols','s-',true);
+  // Staff temp entries
+  staffTempEntries=[];staffTempIdCounter=0;staffTempCalOffset={};
+  var tempKws=m.temp_arbeitszeiten;
+  if(tempKws&&Array.isArray(tempKws)&&tempKws.length){
+    tempKws.forEach(function(t){addStaffTempEntry(t);});
+  } else {
+    renderStaffTempEntries();
+  }
   buildStaffSvcList(data?data.varianteIds:[]);
   document.getElementById('staff-overlay').style.display='block';
   document.getElementById('staff-modal').classList.add('open');
@@ -1651,6 +1807,7 @@ async function saveStaff(){
     email:document.getElementById('s-email').value.trim()||null,
     google_calendar_id:document.getElementById('s-cal').value.trim(),
     arbeitszeiten:hasCustom?readHours('s-'):null,
+    temp_arbeitszeiten:readStaffTempEntries().length?readStaffTempEntries():null,
     farbe:document.getElementById('s-color').value,
     aktiv:true,
     sortierung:editingStaffId?undefined:nextSort
