@@ -85,11 +85,12 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 
 /* ── SERVICE LIST ── */
 .svc-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
-.svc-item{background:var(--white);border:1.5px solid var(--border);border-radius:10px;overflow:hidden}
-.svc-item-hdr{display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;user-select:none}
+.svc-item{background:var(--white);border:1.5px solid var(--border);border-radius:12px;overflow:hidden}
+.svc-item-hdr{display:flex;align-items:center;gap:14px;padding:18px 18px;cursor:pointer;user-select:none}
 .svc-item-hdr:hover{background:#faf8fc}
-.svc-item-name{font-size:14px;font-weight:500;color:var(--td);flex:1}
-.svc-item-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.svc-item-icon{width:42px;height:42px;border-radius:10px;background:var(--tpp);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.svc-item-name{font-size:14px;font-weight:500;color:var(--td)}
+.svc-item-meta{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5}
 .badge{font-size:10px;padding:2px 8px;border-radius:99px;background:var(--tpp);color:var(--tpl);font-weight:500}
 .badge.off{background:#f5f2f8;color:#bbb}
 .chevron{color:var(--muted);transition:transform .2s;font-size:14px;flex-shrink:0}
@@ -327,16 +328,24 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
     </div>
   </div>
 
-  <!-- ════ SERVICES ════ -->
   <div class="tab-panel" id="panel-services">
-    <div class="sec-hdr">
-      <div class="sec-title">Services</div>
-      <div class="sec-sub">Insy-Funktionen & eigene Dienstleistungen</div>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px">
+      <div>
+        <div class="sec-title">Services</div>
+        <div class="sec-sub">Insy-Funktionen & eigene Dienstleistungen</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="font-size:18px;font-weight:600;color:var(--td)">Eigene Dienstleistungen</div>
+        <button class="btn btn-sm btn-outline" onclick="openSvcModal()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Hinzufügen
+        </button>
+      </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
 
       <!-- LINKS: Insy-Features -->
-      <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;flex-direction:column;gap:10px">
 
         <!-- Missed Call -->
         <div class="card" id="feat-missed-call">
@@ -460,13 +469,6 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
       <!-- RECHTS: Eigene Services -->
       <div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-          <div style="font-size:12px;font-weight:600;color:var(--td)">Eigene Dienstleistungen</div>
-          <button class="btn btn-sm btn-outline" onclick="openSvcModal()">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Hinzufügen
-          </button>
-        </div>
         <div class="svc-list" id="svc-list">
           <div class="empty"><div class="empty-icon">⟳</div><div class="empty-text">Wird geladen…</div></div>
         </div>
@@ -998,9 +1000,16 @@ function renderSvcList(){
   list.innerHTML=servicesData.map(function(item){
     var s=item.service,vars=item.varianten;
     var minP=vars.length?Math.min.apply(null,vars.map(function(v){return parseFloat(v.preis)||0;})):null;
+    var ini=s.name.charAt(0).toUpperCase();
     return'<div class="svc-item" id="svc-item-'+s.id+'">'
       +'<div class="svc-item-hdr" onclick="toggleItem(\''+s.id+'\',\'svc\')">'
-        +'<div style="flex:1"><div class="svc-item-name">'+esc(s.name)+'</div>'+(s.beschreibung?'<div class="svc-item-meta">'+esc(s.beschreibung)+'</div>':'')+'</div>'
+        +'<div class="svc-item-icon">'
+          +'<span style="font-size:18px;font-weight:600;color:var(--tpl)">'+ini+'</span>'
+        +'</div>'
+        +'<div style="flex:1;min-width:0">'
+          +'<div class="svc-item-name">'+esc(s.name)+'</div>'
+          +(s.beschreibung?'<div class="svc-item-meta">'+esc(s.beschreibung)+'</div>':'')
+        +'</div>'
         +(minP!==null?'<span style="font-size:12px;color:var(--tg);font-weight:500;margin-right:8px">ab '+minP+' €</span>':'')
         +'<span class="badge '+(s.aktiv?'':'off')+'">'+(s.aktiv?'Aktiv':'Inaktiv')+'</span>'
         +'<span class="chevron" id="chev-svc-'+s.id+'">⌄</span>'
