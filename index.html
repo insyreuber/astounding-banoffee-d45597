@@ -37,7 +37,7 @@
     display: flex; align-items: center; justify-content: space-between;
     background: rgba(254,252,249,0.92);
     backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(201,168,76,0.15);
+    border-bottom: 1px solid rgba(201,168,76,0.3);
     transition: all 0.3s;
   }
   .nav-logo {
@@ -159,40 +159,71 @@
     display: flex; justify-content: center; align-items: center;
   }
   .phone-mockup {
-    width: 240px; height: 480px;
-    background: var(--purple-dark);
+    width: 235px; height: 470px;
+    background: #111;
     border-radius: 36px;
-    border: 8px solid #2A0F50;
-    box-shadow: 0 40px 80px rgba(92,31,138,0.35), 0 0 0 1px rgba(201,168,76,0.2);
+    border: 7px solid #1a1a1a;
+    box-shadow: 0 40px 80px rgba(74,28,107,0.45), 0 0 0 1px rgba(0,0,0,0.3);
     overflow: hidden; position: relative;
-    transform: rotate(-3deg);
+    display: flex; flex-direction: column;
   }
-  .phone-screen { padding: 1.2rem 1rem; }
-  .phone-header {
+  /* WhatsApp header bar */
+  .wa-header {
+    background: #075E54;
+    padding: 8px 12px 8px 10px;
     display: flex; align-items: center; gap: 8px;
-    margin-bottom: 1.2rem; padding-bottom: 0.8rem;
-    border-bottom: 1px solid rgba(201,168,76,0.2);
+    flex-shrink: 0;
   }
-  .phone-avatar {
-    width: 34px; height: 34px; border-radius: 50%;
-    background: var(--gold); display: flex; align-items: center; justify-content: center;
-    font-size: 14px; font-weight: 600; color: var(--purple-dark);
+  .wa-back { color: rgba(255,255,255,0.8); font-size: 16px; line-height:1; }
+  .wa-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #25D366; display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; color: #fff; flex-shrink:0;
   }
-  .phone-name { font-size: 0.8rem; font-weight: 500; color: white; }
-  .phone-status { font-size: 0.68rem; color: #4CAF50; }
-  .chat-bubble {
-    border-radius: 16px 16px 16px 4px;
-    padding: 0.6rem 0.9rem;
-    font-size: 0.72rem; line-height: 1.5;
-    margin-bottom: 0.6rem; max-width: 85%;
+  .wa-info { flex:1; min-width:0; }
+  .wa-name { font-size: 0.78rem; font-weight: 600; color: #fff; line-height:1.2; }
+  .wa-status { font-size: 0.58rem; color: rgba(255,255,255,0.7); }
+  .wa-icons { display:flex; gap:10px; color:rgba(255,255,255,0.8); font-size:14px; }
+  /* Chat wallpaper */
+  .wa-body {
+    flex: 1;
+    background: #4a1c6b;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M20 20c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10zm10 0c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    padding: 8px 8px 6px;
+    overflow: hidden;
+    display: flex; flex-direction: column; gap: 5px;
   }
-  .chat-in { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.9); }
-  .chat-out {
-    background: var(--gold); color: var(--purple-dark);
-    border-radius: 16px 16px 4px 16px;
-    margin-left: auto; font-weight: 500;
+  /* Bubbles */
+  .wa-msg {
+    max-width: 88%; padding: 5px 8px 4px;
+    border-radius: 8px; font-size: 0.6rem; line-height: 1.45;
+    position: relative; align-self: flex-end;
   }
-  .chat-time { font-size: 0.6rem; color: rgba(255,255,255,0.35); text-align: right; margin-top: 4px; }
+  .wa-msg.out {
+    background: #DCF8C6; color: #111;
+    border-radius: 8px 8px 2px 8px;
+  }
+  .wa-msg.system {
+    align-self: center; background: rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.7); font-size: 0.55rem;
+    border-radius: 6px; padding: 3px 8px;
+  }
+  .wa-time { font-size: 0.5rem; color: rgba(0,0,0,0.4); text-align:right; margin-top:2px; display:flex; align-items:center; justify-content:flex-end; gap:2px; }
+  .wa-time.light { color:rgba(255,255,255,0.5); }
+  .wa-ticks { color: #53BDEB; font-size: 0.55rem; }
+  /* Link button inside bubble */
+  .wa-btn { display:block; margin-top:5px; background:#25D366; color:#fff; border-radius:5px; padding:4px 8px; font-size:0.58rem; font-weight:600; text-align:center; text-decoration:none; }
+  /* Confirm button */
+  .wa-btn-outline { display:block; margin-top:5px; border:1px solid #25D366; color:#25D366; border-radius:5px; padding:4px 8px; font-size:0.58rem; font-weight:600; text-align:center; }
+  /* Bottom input bar */
+  .wa-inputbar {
+    background: #F0F0F0;
+    padding: 5px 8px;
+    display: flex; align-items: center; gap: 6px;
+    flex-shrink: 0;
+  }
+  .wa-input-field { flex:1; background:#fff; border-radius:20px; padding:4px 10px; font-size:0.58rem; color:#999; }
+  .wa-mic { width:26px; height:26px; border-radius:50%; background:#25D366; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 
   /* TRUST BAR */
   .trust-bar {
@@ -201,7 +232,7 @@
     display: flex; align-items: center; justify-content: center;
     gap: 3rem; flex-wrap: wrap;
     border-top: 1px solid rgba(201,168,76,0.15);
-    border-bottom: 1px solid rgba(201,168,76,0.15);
+    border-bottom: 1px solid rgba(201,168,76,0.3);
   }
   .trust-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
   .trust-number {
@@ -386,7 +417,7 @@
   .demo-cal-header {
     padding: 1.2rem 1.6rem;
     display: flex; align-items: center; gap: 10px;
-    border-bottom: 1px solid rgba(201,168,76,0.15);
+    border-bottom: 1px solid rgba(201,168,76,0.3);
   }
   .demo-cal-header h3 { font-size: 1rem; font-weight: 500; color: var(--purple-dark); }
   .demo-cal-header p { font-size: 0.78rem; color: var(--text-muted); }
@@ -504,7 +535,7 @@
     color: white; margin-bottom: 0.8rem;
   }
   .footer-logo span { color: var(--gold); }
-  .footer-desc { font-size: 0.83rem; color: rgba(255,255,255,0.4); line-height: 1.7; }
+  .footer-desc { font-size: 0.83rem; color: rgba(26,10,46,0.45); line-height: 1.7; }
   .footer-col h4 { font-size: 0.78rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
   .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
   .footer-col ul a { font-size: 0.85rem; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.2s; }
@@ -545,7 +576,7 @@
     <li><a href="#pricing">Preise</a></li>
     <li><a href="#kontakt">Kontakt</a></li>
   </ul>
-  <a href="#cta" class="nav-cta">Kostenlos testen</a>
+  <a href="https://insy-reception.com/login.html" class="nav-cta">Kostenlos testen</a>
 </nav>
 
 <!-- HERO -->
@@ -563,61 +594,93 @@
       <div class="hero-benefit">Kostenlos starten — für immer</div>
     </div>
     <div class="hero-actions">
-      <a href="#onboarding" class="btn-primary">Jetzt kostenlos starten</a>
-      <a href="#how" class="btn-secondary">Demo ansehen</a>
+      <a href="https://insy-reception.com/login.html" class="btn-primary">Jetzt kostenlos starten</a>
+      <a href="https://insy-reception.com/booking?salon_id=236bbfbe-c090-4e56-9313-6176c9345bdf" class="btn-secondary">Demo ansehen</a>
     </div>
   </div>
 
   <div class="hero-visual">
-    <!-- Phone 1: Booking chat -->
-    <div class="phone-mockup" style="transform:rotate(-6deg); margin-right:-30px; z-index:1;">
-      <div class="phone-screen">
-        <div class="phone-header">
-          <div class="phone-avatar">I</div>
-          <div>
-            <div class="phone-name">Insy Rezeption</div>
-            <div class="phone-status">● Online</div>
-          </div>
+    <!-- Phone 1: Missed Call + Bestätigung -->
+    <div class="phone-mockup" style="transform:rotate(-6deg);margin-right:-28px;z-index:1;">
+      <!-- WA Header -->
+      <div class="wa-header">
+        <div class="wa-back">‹</div>
+        <div class="wa-avatar">IR</div>
+        <div class="wa-info">
+          <div class="wa-name">Insy Salon</div>
+          <div class="wa-status">Online</div>
         </div>
-        <!-- WhatsApp style: incoming = left gray, outgoing = right gold -->
-        <div style="display:flex;flex-direction:column;gap:4px;padding:4px 0;">
-          <div style="align-self:flex-start;background:rgba(255,255,255,0.12);border-radius:12px 12px 12px 3px;padding:7px 10px;max-width:85%;font-size:0.68rem;color:rgba(255,255,255,0.9);line-height:1.4;">Hallo! Ich möchte einen Termin buchen 🌸</div>
-          <div style="align-self:flex-end;background:var(--gold);border-radius:12px 12px 3px 12px;padding:7px 10px;max-width:85%;font-size:0.68rem;color:var(--purple-dark);line-height:1.4;font-weight:500;">Willkommen! Für welche Behandlung?</div>
-          <div style="align-self:flex-start;background:rgba(255,255,255,0.12);border-radius:12px 12px 12px 3px;padding:7px 10px;max-width:85%;font-size:0.68rem;color:rgba(255,255,255,0.9);line-height:1.4;">Thai-Massage, 60 Minuten bitte.</div>
-          <div style="align-self:flex-end;background:var(--gold);border-radius:12px 12px 3px 12px;padding:7px 10px;max-width:85%;font-size:0.68rem;color:var(--purple-dark);line-height:1.4;font-weight:500;">Di 14 Uhr oder Do 10 Uhr frei?</div>
-          <div style="align-self:flex-start;background:rgba(255,255,255,0.12);border-radius:12px 12px 12px 3px;padding:7px 10px;max-width:85%;font-size:0.68rem;color:rgba(255,255,255,0.9);line-height:1.4;">Donnerstag 10 Uhr, perfekt!</div>
-          <div style="align-self:flex-end;background:var(--gold);border-radius:12px 12px 3px 12px;padding:7px 10px;max-width:85%;font-size:0.68rem;color:var(--purple-dark);line-height:1.4;font-weight:500;">✓ Gebucht! Bestätigung folgt.</div>
+        <div class="wa-icons">
+          <span>📹</span>
+          <span>📞</span>
         </div>
-        <div class="chat-time">Heute, 14:23</div>
+      </div>
+      <!-- Chat -->
+      <div class="wa-body">
+        <div class="wa-msg system">📵 Verpasster Anruf — 09:14</div>
+        <div class="wa-msg out">
+          Hallo! Sie haben uns angerufen 👋<br><br>
+          Wir sind gerade in einer Behandlung. Buchen Sie jetzt einfach Ihren Termin:
+          <a class="wa-btn" href="#">👉 Jetzt buchen</a>
+          <div class="wa-time"><span>09:14</span><span class="wa-ticks">✓✓</span></div>
+        </div>
+        <div class="wa-msg out">
+          ✅ <strong>Buchungsbestätigung</strong><br><br>
+          Öl-Massage · 60 Min<br>
+          📅 Do, 08.05. · 10:00 Uhr<br>
+          👤 Niran T.
+          <div class="wa-time"><span>10:32</span><span class="wa-ticks">✓✓</span></div>
+        </div>
+      </div>
+      <!-- Input bar -->
+      <div class="wa-inputbar">
+        <div class="wa-input-field">Nachricht</div>
+        <div class="wa-mic">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M12 1a4 4 0 014 4v6a4 4 0 01-8 0V5a4 4 0 014-4zm-1 16.93V20H9v2h6v-2h-2v-2.07A8 8 0 0020 11h-2a6 6 0 01-12 0H4a8 8 0 007 7.93z"/></svg>
+        </div>
       </div>
     </div>
-    <!-- Phone 2: Missed call + confirmation -->
-    <div class="phone-mockup" style="transform:rotate(3deg); margin-top:40px; z-index:2;">
-      <div class="phone-screen">
-        <div class="phone-header">
-          <div class="phone-avatar">I</div>
-          <div>
-            <div class="phone-name">Insy Rezeption</div>
-            <div class="phone-status">● Online</div>
-          </div>
+
+    <!-- Phone 2: Erinnerung + Follow-Up -->
+    <div class="phone-mockup" style="transform:rotate(3deg);margin-top:40px;z-index:2;">
+      <!-- WA Header -->
+      <div class="wa-header">
+        <div class="wa-back">‹</div>
+        <div class="wa-avatar">IR</div>
+        <div class="wa-info">
+          <div class="wa-name">Insy Salon</div>
+          <div class="wa-status">Online</div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:4px;padding:4px 0;">
-          <!-- Missed call notification style -->
-          <div style="align-self:center;background:rgba(255,255,255,0.08);border-radius:8px;padding:6px 10px;font-size:0.62rem;color:rgba(255,255,255,0.5);text-align:center;width:90%;">📵 Verpasster Anruf</div>
-          <div style="align-self:flex-end;background:var(--gold);border-radius:12px 12px 3px 12px;padding:7px 10px;max-width:90%;font-size:0.63rem;color:var(--purple-dark);line-height:1.5;font-weight:500;">
-            <strong>Verpasster Anruf</strong><br>
-            Termin jetzt buchen bei Insy's Massage<br>
-            <span style="opacity:0.7;">Hückhausener Str. 12, Wiehl</span>
-          </div>
-          <div style="align-self:flex-end;background:rgba(255,255,255,0.08);border-radius:8px;padding:5px 10px;font-size:0.62rem;color:var(--gold);text-align:center;">🔗 Termin buchen</div>
-          <div style="align-self:flex-end;background:var(--gold);border-radius:12px 12px 3px 12px;padding:7px 10px;max-width:90%;font-size:0.63rem;color:var(--purple-dark);line-height:1.5;font-weight:500;">
-            <strong>Terminbestätigung</strong><br>
-            Öl Massage · 60 Min<br>
-            06.04. 10:00 Uhr
-          </div>
-          <div style="align-self:flex-end;background:rgba(255,255,255,0.08);border-radius:8px;padding:5px 10px;font-size:0.62rem;color:var(--gold);text-align:center;">📅 Termin Manager</div>
+        <div class="wa-icons">
+          <span>📹</span>
+          <span>📞</span>
         </div>
-        <div class="chat-time">Heute, 11:42</div>
+      </div>
+      <!-- Chat -->
+      <div class="wa-body">
+        <div class="wa-msg out">
+          🔔 <strong>Terminerinnerung</strong><br><br>
+          Ihr Termin morgen:<br>
+          Öl-Massage · 60 Min<br>
+          📅 Do, 08.05. · 10:00 Uhr<br><br>
+          Bitte bestätigen Sie Ihre Teilnahme:
+          <div class="wa-btn-outline">✅ Termin bestätigen</div>
+          <div class="wa-time"><span>Mi, 10:00</span><span class="wa-ticks">✓✓</span></div>
+        </div>
+        <div class="wa-msg out">
+          💆 <strong>Wie war Ihre Behandlung?</strong><br><br>
+          Wir hoffen, Sie haben sich wohlgefühlt.<br><br>
+          Gleich den nächsten Termin sichern:
+          <a class="wa-btn" href="#">📅 Jetzt neu buchen</a>
+          <div class="wa-time"><span>Do, 12:15</span><span class="wa-ticks">✓✓</span></div>
+        </div>
+      </div>
+      <!-- Input bar -->
+      <div class="wa-inputbar">
+        <div class="wa-input-field">Nachricht</div>
+        <div class="wa-mic">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M12 1a4 4 0 014 4v6a4 4 0 01-8 0V5a4 4 0 014-4zm-1 16.93V20H9v2h6v-2h-2v-2.07A8 8 0 0020 11h-2a6 6 0 01-12 0H4a8 8 0 007 7.93z"/></svg>
+        </div>
       </div>
     </div>
   </div>
@@ -818,11 +881,11 @@
         <h3>Per QR-Code scannen</h3>
         <p>Hängen Sie den QR-Code in Ihrem Salon aus. Kunden scannen — und landen direkt im WhatsApp-Chat mit Ihrem digitalen Rezeptionisten.</p>
         <div class="demo-qr-wrap" style="display:flex; flex-direction:column; align-items:center; margin-top:auto;">
-<div style="background: var(--cream); border-radius: 12px; padding: 14px; border: 1px solid rgba(201,168,76,0.2); width: fit-content; margin: 0 auto;">
+<a href="https://insy-reception.com/booking?salon_id=236bbfbe-c090-4e56-9313-6176c9345bdf" target="_blank" style="display:block; background: var(--cream); border-radius: 12px; padding: 14px; border: 1px solid rgba(201,168,76,0.2); width: fit-content; margin: 0 auto; cursor:pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
 <img src="qr-demo.png"
 alt="Demo QR-Code"
 style="display:block; width:150px; height:150px; object-fit:contain; border-radius:6px;">
-</div>
+</a>
 
 <div style="margin-top:auto; padding-top:0.5rem; display:flex; align-items:center; gap:8px;">
 <div style="width:8px; height:8px; border-radius:50%; background:#4CAF50; flex-shrink:0;"></div>
@@ -924,7 +987,7 @@ setInterval(refreshCal, 5 * 60 * 1000);
           <li style="opacity:0.35; text-decoration:line-through;">Terminerinnerungen</li>
           <li style="opacity:0.35; text-decoration:line-through;">Follow-up Nachrichten</li>
         </ul>
-        <a href="#onboarding" class="btn-secondary" style="display:block; text-align:center; font-size:0.85rem;">Kostenlos starten</a>
+        <a href="https://insy-reception.com/login.html" class="btn-secondary" style="display:block; text-align:center; font-size:0.85rem;">Kostenlos starten</a>
       </div>
 
       <!-- Starter -->
@@ -945,7 +1008,7 @@ setInterval(refreshCal, 5 * 60 * 1000);
           Aufstocken: <strong style="color:var(--gold);">9€</strong> / 30 Templates<br>
           <span style="font-size:0.7rem; opacity:0.7;">= 0.30€ pro Template</span>
         </div>
-        <a href="#onboarding" class="btn-secondary" style="display:block; text-align:center; font-size:0.85rem;">30 Tage gratis</a>
+        <a href="https://insy-reception.com/login.html" class="btn-secondary" style="display:block; text-align:center; font-size:0.85rem;">30 Tage gratis</a>
       </div>
 
       <!-- Pro -->
@@ -966,7 +1029,7 @@ setInterval(refreshCal, 5 * 60 * 1000);
           Aufstocken: <strong style="color:var(--gold-light);">19€</strong> / 100 Templates<br>
           <span style="font-size:0.7rem; opacity:0.7;">= 0.19€ pro Template</span>
         </div>
-        <a href="#onboarding" class="btn-gold" style="display:block; text-align:center; font-size:0.85rem;">30 Tage gratis</a>
+        <a href="https://insy-reception.com/login.html" class="btn-gold" style="display:block; text-align:center; font-size:0.85rem;">30 Tage gratis</a>
       </div>
 
       <!-- Business -->
@@ -987,7 +1050,7 @@ setInterval(refreshCal, 5 * 60 * 1000);
           Aufstocken: <strong style="color:var(--gold);">39€</strong> / 300 Templates<br>
           <span style="font-size:0.7rem; opacity:0.7;">= 0.13€ pro Template</span>
         </div>
-        <a href="#onboarding" class="btn-secondary" style="display:block; text-align:center; font-size:0.85rem;">30 Tage gratis</a>
+        <a href="https://insy-reception.com/login.html" class="btn-secondary" style="display:block; text-align:center; font-size:0.85rem;">30 Tage gratis</a>
       </div>
 
     </div>
@@ -1017,716 +1080,14 @@ setInterval(refreshCal, 5 * 60 * 1000);
   </div>
 </section>
 
-<!-- ONBOARDING FORM -->
-<section id="onboarding" style="background: var(--cream); padding: 5rem 4rem;">
-<style>
-  .ob-wrap { max-width: 860px; margin: 0 auto; }
-  .ob-header { text-align: center; margin-bottom: 3rem; }
-
-  /* Steps nav */
-  .ob-steps { display: flex; align-items: center; justify-content: center; gap: 0; margin-bottom: 3rem; }
-  .ob-step-item { display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative; flex: 1; max-width: 140px; }
-  .ob-step-item:not(:last-child)::after {
-    content: ''; position: absolute; top: 18px; left: calc(50% + 22px); right: calc(-50% + 22px);
-    height: 1px; background: rgba(201,168,76,0.25);
-  }
-  .ob-step-item.done::after { background: #C9A84C; }
-  .ob-step-dot {
-    width: 36px; height: 36px; border-radius: 50%;
-    border: 2px solid rgba(201,168,76,0.3);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 500; color: var(--text-muted);
-    background: white; transition: all 0.3s; flex-shrink: 0;
-  }
-  .ob-step-item.active .ob-step-dot { border-color: #5C1F8A; background: #5C1F8A; color: white; }
-  .ob-step-item.done .ob-step-dot { border-color: #C9A84C; background: #C9A84C; color: #3D1260; }
-  .ob-step-label { font-size: 0.7rem; color: var(--text-muted); text-align: center; letter-spacing: 0.03em; }
-  .ob-step-item.active .ob-step-label { color: var(--purple-dark); font-weight: 500; }
-
-  /* Cards / panels */
-  .ob-panel { display: none; }
-  .ob-panel.active { display: block; }
-  .ob-card {
-    background: white; border-radius: 20px;
-    border: 1.5px solid rgba(201,168,76,0.2);
-    padding: 2rem 2.5rem; margin-bottom: 1.2rem;
-  }
-  .ob-card-title {
-    font-size: 0.7rem; font-weight: 500; letter-spacing: 0.09em;
-    text-transform: uppercase; color: var(--gold); margin-bottom: 1.2rem;
-  }
-
-  /* Field rows */
-  .ob-field { margin-bottom: 1.2rem; }
-  .ob-field:last-child { margin-bottom: 0; }
-  .ob-label {
-    display: block; font-size: 0.82rem; font-weight: 500;
-    color: var(--text-mid); margin-bottom: 6px;
-  }
-  .ob-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
-  .ob-input {
-    width: 100%; border: 1.5px solid rgba(201,168,76,0.25);
-    border-radius: 10px; padding: 0.65rem 1rem;
-    font-size: 0.9rem; font-family: 'DM Sans', sans-serif;
-    color: var(--text-dark); background: var(--warm-white);
-    outline: none; transition: border-color 0.2s;
-  }
-  .ob-input:focus { border-color: #5C1F8A; }
-
-  /* Toggle chips */
-  .ob-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-  .ob-chip {
-    padding: 6px 16px; border-radius: 50px;
-    border: 1.5px solid rgba(201,168,76,0.25);
-    font-size: 0.82rem; color: var(--text-mid);
-    cursor: pointer; transition: all 0.15s;
-    background: white; user-select: none;
-  }
-  .ob-chip:hover { border-color: #5C1F8A; color: #5C1F8A; }
-  .ob-chip.selected { background: #5C1F8A; border-color: #5C1F8A; color: white; font-weight: 500; }
-  .ob-chip.gold.selected { background: #C9A84C; border-color: #C9A84C; color: #3D1260; }
-
-  /* Toggle switch */
-  .ob-toggle-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0.8rem 0; border-bottom: 1px solid rgba(201,168,76,0.12);
-  }
-  .ob-toggle-row:last-child { border-bottom: none; }
-  .ob-toggle-label { font-size: 0.88rem; color: var(--text-mid); }
-  .ob-toggle-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
-  .ob-switch { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
-  .ob-switch input { opacity: 0; width: 0; height: 0; }
-  .ob-slider {
-    position: absolute; inset: 0; border-radius: 12px;
-    background: rgba(201,168,76,0.2); cursor: pointer;
-    transition: background 0.2s;
-  }
-  .ob-slider::before {
-    content: ''; position: absolute;
-    width: 18px; height: 18px; border-radius: 50%;
-    left: 3px; top: 3px; background: white;
-    transition: transform 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-  }
-  .ob-switch input:checked + .ob-slider { background: #5C1F8A; }
-  .ob-switch input:checked + .ob-slider::before { transform: translateX(20px); }
-
-  /* Event type list builder */
-  .ob-event-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1rem; }
-  .ob-event-row {
-    background: var(--cream); border-radius: 12px;
-    border: 1px solid rgba(201,168,76,0.2);
-    padding: 1rem 1.2rem;
-    display: grid; grid-template-columns: 1fr auto auto auto; gap: 10px; align-items: center;
-  }
-  .ob-event-row-title { font-size: 0.88rem; font-weight: 500; color: var(--purple-dark); }
-  .ob-event-row-meta { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
-  .ob-event-badge {
-    font-size: 0.7rem; padding: 3px 10px; border-radius: 20px;
-    background: rgba(92,31,138,0.08); color: var(--purple-dark);
-  }
-  .ob-event-del {
-    width: 28px; height: 28px; border-radius: 8px;
-    border: 1px solid rgba(201,168,76,0.3);
-    background: white; cursor: pointer; display: flex;
-    align-items: center; justify-content: center;
-    color: var(--text-muted); font-size: 14px; transition: all 0.15s;
-  }
-  .ob-event-del:hover { border-color: #E24B4A; color: #E24B4A; background: #FFF0F0; }
-
-  /* Add treatment mini-form */
-  .ob-add-form {
-    background: rgba(92,31,138,0.04); border-radius: 14px;
-    border: 1.5px dashed rgba(92,31,138,0.2);
-    padding: 1.2rem; display: none;
-  }
-  .ob-add-form.open { display: block; }
-  .ob-add-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-  .ob-add-actions { display: flex; gap: 8px; justify-content: flex-end; }
-
-  /* Members -->
-  .ob-member-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1rem; }
-  .ob-member-row {
-    display: flex; align-items: center; gap: 12px;
-    padding: 10px 14px; border-radius: 12px;
-    background: var(--cream); border: 1px solid rgba(201,168,76,0.2);
-  }
-  .ob-member-avatar {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: #5C1F8A; color: white;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 500; flex-shrink: 0;
-  }
-  .ob-member-name { font-size: 0.88rem; font-weight: 500; color: var(--text-dark); }
-  .ob-member-role { font-size: 0.75rem; color: var(--text-muted); }
-  .ob-member-del { margin-left: auto; }
-
-  /* Nav buttons */
-  .ob-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; }
-  .ob-btn-prev {
-    padding: 0.7rem 1.6rem; border-radius: 50px;
-    border: 1.5px solid rgba(92,31,138,0.25); color: var(--purple-dark);
-    background: white; font-size: 0.88rem; font-weight: 500;
-    cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
-  }
-  .ob-btn-prev:hover { border-color: #5C1F8A; }
-  .ob-btn-next {
-    padding: 0.7rem 2rem; border-radius: 50px;
-    background: #5C1F8A; color: white;
-    border: none; font-size: 0.88rem; font-weight: 500;
-    cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
-  }
-  .ob-btn-next:hover { background: #7B3BAD; transform: translateY(-1px); }
-  .ob-btn-gold {
-    padding: 0.7rem 1.2rem; border-radius: 50px;
-    background: #C9A84C; color: #3D1260;
-    border: none; font-size: 0.82rem; font-weight: 500;
-    cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
-  }
-  .ob-btn-ghost {
-    padding: 0.7rem 1rem; border-radius: 50px;
-    border: 1px solid rgba(201,168,76,0.3); color: var(--text-muted);
-    background: white; font-size: 0.82rem;
-    cursor: pointer; font-family: 'DM Sans', sans-serif;
-  }
-
-  /* Summary */
-  .ob-summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .ob-summary-item { padding: 12px 14px; border-radius: 12px; background: var(--cream); border: 1px solid rgba(201,168,76,0.15); }
-  .ob-summary-key { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gold); margin-bottom: 4px; }
-  .ob-summary-val { font-size: 0.88rem; color: var(--text-dark); font-weight: 500; }
-
-  /* Success state */
-  .ob-success { text-align: center; padding: 3rem 2rem; }
-  .ob-success-icon {
-    width: 72px; height: 72px; border-radius: 50%;
-    background: rgba(92,31,138,0.1); border: 2px solid rgba(201,168,76,0.4);
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 1.5rem; font-size: 28px;
-  }
-</style>
-
-<div class="ob-wrap">
-  <div class="ob-header">
-    <div class="section-eyebrow">Setup</div>
-    <h2 class="section-title">Salon in 4 Schritten einrichten</h2>
-    <p class="section-sub" style="margin:0 auto; text-align:center;">Füllen Sie das Template aus — Insy erstellt automatisch alle Buchungstypen, Einstellungen und Webhooks in Cal.com.</p>
-  </div>
-
-  <!-- Step indicators -->
-  <div class="ob-steps" id="ob-steps">
-    <div class="ob-step-item active" data-step="1">
-      <div class="ob-step-dot">1</div>
-      <div class="ob-step-label">Salon</div>
-    </div>
-    <div class="ob-step-item" data-step="2">
-      <div class="ob-step-dot">2</div>
-      <div class="ob-step-label">Behandlungen</div>
-    </div>
-    <div class="ob-step-item" data-step="3">
-      <div class="ob-step-dot">3</div>
-      <div class="ob-step-label">Einstellungen</div>
-    </div>
-    <div class="ob-step-item" data-step="4">
-      <div class="ob-step-dot">4</div>
-      <div class="ob-step-label">Team</div>
-    </div>
-  </div>
-
-  <!-- ── STEP 1: Salon Info ── -->
-  <div class="ob-panel active" id="ob-panel-1">
-    <div class="ob-card">
-      <div class="ob-card-title">Salon-Informationen</div>
-      <div class="ob-field">
-        <label class="ob-label">Salonname <span style="color:#E24B4A">*</span></label>
-        <input class="ob-input" id="ob-salon-name" type="text" placeholder="z.B. Lotus Thai Massage">
-        <div class="ob-hint">Wird als Titel in Cal.com und in WhatsApp-Nachrichten angezeigt.</div>
-      </div>
-      <div class="ob-field">
-        <label class="ob-label">WhatsApp-Nummer <span style="color:#E24B4A">*</span></label>
-        <input class="ob-input" id="ob-phone" type="tel" placeholder="+49 151 00000000">
-      </div>
-      <div class="ob-field">
-        <label class="ob-label">Buchungs-URL (Slug)</label>
-        <input class="ob-input" id="ob-slug" type="text" placeholder="lotus-thai-massage">
-        <div class="ob-hint">Ihr Buchungslink: insy.de/<span id="ob-slug-preview" style="color:var(--purple)">lotus-thai-massage</span></div>
-      </div>
-    </div>
-
-    <div class="ob-card">
-      <div class="ob-card-title">Öffnungszeiten</div>
-      <div class="ob-field">
-        <label class="ob-label">Arbeitstage & Zeiten</label>
-        <div class="ob-hint" style="margin-bottom:10px;">Klicken Sie auf einen Tag um ihn zu aktivieren — dann individuelle Zeiten setzen.</div>
-        <div id="ob-schedule" style="display:flex; flex-direction:column; gap:8px;">
-          <!-- Tage werden per JS gerendert -->
-        </div>
-      </div>
-    </div>
-
-    <div class="ob-nav">
-      <div></div>
-      <button class="ob-btn-next" onclick="obNext(1)">Weiter → Behandlungen</button>
-    </div>
-  </div>
-
-  <!-- ── STEP 2: Behandlungen ── -->
-  <div class="ob-panel" id="ob-panel-2">
-    <div class="ob-card">
-      <div class="ob-card-title">Behandlungstypen (Event Types)</div>
-      <div class="ob-event-list" id="ob-event-list"></div>
-
-      <!-- Add button -->
-      <button class="ob-btn-gold" onclick="obToggleAddForm()" id="ob-add-btn" style="width:100%; margin-bottom:10px;">+ Behandlung hinzufügen</button>
-
-      <!-- Mini add-form -->
-      <div class="ob-add-form" id="ob-add-form">
-        <div class="ob-add-grid">
-          <div>
-            <label class="ob-label">Titel der Behandlung</label>
-            <input class="ob-input" id="add-title" placeholder="z.B. Thai-Massage">
-          </div>
-          <div>
-            <label class="ob-label">Preis (optional)</label>
-            <input class="ob-input" id="add-price" type="number" placeholder="z.B. 80">
-          </div>
-        </div>
-
-        <div class="ob-field">
-          <label class="ob-label">Dauer — Auswahlmöglichkeiten für den Kunden</label>
-          <div class="ob-chips" id="add-durations">
-            <span class="ob-chip" data-val="30">30 Min</span>
-            <span class="ob-chip selected" data-val="45">45 Min</span>
-            <span class="ob-chip selected" data-val="60">60 Min</span>
-            <span class="ob-chip" data-val="75">75 Min</span>
-            <span class="ob-chip" data-val="90">90 Min</span>
-            <span class="ob-chip" data-val="120">120 Min</span>
-          </div>
-          <div class="ob-hint">Mehrere auswählen = Kunde kann zwischen Dauern wählen.</div>
-        </div>
-
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;" class="ob-field">
-          <div>
-            <label class="ob-label">Dauer anzeigen als</label>
-            <div class="ob-chips" id="add-duration-display">
-              <span class="ob-chip selected" data-val="min">Minuten (60 Min)</span>
-              <span class="ob-chip" data-val="h">Stunden (1 Std)</span>
-            </div>
-          </div>
-          <div>
-            <label class="ob-label">Pufferzeit nach Termin</label>
-            <div class="ob-chips" id="add-buffer">
-              <span class="ob-chip selected" data-val="0">Kein Puffer</span>
-              <span class="ob-chip" data-val="10">10 Min</span>
-              <span class="ob-chip" data-val="15">15 Min</span>
-              <span class="ob-chip" data-val="30">30 Min</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="ob-add-actions">
-          <button class="ob-btn-ghost" onclick="obToggleAddForm()">Abbrechen</button>
-          <button class="ob-btn-next" onclick="obAddEvent()" style="padding:0.6rem 1.4rem;">Hinzufügen</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="ob-nav">
-      <button class="ob-btn-prev" onclick="obPrev(2)">← Zurück</button>
-      <button class="ob-btn-next" onclick="obNext(2)">Weiter → Einstellungen</button>
-    </div>
-  </div>
-
-  <!-- ── STEP 3: Einstellungen ── -->
-  <div class="ob-panel" id="ob-panel-3">
-    <div class="ob-card">
-      <div class="ob-card-title">Buchungseinstellungen</div>
-
-      <div class="ob-toggle-row">
-        <div>
-          <div class="ob-toggle-label">Minuten in Buchungsansicht anzeigen</div>
-          <div class="ob-toggle-sub">z.B. "60 Min" statt nur "1 Stunde"</div>
-        </div>
-        <label class="ob-switch"><input type="checkbox" id="tog-show-minutes" checked><span class="ob-slider"></span></label>
-      </div>
-
-      <div class="ob-toggle-row">
-        <div>
-          <div class="ob-toggle-label">Pufferzeit global aktivieren</div>
-          <div class="ob-toggle-sub">Zusätzliche Zeit zwischen allen Terminen (überschreibt pro-Behandlung)</div>
-        </div>
-        <label class="ob-switch"><input type="checkbox" id="tog-global-buffer"><span class="ob-slider"></span></label>
-      </div>
-
-      <div id="global-buffer-val" style="display:none; padding: 0.8rem 0 0.4rem;">
-        <label class="ob-label">Globale Pufferzeit</label>
-        <div class="ob-chips" id="chips-global-buffer">
-          <span class="ob-chip" data-val="5">5 Min</span>
-          <span class="ob-chip selected" data-val="10">10 Min</span>
-          <span class="ob-chip" data-val="15">15 Min</span>
-          <span class="ob-chip" data-val="20">20 Min</span>
-        </div>
-      </div>
-
-      <div class="ob-toggle-row">
-        <div>
-          <div class="ob-toggle-label">Mindest-Vorlaufzeit für Buchungen</div>
-          <div class="ob-toggle-sub">Verhindert spontane Last-Minute-Buchungen</div>
-        </div>
-        <label class="ob-switch"><input type="checkbox" id="tog-notice"><span class="ob-slider"></span></label>
-      </div>
-      <div id="notice-val" style="display:none; padding:0.8rem 0 0.4rem;">
-        <div class="ob-chips" id="chips-notice">
-          <span class="ob-chip" data-val="60">1 Std vorher</span>
-          <span class="ob-chip selected" data-val="120">2 Std vorher</span>
-          <span class="ob-chip" data-val="1440">1 Tag vorher</span>
-        </div>
-      </div>
-
-      <div class="ob-toggle-row">
-        <div>
-          <div class="ob-toggle-label">Stornierung durch Kunden erlauben</div>
-          <div class="ob-toggle-sub">Kunden können Termine selbst absagen</div>
-        </div>
-        <label class="ob-switch"><input type="checkbox" id="tog-cancel" checked><span class="ob-slider"></span></label>
-      </div>
-
-      <div class="ob-toggle-row">
-        <div>
-          <div class="ob-toggle-label">Umbuchung erlauben</div>
-          <div class="ob-toggle-sub">Kunden können Termine selbst verschieben</div>
-        </div>
-        <label class="ob-switch"><input type="checkbox" id="tog-reschedule" checked><span class="ob-slider"></span></label>
-      </div>
-    </div>
-
-    <div class="ob-card">
-      <div class="ob-card-title">Terminvergabe-Logik</div>
-      <div class="ob-field">
-        <label class="ob-label">Zuweisung bei mehreren Mitarbeitern</label>
-        <div class="ob-chips" id="chips-scheduling">
-          <span class="ob-chip selected" data-val="none">Einzelperson</span>
-          <span class="ob-chip" data-val="roundRobin">Round Robin (gleichmäßig verteilen)</span>
-          <span class="ob-chip" data-val="collective">Collective (alle müssen frei sein)</span>
-        </div>
-        <div class="ob-hint" id="scheduling-hint">Alle Buchungen gehen an einen Mitarbeiter.</div>
-      </div>
-    </div>
-
-    <div class="ob-nav">
-      <button class="ob-btn-prev" onclick="obPrev(3)">← Zurück</button>
-      <button class="ob-btn-next" onclick="obNext(3)">Weiter → Team</button>
-    </div>
-  </div>
-
-  <!-- ── STEP 4: Team ── -->
-  <div class="ob-panel" id="ob-panel-4">
-    <div class="ob-card">
-      <div class="ob-card-title">Team-Mitglieder</div>
-      <div class="ob-member-list" id="ob-member-list"></div>
-      <div style="display:grid; grid-template-columns:1fr 1fr auto; gap:10px; align-items:flex-end;">
-        <div>
-          <label class="ob-label">Name</label>
-          <input class="ob-input" id="add-member-name" placeholder="z.B. Nattida K.">
-        </div>
-        <div>
-          <label class="ob-label">Rolle</label>
-          <input class="ob-input" id="add-member-role" placeholder="z.B. Senior-Therapeutin">
-        </div>
-        <button class="ob-btn-gold" onclick="obAddMember()" style="padding:0.65rem 1.2rem; white-space:nowrap;">+ Hinzufügen</button>
-      </div>
-    </div>
-
-    <div class="ob-card" id="ob-summary-card">
-      <div class="ob-card-title">Zusammenfassung</div>
-      <div class="ob-summary-grid" id="ob-summary-grid"></div>
-    </div>
-
-    <div class="ob-nav">
-      <button class="ob-btn-prev" onclick="obPrev(4)">← Zurück</button>
-      <button class="ob-btn-next" onclick="obSubmit()" style="background:#C9A84C; color:#3D1260;">✓ Jetzt einrichten</button>
-    </div>
-  </div>
-
-  <!-- ── SUCCESS ── -->
-  <div class="ob-panel" id="ob-panel-5">
-    <div class="ob-card">
-      <div class="ob-success">
-        <div class="ob-success-icon">✓</div>
-        <h3 style="font-family:'Playfair Display',serif; font-size:1.6rem; color:var(--purple-dark); margin-bottom:0.8rem;">Ihr Salon ist eingerichtet!</h3>
-        <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:2rem;">Alle Event-Types, Einstellungen und Webhooks wurden automatisch in Cal.com angelegt.</p>
-        <div style="background:var(--cream); border-radius:14px; padding:1.2rem; border:1px solid rgba(201,168,76,0.2); display:inline-block; text-align:left; min-width:280px;">
-          <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--gold); margin-bottom:8px;">Ihr Buchungslink</div>
-          <div id="ob-final-link" style="font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--purple-dark);">insy.de/mein-salon</div>
-        </div>
-        <div style="margin-top:1.5rem;">
-          <p style="font-size:0.8rem; color:var(--text-muted);">Sie erhalten in Kürze eine WhatsApp mit weiteren Infos.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-// ── State ──
-let obState = {
-  currentStep: 1,
-  events: [],
-  members: []
-};
-
-// ── Chip toggling ──
-document.querySelectorAll('.ob-chips').forEach(group => {
-  const isMulti = ['ob-days', 'add-durations'].includes(group.id);
-  group.querySelectorAll('.ob-chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      if (isMulti) {
-        chip.classList.toggle('selected');
-      } else {
-        group.querySelectorAll('.ob-chip').forEach(c => c.classList.remove('selected'));
-        chip.classList.add('selected');
-      }
-      // Hints
-      if (group.id === 'chips-scheduling') {
-        const hints = {
-          none: 'Alle Buchungen gehen an einen Mitarbeiter.',
-          roundRobin: 'Buchungen werden gleichmäßig auf alle Mitarbeiter verteilt.',
-          collective: 'Ein Termin wird nur angeboten wenn alle Mitarbeiter gleichzeitig frei sind.'
-        };
-        document.getElementById('scheduling-hint').textContent = hints[chip.dataset.val] || '';
-      }
-    });
-  });
-});
-
-// ── Schedule per Tag ──
-const DAYS = [
-  { key: 'Mo', label: 'Montag' },
-  { key: 'Di', label: 'Dienstag' },
-  { key: 'Mi', label: 'Mittwoch' },
-  { key: 'Do', label: 'Donnerstag' },
-  { key: 'Fr', label: 'Freitag' },
-  { key: 'Sa', label: 'Samstag' },
-  { key: 'So', label: 'Sonntag' }
-];
-
-obState.schedule = {
-  Mo: { active: true,  from: '09:00', to: '19:00' },
-  Di: { active: true,  from: '09:00', to: '19:00' },
-  Mi: { active: true,  from: '09:00', to: '19:00' },
-  Do: { active: true,  from: '09:00', to: '19:00' },
-  Fr: { active: true,  from: '09:00', to: '19:00' },
-  Sa: { active: false, from: '10:00', to: '16:00' },
-  So: { active: false, from: '10:00', to: '16:00' }
-};
-
-function obRenderSchedule() {
-  const container = document.getElementById('ob-schedule');
-  container.innerHTML = DAYS.map(d => {
-    const s = obState.schedule[d.key];
-    return `
-    <div style="display:grid; grid-template-columns:110px 1fr; gap:8px; align-items:center; padding:8px 10px; border-radius:10px; background:${s.active ? 'rgba(92,31,138,0.04)' : 'var(--cream)'}; border:1px solid ${s.active ? 'rgba(92,31,138,0.15)' : 'rgba(201,168,76,0.1)'}; transition:all 0.2s;">
-      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;">
-        <input type="checkbox" ${s.active ? 'checked' : ''} 
-          onchange="obToggleDay('${d.key}', this.checked)"
-          style="width:16px;height:16px;accent-color:#5C1F8A;cursor:pointer;">
-        <span style="font-size:0.88rem;font-weight:${s.active ? '500' : '400'};color:${s.active ? 'var(--purple-dark)' : 'var(--text-muted)'};">${d.label}</span>
-      </label>
-      <div style="display:${s.active ? 'grid' : 'none'}; grid-template-columns:1fr auto 1fr; align-items:center; gap:6px;" id="times-${d.key}">
-        <input type="time" value="${s.from}" 
-          onchange="obState.schedule['${d.key}'].from=this.value"
-          style="border:1.5px solid rgba(201,168,76,0.25);border-radius:8px;padding:6px 10px;font-size:0.85rem;font-family:'DM Sans',sans-serif;color:var(--text-dark);background:white;outline:none;">
-        <span style="font-size:0.75rem;color:var(--text-muted);text-align:center;">bis</span>
-        <input type="time" value="${s.to}"
-          onchange="obState.schedule['${d.key}'].to=this.value"
-          style="border:1.5px solid rgba(201,168,76,0.25);border-radius:8px;padding:6px 10px;font-size:0.85rem;font-family:'DM Sans',sans-serif;color:var(--text-dark);background:white;outline:none;">
-      </div>
-      <div style="display:${s.active ? 'none' : 'flex'}; align-items:center;" id="closed-${d.key}">
-        <span style="font-size:0.78rem;color:var(--text-muted);padding:6px 0;">Geschlossen</span>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function obToggleDay(key, active) {
-  obState.schedule[key].active = active;
-  obRenderSchedule();
-}
-
-obRenderSchedule();
-document.getElementById('ob-salon-name').addEventListener('input', function() {
-  const slug = this.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g,'');
-  document.getElementById('ob-slug').value = slug;
-  document.getElementById('ob-slug-preview').textContent = slug || 'mein-salon';
-});
-document.getElementById('ob-slug').addEventListener('input', function() {
-  document.getElementById('ob-slug-preview').textContent = this.value || 'mein-salon';
-});
-
-// Toggle-conditional reveals
-document.getElementById('tog-global-buffer').addEventListener('change', function() {
-  document.getElementById('global-buffer-val').style.display = this.checked ? 'block' : 'none';
-});
-document.getElementById('tog-notice').addEventListener('change', function() {
-  document.getElementById('notice-val').style.display = this.checked ? 'block' : 'none';
-});
-
-// ── Add Treatment ──
-function obToggleAddForm() {
-  const f = document.getElementById('ob-add-form');
-  f.classList.toggle('open');
-}
-
-function obAddEvent() {
-  const title = document.getElementById('add-title').value.trim();
-  if (!title) { document.getElementById('add-title').focus(); return; }
-
-  const durations = [...document.querySelectorAll('#add-durations .ob-chip.selected')].map(c => c.dataset.val);
-  const display = document.querySelector('#add-duration-display .ob-chip.selected')?.dataset.val || 'min';
-  const buffer = document.querySelector('#add-buffer .ob-chip.selected')?.dataset.val || '0';
-  const price = document.getElementById('add-price').value;
-
-  const event = { title, durations, display, buffer, price, id: Date.now() };
-  obState.events.push(event);
-  obRenderEvents();
-  document.getElementById('add-title').value = '';
-  document.getElementById('add-price').value = '';
-  document.getElementById('ob-add-form').classList.remove('open');
-}
-
-function obRenderEvents() {
-  const list = document.getElementById('ob-event-list');
-  list.innerHTML = obState.events.map(e => {
-    const durStr = e.durations.map(d => e.display === 'h' ? (d/60).toFixed(1).replace('.0','') + ' Std' : d + ' Min').join(', ');
-    const bufStr = e.buffer === '0' ? 'Kein Puffer' : e.buffer + ' Min Puffer';
-    return `<div class="ob-event-row">
-      <div>
-        <div class="ob-event-row-title">${e.title}</div>
-        <div class="ob-event-row-meta">${durStr} · ${bufStr}${e.price ? ' · ' + e.price + ' €' : ''}</div>
-      </div>
-      <div class="ob-event-badge">${e.durations.length} Dauer${e.durations.length > 1 ? 'n' : ''}</div>
-      <div class="ob-event-badge" style="background:rgba(201,168,76,0.12);color:#7B5A1A;">${e.display === 'h' ? 'in Std' : 'in Min'}</div>
-      <button class="ob-event-del" onclick="obDeleteEvent(${e.id})">✕</button>
-    </div>`;
-  }).join('');
-}
-
-function obDeleteEvent(id) {
-  obState.events = obState.events.filter(e => e.id !== id);
-  obRenderEvents();
-}
-
-// ── Add Member ──
-function obAddMember() {
-  const name = document.getElementById('add-member-name').value.trim();
-  const role = document.getElementById('add-member-role').value.trim();
-  if (!name) { document.getElementById('add-member-name').focus(); return; }
-  obState.members.push({ name, role, id: Date.now() });
-  document.getElementById('add-member-name').value = '';
-  document.getElementById('add-member-role').value = '';
-  obRenderMembers();
-}
-
-function obRenderMembers() {
-  const list = document.getElementById('ob-member-list');
-  list.innerHTML = obState.members.map(m => `
-    <div class="ob-member-row">
-      <div class="ob-member-avatar">${m.name.charAt(0).toUpperCase()}</div>
-      <div>
-        <div class="ob-member-name">${m.name}</div>
-        <div class="ob-member-role">${m.role || 'Mitarbeiter'}</div>
-      </div>
-      <button class="ob-event-del ob-member-del" onclick="obDeleteMember(${m.id})">✕</button>
-    </div>`).join('');
-}
-
-function obDeleteMember(id) {
-  obState.members = obState.members.filter(m => m.id !== id);
-  obRenderMembers();
-}
-
-// ── Summary ──
-function obBuildSummary() {
-  const name = document.getElementById('ob-salon-name').value || '—';
-  const slug = document.getElementById('ob-slug').value || '—';
-  const phone = document.getElementById('ob-phone').value || '—';
-  const activeDays = DAYS.filter(d => obState.schedule[d.key].active);
-  const daysStr = activeDays.map(d => {
-    const s = obState.schedule[d.key];
-    return `${d.key} ${s.from}–${s.to}`;
-  }).join(', ') || '—';
-  const scheduling = document.querySelector('#chips-scheduling .ob-chip.selected')?.dataset.val || '—';
-  const schedLabels = { none: 'Einzelperson', roundRobin: 'Round Robin', collective: 'Collective' };
-
-  document.getElementById('ob-summary-grid').innerHTML = `
-    <div class="ob-summary-item"><div class="ob-summary-key">Salonname</div><div class="ob-summary-val">${name}</div></div>
-    <div class="ob-summary-item"><div class="ob-summary-key">Buchungslink</div><div class="ob-summary-val">insy.de/${slug}</div></div>
-    <div class="ob-summary-item"><div class="ob-summary-key">WhatsApp</div><div class="ob-summary-val">${phone}</div></div>
-    <div class="ob-summary-item"><div class="ob-summary-key">Öffnungszeiten</div><div class="ob-summary-val" style="font-size:0.78rem;line-height:1.6;">${daysStr}</div></div>
-    <div class="ob-summary-item"><div class="ob-summary-key">Behandlungen</div><div class="ob-summary-val">${obState.events.length} angelegt</div></div>
-    <div class="ob-summary-item"><div class="ob-summary-key">Terminvergabe</div><div class="ob-summary-val">${schedLabels[scheduling]}</div></div>
-    <div class="ob-summary-item"><div class="ob-summary-key">Team</div><div class="ob-summary-val">${obState.members.length || 1} Mitglied${obState.members.length !== 1 ? 'er' : ''}</div></div>
-    <div class="ob-summary-item"><div class="ob-summary-key">Puffer global</div><div class="ob-summary-val">${document.getElementById('tog-global-buffer').checked ? document.querySelector('#chips-global-buffer .ob-chip.selected')?.dataset.val + ' Min' : 'Pro Behandlung'}</div></div>
-  `;
-}
-
-// ── Navigation ──
-function obSetStep(step) {
-  document.querySelectorAll('.ob-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('ob-panel-' + step).classList.add('active');
-  document.querySelectorAll('.ob-step-item').forEach((item, i) => {
-    item.classList.remove('active', 'done');
-    const s = i + 1;
-    if (s < step) item.classList.add('done');
-    else if (s === step) item.classList.add('active');
-  });
-  obState.currentStep = step;
-  // Replace dot numbers with checkmarks for done steps
-  document.querySelectorAll('.ob-step-item.done .ob-step-dot').forEach(d => { d.textContent = '✓'; });
-  document.querySelectorAll('.ob-step-item:not(.done) .ob-step-dot').forEach((d, i) => {
-    const s = parseInt(d.closest('.ob-step-item').dataset.step);
-    d.textContent = s;
-  });
-}
-
-function obNext(from) {
-  if (from === 1) {
-    if (!document.getElementById('ob-salon-name').value.trim()) {
-      document.getElementById('ob-salon-name').focus();
-      document.getElementById('ob-salon-name').style.borderColor = '#E24B4A';
-      return;
-    }
-    document.getElementById('ob-salon-name').style.borderColor = '';
-  }
-  if (from === 4) { obBuildSummary(); }
-  obSetStep(from + 1);
-  window.scrollTo({ top: document.getElementById('onboarding').offsetTop - 80, behavior: 'smooth' });
-}
-
-function obPrev(from) {
-  obSetStep(from - 1);
-  window.scrollTo({ top: document.getElementById('onboarding').offsetTop - 80, behavior: 'smooth' });
-}
-
-function obSubmit() {
-  const slug = document.getElementById('ob-slug').value || 'mein-salon';
-  document.getElementById('ob-final-link').textContent = 'insy.de/' + slug;
-  // Here you would make the actual API calls to Cal.com
-  obSetStep(5);
-  window.scrollTo({ top: document.getElementById('onboarding').offsetTop - 80, behavior: 'smooth' });
-}
-</script>
-</section>
-
-
-
 <!-- CTA FINAL -->
 <section class="cta-final" id="cta">
   <div class="cta-final-inner">
     <h2>Bereit für den digitalen Salon?</h2>
     <p>Testen Sie Insy Digital Reception 30 Tage kostenlos. Keine Kreditkarte, kein Risiko — starten Sie in 2 Minuten.</p>
     <div class="cta-actions">
-      <a href="#" class="btn-gold">Jetzt kostenlos starten</a>
-      <a href="#" class="btn-outline-white">Demo ansehen</a>
+      <a href="https://insy-reception.com/login.html" class="btn-gold">Jetzt kostenlos starten</a>
+      <a href="https://insy-reception.com/booking?salon_id=236bbfbe-c090-4e56-9313-6176c9345bdf" class="btn-outline-white">Demo ansehen</a>
     </div>
   </div>
 </section>
