@@ -126,7 +126,12 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .staff-add-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:9px;border:1.5px dashed var(--border);border-radius:10px;font-size:11px;color:var(--muted);cursor:pointer;background:none;font-family:inherit;width:100%;transition:all .15s}
 .staff-add-btn:hover{border-color:var(--tpl);color:var(--tpl);background:var(--tpp)}
 
-/* ── WOCHENPLAN ── */
+/* ── AUTH OVERLAY ── */
+.auth-overlay{position:fixed;inset:0;background:var(--tp);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .3s}
+.auth-overlay.hidden{opacity:0;pointer-events:none}
+.auth-spinner{width:44px;height:44px;border:3px solid rgba(255,255,255,.2);border-top-color:var(--tg);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.auth-label{font-size:13px;color:rgba(255,255,255,.7);font-weight:500}
 .week-plan{background:var(--white);border:1.5px solid var(--border);border-radius:12px;overflow:hidden}
 .week-plan-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1.5px solid var(--border);background:#faf8fc;flex-wrap:wrap;gap:8px}
 .week-plan-title{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600}
@@ -231,6 +236,12 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 <body>
 
 <!-- ── NAV ── -->
+<!-- ── AUTH OVERLAY ── -->
+<div class="auth-overlay" id="auth-overlay">
+  <div class="auth-spinner"></div>
+  <div class="auth-label" id="auth-label">Wird geladen…</div>
+</div>
+
 <nav class="nav">
   <div class="nav-brand">
     <div class="nav-logo">Insy Reception</div>
@@ -672,6 +683,7 @@ function switchTab(n){
   document.querySelectorAll('.nav-tab').forEach(function(t){t.classList.remove('active');});
   document.getElementById('panel-'+n).classList.add('active');
   document.getElementById('tab-'+n).classList.add('active');
+  if(n==='mitarbeiter')updateWeekPlanLabel();
 }
 
 // ── TOAST ─────────────────────────────────────────────────────
@@ -1510,7 +1522,8 @@ function renderWeekPlan(salonAz){
   var totalH=totalMins*PX_PER_MIN;
 
   var weekStart=getWeekStart();
-  var today=new Date();today.setHours(0,0,0,0);
+  var realToday=new Date();realToday.setHours(0,0,0,0);
+  var today=weekPlanOffset===0?realToday:new Date(0); // nur in aktueller Woche markieren
 
   // Legende
   var legend=document.getElementById('week-legend');
@@ -1849,10 +1862,73 @@ async function deleteStaff(id){
 // ── UTILS ─────────────────────────────────────────────────────
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-// ── INIT ──────────────────────────────────────────────────────
-loadProfil();
-loadServices().then(function(){loadStaff();});
-loadFeatureSettings();
+// ── INIT + AUTH ───────────────────────────────────────────────
+async function init(){
+  var label=document.getElementById('auth-label');
+  label.textContent='Authentifizierung…';
+
+  // OAuth Redirect Session aus URL holen
+  var hashParams=new URLSearchParams(window.location.hash.replace('#',''));
+  if(hashParams.get('access_token')){
+    await sb.auth.setSession({
+      access_token:hashParams.get('access_token'),
+      refresh_token:hashParams.get('refresh_token')
+    });
+    // Hash aus URL entfernen
+    window.history.replaceState({},'',window.location.pathname+window.location.search);
+  }
+
+  // 1. User holen
+  var res=await sb.auth.getUser();
+  var user=res.data&&res.data.user;
+
+  if(!user){
+    window.location.href='https://insy-reception.com/login.html';
+    return;
+  }
+
+  // 2. Salon per auth_user_id suchen
+  label.textContent='Salon wird gesucht…';
+  var check=await sb.from('kunden_profile').select('id').eq('auth_user_id',user.id).maybeSingle();
+
+  if(check.error){
+    label.textContent='Datenbankfehler: '+check.error.message;
+    return;
+  }
+
+  if(check.data){
+    SALON_ID=check.data.id;
+  } else {
+    // Kein Salon → neu anlegen
+    label.textContent='Salon wird eingerichtet…';
+    var name=user.user_metadata&&user.user_metadata.full_name
+      ?user.user_metadata.full_name
+      :(user.email?user.email.split('@')[0]:'Mein Salon');
+    var ins=await sb.from('kunden_profile').insert({
+      auth_user_id:user.id,
+      brand_name:name,
+      name:name
+    }).select('id').single();
+    if(ins.error){label.textContent='Fehler beim Erstellen: '+ins.error.message;return;}
+    SALON_ID=ins.data.id;
+  }
+
+  // 3. URL mit salon_id updaten
+  var url=new URL(window.location.href);
+  url.searchParams.set('salon_id',SALON_ID);
+  window.history.replaceState({},'',url.toString());
+
+  // 4. Overlay ausblenden
+  var overlay=document.getElementById('auth-overlay');
+  overlay.classList.add('hidden');
+  setTimeout(function(){overlay.style.display='none';},300);
+
+  loadProfil();
+  loadServices().then(function(){loadStaff();});
+  loadFeatureSettings();
+}
+
+init();
 </script>
 </body>
 </html>
