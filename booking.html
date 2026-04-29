@@ -650,7 +650,7 @@ async function loadSalonProfile(){
     if(res.error){console.error('Supabase Fehler:',res.error);return;}
     var data=res.data;
     var salonName=data.brand_name||data.name||'Salonname';
-    var salonPhone=data.phone||'Telefonnummer';
+    var salonPhone=[data.area_code,data.phone_number].filter(Boolean).join(' ')||data.phone||'Telefonnummer';
     var salonAddress=[[data.street,data.house_number].filter(Boolean).join(' '),[data.postal_code,data.city].filter(Boolean).join(' ')].filter(Boolean).join(', ')||'Adresse';
     var brandEl=document.getElementById('brand-name');
     var nameEl=document.getElementById('salon-name');
