@@ -157,73 +157,136 @@
   .hero-visual {
     position: relative; z-index: 2;
     display: flex; justify-content: center; align-items: center;
+    height: 500px;
   }
-  .phone-mockup {
-    width: 235px; height: 470px;
-    background: #111;
-    border-radius: 36px;
-    border: 7px solid #1a1a1a;
-    box-shadow: 0 40px 80px rgba(74,28,107,0.45), 0 0 0 1px rgba(0,0,0,0.3);
-    overflow: hidden; position: relative;
-    display: flex; flex-direction: column;
-  }
-  /* WhatsApp header bar */
-  .wa-header {
-    background: #075E54;
-    padding: 8px 12px 8px 10px;
-    display: flex; align-items: center; gap: 8px;
-    flex-shrink: 0;
-  }
-  .wa-back { color: rgba(255,255,255,0.8); font-size: 16px; line-height:1; }
-  .wa-avatar {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: #25D366; display: flex; align-items: center; justify-content: center;
-    font-size: 10px; font-weight: 700; color: #fff; flex-shrink:0;
-  }
-  .wa-info { flex:1; min-width:0; }
-  .wa-name { font-size: 0.78rem; font-weight: 600; color: #fff; line-height:1.2; }
-  .wa-status { font-size: 0.58rem; color: rgba(255,255,255,0.7); }
-  .wa-icons { display:flex; gap:10px; color:rgba(255,255,255,0.8); font-size:14px; }
-  /* Chat wallpaper */
-  .wa-body {
-    flex: 1;
-    background: #4a1c6b;
-    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M20 20c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10zm10 0c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    padding: 8px 8px 6px;
+
+  /* Scrollbarer Chat-Container */
+  .wa-chat-container {
+    width: 300px;
+    height: 460px;
+    background: rgba(15, 50, 28, 0.55);
+    border: 1px solid rgba(37,211,102,0.4);
+    border-radius: 20px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow:
+      0 0 40px rgba(37,211,102,0.12),
+      0 20px 60px rgba(0,0,0,0.3),
+      inset 0 1px 0 rgba(255,255,255,0.07);
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
-    display: flex; flex-direction: column; gap: 5px;
   }
-  /* Bubbles */
-  .wa-msg {
-    max-width: 88%; padding: 5px 8px 4px;
-    border-radius: 8px; font-size: 0.6rem; line-height: 1.45;
-    position: relative; align-self: flex-end;
+
+  /* WA Header im Container */
+  .wa-chat-header {
+    background: rgba(7, 94, 84, 0.9);
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 9px;
+    flex-shrink: 0;
+    border-bottom: 1px solid rgba(37,211,102,0.2);
   }
-  .wa-msg.out {
-    background: #DCF8C6; color: #111;
-    border-radius: 8px 8px 2px 8px;
+  .wa-chat-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(37,211,102,0.3);
+    border: 1px solid rgba(37,211,102,0.5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; color: #d4ffd4;
   }
-  .wa-msg.system {
-    align-self: center; background: rgba(255,255,255,0.15);
-    color: rgba(255,255,255,0.7); font-size: 0.55rem;
-    border-radius: 6px; padding: 3px 8px;
+  .wa-chat-name { font-size: 0.8rem; font-weight: 600; color: #fff; }
+  .wa-chat-status { font-size: 0.6rem; color: rgba(255,255,255,0.55); }
+  .wa-chat-icons { margin-left: auto; display: flex; gap: 10px; font-size: 13px; color: rgba(255,255,255,0.6); }
+
+  /* Scrollbarer Body */
+  .wa-chat-body {
+    flex: 1;
+    overflow-y: scroll;
+    padding: 10px 10px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    scroll-behavior: smooth;
   }
-  .wa-time { font-size: 0.5rem; color: rgba(0,0,0,0.4); text-align:right; margin-top:2px; display:flex; align-items:center; justify-content:flex-end; gap:2px; }
-  .wa-time.light { color:rgba(255,255,255,0.5); }
-  .wa-ticks { color: #53BDEB; font-size: 0.55rem; }
-  /* Link button inside bubble */
-  .wa-btn { display:block; margin-top:5px; background:#25D366; color:#fff; border-radius:5px; padding:4px 8px; font-size:0.58rem; font-weight:600; text-align:center; text-decoration:none; }
-  /* Confirm button */
-  .wa-btn-outline { display:block; margin-top:5px; border:1px solid #25D366; color:#25D366; border-radius:5px; padding:4px 8px; font-size:0.58rem; font-weight:600; text-align:center; }
-  /* Bottom input bar */
-  .wa-inputbar {
-    background: #F0F0F0;
-    padding: 5px 8px;
-    display: flex; align-items: center; gap: 6px;
+  /* Scrollbar verstecken aber scrollbar halten */
+  .wa-chat-body::-webkit-scrollbar { width: 3px; }
+  .wa-chat-body::-webkit-scrollbar-track { background: transparent; }
+  .wa-chat-body::-webkit-scrollbar-thumb { background: rgba(37,211,102,0.2); border-radius: 99px; }
+
+  /* Nachrichten */
+  .wc-system {
+    align-self: center;
+    background: rgba(15,50,28,0.7);
+    border: 1px solid rgba(37,211,102,0.25);
+    border-radius: 8px; padding: 3px 10px;
+    font-size: 0.6rem; color: rgba(212,255,212,0.7);
+  }
+  .wc-msg {
+    background: rgba(15, 60, 30, 0.85);
+    border: 1px solid rgba(37,211,102,0.35);
+    border-radius: 14px 14px 4px 14px;
+    padding: 8px 10px;
+    font-size: 0.72rem;
+    line-height: 1.5;
+    color: #d4ffd4;
+    max-width: 88%;
+    align-self: flex-end;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  }
+  .wc-msg strong { color: #fff; }
+  .wc-time {
+    font-size: 0.55rem; color: rgba(255,255,255,0.35);
+    display: flex; align-items: center; justify-content: flex-end;
+    gap: 3px; margin-top: 4px;
+  }
+  .wc-ticks { color: rgba(83,189,235,0.8); font-size: 0.6rem; }
+  .wc-btn {
+    display: block; margin-top: 6px;
+    background: rgba(37,211,102,0.2);
+    border: 1px solid rgba(37,211,102,0.5);
+    color: #98ffb0; border-radius: 6px;
+    padding: 5px 10px; font-size: 0.68rem;
+    font-weight: 600; text-align: center;
+    text-decoration: none;
+  }
+  .wc-btn-outline {
+    display: block; margin-top: 6px;
+    border: 1px solid rgba(37,211,102,0.4);
+    color: #98ffb0; border-radius: 6px;
+    padding: 5px 10px; font-size: 0.68rem;
+    font-weight: 600; text-align: center;
+    background: rgba(37,211,102,0.08);
+  }
+
+  /* Input bar */
+  .wa-chat-input {
+    background: rgba(10,35,18,0.8);
+    border-top: 1px solid rgba(37,211,102,0.15);
+    padding: 7px 10px;
+    display: flex; align-items: center; gap: 7px;
     flex-shrink: 0;
   }
-  .wa-input-field { flex:1; background:#fff; border-radius:20px; padding:4px 10px; font-size:0.58rem; color:#999; }
-  .wa-mic { width:26px; height:26px; border-radius:50%; background:#25D366; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .wa-chat-field {
+    flex: 1; background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(37,211,102,0.2);
+    border-radius: 20px; padding: 5px 10px;
+    font-size: 0.65rem; color: rgba(255,255,255,0.3);
+  }
+  .wa-chat-mic {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: rgba(37,211,102,0.25);
+    border: 1px solid rgba(37,211,102,0.4);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* Sanfte Float-Animation für den ganzen Container */
+  .wa-chat-container {
+    animation: floatContainer 7s ease-in-out infinite;
+  }
+  @keyframes floatContainer {
+    0%,100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
 
   /* TRUST BAR */
   .trust-bar {
@@ -576,7 +639,7 @@
     <li><a href="#pricing">Preise</a></li>
     <li><a href="#kontakt">Kontakt</a></li>
   </ul>
-  <a href="https://insy-reception.com/login.html" class="nav-cta">Kostenlos testen</a>
+  <a href="https://insy-reception.com/login.html" class="nav-cta">Mit Google anmelden</a>
 </nav>
 
 <!-- HERO -->
@@ -600,88 +663,70 @@
   </div>
 
   <div class="hero-visual">
-    <!-- Phone 1: Missed Call + Bestätigung -->
-    <div class="phone-mockup" style="transform:rotate(-6deg);margin-right:-28px;z-index:1;">
-      <!-- WA Header -->
-      <div class="wa-header">
-        <div class="wa-back">‹</div>
-        <div class="wa-avatar">IR</div>
-        <div class="wa-info">
-          <div class="wa-name">Insy Salon</div>
-          <div class="wa-status">Online</div>
+    <div class="wa-chat-container">
+
+      <!-- Header -->
+      <div class="wa-chat-header">
+        <div class="wa-chat-avatar">IR</div>
+        <div>
+          <div class="wa-chat-name">Insy Salon</div>
+          <div class="wa-chat-status">Online</div>
         </div>
-        <div class="wa-icons">
-          <span>📹</span>
-          <span>📞</span>
-        </div>
+        <div class="wa-chat-icons">📹 📞</div>
       </div>
-      <!-- Chat -->
-      <div class="wa-body">
-        <div class="wa-msg system">📵 Verpasster Anruf — 09:14</div>
-        <div class="wa-msg out">
+
+      <!-- Scrollbarer Chat -->
+      <div class="wa-chat-body" id="wa-chat-body">
+
+        <div class="wc-system">📵 Verpasster Anruf — 09:14</div>
+
+        <div class="wc-msg">
           Hallo! Sie haben uns angerufen 👋<br><br>
-          Wir sind gerade in einer Behandlung. Buchen Sie jetzt einfach Ihren Termin:
-          <a class="wa-btn" href="https://insy-reception.com/booking?salon_id=236bbfbe-c090-4e56-9313-6176c9345bdf" target="_blank">👉 Jetzt buchen</a>
-          <div class="wa-time"><span>09:14</span><span class="wa-ticks">✓✓</span></div>
+          Wir sind gerade in einer Behandlung. Buchen Sie jetzt Ihren Termin:
+          <a class="wc-btn" href="https://insy-reception.com/booking?salon_id=236bbfbe-c090-4e56-9313-6176c9345bdf" target="_blank">👉 Jetzt buchen</a>
+          <div class="wc-time"><span>09:14</span><span class="wc-ticks">✓✓</span></div>
         </div>
-        <div class="wa-msg out">
+
+        <div class="wc-msg">
           ✅ <strong>Buchungsbestätigung</strong><br><br>
           Öl-Massage · 60 Min<br>
           📅 Do, 08.05. · 10:00 Uhr<br>
           👤 Niran T.
-          <div class="wa-time"><span>10:32</span><span class="wa-ticks">✓✓</span></div>
+          <div class="wc-time"><span>10:32</span><span class="wc-ticks">✓✓</span></div>
         </div>
-      </div>
-      <!-- Input bar -->
-      <div class="wa-inputbar">
-        <div class="wa-input-field">Nachricht</div>
-        <div class="wa-mic">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M12 1a4 4 0 014 4v6a4 4 0 01-8 0V5a4 4 0 014-4zm-1 16.93V20H9v2h6v-2h-2v-2.07A8 8 0 0020 11h-2a6 6 0 01-12 0H4a8 8 0 007 7.93z"/></svg>
-        </div>
-      </div>
-    </div>
 
-    <!-- Phone 2: Erinnerung + Follow-Up -->
-    <div class="phone-mockup" style="transform:rotate(3deg);margin-top:40px;z-index:2;">
-      <!-- WA Header -->
-      <div class="wa-header">
-        <div class="wa-back">‹</div>
-        <div class="wa-avatar">IR</div>
-        <div class="wa-info">
-          <div class="wa-name">Insy Salon</div>
-          <div class="wa-status">Online</div>
-        </div>
-        <div class="wa-icons">
-          <span>📹</span>
-          <span>📞</span>
-        </div>
-      </div>
-      <!-- Chat -->
-      <div class="wa-body">
-        <div class="wa-msg out">
+        <div class="wc-system">Mittwoch, 07.05.</div>
+
+        <div class="wc-msg">
           🔔 <strong>Terminerinnerung</strong><br><br>
           Ihr Termin morgen:<br>
           Öl-Massage · 60 Min<br>
           📅 Do, 08.05. · 10:00 Uhr<br><br>
           Bitte bestätigen Sie Ihre Teilnahme:
-          <div class="wa-btn-outline">✅ Termin bestätigen</div>
-          <div class="wa-time"><span>Mi, 10:00</span><span class="wa-ticks">✓✓</span></div>
+          <div class="wc-btn-outline">✅ Termin bestätigen</div>
+          <div class="wc-time"><span>10:00</span><span class="wc-ticks">✓✓</span></div>
         </div>
-        <div class="wa-msg out">
+
+        <div class="wc-system">Donnerstag, 08.05.</div>
+
+        <div class="wc-msg">
           💆 <strong>Wie war Ihre Behandlung?</strong><br><br>
           Wir hoffen, Sie haben sich wohlgefühlt.<br><br>
           Gleich den nächsten Termin sichern:
-          <a class="wa-btn" href="https://insy-reception.com/booking?salon_id=236bbfbe-c090-4e56-9313-6176c9345bdf" target="_blank">📅 Jetzt neu buchen</a>
-          <div class="wa-time"><span>Do, 12:15</span><span class="wa-ticks">✓✓</span></div>
+          <a class="wc-btn" href="https://insy-reception.com/booking?salon_id=236bbfbe-c090-4e56-9313-6176c9345bdf" target="_blank">📅 Jetzt neu buchen</a>
+          <div class="wc-time"><span>12:15</span><span class="wc-ticks">✓✓</span></div>
+        </div>
+
+      </div>
+
+      <!-- Input Bar -->
+      <div class="wa-chat-input">
+        <div class="wa-chat-field">Nachricht</div>
+        <div class="wa-chat-mic">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="#98ffb0"><path d="M12 1a4 4 0 014 4v6a4 4 0 01-8 0V5a4 4 0 014-4zm-1 16.93V20H9v2h6v-2h-2v-2.07A8 8 0 0020 11h-2a6 6 0 01-12 0H4a8 8 0 007 7.93z"/></svg>
         </div>
       </div>
-      <!-- Input bar -->
-      <div class="wa-inputbar">
-        <div class="wa-input-field">Nachricht</div>
-        <div class="wa-mic">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M12 1a4 4 0 014 4v6a4 4 0 01-8 0V5a4 4 0 014-4zm-1 16.93V20H9v2h6v-2h-2v-2.07A8 8 0 0020 11h-2a6 6 0 01-12 0H4a8 8 0 007 7.93z"/></svg>
-        </div>
-      </div>
+
     </div>
   </div>
 </section>
