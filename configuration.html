@@ -264,6 +264,10 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
       Pakete
     </div>
+    <div class="nav-tab" onclick="switchTab('qr')" id="tab-qr">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/><rect x="19" y="14" width="2" height="2"/><rect x="14" y="19" width="2" height="2"/><rect x="19" y="19" width="2" height="2"/></svg>
+      QR-Code
+    </div>
   </div>
   <div class="nav-right">
     <span class="salon-pill" id="nav-salon-id">salon_id: —</span>
@@ -538,6 +542,90 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
     </div>
   </div>
 
+  <!-- ════ QR-CODE ════ -->
+  <div class="tab-panel" id="panel-qr">
+    <div class="sec-hdr">
+      <div class="sec-title">QR-Code</div>
+      <div class="sec-sub">Buchungsseite als QR-Code für Kunden — ausdrucken, aufhängen, fertig</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
+
+      <!-- QR Generator -->
+      <div class="card">
+        <div class="card-title">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          QR-Code generieren
+        </div>
+
+        <!-- URL Anzeige -->
+        <div style="background:var(--bg);border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:11px;font-family:'DM Mono',monospace;color:var(--tpl);word-break:break-all" id="qr-url-display">
+          Buchungs-URL wird geladen…
+        </div>
+
+        <!-- QR Code Output -->
+        <div style="display:flex;justify-content:center;margin-bottom:16px">
+          <div style="padding:16px 16px 12px;background:#fff;border-radius:12px;border:1.5px solid var(--border);display:inline-block;text-align:center">
+            <div id="qr-output" style="display:inline-block">
+              <div style="width:180px;height:180px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px">
+                Wird generiert…
+              </div>
+            </div>
+            <div style="margin-top:10px;font-size:14px;font-weight:600;color:var(--td);letter-spacing:0.01em">Hier Termin buchen</div>
+            <div style="margin-top:4px;font-size:10px;color:var(--muted);letter-spacing:0.04em">insy-reception.com</div>
+          </div>
+        </div>
+
+        <!-- Farbe & Größe -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+          <div class="field">
+            <label>Vordergrundfarbe</label>
+            <input type="color" id="qr-fg" value="#4a1c6b" oninput="generateQR()" style="height:36px;padding:2px 4px;cursor:pointer">
+          </div>
+          <div class="field">
+            <label>Hintergrundfarbe</label>
+            <input type="color" id="qr-bg" value="#ffffff" oninput="generateQR()" style="height:36px;padding:2px 4px;cursor:pointer">
+          </div>
+        </div>
+
+        <!-- Download -->
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-primary" onclick="downloadQR('png')" style="flex:1">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            PNG herunterladen
+          </button>
+          <button class="btn btn-outline" onclick="downloadQR('svg')" style="flex:1">SVG herunterladen</button>
+        </div>
+      </div>
+
+      <!-- Vorschau & Tipps -->
+      <div class="card">
+        <div class="card-title">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Verwendungstipps
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;gap:10px;align-items:flex-start">
+            <div style="width:32px;height:32px;border-radius:8px;background:var(--tpp);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px">🖨️</div>
+            <div><div style="font-size:13px;font-weight:500;color:var(--td)">Ausdrucken</div><div style="font-size:11px;color:var(--muted);margin-top:2px">Als Tischaufsteller oder Aushang im Salon platzieren</div></div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start">
+            <div style="width:32px;height:32px;border-radius:8px;background:var(--tpp);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px">📲</div>
+            <div><div style="font-size:13px;font-weight:500;color:var(--td)">Digital teilen</div><div style="font-size:11px;color:var(--muted);margin-top:2px">In WhatsApp Status, Instagram oder auf der Website einbinden</div></div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start">
+            <div style="width:32px;height:32px;border-radius:8px;background:var(--tpp);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px">🪟</div>
+            <div><div style="font-size:13px;font-weight:500;color:var(--td)">Schaufenster</div><div style="font-size:11px;color:var(--muted);margin-top:2px">Laminiert ins Schaufenster — Kunden buchen auch wenn du zu bist</div></div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start">
+            <div style="width:32px;height:32px;border-radius:8px;background:var(--tpp);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px">💳</div>
+            <div><div style="font-size:13px;font-weight:500;color:var(--td)">Visitenkarte</div><div style="font-size:11px;color:var(--muted);margin-top:2px">QR-Code auf Visitenkarten drucken lassen</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </div><!-- /main -->
 
 <!-- ── MODAL SERVICE ── -->
@@ -663,6 +751,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 const SB_URL='https://uzemgxfjgjwqfgfwbboi.supabase.co';
 const SB_KEY='sb_publishable__XubcF5yPDyIMpfE7kO9Rg_Xp7kj0hL';
@@ -684,6 +773,7 @@ function switchTab(n){
   document.getElementById('panel-'+n).classList.add('active');
   document.getElementById('tab-'+n).classList.add('active');
   if(n==='mitarbeiter')updateWeekPlanLabel();
+  if(n==='qr')generateQR();
 }
 
 // ── TOAST ─────────────────────────────────────────────────────
@@ -933,7 +1023,75 @@ async function saveProfil(){
   else{st.className='save-status saved';st.textContent='✓ Gespeichert';toast('Profil gespeichert ✓','success');setTimeout(function(){st.textContent='';st.className='save-status';},3000);}
 }
 
-// ── INSY FEATURES ────────────────────────────────────────────
+// ── QR CODE ───────────────────────────────────────────────────
+var qrInstance=null;
+
+function generateQR(){
+  if(!SALON_ID)return;
+  var url='https://insy-reception.com/booking?salon_id='+SALON_ID;
+  var fg=document.getElementById('qr-fg').value;
+  var bg=document.getElementById('qr-bg').value;
+  var urlDisplay=document.getElementById('qr-url-display');
+  if(urlDisplay)urlDisplay.textContent=url;
+  var output=document.getElementById('qr-output');
+  if(!output)return;
+  output.innerHTML='';
+  qrInstance=new QRCode(output,{
+    text:url,
+    width:180,height:180,
+    colorDark:fg,
+    colorLight:bg,
+    correctLevel:QRCode.CorrectLevel.H
+  });
+}
+
+function downloadQR(format){
+  if(!SALON_ID){toast('Keine salon_id','error');return;}
+  var qrCanvas=document.querySelector('#qr-output canvas');
+  if(!qrCanvas){toast('QR-Code zuerst generieren','error');return;}
+
+  // Neues Canvas mit QR + Text erstellen
+  var fg=document.getElementById('qr-fg').value;
+  var bg=document.getElementById('qr-bg').value;
+  var canvas=document.createElement('canvas');
+  var size=220;
+  canvas.width=size;
+  canvas.height=size+52;
+  var ctx=canvas.getContext('2d');
+
+  // Hintergrund
+  ctx.fillStyle=bg;
+  ctx.roundRect(0,0,canvas.width,canvas.height,12);
+  ctx.fill();
+
+  // QR Code
+  ctx.drawImage(qrCanvas,20,16,180,180);
+
+  // "Hier Termin buchen"
+  ctx.fillStyle=fg;
+  ctx.font='bold 13px DM Sans, system-ui, sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText('Hier Termin buchen',canvas.width/2,208);
+
+  // "insy-reception.com"
+  ctx.fillStyle='rgba(0,0,0,0.35)';
+  ctx.font='9px DM Sans, system-ui, sans-serif';
+  ctx.fillText('insy-reception.com',canvas.width/2,224);
+
+  if(format==='png'){
+    var link=document.createElement('a');
+    link.download='insy-qr-'+SALON_ID.slice(0,8)+'.png';
+    link.href=canvas.toDataURL('image/png');
+    link.click();
+  } else {
+    var svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+canvas.width+'" height="'+canvas.height+'"><image href="'+canvas.toDataURL('image/png')+'" width="'+canvas.width+'" height="'+canvas.height+'"/></svg>';
+    var blob=new Blob([svg],{type:'image/svg+xml'});
+    var link=document.createElement('a');
+    link.download='insy-qr-'+SALON_ID.slice(0,8)+'.svg';
+    link.href=URL.createObjectURL(blob);
+    link.click();
+  }
+}
 var activeChannel='whatsapp';
 
 function toggleFeature(key){
