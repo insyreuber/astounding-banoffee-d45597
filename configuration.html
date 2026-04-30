@@ -219,6 +219,9 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .toggle-sm{width:28px;height:15px}
 .toggle-sm .slider:before{width:9px;height:9px;left:2px;top:2px}
 .toggle-sm input:checked+.slider:before{transform:translateX(13px)}
+.channel-btn{display:flex;align-items:center;gap:5px;padding:6px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:11px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;user-select:none}
+.channel-btn:hover{border-color:var(--tpl);color:var(--tpl)}
+.channel-btn.active{border-color:var(--tp);background:var(--tpp);color:var(--tpl)}
 .cal-tab{flex:1;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:11px;font-weight:500;color:var(--muted);cursor:pointer;background:none;font-family:inherit;transition:all .15s;text-align:center}
 .cal-tab.active{border-color:var(--tpl);color:var(--tpl);background:var(--tpp)}
 .channel-btn:hover{border-color:var(--tpl);color:var(--tpl)}
@@ -752,6 +755,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
         <div class="color-swatch" data-color="#795548" style="background:#795548" onclick="pickColor('#795548')"></div>
       </div>
       <input type="hidden" id="s-color" value="#3498db">
+      <input type="hidden" id="s-cal" value="">
     </div>
 
     <!-- Arbeitszeiten -->
