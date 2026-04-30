@@ -1100,21 +1100,10 @@ function connectMitarbeiterGoogle(type){
 
 function disconnectGcal(){
   document.getElementById('s-cal').value='';
-  document.getElementById('gcal-connected').style.display='none';
-  document.getElementById('gcal-not-connected').style.display='flex';
-  document.getElementById('gcal-not-connected').style.flexDirection='column';
 }
 
 function updateGcalStatus(calId){
-  if(calId){
-    document.getElementById('gcal-connected').style.display='block';
-    document.getElementById('gcal-not-connected').style.display='none';
-    document.getElementById('gcal-connected-id').textContent=calId;
-  } else {
-    document.getElementById('gcal-connected').style.display='none';
-    document.getElementById('gcal-not-connected').style.display='flex';
-    document.getElementById('gcal-not-connected').style.flexDirection='column';
-  }
+  document.getElementById('s-cal').value=calId||'';
 }
 
 // Nach Redirect von n8n: gcal Parameter prüfen
@@ -1164,8 +1153,7 @@ function connectAdminGoogle(){
     +'&type=admin'
     +'&redirect='+encodeURIComponent(redirectBack);
   window.location.href=url;
-}
-var qrInstance=null;
+}var qrInstance=null;
 
 function generateQR(){
   if(!SALON_ID)return;
