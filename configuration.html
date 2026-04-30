@@ -272,6 +272,10 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/><rect x="19" y="14" width="2" height="2"/><rect x="14" y="19" width="2" height="2"/><rect x="19" y="19" width="2" height="2"/></svg>
       QR-Code
     </div>
+    <div class="nav-tab" onclick="switchTab('bills')" id="tab-bills">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Rechnungen
+    </div>
   </div>
   <div class="nav-right">
     <span class="salon-pill" id="nav-salon-id">salon_id: —</span>
@@ -630,6 +634,19 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
     </div>
   </div>
 
+  <!-- ════ RECHNUNGEN ════ -->
+  <div class="tab-panel" id="panel-bills">
+    <div class="sec-hdr">
+      <div class="sec-title">Rechnungen</div>
+      <div class="sec-sub">Deine Insy-Rechnungen & Zahlungsbelege</div>
+    </div>
+
+    <!-- Übersicht -->
+    <div id="bills-list" style="display:flex;flex-direction:column;gap:10px">
+      <div class="empty"><div class="empty-icon">⟳</div><div class="empty-text">Wird geladen…</div></div>
+    </div>
+  </div>
+
 </div><!-- /main -->
 
 <!-- ── KALENDER PICKER MODAL ── -->
@@ -823,6 +840,7 @@ function switchTab(n){
   document.getElementById('tab-'+n).classList.add('active');
   if(n==='mitarbeiter')updateWeekPlanLabel();
   if(n==='qr')generateQR();
+  if(n==='bills')loadBills();
 }
 
 // ── TOAST ─────────────────────────────────────────────────────
@@ -1153,7 +1171,44 @@ function connectAdminGoogle(){
     +'&type=admin'
     +'&redirect='+encodeURIComponent(redirectBack);
   window.location.href=url;
-}var qrInstance=null;
+}
+
+// ── BILLS ─────────────────────────────────────────────────────
+async function loadBills(){
+  if(!SALON_ID)return;
+  var list=document.getElementById('bills-list');
+  list.innerHTML='<div class="empty"><div class="empty-icon">⟳</div><div class="empty-text">Wird geladen…</div></div>';
+  var res=await sb.from('bills').select('*').eq('salon_id',SALON_ID).order('date',{ascending:false});
+  if(res.error){list.innerHTML='<div class="empty"><div class="empty-text">Fehler beim Laden</div></div>';return;}
+  if(!res.data.length){
+    list.innerHTML='<div class="empty"><div class="empty-icon">📄</div><div class="empty-text">Noch keine Rechnungen vorhanden</div></div>';
+    return;
+  }
+  list.innerHTML=res.data.map(function(b){
+    var statusColor=b.status==='paid'?'var(--success)':b.status==='open'?'var(--tg)':'var(--muted)';
+    var statusLabel=b.status==='paid'?'Bezahlt':b.status==='open'?'Offen':'Storniert';
+    var dateStr=b.date?new Date(b.date).toLocaleDateString('de-DE'):'—';
+    return'<div class="card" style="display:flex;align-items:center;gap:16px;padding:14px 18px">'
+      +'<div style="width:40px;height:40px;border-radius:10px;background:var(--tpp);display:flex;align-items:center;justify-content:center;flex-shrink:0">'
+        +'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'
+      +'</div>'
+      +'<div style="flex:1;min-width:0">'
+        +'<div style="font-size:13px;font-weight:500;color:var(--td)">'+(b.bill_number||'Rechnung')+'</div>'
+        +'<div style="font-size:11px;color:var(--muted);margin-top:2px">'+(b.description||'')+(b.description?' · ':'')+dateStr+'</div>'
+      +'</div>'
+      +'<div style="font-size:14px;font-weight:600;color:var(--td);flex-shrink:0">'+(b.amount?b.amount.toFixed(2)+' €':'—')+'</div>'
+      +'<div style="font-size:10px;font-weight:600;padding:3px 10px;border-radius:99px;background:'+statusColor+'22;color:'+statusColor+';flex-shrink:0">'+statusLabel+'</div>'
+      +(b.pdf_url
+        ?'<a href="'+b.pdf_url+'" target="_blank" class="btn btn-sm btn-outline" style="flex-shrink:0;font-size:11px;padding:6px 12px;display:flex;align-items:center;gap:5px">'
+          +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>'
+          +'PDF</a>'
+        :'<span style="font-size:11px;color:var(--muted);flex-shrink:0">Kein PDF</span>'
+      )
+    +'</div>';
+  }).join('');
+}
+
+var qrInstance=null;
 
 function generateQR(){
   if(!SALON_ID)return;
