@@ -335,11 +335,23 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
     </div>
 
     <div class="save-bar">
-      <div class="save-status" id="profil-status"></div>
-      <button class="btn btn-primary" onclick="saveProfil()" id="btn-save-profil">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        Speichern
-      </button>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div id="admin-gcal-status" style="display:none;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--success)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Google Kalender verbunden
+        </div>
+        <button class="btn btn-outline" onclick="connectAdminGoogle()" id="btn-admin-gcal" style="font-size:12px;padding:8px 14px;display:flex;align-items:center;gap:7px">
+          <svg width="14" height="14" viewBox="0 0 24 24"><path d="M21.05 11.1H12v2.8h5.15c-.22 1.17-.9 2.17-1.9 2.83v2.35h3.07c1.8-1.65 2.83-4.1 2.83-7z" fill="#4285F4"/><path d="M12 21c2.59 0 4.76-.86 6.35-2.32l-3.07-2.35c-.85.57-1.95.91-3.28.91-2.52 0-4.66-1.7-5.42-3.98H3.43v2.43C5.01 18.98 8.27 21 12 21z" fill="#34A853"/><path d="M6.58 13.26A5.98 5.98 0 016.2 12c0-.44.07-.87.18-1.28V8.3H3.43A9.97 9.97 0 002 12c0 1.61.39 3.13 1.07 4.46l3.08-2.43z" fill="#FBBC04"/><path d="M12 6.04c1.42 0 2.7.49 3.7 1.44l2.77-2.77C16.75 3.12 14.58 2 12 2 8.27 2 5.01 4.02 3.43 7.04L6.5 9.47c.76-2.28 2.9-3.43 5.5-3.43z" fill="#EA4335"/></svg>
+          Google Kalender verbinden
+        </button>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="save-status" id="profil-status"></div>
+        <button class="btn btn-primary" onclick="saveProfil()" id="btn-save-profil">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Speichern
+        </button>
+      </div>
     </div>
   </div>
 
@@ -627,6 +639,19 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   </div>
 
 </div><!-- /main -->
+
+<!-- ── KALENDER PICKER MODAL ── -->
+<div class="modal-overlay" id="cal-picker-overlay" onclick="closeCalendarPicker()" style="display:none"></div>
+<div class="modal" id="cal-picker-modal" style="max-width:420px">
+  <div class="modal-hdr">
+    <div class="modal-title">Google Kalender wählen</div>
+    <button class="modal-close" onclick="closeCalendarPicker()">✕</button>
+  </div>
+  <div style="padding:16px">
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Wähle welcher Kalender für diesen Mitarbeiter genutzt wird:</div>
+    <div id="cal-picker-list"></div>
+  </div>
+</div>
 
 <!-- ── MODAL SERVICE ── -->
 <div class="modal-overlay" id="svc-overlay" onclick="closeSvcModal()"></div>
@@ -1038,6 +1063,16 @@ async function loadProfil(){
   document.getElementById('f-brand').value=d.brand_name||d.name||'';
   document.getElementById('f-area-code').value=d.area_code||'';
   document.getElementById('f-phone-number').value=d.phone_number||'';
+  // Admin Google Kalender Status
+  var statusEl=document.getElementById('admin-gcal-status');
+  var btnEl=document.getElementById('btn-admin-gcal');
+  if(d.google_connected&&d.google_calendar_id){
+    if(statusEl)statusEl.style.display='flex';
+    if(btnEl)btnEl.style.display='none';
+  } else {
+    if(statusEl)statusEl.style.display='none';
+    if(btnEl)btnEl.style.display='flex';
+  }
   document.getElementById('f-street').value=d.street||'';
   document.getElementById('f-house').value=d.house_number||'';
   document.getElementById('f-plz').value=d.postal_code||'';
@@ -1078,12 +1113,14 @@ async function saveProfil(){
 // ── GOOGLE KALENDER MITARBEITER ───────────────────────────────
 function connectMitarbeiterGoogle(type){
   if(!SALON_ID){toast('Bitte zuerst speichern','error');return;}
-  // Mitarbeiter-ID aus editingStaffId oder temporär aus Modal
-  var mid=editingStaffId||'new';
-  var redirectBack='https://insy-reception.com/configuration.html?salon_id='+SALON_ID+'&gcal_mitarbeiter='+mid;
+  if(!editingStaffId){
+    toast('Bitte Mitarbeiter zuerst speichern, dann Google Kalender verbinden','error');
+    return;
+  }
+  var redirectBack='https://insy-reception.com/configuration.html?salon_id='+SALON_ID+'&gcal_mitarbeiter='+editingStaffId;
   var url='https://insy-n8n-u71054.vm.elestio.app/webhook/google-auth-start'
     +'?salon_id='+SALON_ID
-    +'&mitarbeiter_id='+mid
+    +'&mitarbeiter_id='+editingStaffId
     +'&type='+type
     +'&redirect='+encodeURIComponent(redirectBack);
   window.location.href=url;
@@ -1108,26 +1145,53 @@ function updateGcalStatus(calId){
   }
 }
 
-// Nach Redirect von n8n: gcal_mitarbeiter Parameter prüfen
+// Nach Redirect von n8n: gcal Parameter prüfen
 function checkGcalReturn(){
   var params=new URLSearchParams(window.location.search);
+  var gcalType=params.get('gcal_type');
   var gcalMid=params.get('gcal_mitarbeiter');
   var gcalId=params.get('gcal_id');
-  if(gcalMid&&gcalId){
-    // Kalender-ID direkt in Supabase speichern
+
+  if(gcalType==='admin'&&gcalId){
+    sb.from('kunden_profile').update({
+      google_calendar_id:gcalId,
+      google_connected:true
+    }).eq('id',SALON_ID).then(function(res){
+      if(!res.error){
+        toast('Google Kalender verbunden ✓','success');
+        var statusEl=document.getElementById('admin-gcal-status');
+        var btnEl=document.getElementById('btn-admin-gcal');
+        if(statusEl)statusEl.style.display='flex';
+        if(btnEl)btnEl.style.display='none';
+        var url=new URL(window.location.href);
+        url.searchParams.delete('gcal_type');
+        url.searchParams.delete('gcal_id');
+        window.history.replaceState({},'',url.toString());
+      }
+    });
+  } else if(gcalMid&&gcalId){
     sb.from('mitarbeiter').update({google_calendar_id:gcalId}).eq('id',gcalMid).then(function(res){
       if(!res.error){
         toast('Google Kalender verbunden ✓','success');
-        // URL bereinigen
         var url=new URL(window.location.href);
         url.searchParams.delete('gcal_mitarbeiter');
         url.searchParams.delete('gcal_id');
         window.history.replaceState({},'',url.toString());
-        // Staff neu laden
         loadStaff();
       }
     });
   }
+}
+
+function connectAdminGoogle(){
+  if(!SALON_ID){toast('Keine salon_id','error');return;}
+  var redirectBack='https://insy-reception.com/configuration.html?salon_id='+SALON_ID+'&gcal_type=admin';
+  var url='https://insy-n8n-u71054.vm.elestio.app/webhook/google-auth-start'
+    +'?salon_id='+SALON_ID
+    +'&mitarbeiter_id=admin'
+    +'&type=admin'
+    +'&redirect='+encodeURIComponent(redirectBack);
+  window.location.href=url;
 }
 var qrInstance=null;
 
@@ -1950,22 +2014,84 @@ function renderStaffSidebar(){
     var m=item.mitarbeiter;
     var color=getStaffColor(m);
     var ini=(m.display_name||m.name||'?').split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
+    var gcalConnected=!!(m.google_calendar_id);
     return'<div class="staff-card" id="staff-card-'+m.id+'">'
       +'<div style="height:3px;background:'+color+'"></div>'
       +'<div class="staff-card-body">'
         +'<div class="staff-avatar" style="background:'+hexToRgba(color,.15)+';color:'+color+'">'+ini+'</div>'
-        +'<div style="min-width:0">'
+        +'<div style="min-width:0;flex:1">'
           +'<div class="staff-name">'+esc(m.display_name||m.name)+'</div>'
           +'<div class="staff-role">'+esc(m.role||'—')+'</div>'
+          +(gcalConnected
+            ?'<div style="display:flex;align-items:center;gap:4px;margin-top:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span style="font-size:9px;color:#27ae60;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px">'+esc(m.google_calendar_id)+'</span></div>'
+            :'<div style="font-size:9px;color:var(--muted);margin-top:3px">Kein Kalender</div>'
+          )
         +'</div>'
       +'</div>'
       +'<div class="staff-card-actions">'
-        +'<button class="staff-action" onclick="editStaff(\''+m.id+'\')">✎</button>'
-        +'<button class="staff-action" onclick="deleteStaff(\''+m.id+'\')" style="color:var(--danger)">✕</button>'
+        +'<button class="staff-action" onclick="editStaff(\''+m.id+'\')" title="Bearbeiten">✎</button>'
+        +'<button class="staff-action" onclick="openCalendarPicker(\''+m.id+'\')" title="Kalender wählen" style="color:'+(gcalConnected?'#27ae60':'var(--muted)')+'">📅</button>'
+        +'<button class="staff-action" onclick="deleteStaff(\''+m.id+'\')" style="color:var(--danger)" title="Löschen">✕</button>'
       +'</div>'
     +'</div>';
   }).join('');
   sidebar.insertAdjacentHTML('beforeend','<button class="staff-add-btn" onclick="openStaffModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Hinzufügen</button>');
+}
+
+// ── KALENDER PICKER ───────────────────────────────────────────
+var calPickerMitarbeiterId=null;
+
+async function openCalendarPicker(mitarbeiterId){
+  calPickerMitarbeiterId=mitarbeiterId;
+  var overlay=document.getElementById('cal-picker-overlay');
+  var list=document.getElementById('cal-picker-list');
+  overlay.style.display='block';
+  document.getElementById('cal-picker-modal').classList.add('open');
+  list.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Kalender werden geladen…</div>';
+
+  // Kalender-Liste von n8n holen
+  try{
+    var res=await fetch('https://insy-n8n-u71054.vm.elestio.app/webhook/get-calendar-list?salon_id='+SALON_ID);
+    var data=await res.json();
+    var calendars=data.calendars||[];
+    if(!calendars.length){
+      list.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Keine Kalender gefunden.<br>Bitte zuerst Google Kalender im Salon-Profil verbinden.</div>';
+      return;
+    }
+    list.innerHTML=calendars.map(function(cal){
+      var m=staffData.filter(function(i){return i.mitarbeiter.id===mitarbeiterId;})[0];
+      var current=m&&m.mitarbeiter.google_calendar_id===cal.id;
+      return'<div onclick="selectCalendar(\''+mitarbeiterId+'\',\''+cal.id+'\')" style="'
+        +'display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;'
+        +'background:'+(current?'var(--tpp)':'transparent')+';'
+        +'border:1.5px solid '+(current?'var(--tpl)':'transparent')+';'
+        +'transition:all .15s;margin-bottom:4px"'
+        +' onmouseover="this.style.background=\'var(--tpp)\'" onmouseout="this.style.background=\''+(current?'var(--tpp)':'transparent')+'\'">'+
+        '<div style="width:12px;height:12px;border-radius:50%;background:'+(cal.color||'#4a1c6b')+';flex-shrink:0"></div>'
+        +'<div style="flex:1;min-width:0">'
+          +'<div style="font-size:13px;font-weight:'+(current?'600':'400')+';color:var(--td)">'+esc(cal.name)+'</div>'
+          +'<div style="font-size:10px;color:var(--muted)">'+esc(cal.id)+'</div>'
+        +'</div>'
+        +(current?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>':'')
+      +'</div>';
+    }).join('');
+  } catch(e){
+    list.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);font-size:13px">Fehler beim Laden der Kalender</div>';
+  }
+}
+
+async function selectCalendar(mitarbeiterId, calendarId){
+  var res=await sb.from('mitarbeiter').update({google_calendar_id:calendarId}).eq('id',mitarbeiterId);
+  if(res.error){toast('Fehler: '+res.error.message,'error');return;}
+  toast('Kalender gespeichert ✓','success');
+  closeCalendarPicker();
+  await loadStaff();
+}
+
+function closeCalendarPicker(){
+  document.getElementById('cal-picker-overlay').style.display='none';
+  document.getElementById('cal-picker-modal').classList.remove('open');
+  calPickerMitarbeiterId=null;
 }
 
 // ── MITARBEITER MODAL ─────────────────────────────────────────
