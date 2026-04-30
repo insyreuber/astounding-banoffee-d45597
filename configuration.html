@@ -1081,7 +1081,7 @@ function connectMitarbeiterGoogle(type){
   // Mitarbeiter-ID aus editingStaffId oder temporär aus Modal
   var mid=editingStaffId||'new';
   var redirectBack='https://insy-reception.com/configuration.html?salon_id='+SALON_ID+'&gcal_mitarbeiter='+mid;
-  var url='https://insy-n8n-u71054.vm.elestio.app/webhook-test/google-auth-start'
+  var url='https://insy-n8n-u71054.vm.elestio.app/webhook/google-auth-start'
     +'?salon_id='+SALON_ID
     +'&mitarbeiter_id='+mid
     +'&type='+type
