@@ -63,8 +63,9 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .hours-col.aktiv{border-color:var(--tpl);background:var(--tpp)}
 .hours-col-day{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
 .hours-col.aktiv .hours-col-day{color:var(--tpl)}
-.hours-col input[type="time"]{border:1.5px solid var(--border);border-radius:6px;padding:5px 4px;font-size:11px;font-family:'DM Mono',monospace;color:var(--td);outline:none;background:var(--white);width:100%;text-align:center}
-.hours-col input[type="time"]:focus{border-color:var(--tpl)}
+.hours-col select{border:1.5px solid var(--border);border-radius:8px;padding:5px 4px;font-size:11px;font-family:'DM Mono',monospace;color:var(--td);outline:none;background:var(--white);width:100%;text-align:center;cursor:pointer;appearance:none;-webkit-appearance:none;text-align-last:center}
+.hours-col select:focus{border-color:var(--tpl);box-shadow:0 0 0 2px var(--tpp)}
+.hours-col.aktiv select{background:var(--white)}
 .hours-col-sep{font-size:10px;color:var(--muted)}
 .hours-col-closed{font-size:10px;color:#c8bcd8;font-style:italic}
 .hours-time-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;width:100%}
@@ -197,6 +198,8 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .hours-col-sm.aktiv{border-color:var(--tpl);background:var(--tpp)}
 .hours-col-sm-day{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
 .hours-col-sm.aktiv .hours-col-sm-day{color:var(--tpl)}
+.hours-col-sm select{border:1.5px solid var(--border);border-radius:6px;padding:3px 2px;font-size:10px;font-family:'DM Mono',monospace;color:var(--td);outline:none;background:var(--white);width:100%;cursor:pointer;appearance:none;-webkit-appearance:none;text-align-last:center}
+.hours-col-sm select:focus{border-color:var(--tpl)}
 .hours-col-sm input[type="time"]{border:1.5px solid var(--border);border-radius:5px;padding:4px 2px;font-size:10px;font-family:'DM Mono',monospace;color:var(--td);outline:none;background:var(--white);width:100%;text-align:center}
 .hours-col-sm input[type="time"]:focus{border-color:var(--tpl)}
 
@@ -856,6 +859,17 @@ var DAYS=[
   {key:'thursday',label:'Do'},{key:'friday',label:'Fr'},{key:'saturday',label:'Sa'},{key:'sunday',label:'So'}
 ];
 
+function buildTimeOptions(selected){
+  var times=[];
+  for(var h=6;h<=23;h++){
+    times.push(('0'+h).slice(-2)+':00');
+    times.push(('0'+h).slice(-2)+':30');
+  }
+  return times.map(function(t){
+    return'<option value="'+t+'"'+(t===selected?' selected':'')+'>'+t+'</option>';
+  }).join('');
+}
+
 function buildHoursCols(az,containerId,prefix,small,allActive){
   var cls=small?'hours-col-sm':'hours-col';
   var cols=document.getElementById(containerId);
@@ -867,9 +881,9 @@ function buildHoursCols(az,containerId,prefix,small,allActive){
       +'<div class="'+(small?'hours-col-sm-day':'hours-col-day')+'">'+d.label+'</div>'
       +'<label class="toggle-sw"><input type="checkbox" id="'+prefix+'aktiv-'+d.key+'" '+(h.aktiv?'checked':'')+' onchange="toggleHourCol(\''+d.key+'\',\''+prefix+'\')" ><span class="slider"></span></label>'
       +'<div class="hours-time-wrap" id="'+prefix+'times-'+d.key+'" style="'+(h.aktiv?'':'opacity:.3;pointer-events:none')+'">'
-        +'<input type="time" id="'+prefix+'start-'+d.key+'" value="'+(h.start||'09:00')+'">'
+        +'<select id="'+prefix+'start-'+d.key+'">'+buildTimeOptions(h.start||'09:00')+'</select>'
         +'<span style="font-size:9px;color:var(--muted)">–</span>'
-        +'<input type="time" id="'+prefix+'end-'+d.key+'" value="'+(h.end||'18:00')+'">'
+        +'<select id="'+prefix+'end-'+d.key+'">'+buildTimeOptions(h.end||'18:00')+'</select>'
       +'</div>'
       +(h.aktiv?'':'<div style="font-size:9px;color:#c8bcd8;font-style:italic">Geschl.</div>')
     +'</div>';
@@ -2126,12 +2140,27 @@ async function openCalendarPicker(mitarbeiterId){
           +'</div>'
           +'<div style="font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(cal.id)+'</div>'
         +'</div>'
-        +(current?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>':'')
+        +(current
+        ?'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">'
+          +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>'
+          +'<button onclick="event.stopPropagation();disconnectCalendar(\''+calPickerMitarbeiterId+'\')" style="font-size:9px;color:var(--danger);background:none;border:none;cursor:pointer;font-family:inherit;padding:0">Trennen</button>'
+        +'</div>'
+        :''
+      )
       +'</div>';
     }).join('');
   } catch(e){
     list.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);font-size:13px">Fehler beim Laden</div>';
   }
+}
+
+async function disconnectCalendar(mitarbeiterId){
+  if(!confirm('Kalender wirklich trennen?'))return;
+  var res=await sb.from('mitarbeiter').update({google_calendar_id:null}).eq('id',mitarbeiterId);
+  if(res.error){toast('Fehler: '+res.error.message,'error');return;}
+  toast('Kalender getrennt ✓','success');
+  closeCalendarPicker();
+  await loadStaff();
 }
 
 async function selectCalendar(mitarbeiterId, calendarId){
