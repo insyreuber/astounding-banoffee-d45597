@@ -219,7 +219,8 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .toggle-sm{width:28px;height:15px}
 .toggle-sm .slider:before{width:9px;height:9px;left:2px;top:2px}
 .toggle-sm input:checked+.slider:before{transform:translateX(13px)}
-.channel-btn{display:flex;align-items:center;gap:5px;padding:6px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:11px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;user-select:none}
+.cal-tab{flex:1;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:11px;font-weight:500;color:var(--muted);cursor:pointer;background:none;font-family:inherit;transition:all .15s;text-align:center}
+.cal-tab.active{border-color:var(--tpl);color:var(--tpl);background:var(--tpp)}
 .channel-btn:hover{border-color:var(--tpl);color:var(--tpl)}
 .channel-btn.active{border-color:var(--tp);background:var(--tpp);color:var(--tpl)}
 .toast{position:fixed;bottom:24px;right:24px;background:var(--td);color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:500;opacity:0;transform:translateY(10px);transition:all .25s;z-index:999;pointer-events:none}
@@ -496,16 +497,6 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   <div class="tab-panel" id="panel-mitarbeiter">
     <div class="sec-hdr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
       <div><div class="sec-title">Mitarbeiter</div><div class="sec-sub">Team & Wochenplan</div></div>
-      <div style="display:flex;align-items:center;gap:10px">
-        <div id="admin-gcal-status" style="display:none;align-items:center;gap:6px;font-size:12px;color:var(--success)">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          Google Kalender verbunden
-        </div>
-        <button class="btn btn-outline" onclick="connectAdminGoogle()" id="btn-admin-gcal" style="font-size:12px;padding:8px 14px;display:flex;align-items:center;gap:7px">
-          <svg width="14" height="14" viewBox="0 0 24 24"><path d="M21.05 11.1H12v2.8h5.15c-.22 1.17-.9 2.17-1.9 2.83v2.35h3.07c1.8-1.65 2.83-4.1 2.83-7z" fill="#4285F4"/><path d="M12 21c2.59 0 4.76-.86 6.35-2.32l-3.07-2.35c-.85.57-1.95.91-3.28.91-2.52 0-4.66-1.7-5.42-3.98H3.43v2.43C5.01 18.98 8.27 21 12 21z" fill="#34A853"/><path d="M6.58 13.26A5.98 5.98 0 016.2 12c0-.44.07-.87.18-1.28V8.3H3.43A9.97 9.97 0 002 12c0 1.61.39 3.13 1.07 4.46l3.08-2.43z" fill="#FBBC04"/><path d="M12 6.04c1.42 0 2.7.49 3.7 1.44l2.77-2.77C16.75 3.12 14.58 2 12 2 8.27 2 5.01 4.02 3.43 7.04L6.5 9.47c.76-2.28 2.9-3.43 5.5-3.43z" fill="#EA4335"/></svg>
-          Google Kalender verbinden
-        </button>
-      </div>
     </div>
     <div class="ma-layout">
       <!-- Sidebar: Mitarbeiter-Kacheln -->
@@ -640,14 +631,52 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
 <!-- ── KALENDER PICKER MODAL ── -->
 <div class="modal-overlay" id="cal-picker-overlay" onclick="closeCalendarPicker()" style="display:none"></div>
-<div class="modal" id="cal-picker-modal" style="max-width:420px">
+<div class="modal" id="cal-picker-modal" style="max-width:460px">
   <div class="modal-hdr">
-    <div class="modal-title">Google Kalender wählen</div>
+    <div class="modal-title" id="cal-picker-title">Kalender wählen</div>
     <button class="modal-close" onclick="closeCalendarPicker()">✕</button>
   </div>
   <div style="padding:16px">
-    <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Wähle welcher Kalender für diesen Mitarbeiter genutzt wird:</div>
-    <div id="cal-picker-list"></div>
+    <!-- Wenn noch kein Admin-Kalender verbunden -->
+    <div id="cal-picker-no-admin" style="display:none">
+      <div style="background:var(--bg);border-radius:10px;padding:14px;margin-bottom:14px;font-size:12px;color:var(--muted);line-height:1.6">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2" style="vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Verbinde zuerst deinen Google Account als Hauptkalender — dann können alle Mitarbeiter daraus Subkalender auswählen.
+      </div>
+      <button class="btn btn-primary" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px" onclick="connectAdminGoogle()">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path d="M21.05 11.1H12v2.8h5.15c-.22 1.17-.9 2.17-1.9 2.83v2.35h3.07c1.8-1.65 2.83-4.1 2.83-7z" fill="#4285F4"/><path d="M12 21c2.59 0 4.76-.86 6.35-2.32l-3.07-2.35c-.85.57-1.95.91-3.28.91-2.52 0-4.66-1.7-5.42-3.98H3.43v2.43C5.01 18.98 8.27 21 12 21z" fill="#34A853"/><path d="M6.58 13.26A5.98 5.98 0 016.2 12c0-.44.07-.87.18-1.28V8.3H3.43A9.97 9.97 0 002 12c0 1.61.39 3.13 1.07 4.46l3.08-2.43z" fill="#FBBC04"/><path d="M12 6.04c1.42 0 2.7.49 3.7 1.44l2.77-2.77C16.75 3.12 14.58 2 12 2 8.27 2 5.01 4.02 3.43 7.04L6.5 9.47c.76-2.28 2.9-3.43 5.5-3.43z" fill="#EA4335"/></svg>
+        Google Account verbinden
+      </button>
+    </div>
+
+    <!-- Kalender-Liste wenn Admin verbunden -->
+    <div id="cal-picker-content" style="display:none">
+      <!-- Tabs: Subkalender / Eigener Account -->
+      <div id="cal-picker-tabs" style="display:flex;gap:6px;margin-bottom:14px">
+        <button class="cal-tab active" id="cal-tab-sub" onclick="switchCalTab('sub')">
+          Subkalender (Admin-Account)
+        </button>
+        <button class="cal-tab" id="cal-tab-own" onclick="switchCalTab('own')">
+          Eigenen Account verbinden
+        </button>
+      </div>
+
+      <!-- Subkalender Liste -->
+      <div id="cal-tab-sub-content">
+        <div id="cal-picker-list"></div>
+      </div>
+
+      <!-- Eigenen Account verbinden -->
+      <div id="cal-tab-own-content" style="display:none">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6">
+          Der Mitarbeiter verbindet seinen eigenen Google Account. Termine werden direkt in seinen Kalender eingetragen.
+        </div>
+        <button class="btn btn-outline" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px" onclick="connectOwnAccount()">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M21.05 11.1H12v2.8h5.15c-.22 1.17-.9 2.17-1.9 2.83v2.35h3.07c1.8-1.65 2.83-4.1 2.83-7z" fill="#4285F4"/><path d="M12 21c2.59 0 4.76-.86 6.35-2.32l-3.07-2.35c-.85.57-1.95.91-3.28.91-2.52 0-4.66-1.7-5.42-3.98H3.43v2.43C5.01 18.98 8.27 21 12 21z" fill="#34A853"/><path d="M6.58 13.26A5.98 5.98 0 016.2 12c0-.44.07-.87.18-1.28V8.3H3.43A9.97 9.97 0 002 12c0 1.61.39 3.13 1.07 4.46l3.08-2.43z" fill="#FBBC04"/><path d="M12 6.04c1.42 0 2.7.49 3.7 1.44l2.77-2.77C16.75 3.12 14.58 2 12 2 8.27 2 5.01 4.02 3.43 7.04L6.5 9.47c.76-2.28 2.9-3.43 5.5-3.43z" fill="#EA4335"/></svg>
+          Mit eigenem Google Account verbinden
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -723,65 +752,6 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
         <div class="color-swatch" data-color="#795548" style="background:#795548" onclick="pickColor('#795548')"></div>
       </div>
       <input type="hidden" id="s-color" value="#3498db">
-    </div>
-    <!-- Google Kalender -->
-    <div style="margin-bottom:16px">
-      <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:10px">Google Kalender</div>
-
-      <!-- Status: nicht verbunden -->
-      <div id="gcal-not-connected" style="display:flex;flex-direction:column;gap:8px">
-        <div style="background:var(--bg);border-radius:10px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" style="flex-shrink:0;margin-top:1px"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          <div style="font-size:11px;color:var(--muted);line-height:1.6">
-            Verbinde einen Google Kalender um Termine automatisch zu synchronisieren. Du kannst den eigenen Google Kalender des Mitarbeiters verbinden, oder einen Subkalender aus deinem Admin-Account wählen.
-          </div>
-        </div>
-
-        <!-- Zwei Optionen -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <!-- Option 1: Mitarbeiter eigener Google Account -->
-          <button onclick="connectMitarbeiterGoogle('own')" style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;background:#fff;cursor:pointer;font-family:inherit;text-align:left;transition:all .15s" onmouseover="this.style.borderColor='var(--tpl)';this.style.background='var(--tpp)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
-            <svg width="20" height="20" viewBox="0 0 24 24" style="flex-shrink:0"><path d="M21.05 11.1H12v2.8h5.15c-.22 1.17-.9 2.17-1.9 2.83v2.35h3.07c1.8-1.65 2.83-4.1 2.83-7z" fill="#4285F4"/><path d="M12 21c2.59 0 4.76-.86 6.35-2.32l-3.07-2.35c-.85.57-1.95.91-3.28.91-2.52 0-4.66-1.7-5.42-3.98H3.43v2.43C5.01 18.98 8.27 21 12 21z" fill="#34A853"/><path d="M6.58 13.26A5.98 5.98 0 016.2 12c0-.44.07-.87.18-1.28V8.3H3.43A9.97 9.97 0 002 12c0 1.61.39 3.13 1.07 4.46l3.08-2.43z" fill="#FBBC04"/><path d="M12 6.04c1.42 0 2.7.49 3.7 1.44l2.77-2.77C16.75 3.12 14.58 2 12 2 8.27 2 5.01 4.02 3.43 7.04L6.5 9.47c.76-2.28 2.9-3.43 5.5-3.43z" fill="#EA4335"/></svg>
-            <div>
-              <div style="font-size:12px;font-weight:600;color:var(--td)">Mitarbeiter-Account</div>
-              <div style="font-size:10px;color:var(--muted);margin-top:1px">Eigener Google Kalender</div>
-            </div>
-          </button>
-
-          <!-- Option 2: Admin Subkalender -->
-          <button onclick="connectMitarbeiterGoogle('admin')" style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;background:#fff;cursor:pointer;font-family:inherit;text-align:left;transition:all .15s" onmouseover="this.style.borderColor='var(--tpl)';this.style.background='var(--tpp)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <div>
-              <div style="font-size:12px;font-weight:600;color:var(--td)">Admin-Subkalender</div>
-              <div style="font-size:10px;color:var(--muted);margin-top:1px">Aus deinem Google Account</div>
-            </div>
-          </button>
-        </div>
-
-        <!-- Manuell ID eingeben -->
-        <div style="display:flex;align-items:center;gap:6px;margin-top:2px">
-          <div style="flex:1;height:1px;background:var(--border)"></div>
-          <span style="font-size:10px;color:var(--muted)">oder manuell</span>
-          <div style="flex:1;height:1px;background:var(--border)"></div>
-        </div>
-        <div class="field" style="margin-bottom:0">
-          <input type="text" id="s-cal" placeholder="Kalender-ID eingeben (z.B. name@gmail.com)">
-        </div>
-      </div>
-
-      <!-- Status: verbunden -->
-      <div id="gcal-connected" style="display:none;background:var(--tpp);border:1.5px solid var(--tpl);border-radius:10px;padding:12px 14px">
-        <div style="display:flex;align-items:center;justify-content:space-between">
-          <div style="display:flex;align-items:center;gap:8px">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <div>
-              <div style="font-size:12px;font-weight:600;color:var(--td)">Google Kalender verbunden</div>
-              <div style="font-size:11px;color:var(--muted);margin-top:1px" id="gcal-connected-id"></div>
-            </div>
-          </div>
-          <button onclick="disconnectGcal()" style="font-size:11px;color:var(--danger);background:none;border:none;cursor:pointer;font-family:inherit">Trennen</button>
-        </div>
-      </div>
     </div>
 
     <!-- Arbeitszeiten -->
@@ -2039,42 +2009,81 @@ function renderStaffSidebar(){
 // ── KALENDER PICKER ───────────────────────────────────────────
 var calPickerMitarbeiterId=null;
 
+function switchCalTab(tab){
+  document.getElementById('cal-tab-sub').classList.toggle('active',tab==='sub');
+  document.getElementById('cal-tab-own').classList.toggle('active',tab==='own');
+  document.getElementById('cal-tab-sub-content').style.display=tab==='sub'?'block':'none';
+  document.getElementById('cal-tab-own-content').style.display=tab==='own'?'block':'none';
+}
+
+function connectOwnAccount(){
+  if(!calPickerMitarbeiterId){toast('Kein Mitarbeiter gewählt','error');return;}
+  var redirectBack='https://insy-reception.com/configuration.html?salon_id='+SALON_ID+'&gcal_mitarbeiter='+calPickerMitarbeiterId;
+  var url='https://insy-n8n-u71054.vm.elestio.app/webhook/google-auth-start'
+    +'?salon_id='+SALON_ID
+    +'&mitarbeiter_id='+calPickerMitarbeiterId
+    +'&type=own'
+    +'&redirect='+encodeURIComponent(redirectBack);
+  window.location.href=url;
+}
+
 async function openCalendarPicker(mitarbeiterId){
   calPickerMitarbeiterId=mitarbeiterId;
+  var m=staffData.filter(function(i){return i.mitarbeiter.id===mitarbeiterId;})[0];
+  var name=m?esc(m.mitarbeiter.display_name||m.mitarbeiter.name):'Mitarbeiter';
+  document.getElementById('cal-picker-title').textContent='Kalender wählen — '+name;
+
   var overlay=document.getElementById('cal-picker-overlay');
-  var list=document.getElementById('cal-picker-list');
   overlay.style.display='block';
   document.getElementById('cal-picker-modal').classList.add('open');
+
+  // Prüfen ob Admin-Kalender verbunden
+  var profRes=await sb.from('kunden_profile').select('google_refresh_token_encrypted,google_connected').eq('id',SALON_ID).single();
+  var adminConnected=profRes.data&&profRes.data.google_connected&&profRes.data.google_refresh_token_encrypted;
+
+  if(!adminConnected){
+    document.getElementById('cal-picker-no-admin').style.display='block';
+    document.getElementById('cal-picker-content').style.display='none';
+    return;
+  }
+
+  document.getElementById('cal-picker-no-admin').style.display='none';
+  document.getElementById('cal-picker-content').style.display='block';
+  switchCalTab('sub');
+
+  var list=document.getElementById('cal-picker-list');
   list.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Kalender werden geladen…</div>';
 
-  // Kalender-Liste von n8n holen
   try{
     var res=await fetch('https://insy-n8n-u71054.vm.elestio.app/webhook/get-calendar-list?salon_id='+SALON_ID);
     var data=await res.json();
     var calendars=data.calendars||[];
     if(!calendars.length){
-      list.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Keine Kalender gefunden.<br>Bitte zuerst Google Kalender im Salon-Profil verbinden.</div>';
+      list.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Keine Subkalender gefunden.</div>';
       return;
     }
     list.innerHTML=calendars.map(function(cal){
-      var m=staffData.filter(function(i){return i.mitarbeiter.id===mitarbeiterId;})[0];
       var current=m&&m.mitarbeiter.google_calendar_id===cal.id;
-      return'<div onclick="selectCalendar(\''+mitarbeiterId+'\',\''+cal.id+'\')" style="'
+      var isPrimary=cal.primary;
+      return'<div onclick="selectCalendar(\''+calPickerMitarbeiterId+'\',\''+cal.id+'\')" style="'
         +'display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;'
         +'background:'+(current?'var(--tpp)':'transparent')+';'
         +'border:1.5px solid '+(current?'var(--tpl)':'transparent')+';'
         +'transition:all .15s;margin-bottom:4px"'
-        +' onmouseover="this.style.background=\'var(--tpp)\'" onmouseout="this.style.background=\''+(current?'var(--tpp)':'transparent')+'\'">'+
-        '<div style="width:12px;height:12px;border-radius:50%;background:'+(cal.color||'#4a1c6b')+';flex-shrink:0"></div>'
+        +' onmouseover="this.style.background=\'var(--tpp)\';this.style.borderColor=\'var(--border)\'" onmouseout="this.style.background=\''+(current?'var(--tpp)':'transparent')+'\';this.style.borderColor=\''+(current?'var(--tpl)':'transparent')+'\'">'
+        +'<div style="width:12px;height:12px;border-radius:50%;background:'+(cal.color||'#4a1c6b')+';flex-shrink:0"></div>'
         +'<div style="flex:1;min-width:0">'
-          +'<div style="font-size:13px;font-weight:'+(current?'600':'400')+';color:var(--td)">'+esc(cal.name)+'</div>'
-          +'<div style="font-size:10px;color:var(--muted)">'+esc(cal.id)+'</div>'
+          +'<div style="font-size:13px;font-weight:'+(current?'600':'400')+';color:var(--td);display:flex;align-items:center;gap:6px">'
+            +esc(cal.name)
+            +(isPrimary?'<span style="font-size:9px;background:var(--tgp);color:var(--tg);border-radius:4px;padding:1px 5px;font-weight:600">Hauptkalender</span>':'')
+          +'</div>'
+          +'<div style="font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(cal.id)+'</div>'
         +'</div>'
         +(current?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>':'')
       +'</div>';
     }).join('');
   } catch(e){
-    list.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);font-size:13px">Fehler beim Laden der Kalender</div>';
+    list.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);font-size:13px">Fehler beim Laden</div>';
   }
 }
 
