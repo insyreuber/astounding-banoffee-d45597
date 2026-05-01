@@ -103,13 +103,16 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .var-header{display:grid;grid-template-columns:1fr 1fr 1fr 36px;gap:8px;padding:0 12px;margin-bottom:4px}
 .var-col-lbl{font-size:10px;color:var(--muted);text-align:center;letter-spacing:.05em}
 .var-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
-.var-row{display:grid;grid-template-columns:1fr 1fr 1fr 36px;gap:8px;align-items:center;background:#faf8fc;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px}
+.var-row{display:grid;grid-template-columns:2fr 1.2fr 1.2fr 1.2fr 28px;gap:8px;align-items:center;background:#faf8fc;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px}
 /* Jede Gruppe = Input + Toggle nebeneinander */
-.var-group{display:flex;align-items:center;gap:5px;background:var(--white);border:1.5px solid var(--border);border-radius:6px;padding:0 6px 0 0;overflow:hidden}
-.var-group input[type="number"]{border:none;outline:none;padding:6px 6px;font-size:12px;font-family:inherit;color:var(--td);background:transparent;width:100%;text-align:center;min-width:0}
-.var-group input[type="number"]:focus{outline:none}
+.var-group{display:flex;align-items:center;gap:5px;background:var(--white);border:1.5px solid var(--border);border-radius:6px;padding:0 6px 0 0;overflow:hidden;min-width:0}
+.var-group input[type="number"]{border:none;outline:none;padding:6px 6px;font-size:12px;font-family:inherit;color:var(--td);background:transparent;width:100%;text-align:center;min-width:40px}
+.var-group input[type="text"]{border:none;outline:none;padding:6px 8px;font-size:12px;font-family:inherit;color:var(--td);background:transparent;width:100%;min-width:0}
+.var-group input[type="number"]:focus,.var-group input[type="text"]:focus{outline:none}
 .var-group:focus-within{border-color:var(--tpl)}
 .var-group .toggle-sw{flex-shrink:0}
+.var-del{width:28px;height:28px;border-radius:6px;border:1.5px solid #fde8e8;background:#fff5f5;color:#c0392b;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit;transition:all .15s}
+.var-del:hover{background:#fde8e8;border-color:#c0392b}
 
 /* ── MITARBEITER TAB LAYOUT ── */
 .ma-layout{display:grid;grid-template-columns:200px 1fr;gap:14px;align-items:start}
@@ -721,6 +724,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
     </div>
     <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Varianten (Dauer & Preis)</div>
     <div class="mvar-header">
+      <span class="var-col-lbl">Name</span>
       <span class="var-col-lbl">Dauer Min · anz.</span>
       <span class="var-col-lbl">Preis € · anz.</span>
       <span class="var-col-lbl">Puffer Min · aktiv</span>
@@ -1423,6 +1427,7 @@ function renderSvcBody(s,vars){
   +'<hr class="div">'
   +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Varianten</div>'
   +'<div class="var-header">'
+    +'<span class="var-col-lbl">Name</span>'
     +'<span class="var-col-lbl">Dauer Min · anz.</span>'
     +'<span class="var-col-lbl">Preis € · anz.</span>'
     +'<span class="var-col-lbl">Puffer Min · aktiv</span>'
@@ -1455,8 +1460,8 @@ function mkVarRow(v,svcId){
   var preisVal=(v.preis!=null&&v.preis>0)?v.preis:'';
   return'<div class="var-row" id="var-'+v.id+'">'
     // Name der Variante
-    +'<div class="var-group" style="flex:2">'
-      +'<input data-field="service_name" type="text" placeholder="z.B. Fade, Rasur…" value="'+(v.service_name||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'service_name\',this.value)" style="width:100%">'
+    +'<div class="var-group">'
+      +'<input data-field="service_name" type="text" placeholder="z.B. Fade, Rasur…" value="'+(v.service_name||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'service_name\',this.value)" style="border:none;outline:none;padding:6px;font-size:12px;font-family:inherit;color:var(--td);background:transparent;width:100%;min-width:0">'
     +'</div>'
     // Gruppe 1: Dauer + Toggle "Dauer anzeigen"
     +'<div class="var-group">'
@@ -1473,7 +1478,7 @@ function mkVarRow(v,svcId){
       +'<input data-field="puffer_minuten" type="number" min="0" placeholder="Puffer" value="'+(v.puffer_minuten||0)+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'puffer_minuten\',this.value)">'
       +'<label class="toggle-sw" title="Puffer aktiv"><input data-field="puffer_aktiv" type="checkbox" '+(v.puffer_aktiv?'checked':'')+' ><span class="slider"></span></label>'
     +'</div>'
-    +'<button class="btn btn-sm btn-danger" style="padding:6px 8px" onclick="deleteVar(\''+v.id+'\',\''+svcId+'\')">✕</button>'
+    +'<button class="var-del" onclick="deleteVar(\''+v.id+'\',\''+svcId+'\')">✕</button>'
   +'</div>';
 }
 
