@@ -251,8 +251,9 @@ var COUNTRIES=[
   {code:'GB',flag:'🇬🇧',name:'Großbritannien',dial:'+44',re:/^(\+44|0044|0)?7\d{9}$/},
   {code:'NL',flag:'🇳🇱',name:'Niederlande',dial:'+31',re:/^(\+31|0031|0)?6\d{8}$/},
 ];
-var BASE_SLOTS=['09:00','09:30','10:00','10:30','11:00','11:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00'];
+var BASE_SLOTS=['09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'];
 var BUSY={};
+var AVAIL_SLOTS={}; // { mitarbeiter_id: ['09:00','10:00',...] } — verfügbare Slots von n8n
 
 var st={
   dual:false,
@@ -280,9 +281,15 @@ function currentVarianten(svcId){
 function fname(id){if(!id||id==='any')return'Ohne Präferenz';var f=STAFF.filter(function(x){return x.id===id;})[0];return f?f.name:null;}
 
 function availSlots(){
-  var b1=st.stf1&&STAFF_BUSY[st.stf1]?STAFF_BUSY[st.stf1]:{};
-  var b2=st.dual&&st.stf2&&STAFF_BUSY[st.stf2]?STAFF_BUSY[st.stf2]:{};
-  return BASE_SLOTS.map(function(s){return{time:s,busy:!!(BUSY[s]||b1[s]||b2[s])};});
+  var mid=st.stf1&&st.stf1!=='any'?st.stf1:null;
+  if(mid&&AVAIL_SLOTS[mid]){
+    var avail=AVAIL_SLOTS[mid];
+    return BASE_SLOTS.map(function(s){
+      // busy = NICHT in der verfügbaren Liste
+      return{time:s,busy:avail.indexOf(s)>=0};
+    });
+  }
+  return BASE_SLOTS.map(function(s){return{time:s,busy:false};});
 }
 
 function p1(){var d=fdur(st.dur1);return d?d.preis:null;}
@@ -360,9 +367,8 @@ window.toggleStaff=function(){
 };
 window.pickDay=function(k){
   st.day=k;st.slot=null;
-  BUSY={};STAFF_BUSY={};
+  BUSY={};AVAIL_SLOTS={};
   renderCalOnly();renderSumOnly();
-  // Verfügbarkeit laden
   var salonId=new URLSearchParams(window.location.search).get('salon_id');
   if(!salonId)return;
   var staffIds=[];
@@ -376,21 +382,18 @@ window.pickDay=function(k){
     fetch('https://insy-n8n-u71054.vm.elestio.app/webhook/get-availability?salon_id='+salonId+'&mitarbeiter_id='+mid+'&date='+k)
       .then(function(r){return r.json();})
       .then(function(data){
-        if(!data.busy)return;
-        var busyMap={};
-        data.busy.forEach(function(b){
-          // Startzeit auf HH:MM runden und als belegt markieren
-          var d=new Date(b.start);
-          var hh=('0'+d.getHours()).slice(-2);
-          var mm=d.getMinutes()<30?'00':'30';
-          busyMap[hh+':'+mm]=1;
-          // Auch Ende-Puffer
-          var de=new Date(b.end);
-          var hhe=('0'+de.getHours()).slice(-2);
-          var mme=de.getMinutes()<30?'00':'30';
-          busyMap[hhe+':'+mme]=1;
-        });
-        STAFF_BUSY[mid]=busyMap;
+        // n8n gibt verfügbare Slots zurück als busy Array
+        var raw=Array.isArray(data)?data[0]:data;
+        var slots=[];
+        if(raw&&raw.busy&&Array.isArray(raw.busy)){
+          raw.busy.forEach(function(b){
+            var d=new Date(b.start);
+            var hh=('0'+d.getHours()).slice(-2);
+            var mm=d.getMinutes()<30?'00':'30';
+            slots.push(hh+':'+mm);
+          });
+        }
+        AVAIL_SLOTS[mid]=slots;
         renderCalOnly();
       })
       .catch(function(){});
