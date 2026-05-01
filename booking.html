@@ -442,7 +442,7 @@ function mkSvcCards(){
       vars.forEach(function(v){
         var isSel=entry.varId===v.id;
         varHtml+='<div onclick="event.stopPropagation();pickVar(\'' +s.id+ '\',\'' +v.id+ '\')" style="padding:5px 10px;border-radius:6px;font-size:11px;cursor:pointer;border:1.5px solid '+(isSel?'var(--tp)':'#e8e0f0')+';background:'+(isSel?'var(--tp)':'#fff')+';color:'+(isSel?'#fff':'var(--td)')+';font-weight:'+(isSel?'600':'400')+';transition:all .15s;">';
-        varHtml+=v.min+' Min'+(v.preis?' · '+v.preis+' €':'');
+        varHtml+=v.min+' Min'+(v.preis?' \xb7 '+v.preis+' \u20ac':'')+(v.service_name?' \xb7 '+v.service_name:'');
         varHtml+='</div>';
       });
       varHtml+='</div>';
@@ -547,7 +547,7 @@ function mkSumCard(){
     st.services.forEach(function(s){
       var svc=fsvc(s.svcId);
       var v=fvar(s.varId);
-      if(svc)rows+=row(svc.name,v?v.min+' Min'+(v.preis?' · '+v.preis+' €':''):'— Variante wählen');
+      if(svc)rows+=row(svc.name,v?(v.service_name?v.service_name+' · ':'')+v.min+' Min'+(v.preis?' · '+v.preis+' \u20ac':''):'— Variante wählen');
     });
   } else {
     rows+=row('Service',null);
