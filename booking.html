@@ -388,16 +388,22 @@ window.pickDay=function(k){
       .then(function(data){
         // n8n gibt verfügbare Slots zurück als busy Array
         var raw=Array.isArray(data)?data[0]:data;
-        var slots=[];
+        var busySlots=[];
         if(raw&&raw.busy&&Array.isArray(raw.busy)){
           raw.busy.forEach(function(b){
-            var d=new Date(b.start);
-            var hh=('0'+d.getHours()).slice(-2);
-            var mm=d.getMinutes()<30?'00':'30';
-            slots.push(hh+':'+mm);
+            var start=new Date(b.start);
+            var end=new Date(b.end);
+            // Alle 30-Minuten-Slots zwischen Start und Ende markieren
+            var cur=new Date(start);
+            while(cur<end){
+              var hh=('0'+cur.getHours()).slice(-2);
+              var mm=cur.getMinutes()<30?'00':'30';
+              busySlots.push(hh+':'+mm);
+              cur.setMinutes(cur.getMinutes()+30);
+            }
           });
         }
-        AVAIL_SLOTS[mid]=slots;
+        AVAIL_SLOTS[mid]=busySlots;
         renderCalOnly();
       })
       .catch(function(){});
