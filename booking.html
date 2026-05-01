@@ -282,11 +282,12 @@ function fname(id){if(!id||id==='any')return'Ohne Präferenz';var f=STAFF.filter
 
 function availSlots(){
   var mid=st.stf1&&st.stf1!=='any'?st.stf1:null;
-  if(mid&&AVAIL_SLOTS[mid]){
-    var avail=AVAIL_SLOTS[mid];
+  if(mid&&AVAIL_SLOTS.hasOwnProperty(mid)){
+    var busy=AVAIL_SLOTS[mid];
+    // Leeres Array = keine Termine = alle Slots frei
+    if(!busy.length)return BASE_SLOTS.map(function(s){return{time:s,busy:false};});
     return BASE_SLOTS.map(function(s){
-      // busy = NICHT in der buchbaren Liste
-      return{time:s,busy:avail.indexOf(s)<0};
+      return{time:s,busy:busy.indexOf(s)>=0};
     });
   }
   return BASE_SLOTS.map(function(s){return{time:s,busy:false};});
@@ -502,7 +503,7 @@ function mkCal(){
   for(var d=1;d<=cd.dim;d++){
     var isPast=calOff<0||(calOff===0&&d<cd.now.getDate());
     var isToday=calOff===0&&d===cd.now.getDate();
-    var key=cd.base.getFullYear()+'-'+cd.base.getMonth()+'-'+d;
+    var key=cd.base.getFullYear()+'-'+(cd.base.getMonth()+1)+'-'+d;
     var isSel=st.day===key;
     days+='<div class="cd '+(isPast?'cp':'')+' '+(isToday&&!isSel?'ct':'')+' '+(isSel?'cs':'')+'" onclick="pickDay(\''+key+'\')">'+d+'</div>';
   }
