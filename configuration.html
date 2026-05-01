@@ -1574,7 +1574,7 @@ async function addVariante(svcId){
   // Temporäre einzigartige Dauer: aktuelle Sekunden + große Zahl → garantiert kein Duplikat
   var tempMin=9000+Math.floor(Date.now()/1000)%999;
   var res=await sb.from('service_varianten').insert({
-    service_id:svcId,bezeichnung:'',dauer_minuten:tempMin,preis:0,
+    service_id:svcId,service_name:'',bezeichnung:'',dauer_minuten:tempMin,preis:0,
     puffer_aktiv:false,puffer_minuten:0,aktiv:true,sortierung:sortierung
   }).select().single();
   if(res.error){toast('Fehler: '+res.error.message,'error');return;}
