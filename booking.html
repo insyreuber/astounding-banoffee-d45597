@@ -378,8 +378,11 @@ window.pickDay=function(k){
     STAFF.forEach(function(s){if(s.id&&s.id!=='any')staffIds.push(s.id);});
   }
   staffIds=staffIds.filter(function(id){return id&&id.length>10;});
+  // Datum korrekt formatieren mit führenden Nullen
+  var parts=k.split('-');
+  var dateFormatted=parts[0]+'-'+('0'+parts[1]).slice(-2)+'-'+('0'+parts[2]).slice(-2);
   staffIds.forEach(function(mid){
-    fetch('https://insy-n8n-u71054.vm.elestio.app/webhook/get-availability?salon_id='+salonId+'&mitarbeiter_id='+mid+'&date='+k)
+    fetch('https://insy-n8n-u71054.vm.elestio.app/webhook/get-availability?salon_id='+salonId+'&mitarbeiter_id='+mid+'&date='+dateFormatted)
       .then(function(r){return r.json();})
       .then(function(data){
         // n8n gibt verfügbare Slots zurück als busy Array
