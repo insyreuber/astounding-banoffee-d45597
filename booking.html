@@ -282,15 +282,31 @@ function fname(id){if(!id||id==='any')return'Ohne Präferenz';var f=STAFF.filter
 
 function availSlots(){
   var mid=st.stf1&&st.stf1!=='any'?st.stf1:null;
+  // Öffnungszeiten des gewählten Tages holen
+  var openSlots=BASE_SLOTS;
+  if(st.day&&window.SALON_AZ){
+    var DAY_KEYS=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+    var parts=st.day.split('-');
+    var dateObj=new Date(+parts[0],+parts[1]-1,+parts[2]);
+    var dayKey=DAY_KEYS[dateObj.getDay()];
+    var az=window.SALON_AZ[dayKey];
+    if(az&&az.aktiv&&az.start&&az.end){
+      var startMin=parseInt(az.start.split(':')[0])*60+parseInt(az.start.split(':')[1]);
+      var endMin=parseInt(az.end.split(':')[0])*60+parseInt(az.end.split(':')[1]);
+      openSlots=BASE_SLOTS.filter(function(s){
+        var sm=parseInt(s.split(':')[0])*60+parseInt(s.split(':')[1]);
+        return sm>=startMin&&sm<endMin;
+      });
+    }
+  }
   if(mid&&AVAIL_SLOTS.hasOwnProperty(mid)){
     var busy=AVAIL_SLOTS[mid];
-    // Leeres Array = keine Termine = alle Slots frei
-    if(!busy.length)return BASE_SLOTS.map(function(s){return{time:s,busy:false};});
-    return BASE_SLOTS.map(function(s){
+    if(!busy.length)return openSlots.map(function(s){return{time:s,busy:false};});
+    return openSlots.map(function(s){
       return{time:s,busy:busy.indexOf(s)>=0};
     });
   }
-  return BASE_SLOTS.map(function(s){return{time:s,busy:false};});
+  return openSlots.map(function(s){return{time:s,busy:false};});
 }
 
 function p1(){var d=fdur(st.dur1);return d?d.preis:null;}
@@ -511,7 +527,14 @@ function mkCal(){
     var isToday=calOff===0&&d===cd.now.getDate();
     var key=cd.base.getFullYear()+'-'+(cd.base.getMonth()+1)+'-'+d;
     var isSel=st.day===key;
-    days+='<div class="cd '+(isPast?'cp':'')+' '+(isToday&&!isSel?'ct':'')+' '+(isSel?'cs':'')+'" onclick="pickDay(\''+key+'\')">'+d+'</div>';
+    var DAY_KEYS=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+    var dateObj=new Date(cd.base.getFullYear(),cd.base.getMonth(),d);
+    var dayKey=DAY_KEYS[dateObj.getDay()];
+    var az=window.SALON_AZ;
+    var isClosed=az&&az[dayKey]&&az[dayKey].aktiv===false;
+    var isBlocked=isPast||isClosed;
+    days+='<div class="cd '+(isBlocked?'cp':'')+' '+(isToday&&!isSel?'ct':'')+' '+(isSel?'cs':'')+'"'
+      +(isBlocked?'':' onclick="pickDay(\''+key+'\')"')+' style="'+(isClosed&&!isPast?'text-decoration:line-through;opacity:0.35':'')+'">'+d+'</div>';
   }
   var slots=availSlots();
   var slotsHtml=st.day
@@ -707,6 +730,8 @@ async function loadSalonProfile(){
     if(phoneEl)phoneEl.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.79 0 013.07 9.81 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>'+salonPhone;
     if(addressEl)addressEl.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>'+salonAddress;
     renderWorkingHours(data.arbeitszeiten);
+    // Öffnungszeiten global speichern für Kalender
+    window.SALON_AZ=data.arbeitszeiten||null;
     await loadServices(salonId);
     await loadMitarbeiter(salonId);
   }catch(err){console.error('JS Fehler:',err);}
