@@ -730,6 +730,7 @@ async function loadServices(salonId){
           if(!VARIANTEN[v.service_id])VARIANTEN[v.service_id]=[];
           VARIANTEN[v.service_id].push({
             id:v.id,
+            service_name:v.service_name||'',
             min:v.dauer_minuten,
             preis:parseFloat(v.preis)||0,
             puffer_aktiv:v.puffer_aktiv,
