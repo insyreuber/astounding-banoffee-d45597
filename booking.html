@@ -519,9 +519,9 @@ function mkCal(){
   var slots=availSlots();
   var slotsHtml=st.day
     ?'<div class="slot-lbl">Verfügbare Zeiten'+(st.stf1&&st.stf1!=='any'?' — '+fname(st.stf1):'')+'</div>'
-      +'<div class="slots">'+slots.map(function(s){
-        return'<div class="sl '+(s.busy||s.closed?'sb':'')+' '+(st.slot===s.time?'ss':'')+'" onclick="'+(s.busy||s.closed?'':'pickSlot(\''+s.time+'\')')+'">'
-          +s.time+(s.busy?'<br><span style="font-size:8px">belegt</span>':s.closed?'<br><span style="font-size:8px">nicht verfügbar</span>':'')+'</div>';
+      +'<div class="slots">'+slots.filter(function(s){return!s.busy&&!s.closed;}).map(function(s){
+        return'<div class="sl '+(st.slot===s.time?'ss':'')+'" onclick="pickSlot(\''+s.time+'\')">'
+          +s.time+'</div>';
       }).join('')+'</div>'
     :'<div style="font-size:11px;color:#7a6a8a;padding:5px 0">Wähle zuerst ein Datum</div>';
   return'<div class="cal-hdr"><button class="cal-nav" onclick="calPrev()">&#8249;</button>'
