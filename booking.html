@@ -369,9 +369,9 @@ window.pickDay=function(k){
   if(st.stf1&&st.stf1!=='any')staffIds.push(st.stf1);
   if(st.dual&&st.stf2&&st.stf2!=='any')staffIds.push(st.stf2);
   if(!staffIds.length){
-    // Alle Mitarbeiter laden
-    STAFF.forEach(function(s){if(s.id!=='any')staffIds.push(s.id);});
+    STAFF.forEach(function(s){if(s.id&&s.id!=='any')staffIds.push(s.id);});
   }
+  staffIds=staffIds.filter(function(id){return id&&id.length>10;});
   staffIds.forEach(function(mid){
     fetch('https://insy-n8n-u71054.vm.elestio.app/webhook/get-availability?salon_id='+salonId+'&mitarbeiter_id='+mid+'&date='+k)
       .then(function(r){return r.json();})
