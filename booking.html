@@ -285,8 +285,8 @@ function availSlots(){
   if(mid&&AVAIL_SLOTS[mid]){
     var avail=AVAIL_SLOTS[mid];
     return BASE_SLOTS.map(function(s){
-      // busy = NICHT in der verfügbaren Liste
-      return{time:s,busy:avail.indexOf(s)>=0};
+      // busy = NICHT in der buchbaren Liste
+      return{time:s,busy:avail.indexOf(s)<0};
     });
   }
   return BASE_SLOTS.map(function(s){return{time:s,busy:false};});
