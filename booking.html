@@ -537,23 +537,24 @@ function mkPhone(){
 }
 
 function mkSumCard(){
-  var s1=fsvc(st.svc1),s2=fsvc(st.svc2);
-  var d1=fdur(st.dur1),d2=fdur(st.dur2);  var dp=st.day?st.day.split('-'):null;
-  var dayStr=dp?dp[2]+'. '+new Date(+dp[0],+dp[1],1).toLocaleDateString('de-DE',{month:'short'})+' '+dp[0]:'';
-  var tot=total();
+  var dp=st.day?st.day.split('-'):null;
+  var dayStr=dp?new Date(+dp[0],+dp[1]-1,+dp[2]).toLocaleDateString('de-DE',{weekday:'short',day:'numeric',month:'short'})+' '+dp[0]:'';
+  var tot=totalPreis();
+  var mins=totalMinuten();
   function row(lbl,val){return'<div class="sumrow"><span class="sl-lbl">'+lbl+'</span><span class="sl-val '+(val?'':'emp')+'">'+(val||'—')+'</span></div>';}
   var rows='';
-  if(st.dual){
-    rows+=row('Service',s1?s1.name+(s2&&s2.id!==s1.id?' / '+s2.name:''):null);
-    rows+=row('Dauer',d1?d1.min+' Min'+(d2&&d2.id!==d1.id?' / '+d2.min+' Min':''):null);    rows+=row('Team',fname(st.stf1)+(st.stf2&&st.stf2!==st.stf1?' / '+fname(st.stf2):''));
-    rows+=row('① Zeit',st.slot?st.slot+' Uhr':null);
-    rows+=row('② Zeit',slot2time()?slot2time()+' Uhr':null);
+  if(st.services.length){
+    st.services.forEach(function(s){
+      var svc=fsvc(s.svcId);
+      var v=fvar(s.varId);
+      if(svc)rows+=row(svc.name,v?v.min+' Min'+(v.preis?' · '+v.preis+' €':''):'— Variante wählen');
+    });
   } else {
-    rows+=row('Service',s1?s1.name:null);
-    rows+=row('Dauer',d1?d1.min+' Min':null);
-    rows+=row('Team',fname(st.stf1));
-    rows+=row('Zeit',st.slot?st.slot+' Uhr':null);
+    rows+=row('Service',null);
   }
+  rows+=row('Gesamt',mins?mins+' Min'+(tot?' · '+tot+' €':''):null);
+  rows+=row('Mitarbeiter',fname(st.stf1));
+  rows+=row('Zeit',st.slot?st.slot+' Uhr':null);
   rows+=row('Datum',dayStr||null);
   return'<div class="sumcard">'
     +'<div class="sum-hdr"><div class="sum-hdr-t">Buchungsübersicht</div>'
@@ -604,31 +605,24 @@ function render(){
     if(dropOpen&&!e.target.closest('.phone-country')){dropOpen=false;renderPhoneOnly();}
   },{once:true});
 }
-        +'<div id="sum-col">'+mkSumCard()+'</div>'
-      +'</div>'
-    +'</div>';
-
-  document.addEventListener('click',function(e){
-    if(dropOpen&&!e.target.closest('.phone-country')){dropOpen=false;renderPhoneOnly();}
-  },{once:true});
-}
 
 window.submitBooking=function(){
-  var s1=fsvc(st.svc1),s2=st.dual&&st.svc2&&st.svc2!==st.svc1?fsvc(st.svc2):null;
   var dp=st.day?st.day.split('-'):null;
-  var dayStr=dp?dp[2]+'. '+new Date(+dp[0],+dp[1],1).toLocaleDateString('de-DE',{month:'short'})+' '+dp[0]:'';
+  var dayStr=dp?dp[2]+'. '+new Date(+dp[0],+dp[1]-1,+dp[2]).toLocaleDateString('de-DE',{month:'short',day:'numeric'})+' '+dp[0]:'';
+  var svcNames=st.services.map(function(s){var svc=fsvc(s.svcId);return svc?svc.name:'';}).filter(Boolean).join(' + ');
+  var tot=totalPreis();
   document.getElementById('app').innerHTML='<div class="conf">'
     +'<div class="conf-cc"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>'
     +'<div class="conf-t">Buchung eingegangen!</div>'
     +'<p class="conf-s">Bestätigung per SMS an <strong style="color:#fff">'+normPhone(st.phone)+'</strong></p>'
-    +'<div><span class="cpill">'+(s1?s1.name:'')+(s2?' + '+s2.name:'')+'</span>'
+    +'<div><span class="cpill">'+svcNames+'</span>'
+    +(tot?'<span class="cpill g">'+tot+' €</span>':'')
     +'<span class="cpill g">'+(st.slot||'')+' Uhr · '+dayStr+'</span></div>'
     +'<button class="reset-btn" onclick="resetAll()">Neuen Termin buchen</button></div>';
 };
 window.resetAll=function(){
-  st={dual:false,svc1:null,svc2:null,dur1:null,dur2:null,stf1:'any',stf2:'any',
-    day:null,slot:null,name:'',phone:'',country:COUNTRIES[0],nextSvc:1,nextDur:1,nextStf:1};
-  calOff=0;staffOpen=false;dropOpen=false;render();
+  st={services:[],stf1:'any',day:null,slot:null,name:'',phone:'',country:COUNTRIES[0]};
+  calOff=0;staffOpen=false;dropOpen=false;AVAIL_SLOTS={};BUSY={};render();
 };
 render();
 </script>
