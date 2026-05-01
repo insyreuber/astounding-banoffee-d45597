@@ -345,7 +345,6 @@ window.toggleStaff=function(){
 
 function availSlots(){
   var mid=st.stf1&&st.stf1!=='any'?st.stf1:null;
-  var openSlots=BASE_SLOTS;
   var startMin=0, endMin=24*60;
 
   if(st.day&&window.SALON_AZ){
@@ -362,29 +361,31 @@ function availSlots(){
 
   var totalMin=totalMinuten();
 
-  openSlots=BASE_SLOTS.filter(function(s){
+  // Alle Slots innerhalb der Öffnungszeiten (ohne Dauer-Filter)
+  var openSlots=BASE_SLOTS.filter(function(s){
     var sm=parseInt(s.split(':')[0])*60+parseInt(s.split(':')[1]);
-    // Slot muss innerhalb der Öffnungszeiten liegen UND Gesamtdauer muss reinpassen
-    return sm>=startMin&&sm+totalMin<=endMin;
+    return sm>=startMin&&sm<endMin;
   });
 
-  if(mid&&AVAIL_SLOTS.hasOwnProperty(mid)){
-    var busy=AVAIL_SLOTS[mid];
-    if(!busy.length)return openSlots.map(function(s){return{time:s,busy:false};});
-    return openSlots.map(function(s){
-      // Prüfen ob irgendein Slot innerhalb der Buchungsdauer belegt ist
-      var slotMin=parseInt(s.split(':')[0])*60+parseInt(s.split(':')[1]);
-      var isBusy=false;
+  var busySlots=mid&&AVAIL_SLOTS.hasOwnProperty(mid)?AVAIL_SLOTS[mid]:null;
+
+  return openSlots.map(function(s){
+    var slotMin=parseInt(s.split(':')[0])*60+parseInt(s.split(':')[1]);
+    // Zu nah an Schließzeit — Termin würde nicht reinpassen
+    if(totalMin>0&&slotMin+totalMin>endMin){
+      return{time:s,busy:false,closed:true};
+    }
+    // Buchung würde belegte Slots überschneiden
+    if(busySlots&&busySlots.length){
       for(var m=0;m<totalMin;m+=15){
         var checkMin=slotMin+m;
         var hh=('0'+Math.floor(checkMin/60)).slice(-2);
         var mm=('0'+(checkMin%60)).slice(-2);
-        if(busy.indexOf(hh+':'+mm)>=0){isBusy=true;break;}
+        if(busySlots.indexOf(hh+':'+mm)>=0)return{time:s,busy:true,closed:false};
       }
-      return{time:s,busy:isBusy};
-    });
-  }
-  return openSlots.map(function(s){return{time:s,busy:false};});
+    }
+    return{time:s,busy:false,closed:false};
+  });
 }
 window.pickDay=function(k){
   st.day=k;st.slot=null;
@@ -514,8 +515,8 @@ function mkCal(){
   var slotsHtml=st.day
     ?'<div class="slot-lbl">Verfügbare Zeiten'+(st.stf1&&st.stf1!=='any'?' — '+fname(st.stf1):'')+'</div>'
       +'<div class="slots">'+slots.map(function(s){
-        return'<div class="sl '+(s.busy?'sb':'')+' '+(st.slot===s.time?'ss':'')+'" onclick="'+(s.busy?'':'pickSlot(\''+s.time+'\')')+'">'
-          +s.time+(s.busy?'<br><span style="font-size:8px">belegt</span>':'')+'</div>';
+        return'<div class="sl '+(s.busy||s.closed?'sb':'')+' '+(st.slot===s.time?'ss':'')+'" onclick="'+(s.busy||s.closed?'':'pickSlot(\''+s.time+'\')')+'">'
+          +s.time+(s.busy?'<br><span style="font-size:8px">belegt</span>':s.closed?'<br><span style="font-size:8px">nicht verfügbar</span>':'')+'</div>';
       }).join('')+'</div>'
     :'<div style="font-size:11px;color:#7a6a8a;padding:5px 0">Wähle zuerst ein Datum</div>';
   return'<div class="cal-hdr"><button class="cal-nav" onclick="calPrev()">&#8249;</button>'
