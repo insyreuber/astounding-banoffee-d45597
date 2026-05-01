@@ -255,34 +255,95 @@ var BASE_SLOTS=['09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30',
 var BUSY={};
 var AVAIL_SLOTS={}; // { mitarbeiter_id: ['09:00','10:00',...] } — verfügbare Slots von n8n
 
+// State: mehrere Services mit je einer Variante
 var st={
-  dual:false,
-  svc1:null,svc2:null,
-  dur1:null,dur2:null,
-  stf1:'any',stf2:'any',
+  services:[],   // [{svcId, varId}]
+  stf1:'any',
   day:null,slot:null,
-  name:'',phone:'',country:COUNTRIES[0],
-  nextSvc:1, nextDur:1, nextStf:1
+  name:'',phone:'',country:COUNTRIES[0]
 };
 var calOff=0,staffOpen=false,dropOpen=false,dropSearch='';
 
 function fsvc(id){return SVCS.filter(function(x){return x.id===id;})[0]||null;}
-// Variante anhand ihrer ID suchen (über alle Services)
-function fdur(id){
+function fvar(id){
   var all=[];
   Object.keys(VARIANTEN).forEach(function(k){all=all.concat(VARIANTEN[k]);});
   return all.filter(function(x){return x.id===id;})[0]||null;
 }
-// Varianten für den aktuell gewählten Service
-function currentVarianten(svcId){
-  if(!svcId)return[];
-  return VARIANTEN[svcId]||[];
-}
 function fname(id){if(!id||id==='any')return'Ohne Präferenz';var f=STAFF.filter(function(x){return x.id===id;})[0];return f?f.name:null;}
+
+function totalMinuten(){
+  return st.services.reduce(function(sum,s){
+    var v=fvar(s.varId);
+    return sum+(v?v.min:0);
+  },0);
+}
+function totalPreis(){
+  var t=st.services.reduce(function(sum,s){
+    var v=fvar(s.varId);
+    return sum+(v?v.preis:0);
+  },0);
+  return t>0?t:null;
+}
+function slot2time(){
+  if(!st.slot)return null;
+  var min=totalMinuten();if(!min)return null;
+  var pts=st.slot.split(':'),total=parseInt(pts[0])*60+parseInt(pts[1])+min;
+  return('0'+Math.floor(total/60)).slice(-2)+':'+('0'+(total%60)).slice(-2);
+}
+function normPhone(raw){
+  var c=raw.replace(/[\s\-\(\)]/g,'');
+  if(c.startsWith('0')&&!c.startsWith('00'))c=st.country.dial+c.slice(1);
+  if(!c.startsWith('+'))c=st.country.dial+c;
+  return c;
+}
+function phoneStatus(){
+  if(!st.phone.trim())return'empty';
+  return st.country.re.test(normPhone(st.phone))?'ok':'err';
+}
+function canBook(){
+  if(!st.services.length)return false;
+  if(st.services.some(function(s){return!s.varId;}))return false;
+  if(!st.day||!st.slot||!st.name.trim()||phoneStatus()!=='ok')return false;
+  return true;
+}
+function getCalData(){
+  var now=new Date();
+  var base=new Date(now.getFullYear(),now.getMonth()+calOff,1);
+  return{base:base,firstDow:(base.getDay()+6)%7,dim:new Date(base.getFullYear(),base.getMonth()+1,0).getDate(),now:now};
+}
+
+function getSvcEntry(svcId){return st.services.filter(function(s){return s.svcId===svcId;})[0]||null;}
+
+window.toggleSvc=function(id){
+  var idx=st.services.findIndex(function(s){return s.svcId===id;});
+  if(idx>=0){
+    st.services.splice(idx,1);
+  } else {
+    st.services.push({svcId:id,varId:null});
+  }
+  st.slot=null;
+  render();
+};
+window.pickVar=function(svcId,varId){
+  var entry=getSvcEntry(svcId);
+  if(entry){entry.varId=varId;}
+  st.slot=null;
+  render();
+};
+window.pickStf=function(id){
+  st.stf1=id;st.slot=null;staffOpen=false;render();
+};
+window.toggleStaff=function(){
+  staffOpen=!staffOpen;
+  var b=document.getElementById('acc-body');
+  var a=document.getElementById('acc-arrow');
+  if(b)b.className='acc-body'+(staffOpen?' open':'');
+  if(a)a.className='acc-arrow'+(staffOpen?' open':'');
+};
 
 function availSlots(){
   var mid=st.stf1&&st.stf1!=='any'?st.stf1:null;
-  // Öffnungszeiten des gewählten Tages holen
   var openSlots=BASE_SLOTS;
   if(st.day&&window.SALON_AZ){
     var DAY_KEYS=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
@@ -302,86 +363,10 @@ function availSlots(){
   if(mid&&AVAIL_SLOTS.hasOwnProperty(mid)){
     var busy=AVAIL_SLOTS[mid];
     if(!busy.length)return openSlots.map(function(s){return{time:s,busy:false};});
-    return openSlots.map(function(s){
-      return{time:s,busy:busy.indexOf(s)>=0};
-    });
+    return openSlots.map(function(s){return{time:s,busy:busy.indexOf(s)>=0};});
   }
   return openSlots.map(function(s){return{time:s,busy:false};});
 }
-
-function p1(){var d=fdur(st.dur1);return d?d.preis:null;}
-function p2(){var d=fdur(st.dur2);return d?d.preis:null;}
-function total(){var a=p1(),b=p2();if(!a)return null;return st.dual&&b?a+b:a;}
-function slot2time(){
-  if(!st.slot||!st.dur1)return null;
-  var d=fdur(st.dur1);if(!d)return null;
-  var pts=st.slot.split(':'),mins=parseInt(pts[0])*60+parseInt(pts[1])+d.min;
-  return('0'+Math.floor(mins/60)).slice(-2)+':'+('0'+(mins%60)).slice(-2);
-}
-function normPhone(raw){
-  var c=raw.replace(/[\s\-\(\)]/g,'');
-  if(c.startsWith('0')&&!c.startsWith('00'))c=st.country.dial+c.slice(1);
-  if(!c.startsWith('+'))c=st.country.dial+c;
-  return c;
-}
-function phoneStatus(){
-  if(!st.phone.trim())return'empty';
-  return st.country.re.test(normPhone(st.phone))?'ok':'err';
-}
-function canBook(){
-  if(!st.svc1||!st.dur1||!st.day||!st.slot||!st.name.trim()||phoneStatus()!=='ok')return false;
-  if(st.dual&&(!st.svc2||!st.dur2))return false;
-  return true;
-}
-function getCalData(){
-  var now=new Date();
-  var base=new Date(now.getFullYear(),now.getMonth()+calOff,1);
-  return{base:base,firstDow:(base.getDay()+6)%7,dim:new Date(base.getFullYear(),base.getMonth()+1,0).getDate(),now:now};
-}
-
-window.pickSvc=function(id){
-  if(!st.dual){
-    if(st.svc1!==id){st.dur1=null;} // Dauer zurücksetzen wenn anderer Service
-    st.svc1=id;render();return;
-  }
-  if(st.svc1===id&&st.svc2===id){render();return;}
-  if(st.svc1===null&&st.svc2===null){st.svc1=id;st.svc2=id;st.dur1=null;st.dur2=null;st.nextSvc=1;}
-  else if(st.svc1===id||st.svc2===id){st.svc1=id;st.svc2=id;st.dur1=null;st.dur2=null;st.nextSvc=1;}
-  else{
-    if(st.nextSvc===1){st.svc1=id;st.dur1=null;st.nextSvc=2;}
-    else{st.svc2=id;st.dur2=null;st.nextSvc=1;}
-  }
-  render();
-};
-window.pickDur=function(id){
-  if(!st.dual){st.dur1=id;render();return;}
-  if(st.dur1===id&&st.dur2===id){render();return;}
-  if(st.dur1===null&&st.dur2===null){st.dur1=id;st.dur2=id;st.nextDur=1;}
-  else if(st.dur1===id||st.dur2===id){st.dur1=id;st.dur2=id;st.nextDur=1;}
-  else{if(st.nextDur===1){st.dur1=id;st.nextDur=2;}else{st.dur2=id;st.nextDur=1;}}
-  render();
-};
-window.pickStf=function(id){
-  if(!st.dual){st.stf1=id;st.slot=null;staffOpen=false;render();return;}
-  if(st.stf1===id&&st.stf2===id){staffOpen=false;render();return;}
-  if(st.stf1==='any'&&st.stf2==='any'){st.stf1=id;st.stf2=id;st.nextStf=1;}
-  else if(st.stf1===id||st.stf2===id){st.stf1=id;st.stf2=id;st.nextStf=1;}
-  else{if(st.nextStf===1){st.stf1=id;st.nextStf=2;}else{st.stf2=id;st.nextStf=1;}}
-  st.slot=null;staffOpen=false;render();
-};
-window.toggleDual=function(){
-  st.dual=!st.dual;
-  if(!st.dual){st.svc2=null;st.dur2=null;st.stf2='any';st.nextSvc=1;st.nextDur=1;st.nextStf=1;}
-  else{st.svc2=st.svc1;st.dur2=st.dur1;st.stf2=st.stf1;st.nextSvc=1;st.nextDur=1;st.nextStf=1;}
-  render();
-};
-window.toggleStaff=function(){
-  staffOpen=!staffOpen;
-  var b=document.getElementById('acc-body');
-  var a=document.getElementById('acc-arrow');
-  if(b)b.className='acc-body'+(staffOpen?' open':'');
-  if(a)a.className='acc-arrow'+(staffOpen?' open':'');
-};
 window.pickDay=function(k){
   st.day=k;st.slot=null;
   BUSY={};AVAIL_SLOTS={};
@@ -447,75 +432,44 @@ function selClass(val1,val2,id,isDual){
 function mkSvcCards(){
   if(!SVCS.length)return'<div style="font-size:12px;color:#7a6a8a;padding:8px">Services werden geladen…</div>';
   return SVCS.map(function(s){
-    var cls=selClass(st.svc1,st.svc2,s.id,st.dual);
-    var badges='';
-    if(st.dual){
-      var in1=st.svc1===s.id,in2=st.svc2===s.id;
-      if(in1&&in2)badges='<div class="svc-badges"><span class="sbadge-sm sbadge-1">①</span><span class="sbadge-sm sbadge-2">②</span></div>';
-      else if(in1)badges='<div class="svc-badges"><span class="sbadge-sm sbadge-1">① Slot 1</span></div>';
-      else if(in2)badges='<div class="svc-badges"><span class="sbadge-sm sbadge-2">② Slot 2</span></div>';
-    }
-    var nextHint='';
-    if(st.dual&&cls!=='selboth'&&(st.svc1!==null||st.svc2!==null)){
-      nextHint='<span class="svc-next">nächster: Slot '+st.nextSvc+'</span>';
-    }
-    // Günstigste Variante für "ab X €"
+    var entry=getSvcEntry(s.id);
+    var isSelected=!!entry;
     var vars=VARIANTEN[s.id]||[];
     var minPreis=vars.length?Math.min.apply(null,vars.map(function(v){return v.preis;})):null;
-    return'<div class="svc '+cls+'" onclick="pickSvc(\''+s.id+'\')">'
-      +nextHint
-      +'<div class="svc-inner">'
-      +'<div class="svc-n">'+s.name+'</div>'
-      +'<div class="svc-d">'+s.desc+'</div>'
-      +(minPreis!==null?'<div class="svc-p">ab '+minPreis+' €</div>':'')
-      +badges
-      +'</div></div>';
-  }).join('');}
-
-function mkDurCards(){
-  // Varianten des gewählten Services (Slot 1 hat Priorität, sonst Slot 2)
-  var activeSvcId=st.svc1||st.svc2||null;
-  var vars=activeSvcId?currentVarianten(activeSvcId):[];
-  if(!activeSvcId){
-    return'<div style="font-size:12px;color:#7a6a8a;padding:4px 0">Wähle zuerst einen Service</div>';
-  }
-  if(!vars.length){
-    return'<div style="font-size:12px;color:#7a6a8a;padding:4px 0">Keine Varianten verfügbar</div>';
-  }
-  return vars.map(function(v){
-    var cls=selClass(st.dur1,st.dur2,v.id,st.dual);
-    var badges='';
-    if(st.dual){
-      var in1=st.dur1===v.id,in2=st.dur2===v.id;
-      if(in1&&in2)badges='<div style="display:flex;gap:2px;justify-content:center;margin-top:3px;position:relative;z-index:1"><span class="sbadge-sm sbadge-1" style="font-size:9px">①</span><span class="sbadge-sm sbadge-2" style="font-size:9px">②</span></div>';
-      else if(in1)badges='<div style="text-align:center;margin-top:2px;position:relative;z-index:1"><span class="sbadge-sm sbadge-1" style="font-size:9px">①</span></div>';
-      else if(in2)badges='<div style="text-align:center;margin-top:2px;position:relative;z-index:1"><span class="sbadge-sm sbadge-2" style="font-size:9px">②</span></div>';
+    var varHtml='';
+    if(isSelected&&vars.length){
+      varHtml='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid rgba(74,28,107,0.12)">';
+      vars.forEach(function(v){
+        var isSel=entry.varId===v.id;
+        varHtml+='<div onclick="event.stopPropagation();pickVar(\'' +s.id+ '\',\'' +v.id+ '\')" style="padding:5px 10px;border-radius:6px;font-size:11px;cursor:pointer;border:1.5px solid '+(isSel?'var(--tp)':'#e8e0f0')+';background:'+(isSel?'var(--tp)':'#fff')+';color:'+(isSel?'#fff':'var(--td)')+';font-weight:'+(isSel?'600':'400')+';transition:all .15s;">';
+        varHtml+=v.min+' Min'+(v.preis?' · '+v.preis+' €':'');
+        varHtml+='</div>';
+      });
+      varHtml+='</div>';
     }
-    return'<div class="dur '+cls+'" onclick="pickDur(\''+v.id+'\')">'
-      +'<div class="dur-inner">'
-      +'<div class="dur-m">'+v.min+'</div><div class="dur-l">Min</div>'
-      +'<div class="dur-p">'+v.preis+' €</div>'
-      +'</div>'
-      +badges
-      +'</div>';
+    var html='<div class="svc '+(isSelected?'sel1only':'')+'" onclick="toggleSvc(\'' +s.id+ '\')">';
+    html+='<div class="svc-inner">';
+    html+='<div style="display:flex;align-items:center;justify-content:space-between">';
+    html+='<div class="svc-n">'+s.name+'</div>';
+    if(isSelected)html+='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tp)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+    html+='</div>';
+    if(s.desc)html+='<div class="svc-d">'+s.desc+'</div>';
+    if(minPreis!==null&&!isSelected)html+='<div class="svc-p">ab '+minPreis+' €</div>';
+    html+=varHtml;
+    html+='</div></div>';
+    return html;
   }).join('');}
 
 function mkStaffGrid(){
   return'<div class="staff-grid">'+STAFF.map(function(p){
-    var cls=selClass(st.stf1,st.stf2,p.id,st.dual);
-    var in1=st.stf1===p.id,in2=st.dual&&st.stf2===p.id;
-    var badges='<div class="stf-badges">'
-      +(in1?'<span class="sbadge sb1">①</span>':'')
-      +(in2?'<span class="sbadge sb2">②</span>':'')
-      +'</div>';
+    var isSel=st.stf1===p.id;
     var availHtml=p.id==='any'?'':(p.avail?'<div class="stf-av">● Verfügbar</div>':'<div class="stf-na">● Heute belegt</div>');
-    return'<div class="stf '+cls+'" onclick="pickStf(\''+p.id+'\')">'
-      +'<div class="stf-inner">'
-      +'<div class="av '+(p.gold?'g':'')+'">'+p.ini+'</div>'
-      +'<div><div class="stf-n">'+p.name+'</div><div class="stf-r">'+p.role+'</div>'+availHtml+'</div>'
-      +'</div>'
-      +badges
-      +'</div>';
+    var html='<div class="stf '+(isSel?'sel1only':'')+'" onclick="pickStf(\'' +p.id+ '\')">';
+    html+='<div class="stf-inner">';
+    html+='<div class="av '+(p.gold?'g':'')+'">' +p.ini+'</div>';
+    html+='<div><div class="stf-n">'+p.name+'</div><div class="stf-r">'+p.role+'</div>'+availHtml+'</div>';
+    html+='</div></div>';
+    return html;
   }).join('')+'</div>';}
 
 function mkCal(){
@@ -621,39 +575,35 @@ function renderPhoneOnly(){var el=document.getElementById('phone-outer');if(el)e
 function renderSumOnly(){var el=document.getElementById('sum-col');if(el)el.innerHTML=mkSumCard();}
 
 function render(){
-  var stfLabel=st.dual
-    ?(fname(st.stf1))+(st.stf2&&st.stf2!==st.stf1?' / '+fname(st.stf2):'')
-    :fname(st.stf1);
-
   document.getElementById('app').innerHTML=
     '<div class="card">'
-      +'<div class="ctitle"><span class="cnum">1</span>Service</div>'
-      +'<div class="dual-tog '+(st.dual?'on':'')+'" onclick="toggleDual()">'
-        +'<div class="tog-box">'+(st.dual?'<svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="10 3 5 9 2 6"/></svg>':'')+'</div>'
-        +'<div><div class="tog-lbl">Doppeltermin</div><div class="tog-sub">Zwei Services auf einmal buchen</div></div>'
-      +'</div>'
+      +'<div class="ctitle"><span class="cnum">1</span>Services</div>'
       +'<div class="svc-grid">'+mkSvcCards()+'</div>'
-    +'</div>'
-    +'<div class="card"><div class="ctitle"><span class="cnum">2</span>Dauer</div>'
-      +'<div class="dur-row">'+mkDurCards()+'</div>'
     +'</div>'
     +'<div class="card">'
       +'<div class="acc-hdr" onclick="toggleStaff()">'
         +'<div class="acc-hdr-left">'
-          +'<span class="cnum">3</span>'
+          +'<span class="cnum">2</span>'
           +'<span class="acc-title">Mitarbeiter</span>'
-          +'<span class="acc-current">'+stfLabel+'</span>'
+          +'<span class="acc-current">'+fname(st.stf1)+'</span>'
         +'</div>'
-        +'<span class="acc-arrow '+(staffOpen?'open':'')+'" id="acc-arrow">⌄</span>'
+        +'<span class="acc-arrow '+(staffOpen?'open':'')+'" id="acc-arrow">\u2304</span>'
       +'</div>'
       +'<div class="acc-body '+(staffOpen?'open':'')+'" id="acc-body">'
-        +(st.dual?'<p class="hint" style="margin-bottom:8px">Klick = beide · Nochmal klicken wechselt abwechselnd</p>':'')
         +mkStaffGrid()
       +'</div>'
     +'</div>'
-    +'<div class="card"><div class="ctitle"><span class="cnum">4</span>Datum & Uhrzeit</div>'
+    +'<div class="card"><div class="ctitle"><span class="cnum">3</span>Datum & Uhrzeit</div>'
       +'<div class="cal-sum-row">'
         +'<div id="cal-inner">'+mkCal()+'</div>'
+        +'<div id="sum-col">'+mkSumCard()+'</div>'
+      +'</div>'
+    +'</div>';
+
+  document.addEventListener('click',function(e){
+    if(dropOpen&&!e.target.closest('.phone-country')){dropOpen=false;renderPhoneOnly();}
+  },{once:true});
+}
         +'<div id="sum-col">'+mkSumCard()+'</div>'
       +'</div>'
     +'</div>';
