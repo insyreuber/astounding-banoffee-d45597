@@ -358,7 +358,44 @@ window.toggleStaff=function(){
   if(b)b.className='acc-body'+(staffOpen?' open':'');
   if(a)a.className='acc-arrow'+(staffOpen?' open':'');
 };
-window.pickDay=function(k){st.day=k;st.slot=null;renderCalOnly();renderSumOnly();};
+window.pickDay=function(k){
+  st.day=k;st.slot=null;
+  BUSY={};STAFF_BUSY={};
+  renderCalOnly();renderSumOnly();
+  // Verfügbarkeit laden
+  var salonId=new URLSearchParams(window.location.search).get('salon_id');
+  if(!salonId)return;
+  var staffIds=[];
+  if(st.stf1&&st.stf1!=='any')staffIds.push(st.stf1);
+  if(st.dual&&st.stf2&&st.stf2!=='any')staffIds.push(st.stf2);
+  if(!staffIds.length){
+    // Alle Mitarbeiter laden
+    STAFF.forEach(function(s){if(s.id!=='any')staffIds.push(s.id);});
+  }
+  staffIds.forEach(function(mid){
+    fetch('https://insy-n8n-u71054.vm.elestio.app/webhook/get-availability?salon_id='+salonId+'&mitarbeiter_id='+mid+'&date='+k)
+      .then(function(r){return r.json();})
+      .then(function(data){
+        if(!data.busy)return;
+        var busyMap={};
+        data.busy.forEach(function(b){
+          // Startzeit auf HH:MM runden und als belegt markieren
+          var d=new Date(b.start);
+          var hh=('0'+d.getHours()).slice(-2);
+          var mm=d.getMinutes()<30?'00':'30';
+          busyMap[hh+':'+mm]=1;
+          // Auch Ende-Puffer
+          var de=new Date(b.end);
+          var hhe=('0'+de.getHours()).slice(-2);
+          var mme=de.getMinutes()<30?'00':'30';
+          busyMap[hhe+':'+mme]=1;
+        });
+        STAFF_BUSY[mid]=busyMap;
+        renderCalOnly();
+      })
+      .catch(function(){});
+  });
+};
 window.pickSlot=function(s){st.slot=s;renderCalOnly();renderSumOnly();};
 window.calPrev=function(){calOff--;render();};
 window.calNext=function(){calOff++;render();};
