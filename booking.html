@@ -251,7 +251,8 @@ var COUNTRIES=[
   {code:'GB',flag:'🇬🇧',name:'Großbritannien',dial:'+44',re:/^(\+44|0044|0)?7\d{9}$/},
   {code:'NL',flag:'🇳🇱',name:'Niederlande',dial:'+31',re:/^(\+31|0031|0)?6\d{8}$/},
 ];
-var BASE_SLOTS=['09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'];
+var BASE_SLOTS=[];
+(function(){for(var h=6;h<=23;h++){for(var m=0;m<60;m+=15){BASE_SLOTS.push(('0'+h).slice(-2)+':'+('0'+m).slice(-2));}}})();
 var BUSY={};
 var AVAIL_SLOTS={}; // { mitarbeiter_id: ['09:00','10:00',...] } — verfügbare Slots von n8n
 
@@ -398,9 +399,10 @@ window.pickDay=function(k){
             var cur=new Date(start);
             while(cur<end){
               var hh=('0'+cur.getHours()).slice(-2);
-              var mm=cur.getMinutes()<30?'00':'30';
-              busySlots.push(hh+':'+mm);
-              cur.setMinutes(cur.getMinutes()+30);
+              var mm=cur.getMinutes();
+              var mmRounded=mm<15?'00':mm<30?'15':mm<45?'30':'45';
+              busySlots.push(hh+':'+mmRounded);
+              cur.setMinutes(cur.getMinutes()+15);
             }
           });
         }
