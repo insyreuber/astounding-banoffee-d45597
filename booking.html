@@ -346,6 +346,8 @@ window.toggleStaff=function(){
 function availSlots(){
   var mid=st.stf1&&st.stf1!=='any'?st.stf1:null;
   var openSlots=BASE_SLOTS;
+  var startMin=0, endMin=24*60;
+
   if(st.day&&window.SALON_AZ){
     var DAY_KEYS=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
     var parts=st.day.split('-');
@@ -353,18 +355,34 @@ function availSlots(){
     var dayKey=DAY_KEYS[dateObj.getDay()];
     var az=window.SALON_AZ[dayKey];
     if(az&&az.aktiv&&az.start&&az.end){
-      var startMin=parseInt(az.start.split(':')[0])*60+parseInt(az.start.split(':')[1]);
-      var endMin=parseInt(az.end.split(':')[0])*60+parseInt(az.end.split(':')[1]);
-      openSlots=BASE_SLOTS.filter(function(s){
-        var sm=parseInt(s.split(':')[0])*60+parseInt(s.split(':')[1]);
-        return sm>=startMin&&sm<endMin;
-      });
+      startMin=parseInt(az.start.split(':')[0])*60+parseInt(az.start.split(':')[1]);
+      endMin=parseInt(az.end.split(':')[0])*60+parseInt(az.end.split(':')[1]);
     }
   }
+
+  var totalMin=totalMinuten();
+
+  openSlots=BASE_SLOTS.filter(function(s){
+    var sm=parseInt(s.split(':')[0])*60+parseInt(s.split(':')[1]);
+    // Slot muss innerhalb der Öffnungszeiten liegen UND Gesamtdauer muss reinpassen
+    return sm>=startMin&&sm+totalMin<=endMin;
+  });
+
   if(mid&&AVAIL_SLOTS.hasOwnProperty(mid)){
     var busy=AVAIL_SLOTS[mid];
     if(!busy.length)return openSlots.map(function(s){return{time:s,busy:false};});
-    return openSlots.map(function(s){return{time:s,busy:busy.indexOf(s)>=0};});
+    return openSlots.map(function(s){
+      // Prüfen ob irgendein Slot innerhalb der Buchungsdauer belegt ist
+      var slotMin=parseInt(s.split(':')[0])*60+parseInt(s.split(':')[1]);
+      var isBusy=false;
+      for(var m=0;m<totalMin;m+=15){
+        var checkMin=slotMin+m;
+        var hh=('0'+Math.floor(checkMin/60)).slice(-2);
+        var mm=('0'+(checkMin%60)).slice(-2);
+        if(busy.indexOf(hh+':'+mm)>=0){isBusy=true;break;}
+      }
+      return{time:s,busy:isBusy};
+    });
   }
   return openSlots.map(function(s){return{time:s,busy:false};});
 }
