@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 :root{--tp:#4a1c6b;--tpl:#6b3fa0;--tpp:#f0eaf7;--tg:#c9a84c;--tgl:#e8d08a;--tgp:#fdf8ec;--td:#1a0a2e}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -187,6 +188,44 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .hd-hour-row{display:flex;justify-content:space-between;gap:16px;font-size:12px;color:#7a6a8a;padding:3px 0}
 .hd-hour-today{color:var(--td);font-weight:500}
 .hd-hour-closed{color:#c8bcd8}
+
+/* ── MOBILE ── */
+@media (max-width: 700px) {
+  .wrap{padding:8px;gap:8px}
+  .card{padding:12px}
+
+  /* Services: 1 Spalte */
+  .svc-grid{grid-template-columns:1fr}
+
+  /* Mitarbeiter: 1 Spalte */
+  .staff-grid{grid-template-columns:1fr}
+
+  /* Kalender + Summary untereinander */
+  .cal-sum-row{grid-template-columns:1fr}
+
+  /* Summary kommt UNTER dem Kalender */
+  .cal-sum-row > div:last-child{order:2}
+  .cal-sum-row > div:first-child{order:1}
+
+  /* Kalender Tage größer */
+  .cd{padding:8px 2px;font-size:12px}
+
+  /* Slots: 3 Spalten, größer zum Antippen */
+  .slots{grid-template-columns:repeat(3,1fr);gap:5px}
+  .sl{padding:10px 2px;font-size:12px}
+
+  /* Buchungsübersicht volle Breite */
+  .sumcard{border-radius:10px}
+  .sumrow{font-size:13px;padding:8px 13px}
+  .contact-block{padding:12px 13px}
+  .field input{padding:9px 10px;font-size:13px}
+  .phone-input{font-size:13px}
+  .book-btn{padding:14px;font-size:15px}
+
+  /* Header kompakter */
+  .hd-name{font-size:16px}
+  .hd-chip{font-size:12px}
+}
 </style>
 </head>
 <body>
