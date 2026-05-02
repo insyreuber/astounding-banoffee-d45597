@@ -500,6 +500,31 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
           <input type="text" id="f-instagram" placeholder="https://instagram.com/deinsalon">
         </div>
       </div>
+      <div class="frow frow-2">
+        <div class="field" style="margin-bottom:0">
+          <label style="display:flex;align-items:center;gap:5px">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            Handynummer (WhatsApp)
+          </label>
+          <input type="text" id="f-mobile" placeholder="https://wa.me/4915129897433">
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label style="display:flex;align-items:center;gap:5px">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+            Website
+          </label>
+          <input type="text" id="f-website" placeholder="https://meinsalon.de">
+        </div>
+      </div>
+      <div class="frow frow-1">
+        <div class="field" style="margin-bottom:0">
+          <label style="display:flex;align-items:center;gap:5px">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Google Maps Link
+          </label>
+          <input type="text" id="f-maps" placeholder="https://maps.google.com/?q=...">
+        </div>
+      </div>
     </div>
 
     <div class="card">
@@ -1276,6 +1301,9 @@ async function loadProfil(){
   document.getElementById('f-plz').value=d.postal_code||'';
   document.getElementById('f-city').value=d.city||'';
   document.getElementById('f-instagram').value=d.instagram_url||'';
+  document.getElementById('f-mobile').value=d.mobile_url||'';
+  document.getElementById('f-website').value=d.website_url||'';
+  document.getElementById('f-maps').value=d.google_maps_url||'';
   buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
   // Temporäre Öffnungszeiten laden
   tempEntries=[];tempIdCounter=0;tempCalOffset={};
@@ -1302,6 +1330,9 @@ async function saveProfil(){
     postal_code:document.getElementById('f-plz').value.trim(),
     city:document.getElementById('f-city').value.trim(),
     instagram_url:document.getElementById('f-instagram').value.trim(),
+    mobile_url:document.getElementById('f-mobile').value.trim(),
+    website_url:document.getElementById('f-website').value.trim(),
+    google_maps_url:document.getElementById('f-maps').value.trim(),
     arbeitszeiten:readHours('h-'),
     temp_arbeitszeiten:readTempEntries()
   }).eq('id',SALON_ID);
