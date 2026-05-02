@@ -491,6 +491,15 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
         <div class="field" style="margin-bottom:0"><label>PLZ</label><input type="text" id="f-plz" placeholder="51674"></div>
         <div class="field" style="margin-bottom:0"><label>Stadt</label><input type="text" id="f-city" placeholder="Wiehl"></div>
       </div>
+      <div class="frow frow-1">
+        <div class="field" style="margin-bottom:0">
+          <label style="display:flex;align-items:center;gap:5px">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            Instagram
+          </label>
+          <input type="text" id="f-instagram" placeholder="https://instagram.com/deinsalon">
+        </div>
+      </div>
     </div>
 
     <div class="card">
@@ -1266,6 +1275,7 @@ async function loadProfil(){
   document.getElementById('f-house').value=d.house_number||'';
   document.getElementById('f-plz').value=d.postal_code||'';
   document.getElementById('f-city').value=d.city||'';
+  document.getElementById('f-instagram').value=d.instagram_url||'';
   buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
   // Temporäre Öffnungszeiten laden
   tempEntries=[];tempIdCounter=0;tempCalOffset={};
@@ -1291,6 +1301,7 @@ async function saveProfil(){
     house_number:document.getElementById('f-house').value.trim(),
     postal_code:document.getElementById('f-plz').value.trim(),
     city:document.getElementById('f-city').value.trim(),
+    instagram_url:document.getElementById('f-instagram').value.trim(),
     arbeitszeiten:readHours('h-'),
     temp_arbeitszeiten:readTempEntries()
   }).eq('id',SALON_ID);
