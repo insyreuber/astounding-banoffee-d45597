@@ -693,19 +693,73 @@ function render(){
   },{once:true});
 }
 
-window.submitBooking=function(){
-  var dp=st.day?st.day.split('-'):null;
-  var dayStr=dp?dp[2]+'. '+new Date(+dp[0],+dp[1]-1,+dp[2]).toLocaleDateString('de-DE',{month:'short',day:'numeric'})+' '+dp[0]:'';
-  var svcNames=st.services.map(function(s){var svc=fsvc(s.svcId);return svc?svc.name:'';}).filter(Boolean).join(' + ');
-  var tot=totalPreis();
-  document.getElementById('app').innerHTML='<div class="conf">'
-    +'<div class="conf-cc"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>'
-    +'<div class="conf-t">Buchung eingegangen!</div>'
-    +'<p class="conf-s">Bestätigung per SMS an <strong style="color:#fff">'+normPhone(st.phone)+'</strong></p>'
-    +'<div><span class="cpill">'+svcNames+'</span>'
-    +(tot?'<span class="cpill g">'+tot+' €</span>':'')
-    +'<span class="cpill g">'+(st.slot||'')+' Uhr · '+dayStr+'</span></div>'
-    +'<button class="reset-btn" onclick="resetAll()">Neuen Termin buchen</button></div>';
+window.submitBooking=async function(){
+  if(!canBook())return;
+  var btn=document.querySelector('.book-btn');
+  if(btn){btn.disabled=true;btn.textContent='Wird gebucht…';}
+
+  var salonId=new URLSearchParams(window.location.search).get('salon_id');
+  var dp=st.day.split('-');
+  var dateFormatted=dp[0]+'-'+('0'+dp[1]).slice(-2)+'-'+('0'+dp[2]).slice(-2);
+
+  var services=st.services.map(function(s){
+    var svc=fsvc(s.svcId);
+    var v=fvar(s.varId);
+    return{
+      service_id:s.svcId,
+      service_name:svc?svc.name:'',
+      variante_id:s.varId,
+      variante_name:v?v.service_name:'',
+      dauer_minuten:v?v.min:0,
+      preis:v?v.preis:0
+    };
+  });
+
+  var payload={
+    salon_id:salonId,
+    mitarbeiter_id:st.stf1==='any'?null:st.stf1,
+    date:dateFormatted,
+    time:st.slot,
+    duration_minutes:totalMinuten(),
+    services:services,
+    customer_name:st.name.trim(),
+    customer_phone:normPhone(st.phone),
+    whatsapp_notifications:document.getElementById('wa-toggle')?document.getElementById('wa-toggle').checked:true
+  };
+
+  try{
+    var res=await fetch('https://insy-n8n-u71054.vm.elestio.app/webhook/availability-check',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    var data=await res.json();
+    var raw=Array.isArray(data)?data[0]:data;
+
+    if(res.ok&&!raw.error){
+      var dayStr2=dp[2]+'. '+new Date(+dp[0],+dp[1]-1,+dp[2]).toLocaleDateString('de-DE',{month:'short',day:'numeric'});
+      var svcNames=st.services.map(function(s){var svc=fsvc(s.svcId);return svc?svc.name:'';}).filter(Boolean).join(' + ');
+      var tot=totalPreis();
+      document.getElementById('app').innerHTML='<div class="conf">'
+        +'<div class="conf-cc"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>'
+        +'<div class="conf-t">Buchung bestätigt!</div>'
+        +'<p class="conf-s">Du erhältst eine Bestätigung per WhatsApp an <strong style="color:#fff">'+normPhone(st.phone)+'</strong></p>'
+        +'<div>'
+        +'<span class="cpill">'+svcNames+'</span>'
+        +(tot?'<span class="cpill g">'+tot+' €</span>':'')
+        +'<span class="cpill g">'+st.slot+' Uhr · '+dayStr2+'</span>'
+        +'</div>'
+        +'<button class="reset-btn" onclick="resetAll()">Neuen Termin buchen</button></div>';
+    } else {
+      var msg=raw.message||raw.error||'Bitte wähle einen anderen Zeitpunkt.';
+      if(btn){btn.disabled=false;btn.textContent='Termin buchen →';}
+      alert('Buchung nicht möglich: '+msg);
+    }
+  }catch(err){
+    console.error('Buchungsfehler:',err);
+    if(btn){btn.disabled=false;btn.textContent='Termin buchen →';}
+    alert('Verbindungsfehler. Bitte versuche es erneut.');
+  }
 };
 window.resetAll=function(){
   st={services:[],stf1:'any',day:null,slot:null,name:'',phone:'',country:COUNTRIES[0]};
@@ -759,12 +813,7 @@ async function loadSalonProfile(){
     if(brandEl)brandEl.textContent='INSY RECEPTION';
     if(nameEl)nameEl.textContent=salonName;
     if(phoneEl){
-      var phoneHtml='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>'+salonPhone;
-      if(data.mobile_url){
-        phoneEl.outerHTML='<a class="hd-chip" id="salon-phone" href="tel:'+data.mobile_url.replace(/\s/g,'')+'" style="text-decoration:none;color:rgba(255,255,255,.55)">'+phoneHtml+'</a>';
-      } else {
-        phoneEl.innerHTML=phoneHtml;
-      }
+      phoneEl.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>'+salonPhone;
     }
     if(addressEl){
       addressEl.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>'+salonAddress;
@@ -779,7 +828,16 @@ async function loadSalonProfile(){
       var igEl=document.getElementById('salon-instagram');
       if(igEl){igEl.href=data.instagram_url;igEl.style.display='flex';}
     }
-    if(data.website_url){
+    if(data.mobile_url){
+      var mobileChip=document.createElement('a');
+      mobileChip.className='hd-chip';
+      mobileChip.id='salon-mobile';
+      mobileChip.href='tel:'+data.mobile_url.replace(/\s/g,'');
+      mobileChip.style.cssText='text-decoration:none;color:rgba(255,255,255,.55)';
+      mobileChip.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>'+data.mobile_url;
+      var phoneNode=document.getElementById('salon-phone');
+      if(phoneNode&&phoneNode.parentNode)phoneNode.parentNode.insertBefore(mobileChip,phoneNode.nextSibling);
+    }
       var webEl=document.getElementById('salon-website');
       if(webEl){webEl.href=data.website_url;webEl.style.display='flex';}
     }
