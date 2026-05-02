@@ -351,7 +351,8 @@ function normPhone(raw){
 }
 function phoneStatus(){
   if(!st.phone.trim())return'empty';
-  return st.country.re.test(normPhone(st.phone))?'ok':'err';
+  var norm=normPhone(st.phone);
+  return st.country.re.test(norm)||st.country.re.test(st.phone.replace(/[\s\-\(\)]/g,''))?'ok':'err';
 }
 function canBook(){
   if(!st.services.length)return false;
