@@ -758,7 +758,14 @@ async function loadSalonProfile(){
     var addressEl=document.getElementById('salon-address');
     if(brandEl)brandEl.textContent='INSY RECEPTION';
     if(nameEl)nameEl.textContent=salonName;
-    if(phoneEl)phoneEl.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.79 0 013.07 9.81 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>'+salonPhone;
+    if(phoneEl){
+      var phoneHtml='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>'+salonPhone;
+      if(data.mobile_url){
+        phoneEl.outerHTML='<a class="hd-chip" id="salon-phone" href="tel:'+data.mobile_url.replace(/\s/g,'')+'" style="text-decoration:none;color:rgba(255,255,255,.55)">'+phoneHtml+'</a>';
+      } else {
+        phoneEl.innerHTML=phoneHtml;
+      }
+    }
     if(addressEl){
       addressEl.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>'+salonAddress;
       if(data.google_maps_url){
@@ -772,16 +779,13 @@ async function loadSalonProfile(){
       var igEl=document.getElementById('salon-instagram');
       if(igEl){igEl.href=data.instagram_url;igEl.style.display='flex';}
     }
-    if(data.mobile_url){
-      var waEl=document.getElementById('salon-whatsapp');
-      if(waEl){waEl.href=data.mobile_url;waEl.style.display='flex';}
-    }
     if(data.website_url){
       var webEl=document.getElementById('salon-website');
       if(webEl){webEl.href=data.website_url;webEl.style.display='flex';}
     }
     // Öffnungszeiten global speichern für Kalender
     window.SALON_AZ=data.arbeitszeiten||null;
+    renderWorkingHours(data.arbeitszeiten);
     await loadServices(salonId);
     await loadMitarbeiter(salonId);
   }catch(err){console.error('JS Fehler:',err);}
