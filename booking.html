@@ -609,7 +609,7 @@ function mkPhone(){
     +'<span class="phone-dial">'+st.country.dial+'</span>'
     +'<span style="font-size:9px;color:#7a6a8a">▾</span>'
     +drop+'</div>'
-    +'<input class="phone-input" type="tel" placeholder="0151 12345678" value="'+raw+'" oninput="st.phone=this.value;renderPhoneOnly();renderSumOnly()">'
+    +'<input class="phone-input" type="tel" placeholder="0151 12345678" value="'+raw+'" oninput="st.phone=this.value;updatePhoneStatus();updateBookBtn()">'
     +'</div>'+statusMsg+'</div>';
 }
 
@@ -640,7 +640,7 @@ function mkSumCard(){
     +'<div class="contact-block">'
     +'<div class="contact-ttl">Kontaktdaten</div>'
     +'<div class="field"><label>Name *</label>'
-    +'<input type="text" placeholder="Lena Müller" value="'+st.name+'" oninput="st.name=this.value;renderSumOnly()"></div>'
+    +'<input type="text" placeholder="Lena Müller" value="'+st.name+'" id="sum-name-input" oninput="st.name=this.value;updateBookBtn()"></div>'
     +'<div class="field"><label>Mobilnummer *</label>'
     +'<div id="phone-outer">'+mkPhone()+'</div></div>'
     +'<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:1px solid var(--border);margin-top:4px">'
@@ -661,6 +661,19 @@ function mkSumCard(){
 function renderCalOnly(){var el=document.getElementById('cal-inner');if(el)el.innerHTML=mkCal();}
 function renderPhoneOnly(){var el=document.getElementById('phone-outer');if(el)el.innerHTML=mkPhone();}
 function renderSumOnly(){var el=document.getElementById('sum-col');if(el)el.innerHTML=mkSumCard();}
+
+function updatePhoneStatus(){
+  var statusEl=document.querySelector('.phone-status');
+  if(!statusEl)return;
+  var s=phoneStatus();
+  var raw=st.phone.trim();
+  if(!raw){statusEl.className='phone-status hint';statusEl.textContent='z.B. 0151 12345678';}
+  else if(s==='ok'){statusEl.className='phone-status ok';statusEl.textContent='Gültige Mobilnummer';}
+  else{statusEl.className='phone-status err';statusEl.textContent='Ungültige Nummer für '+st.country.name;}
+  var wrap=document.querySelector('.phone-wrap');
+  if(wrap){wrap.className='phone-wrap'+(raw?(s==='ok'?' ok':' err'):'');}
+  updateBookBtn();
+}
 
 function render(){
   document.getElementById('app').innerHTML=
