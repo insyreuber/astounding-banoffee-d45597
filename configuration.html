@@ -268,9 +268,11 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   /* Sec header */
   .sec-hdr{flex-direction:column;align-items:flex-start;gap:8px}
 
-  /* Salon profil: zwei Felder nebeneinander → untereinander */
+  /* Formularfelder */
   .frow{grid-template-columns:1fr !important}
   .frow-2{grid-template-columns:1fr 1fr !important}
+  /* Stadt/PLZ/Hausnummer Zeile bleibt nebeneinander auf Mobile */
+  .frow[style*="grid-template-columns:1fr 80px"]{grid-template-columns:1fr 70px 80px !important}
 
   /* Services: Insy + Eigene untereinander */
   #panel-services > div[style*="grid-template-columns"]{
@@ -396,20 +398,20 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         Allgemein
       </div>
-      <div class="frow frow-2">
+      <div class="frow frow-1">
         <div class="field"><label>Salonname (im Widget)</label><input type="text" id="f-brand" placeholder="z.B. Wellness Store Weiershagen"></div>
-        <div class="field" style="display:grid;grid-template-columns:70px 1fr;gap:8px;align-items:end">
-          <div><label style="font-size:11px;font-weight:500;color:var(--muted);display:block;margin-bottom:5px">Vorwahl</label><input type="text" id="f-area-code" placeholder="02262"></div>
-          <div><label style="font-size:11px;font-weight:500;color:var(--muted);display:block;margin-bottom:5px">Telefonnummer</label><input type="text" id="f-phone-number" placeholder="79679975"></div>
-        </div>
       </div>
-      <div class="frow frow-3">
-        <div class="field"><label>Straße</label><input type="text" id="f-street" placeholder="Hückhausener Str."></div>
-        <div class="field"><label>Hausnummer</label><input type="text" id="f-house" placeholder="234"></div>
-        <div class="field"><label>PLZ</label><input type="text" id="f-plz" placeholder="51674"></div>
+      <div class="frow frow-2">
+        <div class="field"><label>Vorwahl</label><input type="text" id="f-area-code" placeholder="02262"></div>
+        <div class="field"><label>Telefonnummer</label><input type="text" id="f-phone-number" placeholder="79679975"></div>
       </div>
       <div class="frow frow-1">
-        <div class="field"><label>Stadt</label><input type="text" id="f-city" placeholder="Wiehl"></div>
+        <div class="field"><label>Straße</label><input type="text" id="f-street" placeholder="Hückhausener Str."></div>
+      </div>
+      <div class="frow" style="grid-template-columns:1fr 80px 100px;gap:12px;margin-bottom:12px">
+        <div class="field" style="margin-bottom:0"><label>Stadt</label><input type="text" id="f-city" placeholder="Wiehl"></div>
+        <div class="field" style="margin-bottom:0"><label>PLZ</label><input type="text" id="f-plz" placeholder="51674"></div>
+        <div class="field" style="margin-bottom:0"><label>Hausnummer</label><input type="text" id="f-house" placeholder="12a"></div>
       </div>
     </div>
 
@@ -455,7 +457,6 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
         <div class="sec-sub">Insy-Funktionen & eigene Dienstleistungen</div>
       </div>
       <div style="display:flex;align-items:center;gap:10px">
-        <div style="font-size:18px;font-weight:600;color:var(--td)">Eigene Dienstleistungen</div>
         <button class="btn btn-sm btn-outline" onclick="openSvcModal()">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           Hinzufügen
