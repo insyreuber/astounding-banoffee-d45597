@@ -610,7 +610,7 @@ function mkPhone(){
     +'<span class="phone-dial">'+st.country.dial+'</span>'
     +'<span style="font-size:9px;color:#7a6a8a">▾</span>'
     +drop+'</div>'
-    +'<input class="phone-input" type="tel" placeholder="0151 12345678" value="'+raw+'" oninput="st.phone=this.value;updatePhoneStatus();updateBookBtn()">'
+    +'<input class="phone-input" type="tel" placeholder="0151 12345678" value="'+raw+'" id="sum-phone-input" oninput="st.phone=this.value;var p=this.selectionStart;renderPhoneOnly();renderSumOnly();var el=document.getElementById(\'sum-phone-input\');if(el){el.focus();el.setSelectionRange(p,p);}">'
     +'</div>'+statusMsg+'</div>';
 }
 
@@ -641,7 +641,7 @@ function mkSumCard(){
     +'<div class="contact-block">'
     +'<div class="contact-ttl">Kontaktdaten</div>'
     +'<div class="field"><label>Name *</label>'
-    +'<input type="text" placeholder="Lena Müller" value="'+st.name+'" id="sum-name-input" oninput="st.name=this.value;updateBookBtn()"></div>'
+    +'<input type="text" placeholder="Lena Müller" value="'+st.name+'" id="sum-name-input" oninput="st.name=this.value;var p=this.selectionStart;renderSumOnly();var el=document.getElementById(\'sum-name-input\');if(el){el.focus();el.setSelectionRange(p,p);}"></div>'
     +'<div class="field"><label>Mobilnummer *</label>'
     +'<div id="phone-outer">'+mkPhone()+'</div></div>'
     +'<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:1px solid var(--border);margin-top:4px">'
