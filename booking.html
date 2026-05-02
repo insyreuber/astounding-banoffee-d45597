@@ -253,6 +253,10 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
           <span id="today-hours-label">09:00 – 17:00 ▾</span>
           <div class="hd-hours-drop" id="hours-drop"></div>
         </div>
+        <a class="hd-chip" id="salon-instagram" href="#" target="_blank" style="display:none;text-decoration:none;color:rgba(255,255,255,.55)">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          Instagram
+        </a>
       </div>
     </div>
   </div>
@@ -748,7 +752,10 @@ async function loadSalonProfile(){
     if(nameEl)nameEl.textContent=salonName;
     if(phoneEl)phoneEl.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.79 0 013.07 9.81 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>'+salonPhone;
     if(addressEl)addressEl.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>'+salonAddress;
-    renderWorkingHours(data.arbeitszeiten);
+    if(data.instagram_url){
+      var igEl=document.getElementById('salon-instagram');
+      if(igEl){igEl.href=data.instagram_url;igEl.style.display='flex';}
+    }
     // Öffnungszeiten global speichern für Kalender
     window.SALON_AZ=data.arbeitszeiten||null;
     await loadServices(salonId);
