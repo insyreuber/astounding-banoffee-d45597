@@ -34,7 +34,8 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
   border-radius:50%;
   background:var(--tg);
   color:var(--td);
-  display:flex;align-items:center;justify-content:center;
+  display:none;
+  align-items:center;justify-content:center;
   box-shadow:0 4px 20px rgba(74,28,107,0.25);
   z-index:999;
   text-decoration:none;
@@ -304,6 +305,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   .nav-tab svg{display:inline-block;margin-right:8px}
   .nav-tab.active{border-left:3px solid var(--tg);background:rgba(255,255,255,.07)}
   .nav-right{display:none}
+  .fab-booking{display:flex}
 
   /* Kein seitliches Wischen bei Services */
   body{overflow-x:hidden}
@@ -449,10 +451,14 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
     </div>
   </div>
   <div class="nav-right">
+    <a class="nav-booking-btn" id="nav-booking-btn-desktop" href="#" target="_blank">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Buchungsseite öffnen
+    </a>
   </div>
 </nav>
 
-<!-- Floating Booking Button -->
+<!-- Floating Booking Button (Mobile) -->
 <a class="fab-booking" id="nav-booking-link" href="#" target="_blank" title="Buchungsseite öffnen">
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
 </a>
@@ -1230,7 +1236,10 @@ function readTempEntries(){
 }
 async function loadProfil(){
   if(!SALON_ID){toast('Keine salon_id in der URL','error');buildHoursCols(null,'hours-cols','h-',false);return;}
+  var bookingBtn=document.getElementById('nav-booking-link');
   if(bookingBtn)bookingBtn.href='https://insy-reception.com/booking?salon_id='+SALON_ID;
+  var desktopBtn=document.getElementById('nav-booking-btn-desktop');
+  if(desktopBtn)desktopBtn.href='https://insy-reception.com/booking?salon_id='+SALON_ID;
   var res=await sb.from('kunden_profile').select('*').eq('id',SALON_ID).single();
   if(res.error){toast('Profil nicht gefunden','error');buildHoursCols(null,'hours-cols','h-',false);return;}
   var d=res.data;
