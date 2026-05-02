@@ -34,7 +34,7 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
   border-radius:50%;
   background:var(--tg);
   color:var(--td);
-  display:none;
+  display:flex;
   align-items:center;justify-content:center;
   box-shadow:0 4px 20px rgba(74,28,107,0.25);
   z-index:999;
@@ -754,9 +754,15 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
                 Wird generiert…
               </div>
             </div>
-            <div style="margin-top:10px;font-size:14px;font-weight:600;color:var(--td);letter-spacing:0.01em">Hier Termin buchen</div>
+            <div id="qr-text-preview" style="margin-top:10px;font-size:14px;font-weight:600;color:var(--td);letter-spacing:0.01em">Hier Termin buchen</div>
             <div style="margin-top:4px;font-size:10px;color:var(--muted);letter-spacing:0.04em">insy-reception.com</div>
           </div>
+        </div>
+
+        <!-- Text anpassen -->
+        <div class="field" style="margin-bottom:14px">
+          <label>Text unter dem QR-Code</label>
+          <input type="text" id="qr-text" value="Hier Termin buchen" placeholder="Hier Termin buchen" oninput="document.getElementById('qr-text-preview').textContent=this.value||'Hier Termin buchen'">
         </div>
 
         <!-- Farbe & Größe -->
@@ -1427,6 +1433,9 @@ function downloadQR(format){
   var qrCanvas=document.querySelector('#qr-output canvas');
   if(!qrCanvas){toast('QR-Code zuerst generieren','error');return;}
 
+  var qrTextInput=document.getElementById('qr-text');
+  var qrText=qrTextInput?qrTextInput.value.trim()||'Hier Termin buchen':'Hier Termin buchen';
+
   // Neues Canvas mit QR + Text erstellen
   var fg=document.getElementById('qr-fg').value;
   var bg=document.getElementById('qr-bg').value;
@@ -1448,7 +1457,7 @@ function downloadQR(format){
   ctx.fillStyle=fg;
   ctx.font='bold 13px DM Sans, system-ui, sans-serif';
   ctx.textAlign='center';
-  ctx.fillText('Hier Termin buchen',canvas.width/2,208);
+  ctx.fillText(qrText,canvas.width/2,208);
 
   // "insy-reception.com"
   ctx.fillStyle='rgba(0,0,0,0.35)';
