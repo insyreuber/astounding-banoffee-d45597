@@ -626,6 +626,101 @@
   .hero-benefits { animation-delay: 0.35s; }
   .hero-actions { animation-delay: 0.45s; }
   .hero-visual { animation: fadeUp 0.8s 0.3s ease forwards; opacity: 0; }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+
+    /* Nav */
+    nav {
+      padding: 1rem 1.5rem;
+    }
+    .nav-links { display: none; }
+    .nav-cta { padding: 0.5rem 1.1rem; font-size: 0.8rem; }
+
+    /* Hero: untereinander */
+    .hero {
+      grid-template-columns: 1fr;
+      padding: 6rem 1.5rem 3rem;
+      min-height: auto;
+      text-align: center;
+    }
+    .hero-eyebrow { justify-content: center; }
+    .hero-content { max-width: 100%; }
+    .hero h1 { font-size: clamp(2rem, 8vw, 2.8rem); }
+    .hero-sub { font-size: 0.95rem; }
+    .hero-benefit { justify-content: center; }
+    .hero-actions { justify-content: center; }
+    .hero-deco, .hero-deco-2 { display: none; }
+
+    /* Chat Container kleiner */
+    .hero-visual {
+      height: 380px;
+      margin-top: 2rem;
+    }
+    .wa-chat-container {
+      width: 100%;
+      max-width: 320px;
+      height: 360px;
+    }
+
+    /* Trust Bar */
+    .trust-bar {
+      flex-wrap: wrap;
+      gap: 0;
+      padding: 1.2rem 1rem;
+    }
+    .trust-item { flex: 1; min-width: 45%; padding: 0.8rem; }
+    .trust-sep { display: none; }
+    .trust-number { font-size: 1.6rem; }
+
+    /* Sections */
+    .section { padding: 4rem 1.5rem; }
+    .section-header { margin-bottom: 2.5rem; }
+    .section-tag { font-size: 0.7rem; }
+    .section-title { font-size: clamp(1.6rem, 6vw, 2.2rem); }
+
+    /* Features Grid */
+    .features-grid {
+      grid-template-columns: 1fr !important;
+      gap: 1rem;
+    }
+
+    /* Steps */
+    .steps-grid {
+      grid-template-columns: 1fr !important;
+      gap: 1.5rem;
+    }
+    .step-connector { display: none; }
+
+    /* Pricing */
+    .pricing-grid {
+      grid-template-columns: 1fr !important;
+      gap: 1.2rem;
+    }
+
+    /* FAQ */
+    .faq-grid {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* CTA Section */
+    .cta-section { padding: 4rem 1.5rem; }
+    .cta-title { font-size: clamp(1.6rem, 6vw, 2.2rem); }
+    .cta-actions { flex-direction: column; align-items: center; gap: 0.8rem; }
+    .cta-actions a { width: 100%; text-align: center; }
+
+    /* Footer */
+    footer { padding: 2.5rem 1.5rem 1.5rem; }
+    .footer-grid {
+      grid-template-columns: 1fr !important;
+      gap: 2rem;
+    }
+    .footer-bottom {
+      flex-direction: column;
+      gap: 0.8rem;
+      text-align: center;
+    }
+  }
 </style>
 </head>
 <body>
