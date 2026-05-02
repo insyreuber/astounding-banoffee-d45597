@@ -237,10 +237,10 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
       <div class="hd-logo" id="brand-name">Insy Reception</div>
       <div class="hd-name" id="salon-name">Salonname</div>
       <div class="hd-meta">
-        <div class="hd-chip" id="salon-address">
+        <a class="hd-chip" id="salon-address" href="#" style="text-decoration:none;color:rgba(255,255,255,.55);cursor:default">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
           Adresse
-        </div>
+        </a>
         <div class="hd-chip" id="salon-phone">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.79 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
           Telefonnummer
@@ -256,6 +256,14 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
         <a class="hd-chip" id="salon-instagram" href="#" target="_blank" style="display:none;text-decoration:none;color:rgba(255,255,255,.55)">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
           Instagram
+        </a>
+        <a class="hd-chip" id="salon-whatsapp" href="#" target="_blank" style="display:none;text-decoration:none;color:rgba(255,255,255,.55)">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.072 22l4.948-1.348A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
+          WhatsApp
+        </a>
+        <a class="hd-chip" id="salon-website" href="#" target="_blank" style="display:none;text-decoration:none;color:rgba(255,255,255,.55)">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+          Website
         </a>
       </div>
     </div>
@@ -755,6 +763,18 @@ async function loadSalonProfile(){
     if(data.instagram_url){
       var igEl=document.getElementById('salon-instagram');
       if(igEl){igEl.href=data.instagram_url;igEl.style.display='flex';}
+    }
+    if(data.mobile_url){
+      var waEl=document.getElementById('salon-whatsapp');
+      if(waEl){waEl.href=data.mobile_url;waEl.style.display='flex';}
+    }
+    if(data.website_url){
+      var webEl=document.getElementById('salon-website');
+      if(webEl){webEl.href=data.website_url;webEl.style.display='flex';}
+    }
+    if(data.google_maps_url){
+      var addrEl=document.getElementById('salon-address');
+      if(addrEl){addrEl.href=data.google_maps_url;addrEl.target='_blank';addrEl.style.cursor='pointer';addrEl.style.color='rgba(255,255,255,.75)';}
     }
     // Öffnungszeiten global speichern für Kalender
     window.SALON_AZ=data.arbeitszeiten||null;
