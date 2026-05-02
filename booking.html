@@ -838,6 +838,7 @@ async function loadSalonProfile(){
       var phoneNode=document.getElementById('salon-phone');
       if(phoneNode&&phoneNode.parentNode)phoneNode.parentNode.insertBefore(mobileChip,phoneNode.nextSibling);
     }
+    if(data.website_url){
       var webEl=document.getElementById('salon-website');
       if(webEl){webEl.href=data.website_url;webEl.style.display='flex';}
     }
