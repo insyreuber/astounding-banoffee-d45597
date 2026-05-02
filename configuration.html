@@ -241,6 +241,97 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .empty-icon{font-size:28px;margin-bottom:8px;opacity:.35}
 .empty-text{font-size:13px}
 hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+
+  /* Nav: horizontal scrollbar */
+  .nav{
+    padding:0 10px;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    gap:4px;
+  }
+  .nav::-webkit-scrollbar{display:none}
+  .nav-tab{
+    padding:10px 12px;
+    font-size:11px;
+    white-space:nowrap;
+    flex-shrink:0;
+  }
+  .nav-tab svg{display:none}
+
+  /* Main content */
+  .main{padding:12px 10px}
+
+  /* Sec header */
+  .sec-hdr{flex-direction:column;align-items:flex-start;gap:8px}
+
+  /* Salon profil: zwei Felder nebeneinander → untereinander */
+  .frow{grid-template-columns:1fr !important}
+  .frow-2{grid-template-columns:1fr 1fr !important}
+
+  /* Services: Insy + Eigene untereinander */
+  #panel-services > div[style*="grid-template-columns"]{
+    grid-template-columns:1fr !important;
+  }
+
+  /* Varianten: kompakter */
+  .var-row{
+    grid-template-columns:1fr !important;
+    gap:6px;
+  }
+  .var-header{display:none}
+
+  /* Mitarbeiter Layout: sidebar + wochenplan untereinander */
+  .ma-layout{grid-template-columns:1fr !important;flex-direction:column}
+  .ma-sidebar{max-height:none}
+
+  /* Staff cards: volle Breite */
+  .staff-card{width:100%}
+
+  /* Öffnungszeiten: 4 Tage pro Zeile */
+  .hours-cols{grid-template-columns:repeat(4,1fr) !important}
+  .hours-cols-sm{grid-template-columns:repeat(4,1fr) !important}
+
+  /* Modal: volle Breite */
+  .modal{
+    width:calc(100vw - 24px) !important;
+    max-width:none !important;
+    max-height:90vh;
+    overflow-y:auto;
+    margin:12px;
+    top:auto !important;
+    left:12px !important;
+    transform:none !important;
+    bottom:0;
+  }
+  .modal-overlay{align-items:flex-end}
+
+  /* QR: untereinander */
+  #panel-qr > div[style*="grid-template-columns"]{
+    grid-template-columns:1fr !important;
+  }
+
+  /* Bills: kompakter */
+  #bills-list .card{
+    flex-direction:column;
+    align-items:flex-start !important;
+    gap:8px;
+  }
+
+  /* Karten */
+  .card{padding:12px}
+
+  /* Save bar */
+  .save-bar{flex-direction:column;gap:8px;align-items:stretch}
+  .save-bar .btn{width:100%;justify-content:center}
+
+  /* Kalender Wochenplan: scrollbar */
+  .weekplan-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+}
+
 </style>
 </head>
 <body>
