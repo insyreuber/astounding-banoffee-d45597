@@ -379,13 +379,19 @@ window.toggleSvc=function(id){
   render();
 };
 window.pickVar=function(svcId,varId){
+  if(!isVarAllowed(varId))return;
   var entry=getSvcEntry(svcId);
   if(entry){entry.varId=varId;}
   st.slot=null;
   render();
 };
 window.pickStf=function(id){
-  st.stf1=id;st.slot=null;render();
+  st.stf1=id;st.slot=null;
+  // Nicht mehr erlaubte Varianten zurücksetzen
+  st.services.forEach(function(s){
+    if(s.varId&&!isVarAllowed(s.varId))s.varId=null;
+  });
+  render();
 };
 window.toggleStaff=function(){
   staffOpen=!staffOpen;
@@ -507,7 +513,12 @@ function selClass(val1,val2,id,isDual){
   return'';
 }
 
-function mkSvcCards(){
+function getSelectedStaff(){return STAFF.filter(function(s){return s.id===st.stf1;})[0]||null;}
+function isVarAllowed(varId){
+  var staff=getSelectedStaff();
+  if(!staff||staff.id==='any'||!staff.allowedVarianten)return true; // Ohne Präferenz: alles erlaubt
+  return staff.allowedVarianten.indexOf(varId)>=0;
+}
   if(!SVCS.length)return'<div style="font-size:12px;color:#7a6a8a;padding:8px">Services werden geladen…</div>';
   return SVCS.map(function(s){
     var entry=getSvcEntry(s.id);
@@ -519,8 +530,16 @@ function mkSvcCards(){
       varHtml='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid rgba(74,28,107,0.12)">';
       vars.forEach(function(v){
         var isSel=entry.varId===v.id;
-        varHtml+='<div onclick="event.stopPropagation();pickVar(\'' +s.id+ '\',\'' +v.id+ '\')" style="padding:5px 10px;border-radius:6px;font-size:11px;cursor:pointer;border:1.5px solid '+(isSel?'var(--tp)':'#e8e0f0')+';background:'+(isSel?'var(--tp)':'#fff')+';color:'+(isSel?'#fff':'var(--td)')+';font-weight:'+(isSel?'600':'400')+';transition:all .15s;">';
-        varHtml+=(v.service_name?v.service_name+' · ':'')+v.min+' Min'+(v.preis?' \xb7 '+v.preis+' \u20ac':'');
+        var allowed=isVarAllowed(v.id);
+        varHtml+='<div onclick="'+(allowed?'event.stopPropagation();pickVar(\''+s.id+'\',\''+v.id+'\')':'event.stopPropagation()')+'" style="'
+          +'padding:5px 10px;border-radius:6px;font-size:11px;'
+          +'cursor:'+(allowed?'pointer':'not-allowed')+';transition:all .15s;'
+          +'border:1.5px solid '+(isSel?'var(--tp)':allowed?'#e8e0f0':'#ece8f0')+';'
+          +'background:'+(isSel?'var(--tp)':allowed?'#fff':'#f5f3f8')+';'
+          +'color:'+(isSel?'#fff':allowed?'var(--td)':'#c0b8cc')+';'
+          +'font-weight:'+(isSel?'600':'400')+';">';
+        varHtml+=(v.service_name?v.service_name+' · ':'')+v.min+' Min'+(v.preis?' · '+v.preis+' €':'');
+        if(!allowed)varHtml+=' · <span style="font-size:9px">nicht verfügbar</span>';
         varHtml+='</div>';
       });
       varHtml+='</div>';
@@ -876,11 +895,18 @@ async function loadMitarbeiter(salonId){
       .order('sortierung');
     if(res.error){console.error('Mitarbeiter Fehler:',res.error);return;}
     var mitarbeiter=res.data||[];
-    // "Ohne Präferenz" bleibt immer erster Eintrag
-    STAFF=[{id:'any',name:'Ohne Präferenz',role:'Nächste verfügbare Person',ini:'?',gold:true,avail:true}];
+
+    // Berechtigungen laden
+    var mIds=mitarbeiter.map(function(m){return m.id;});
+    var permRes=mIds.length?await sb.from('mitarbeiter_service_varianten').select('*').in('mitarbeiter_id',mIds).eq('aktiv',true):{data:[]};
+    var perms=permRes.data||[];
+
+    // STAFF aufbauen mit erlaubten Varianten-IDs
+    STAFF=[{id:'any',name:'Ohne Präferenz',role:'Nächste verfügbare Person',ini:'?',gold:true,avail:true,allowedVarianten:null}];
     mitarbeiter.forEach(function(m){
       var name=m.display_name||m.name||'?';
       var ini=name.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
+      var allowedVarianten=perms.filter(function(p){return p.mitarbeiter_id===m.id;}).map(function(p){return p.service_variante_id;});
       STAFF.push({
         id:m.id,
         name:name,
@@ -888,7 +914,8 @@ async function loadMitarbeiter(salonId){
         ini:ini,
         avail:true,
         color:m.farbe||'#4a1c6b',
-        calendar_id:m.google_calendar_id
+        calendar_id:m.google_calendar_id,
+        allowedVarianten:allowedVarianten
       });
     });
     render();
