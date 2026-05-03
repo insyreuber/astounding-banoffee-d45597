@@ -2238,7 +2238,7 @@ async function loadStaff(){
   var staff=res.data||[];
   var assigns=[];
   if(staff.length){
-    var aRes=await sb.from('mitarbeiter_services').select('*').in('mitarbeiter_id',staff.map(function(s){return s.id;}));
+    var aRes=await sb.from('mitarbeiter_service_varianten').select('*').in('mitarbeiter_id',staff.map(function(s){return s.id;}));
     if(!aRes.error)assigns=aRes.data||[];
   }
   staffData=staff.map(function(s){
@@ -2543,14 +2543,17 @@ async function saveStaff(){
   }
   btn.disabled=false;
   if(res.error){toast('Fehler: '+res.error.message,'error');return;}
-  var staffId=res.data.id;
+  var staffId=editingStaffId||res.data.id;
   var checkedVarianten=getCheckedVarianten();
+  console.log('staffId:', staffId, 'checkedVarianten:', checkedVarianten);
   // Alle alten Einträge löschen, neue einfügen
-  await sb.from('mitarbeiter_services').delete().eq('mitarbeiter_id',staffId);
+  var delRes=await sb.from('mitarbeiter_service_varianten').delete().eq('mitarbeiter_id',staffId);
+  console.log('delete result:', delRes);
   if(checkedVarianten.length){
-    await sb.from('mitarbeiter_services').insert(
+    var insRes=await sb.from('mitarbeiter_service_varianten').insert(
       checkedVarianten.map(function(vid){return{mitarbeiter_id:staffId,service_variante_id:vid,aktiv:true};})
     );
+    console.log('insert result:', insRes);
   }
   closeStaffModal();
   toast((editingStaffId?'Mitarbeiter aktualisiert':'Mitarbeiter angelegt')+' ✓','success');
@@ -2558,7 +2561,7 @@ async function saveStaff(){
 
 async function deleteStaff(id){
   if(!confirm('Mitarbeiter wirklich löschen?'))return;
-  await sb.from('mitarbeiter_services').delete().eq('mitarbeiter_id',id);
+  await sb.from('mitarbeiter_service_varianten').delete().eq('mitarbeiter_id',id);
   var res=await sb.from('mitarbeiter').delete().eq('id',id);
   if(res.error){toast('Fehler: '+res.error.message,'error');return;}
   staffData=staffData.filter(function(i){return i.mitarbeiter.id!==id;});
