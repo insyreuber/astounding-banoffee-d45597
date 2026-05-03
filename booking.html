@@ -516,9 +516,10 @@ function selClass(val1,val2,id,isDual){
 function getSelectedStaff(){return STAFF.filter(function(s){return s.id===st.stf1;})[0]||null;}
 function isVarAllowed(varId){
   var staff=getSelectedStaff();
-  if(!staff||staff.id==='any'||!staff.allowedVarianten)return true; // Ohne Präferenz: alles erlaubt
+  if(!staff||staff.id==='any'||!staff.allowedVarianten)return true;
   return staff.allowedVarianten.indexOf(varId)>=0;
 }
+function mkSvcCards(){
   if(!SVCS.length)return'<div style="font-size:12px;color:#7a6a8a;padding:8px">Services werden geladen…</div>';
   return SVCS.map(function(s){
     var entry=getSvcEntry(s.id);
