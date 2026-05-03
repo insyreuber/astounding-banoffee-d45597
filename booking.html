@@ -745,6 +745,11 @@ window.submitBooking=async function(){
   var dp=st.day.split('-');
   var dateFormatted=dp[0]+'-'+('0'+dp[1]).slice(-2)+'-'+('0'+dp[2]).slice(-2);
 
+  // Lokale Zeit mit Zeitzone senden (Europe/Berlin)
+  var timeParts=st.slot.split(':');
+  var localDate=new Date(+dp[0],+dp[1]-1,+dp[2],+timeParts[0],+timeParts[1],0);
+  var timeISO=localDate.toLocaleString('sv-SE',{timeZone:'Europe/Berlin'}).replace(' ','T');
+
   var services=st.services.map(function(s){
     var svc=fsvc(s.svcId);
     var v=fvar(s.varId);
@@ -763,6 +768,7 @@ window.submitBooking=async function(){
     mitarbeiter_id:st.stf1==='any'?null:st.stf1,
     date:dateFormatted,
     time:st.slot,
+    datetime:timeISO,
     duration_minutes:totalMinuten(),
     services:services,
     customer_name:st.name.trim(),
