@@ -747,7 +747,9 @@ window.submitBooking=async function(){
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(payload)
     });
-    var data=await res.json();
+    var text=await res.text();
+    var data={};
+    try{data=JSON.parse(text);}catch(e){data={};}
     var raw=Array.isArray(data)?data[0]:data;
 
     if(res.ok&&!raw.error){
