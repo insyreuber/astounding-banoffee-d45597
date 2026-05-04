@@ -856,6 +856,8 @@ window.rescheduleBooking=function(bookingId,googleEventId){
     }
   },100);
 };
+
+window.resetAll=function(){
   st={services:[],stf1:'any',day:null,slot:null,name:'',phone:'',country:COUNTRIES[0]};
   calOff=0;staffOpen=false;dropOpen=false;AVAIL_SLOTS={};BUSY={};render();
 };
