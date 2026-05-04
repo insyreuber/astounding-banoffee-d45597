@@ -786,13 +786,14 @@ window.submitBooking=async function(){
     var data={};
     try{data=JSON.parse(text);}catch(e){data={};}
     var raw=Array.isArray(data)?data[0]:data;
+    var bookingId=raw.booking_id||null;
+    var googleEventId=raw.google_event_id||null;
+    console.log('n8n response:', raw, 'bookingId:', bookingId, 'googleEventId:', googleEventId);
 
     if(res.ok&&!raw.error){
       var dayStr2=dp[2]+'. '+new Date(+dp[0],+dp[1]-1,+dp[2]).toLocaleDateString('de-DE',{month:'short',day:'numeric'});
       var svcNames=st.services.map(function(s){var svc=fsvc(s.svcId);return svc?svc.name:'';}).filter(Boolean).join(' + ');
       var tot=totalPreis();
-      var bookingId=raw.booking_id||raw.id||null;
-      var googleEventId=raw.google_event_id||null;
       document.getElementById('app').innerHTML='<div class="conf">'
         +'<div class="conf-cc"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>'
         +'<div class="conf-t">Buchung bestätigt!</div>'
