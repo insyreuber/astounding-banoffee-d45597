@@ -791,6 +791,8 @@ window.submitBooking=async function(){
       var dayStr2=dp[2]+'. '+new Date(+dp[0],+dp[1]-1,+dp[2]).toLocaleDateString('de-DE',{month:'short',day:'numeric'});
       var svcNames=st.services.map(function(s){var svc=fsvc(s.svcId);return svc?svc.name:'';}).filter(Boolean).join(' + ');
       var tot=totalPreis();
+      var bookingId=raw.booking_id||raw.id||null;
+      var googleEventId=raw.google_event_id||null;
       document.getElementById('app').innerHTML='<div class="conf">'
         +'<div class="conf-cc"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>'
         +'<div class="conf-t">Buchung bestätigt!</div>'
@@ -800,7 +802,17 @@ window.submitBooking=async function(){
         +(tot?'<span class="cpill g">'+tot+' €</span>':'')
         +'<span class="cpill g">'+st.slot+' Uhr · '+dayStr2+'</span>'
         +'</div>'
-        +'<button class="reset-btn" onclick="resetAll()">Neuen Termin buchen</button></div>';
+        +'<div style="display:flex;gap:10px;margin-top:1.2rem;flex-wrap:wrap;justify-content:center">'
+        +'<button class="reset-btn" onclick="cancelBooking(\''+bookingId+'\',\''+googleEventId+'\')" style="border-color:rgba(255,100,100,.5);color:#ffaaaa">'
+          +'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:5px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+          +'Termin stornieren'
+        +'</button>'
+        +'<button class="reset-btn" onclick="rescheduleBooking(\''+bookingId+'\',\''+googleEventId+'\')">'
+          +'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:5px"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>'
+          +'Termin verschieben'
+        +'</button>'
+        +'</div>'
+        +'</div>';
     } else {
       var msg=raw.message||raw.error||'Bitte wähle einen anderen Zeitpunkt.';
       if(btn){btn.disabled=false;btn.textContent='Termin buchen →';}
@@ -812,7 +824,38 @@ window.submitBooking=async function(){
     alert('Verbindungsfehler. Bitte versuche es erneut.');
   }
 };
-window.resetAll=function(){
+window.cancelBooking=async function(bookingId,googleEventId){
+  if(!confirm('Möchtest du den Termin wirklich stornieren?'))return;
+  try{
+    await fetch('https://insy-n8n-u71054.vm.elestio.app/webhook/cancel-booking',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({booking_id:bookingId,google_event_id:googleEventId})
+    });
+    document.getElementById('app').innerHTML='<div class="conf">'
+      +'<div class="conf-cc" style="background:rgba(255,100,100,.3)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>'
+      +'<div class="conf-t">Termin storniert</div>'
+      +'<p class="conf-s">Dein Termin wurde erfolgreich storniert.</p>'
+      +'<button class="reset-btn" onclick="resetAll()">Neuen Termin buchen</button></div>';
+  }catch(e){alert('Fehler beim Stornieren. Bitte ruf uns an.');}
+};
+
+window.rescheduleBooking=function(bookingId,googleEventId){
+  // Formular zurücksetzen und Booking-ID merken für Verschiebung
+  window._rescheduleId=bookingId;
+  window._rescheduleEventId=googleEventId;
+  resetAll();
+  // Nach dem Reset oben einen Hinweis anzeigen
+  setTimeout(function(){
+    var app=document.getElementById('app');
+    if(app){
+      var hint=document.createElement('div');
+      hint.style.cssText='background:var(--tpp);border:1.5px solid var(--tpl);border-radius:10px;padding:10px 16px;font-size:12px;color:var(--tpl);margin-bottom:12px;text-align:center';
+      hint.innerHTML='<strong>Termin verschieben</strong> — wähle einen neuen Termin';
+      app.insertBefore(hint,app.firstChild);
+    }
+  },100);
+};
   st={services:[],stf1:'any',day:null,slot:null,name:'',phone:'',country:COUNTRIES[0]};
   calOff=0;staffOpen=false;dropOpen=false;AVAIL_SLOTS={};BUSY={};render();
 };
