@@ -188,6 +188,7 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .hd-hour-row{display:flex;justify-content:space-between;gap:16px;font-size:12px;color:#7a6a8a;padding:3px 0}
 .hd-hour-today{color:var(--td);font-weight:500}
 .hd-hour-closed{color:#c8bcd8}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 /* ── MOBILE ── */
 @media (max-width: 700px) {
@@ -523,12 +524,31 @@ function isVarAllowed(varId){
   if(!staff||staff.id==='any'||!staff.allowedVarianten)return true;
   return staff.allowedVarianten.indexOf(varId)>=0;
 }
+
+// Prüft ob ein Service mindestens eine erlaubte Variante für den gewählten Mitarbeiter hat
+function svcHasAllowedVariant(svcId){
+  var staff=getSelectedStaff();
+  if(!staff||staff.id==='any'||!staff.allowedVarianten)return true;
+  var vars=VARIANTEN[svcId]||[];
+  return vars.some(function(v){return staff.allowedVarianten.indexOf(v.id)>=0;});
+}
+
+// Prüft ob ein Mitarbeiter alle gewählten Services bearbeiten kann
+function staffCanHandleSelectedServices(staffMember){
+  if(!staffMember||staffMember.id==='any'||!staffMember.allowedVarianten)return true;
+  return st.services.every(function(s){
+    var vars=VARIANTEN[s.svcId]||[];
+    return vars.some(function(v){return staffMember.allowedVarianten.indexOf(v.id)>=0;});
+  });
+}
+
 function mkSvcCards(){
   if(!SVCS.length)return'<div style="font-size:12px;color:#7a6a8a;padding:8px">Services werden geladen…</div>';
   return SVCS.map(function(s){
     var entry=getSvcEntry(s.id);
     var isSelected=!!entry;
     var vars=VARIANTEN[s.id]||[];
+    var hasAllowed=svcHasAllowedVariant(s.id);
     var minPreis=vars.length?Math.min.apply(null,vars.map(function(v){return v.preis;})):null;
     var varHtml='';
     if(isSelected&&vars.length){
@@ -549,11 +569,14 @@ function mkSvcCards(){
       });
       varHtml+='</div>';
     }
-    var html='<div class="svc '+(isSelected?'sel1only':'')+'" onclick="toggleSvc(\'' +s.id+ '\')">';
+    // Service nicht klickbar wenn kein Mitarbeiter ihn kann
+    var blocked=!hasAllowed&&!isSelected;
+    var html='<div class="svc '+(isSelected?'sel1only':blocked?'svc-blocked':'')+'" '+(blocked?'':'onclick="toggleSvc(\''+s.id+'\')"')+' style="'+(blocked?'opacity:0.45;cursor:not-allowed':'cursor:pointer')+'">';
     html+='<div class="svc-inner">';
     html+='<div style="display:flex;align-items:center;justify-content:space-between">';
     html+='<div class="svc-n">'+s.name+'</div>';
     if(isSelected)html+='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tp)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+    if(blocked)html+='<span style="font-size:9px;color:#c0b8cc">nicht verfügbar</span>';
     html+='</div>';
     if(s.desc)html+='<div class="svc-d">'+s.desc+'</div>';
     if(minPreis!==null&&!isSelected)html+='<div class="svc-p">ab '+minPreis+' €</div>';
@@ -565,8 +588,10 @@ function mkSvcCards(){
 function mkStaffGrid(){
   return'<div class="staff-grid">'+STAFF.map(function(p){
     var isSel=st.stf1===p.id;
+    var canHandle=st.services.length===0||staffCanHandleSelectedServices(p);
     var availHtml=p.id==='any'?'':(p.avail?'<div class="stf-av">● Verfügbar</div>':'<div class="stf-na">● Heute belegt</div>');
-    var html='<div class="stf '+(isSel?'sel1only':'')+'" onclick="pickStf(\'' +p.id+ '\')">';
+    var blocked=!canHandle&&!isSel;
+    var html='<div class="stf '+(isSel?'sel1only':blocked?'stf-blocked':'')+'" '+(blocked?'':'onclick="pickStf(\''+p.id+'\')"')+' style="'+(blocked?'opacity:0.45;cursor:not-allowed':'cursor:pointer')+'">';
     html+='<div class="stf-inner">';
     html+='<div class="av '+(p.gold?'g':'')+'">' +p.ini+'</div>';
     html+='<div><div class="stf-n">'+p.name+'</div><div class="stf-r">'+p.role+'</div>'+availHtml+'</div>';
@@ -596,9 +621,9 @@ function mkCal(){
   var slotsHtml=st.day
     ?SLOTS_LOADING
       ?'<div class="slot-lbl">Verfügbare Zeiten werden geladen…</div>'
-       +'<div style="display:flex;align-items:center;gap:8px;padding:16px 4px;color:var(--muted);font-size:13px">'
-       +'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg>'
-       +'Slots werden geladen…</div>'
+       +'<div style="display:flex;justify-content:center;padding:24px 0">'
+       +'<svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="var(--tpl)" stroke-width="3" stroke-linecap="round" style="animation:spin 0.8s linear infinite">'
+       +'<path d="M16 4 A12 12 0 0 1 28 16"/></svg></div>'
       :'<div class="slot-lbl">Verfügbare Zeiten'+(st.stf1&&st.stf1!=='any'?' — '+fname(st.stf1):'')+'</div>'
       +'<div class="slots">'+slots.filter(function(s){return!s.busy&&!s.closed;}).map(function(s){
         return'<div class="sl '+(st.slot===s.time?'ss':'')+'" onclick="pickSlot(\''+s.time+'\')">'
@@ -839,11 +864,12 @@ window.submitBooking=async function(){
 };
 window.cancelBooking=async function(bookingId,googleEventId){
   if(!confirm('Möchtest du den Termin wirklich stornieren?'))return;
+  var salonId=new URLSearchParams(window.location.search).get('salon_id');
   try{
     await fetch('https://insy-n8n-u71054.vm.elestio.app/webhook/cancel-booking',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({booking_id:bookingId,google_event_id:googleEventId})
+      body:JSON.stringify({booking_id:bookingId,google_event_id:googleEventId,salon_id:salonId})
     });
     document.getElementById('app').innerHTML='<div class="conf">'
       +'<div class="conf-cc" style="background:rgba(255,100,100,.3)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>'
