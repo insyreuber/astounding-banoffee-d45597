@@ -682,18 +682,33 @@
       overflow-x: auto;
       scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch;
-      gap: 1rem;
-      padding: 0.5rem 1rem 1.5rem;
+      gap: 12px;
+      padding: 0.5rem 0 1.5rem;
+      margin: 0 -1.5rem;
+      padding-left: calc(10vw);
+      padding-right: calc(10vw);
       scrollbar-width: none;
     }
     .pricing-cards-mobile::-webkit-scrollbar { display: none; }
     .pricing-cards-mobile .pricing-card {
-      flex: 0 0 80vw;
-      max-width: 320px;
+      flex: 0 0 75vw;
+      max-width: 280px;
       scroll-snap-align: center;
-      transition: transform 0.3s, box-shadow 0.3s;
+      transition: transform 0.3s, box-shadow 0.3s, opacity 0.3s;
+      opacity: 0.7;
+      transform: scale(0.95);
     }
-    .pricing-cards-desktop { display: none; }
+    .pricing-cards-mobile .pricing-card.active-card {
+      opacity: 1;
+      transform: scale(1);
+      box-shadow: 0 12px 40px rgba(92,31,138,0.2);
+    }
+    .pricing-cards-desktop { display: none !important; }
+
+    /* Kalender: volle Breite + max Höhe */
+    .demo-cal-card { order: 3; border-radius: 14px !important; }
+    .demo-cal-frame { height: 70vw !important; max-height: 480px; min-height: 300px; }
+    .demo-cal-frame iframe { min-height: unset !important; height: 100% !important; }
 
     /* Sections */
     .section { padding: 4rem 1.5rem; }
@@ -945,16 +960,31 @@ function refreshCal() {
 }
 setInterval(refreshCal, 5 * 60 * 1000);
 
-// Pricing Swiper Dots
+// Pricing Swiper Dots + active card
 var swiper=document.getElementById('pricing-swiper');
 if(swiper){
-  swiper.addEventListener('scroll',function(){
-    var cardW=swiper.querySelector('.pricing-card').offsetWidth+16;
-    var idx=Math.round(swiper.scrollLeft/cardW);
-    document.querySelectorAll('.swiper-dot').forEach(function(d,i){
-      d.classList.toggle('active',i===idx);
+  function updateSwiper(){
+    var cards=swiper.querySelectorAll('.pricing-card');
+    var swiperRect=swiper.getBoundingClientRect();
+    var swiperCenter=swiperRect.left+swiperRect.width/2;
+    var closestIdx=0,closestDist=Infinity;
+    cards.forEach(function(c,i){
+      var rect=c.getBoundingClientRect();
+      var cardCenter=rect.left+rect.width/2;
+      var dist=Math.abs(cardCenter-swiperCenter);
+      if(dist<closestDist){closestDist=dist;closestIdx=i;}
     });
-  });
+    cards.forEach(function(c,i){c.classList.toggle('active-card',i===closestIdx);});
+    document.querySelectorAll('.swiper-dot').forEach(function(d,i){
+      d.classList.toggle('active',i===closestIdx);
+    });
+  }
+  swiper.addEventListener('scroll',updateSwiper);
+  setTimeout(function(){
+    // Erste Karte als aktiv setzen beim Laden
+    var cards=swiper.querySelectorAll('.pricing-card');
+    if(cards.length)cards[0].classList.add('active-card');
+  },100);
 }
 </script>
 
