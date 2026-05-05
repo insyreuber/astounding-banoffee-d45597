@@ -536,11 +536,15 @@
   }
   .pricing-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(92,31,138,0.12); }
   .pricing-tag {
-    font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em;
-    text-transform: uppercase; color: var(--gold);
+    display: inline-block;
+    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--purple-dark);
+    background: rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.35);
+    border-radius: 50px; padding: 3px 10px;
     margin-bottom: 0.8rem;
   }
-  .pricing-card.featured .pricing-tag { color: var(--gold-light); }
+  .pricing-card.featured .pricing-tag { color: var(--gold-light); background: rgba(201,168,76,0.15); border-color: rgba(201,168,76,0.4); }
   .pricing-name { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--purple-dark); margin-bottom: 0.5rem; }
   .pricing-card.featured .pricing-name { color: white; }
   .pricing-price { font-size: 2.2rem; font-weight: 300; color: var(--purple-dark); margin-bottom: 0.2rem; }
@@ -902,8 +906,10 @@ style="display:block; width:150px; height:150px; object-fit:contain; border-radi
             <h3>Live-Termine</h3>
             <p>Buchungen in Echtzeit</p>
           </div>
-          <!-- Auto-refresh indicator -->
-          <div style="display:flex; align-items:center; gap:5px; flex-shrink:0;">
+          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+            <a href="https://calendar.google.com/calendar/embed?src=insy.reuber%40gmail.com&ctz=Europe%2FBerlin&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=WEEK" target="_blank" style="font-size:0.68rem;color:var(--purple);text-decoration:none;border:1px solid rgba(92,31,138,0.2);border-radius:50px;padding:3px 10px;white-space:nowrap;background:#fff">
+              ↗ Vollbild
+            </a>
             <div id="cal-dot" style="width:7px;height:7px;border-radius:50%;background:#4CAF50;animation:pulse-dot 2s infinite;"></div>
             <span style="font-size:0.68rem; color:var(--text-muted);">Live</span>
           </div>
