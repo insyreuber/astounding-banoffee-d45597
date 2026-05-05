@@ -527,7 +527,9 @@
     background: white; transition: transform 0.2s, box-shadow 0.2s;
     display: flex; flex-direction: column;
   }
-  .pricing-card .pricing-features { flex: 1; }
+  .swiper-dot{width:8px;height:8px;border-radius:50%;background:rgba(92,31,138,0.2);transition:all .3s}
+  .swiper-dot.active{background:var(--purple);width:20px;border-radius:4px}
+  @media(min-width:769px){.pricing-cards-mobile,.swiper-dot,#swiper-dots{display:none!important}}
   .pricing-card.featured {
     background: var(--purple-dark);
     border-color: var(--gold);
@@ -632,20 +634,17 @@
   .hero-actions { animation-delay: 0.45s; }
   .hero-visual { animation: fadeUp 0.8s 0.3s ease forwards; opacity: 0; }
 
-  /* ── MOBILE ── */
   @media (max-width: 768px) {
 
     /* Nav */
-    nav {
-      padding: 1rem 1.5rem;
-    }
+    nav { padding: 1rem 1.5rem; }
     .nav-links { display: none; }
     .nav-cta { padding: 0.5rem 1.1rem; font-size: 0.8rem; }
 
-    /* Hero: untereinander */
+    /* Hero: untereinander, WhatsApp visual ausblenden */
     .hero {
       grid-template-columns: 1fr;
-      padding: 6rem 1.5rem 3rem;
+      padding: 5rem 1.5rem 2.5rem;
       min-height: auto;
       text-align: center;
     }
@@ -655,76 +654,57 @@
     .hero-sub { font-size: 0.95rem; }
     .hero-benefit { justify-content: center; }
     .hero-actions { justify-content: center; }
+    .hero-visual { display: none; }
     .hero-deco, .hero-deco-2 { display: none; }
 
-    /* Chat Container kleiner */
-    .hero-visual {
-      height: 380px;
-      margin-top: 2rem;
-    }
-    .wa-chat-container {
-      width: 100%;
-      max-width: 320px;
-      height: 360px;
-    }
-
     /* Trust Bar */
-    .trust-bar {
-      flex-wrap: wrap;
-      gap: 0;
-      padding: 1.2rem 1rem;
-    }
+    .trust-bar { flex-wrap: wrap; gap: 0; padding: 1.2rem 1rem; }
     .trust-item { flex: 1; min-width: 45%; padding: 0.8rem; }
     .trust-sep { display: none; }
     .trust-number { font-size: 1.6rem; }
 
+    /* Demo section: untereinander */
+    .demo-cols { grid-template-columns: 1fr !important; gap: 1rem; }
+
+    /* QR Karte kompakter */
+    .demo-card { padding: 1.2rem; gap: 0.6rem; }
+    .demo-card h3 { font-size: 1rem; margin: 0; }
+    .demo-card p { font-size: 0.82rem; margin: 0; }
+    .demo-qr-wrap img { width: 110px !important; height: 110px !important; }
+
+    /* Google Kalender darunter, volle Breite */
+    .demo-cal-card { order: 3; }
+    .demo-cal-frame iframe { min-height: 320px !important; }
+
+    /* Pricing: Swiper auf Mobile */
+    .pricing-cards-mobile {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      gap: 1rem;
+      padding: 0.5rem 1rem 1.5rem;
+      scrollbar-width: none;
+    }
+    .pricing-cards-mobile::-webkit-scrollbar { display: none; }
+    .pricing-cards-mobile .pricing-card {
+      flex: 0 0 80vw;
+      max-width: 320px;
+      scroll-snap-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .pricing-cards-desktop { display: none; }
+
     /* Sections */
     .section { padding: 4rem 1.5rem; }
-    .section-header { margin-bottom: 2.5rem; }
-    .section-tag { font-size: 0.7rem; }
     .section-title { font-size: clamp(1.6rem, 6vw, 2.2rem); }
-
-    /* Features Grid */
-    .features-grid {
-      grid-template-columns: 1fr !important;
-      gap: 1rem;
-    }
-
-    /* Steps */
-    .steps-grid {
-      grid-template-columns: 1fr !important;
-      gap: 1.5rem;
-    }
-    .step-connector { display: none; }
-
-    /* Pricing */
-    .pricing-grid {
-      grid-template-columns: 1fr !important;
-      gap: 1.2rem;
-    }
-
-    /* FAQ */
-    .faq-grid {
-      grid-template-columns: 1fr !important;
-    }
-
-    /* CTA Section */
     .cta-section { padding: 4rem 1.5rem; }
     .cta-title { font-size: clamp(1.6rem, 6vw, 2.2rem); }
     .cta-actions { flex-direction: column; align-items: center; gap: 0.8rem; }
     .cta-actions a { width: 100%; text-align: center; }
-
-    /* Footer */
     footer { padding: 2.5rem 1.5rem 1.5rem; }
-    .footer-grid {
-      grid-template-columns: 1fr !important;
-      gap: 2rem;
-    }
-    .footer-bottom {
-      flex-direction: column;
-      gap: 0.8rem;
-      text-align: center;
-    }
+    .footer-grid { grid-template-columns: 1fr !important; gap: 2rem; }
+    .footer-bottom { flex-direction: column; gap: 0.8rem; text-align: center; }
   }
 </style>
 </head>
@@ -964,6 +944,18 @@ function refreshCal() {
   if (iframe) { const src = iframe.src; iframe.src = ''; setTimeout(() => { iframe.src = src; }, 100); }
 }
 setInterval(refreshCal, 5 * 60 * 1000);
+
+// Pricing Swiper Dots
+var swiper=document.getElementById('pricing-swiper');
+if(swiper){
+  swiper.addEventListener('scroll',function(){
+    var cardW=swiper.querySelector('.pricing-card').offsetWidth+16;
+    var idx=Math.round(swiper.scrollLeft/cardW);
+    document.querySelectorAll('.swiper-dot').forEach(function(d,i){
+      d.classList.toggle('active',i===idx);
+    });
+  });
+}
 </script>
 
 <!-- PRICING -->
@@ -974,7 +966,8 @@ setInterval(refreshCal, 5 * 60 * 1000);
     <p class="section-sub">Starten Sie kostenlos. Buchungen, Stornierungen und Verschiebungen immer unbegrenzt. Templates kaufen Sie flexibel dazu — für Salons, Therapeuten, Lehrer und jeden der Termine macht.</p>
 
     <!-- 4 Karten -->
-    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; text-align:left; margin-bottom:2rem;">
+    <!-- Desktop: 3 Spalten -->
+    <div class="pricing-cards-desktop" style="display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; text-align:left; margin-bottom:2rem;">
 
       <!-- Free -->
       <div class="pricing-card" style="padding:1.5rem;">
@@ -1033,22 +1026,58 @@ setInterval(refreshCal, 5 * 60 * 1000);
         <a href="https://insy-reception.com/login.html" class="btn-gold" style="display:block; text-align:center; font-size:0.85rem;">30 Tage gratis</a>
       </div>
 
-      <!-- Business -->
+    </div>
+
+    <!-- Mobile: Swiper -->
+    <div class="pricing-cards-mobile" id="pricing-swiper">
       <div class="pricing-card" style="padding:1.5rem;">
-        <div class="pricing-tag">Groß</div>
-        <div class="pricing-name">Business</div>
-        <div class="pricing-price">auf Anfrage <span style="font-size:0.8rem"></span></div>
+        <div class="pricing-tag">Einstieg</div>
+        <div class="pricing-name">Free</div>
+        <div class="pricing-price">0€ <span>/ immer</span></div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features" style="margin-bottom:1rem;">
-          <li>Alles aus Pro</li>
-          <li>Unbegrenzte Kalender</li>
-          <li>Individuelle WhatsApp-Kontingente</li>
-          <li>Prioritäts-Support</li>
-          <li>Individuelle Onboarding</li>
+          <li>Bis zu 30 Buchungen / Monat</li>
+          <li>1 Kalender</li>
+          <li>QR-Code für den Salon</li>
+          <li>Google Calendar Sync</li>
+          <li style="opacity:0.35;text-decoration:line-through;">WhatsApp Automation</li>
         </ul>
-        <a href="mailto:hello@insy-reception.com" class="btn-secondary" style="display:block; text-align:center; font-size:0.85rem;">Kontakt aufnehmen</a>
+        <a href="https://insy-reception.com/login.html" class="btn-secondary" style="display:block;text-align:center;font-size:0.85rem;margin-top:auto;">Kostenlos starten</a>
       </div>
-
+      <div class="pricing-card" style="padding:1.5rem;">
+        <div class="pricing-tag">Klein</div>
+        <div class="pricing-name">Starter</div>
+        <div class="pricing-price">19€ <span>/ Monat</span></div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features" style="margin-bottom:1rem;">
+          <li>Bis zu 2 Personen</li>
+          <li>Unbegrenzte Terminverwaltung</li>
+          <li>Google Calendar Sync</li>
+          <li style="opacity:0.35;text-decoration:line-through;">WhatsApp Automation</li>
+        </ul>
+        <a href="https://insy-reception.com/login.html" class="btn-secondary" style="display:block;text-align:center;font-size:0.85rem;margin-top:auto;">30 Tage gratis</a>
+      </div>
+      <div class="pricing-card featured" style="padding:1.5rem;">
+        <div class="pricing-tag">Empfohlen</div>
+        <div class="pricing-name" style="color:white;">Pro</div>
+        <div class="pricing-price" style="color:white;">39€ <span style="color:rgba(255,255,255,0.5);">/ Monat</span></div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features" style="margin-bottom:0.5rem;">
+          <li>Bis zu 6 Kalender</li>
+          <li>Unbegrenzte Buchungen</li>
+          <li>100 WhatsApp Nachrichten</li>
+          <li>Terminerinnerungen & Follow-up</li>
+        </ul>
+        <div class="pricing-divider"></div>
+        <div style="font-size:0.75rem;color:rgba(255,255,255,0.55);margin-bottom:1rem;">Guthaben: <strong style="color:var(--gold-light);">9€</strong> / 100 Nachrichten</div>
+        <a href="https://insy-reception.com/login.html" class="btn-gold" style="display:block;text-align:center;font-size:0.85rem;margin-top:auto;">30 Tage gratis</a>
+      </div>
+    </div>
+    <!-- Swiper Dots -->
+    <div id="swiper-dots" style="display:flex;justify-content:center;gap:6px;margin-top:0.8rem;">
+      <div class="swiper-dot active"></div>
+      <div class="swiper-dot"></div>
+      <div class="swiper-dot"></div>
     </div>
 
     <!-- Template Erklärung -->
