@@ -68,7 +68,7 @@
 
   /* HERO */
   .hero {
-    min-height: 100vh;
+    min-height: 72vh;
     display: grid; grid-template-columns: 1fr 1fr;
     align-items: center;
     padding: 7rem 4rem 4rem;
@@ -525,7 +525,9 @@
     border-radius: 20px; padding: 2rem;
     border: 1.5px solid rgba(201,168,76,0.2);
     background: white; transition: transform 0.2s, box-shadow 0.2s;
+    display: flex; flex-direction: column;
   }
+  .pricing-card .pricing-features { flex: 1; }
   .pricing-card.featured {
     background: var(--purple-dark);
     border-color: var(--gold);
@@ -761,29 +763,6 @@
       <a href="https://insy-reception.com/login.html" class="btn-primary">Jetzt kostenlos starten</a>
       <a href="https://insy-reception.com/booking?salon_id=236bbfbe-c090-4e56-9313-6176c9345bdf" class="btn-secondary">Demo ansehen</a>
     </div>
-
-    <!-- Trust Bar direkt im Hero -->
-    <div class="trust-bar" style="margin-top:2rem;background:rgba(255,255,255,0.08);border-radius:14px;border:1px solid rgba(255,255,255,0.12);padding:1rem 1.5rem;">
-      <div class="trust-item">
-        <div class="trust-number" style="color:#fff">24/7</div>
-        <div class="trust-label" style="color:rgba(255,255,255,0.6)">Automatisch erreichbar</div>
-      </div>
-      <div class="trust-sep"></div>
-      <div class="trust-item">
-        <div class="trust-number" style="color:#fff">0</div>
-        <div class="trust-label" style="color:rgba(255,255,255,0.6)">Neue Apps für Kunden</div>
-      </div>
-      <div class="trust-sep"></div>
-      <div class="trust-item">
-        <div class="trust-number" style="color:#fff">2 Min.</div>
-        <div class="trust-label" style="color:rgba(255,255,255,0.6)">Einrichtungszeit</div>
-      </div>
-      <div class="trust-sep"></div>
-      <div class="trust-item">
-        <div class="trust-number" style="color:#fff">100%</div>
-        <div class="trust-label" style="color:rgba(255,255,255,0.6)">WhatsApp-basiert</div>
-      </div>
-    </div>
   </div>
 
   <div class="hero-visual">
@@ -855,65 +834,28 @@
   </div>
 </section>
 
-<!-- INTEGRATIONS — direkt nach Trust Bar -->
-<section class="integrations">
-  <div class="integrations-inner">
-    <div class="section-eyebrow">Integrationen</div>
-    <h2 class="section-title">Funktioniert mit allem, was Sie kennen</h2>
-    <p class="section-sub">Keine neuen Systeme lernen. Insy verbindet sich nahtlos mit Ihren bestehenden Kalendern und Buchungsplattformen.</p>
-    <div class="integrations-grid">
-      <div class="integration-pill">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" fill="#25D366"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.1.546 4.07 1.5 5.785L0 24l6.388-1.671A11.952 11.952 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.016-1.374l-.36-.214-3.732.977.994-3.634-.235-.374A9.818 9.818 0 1112 21.818z" fill="#25D366"/></svg>
-        <span>WhatsApp</span>
-      </div>
-      <div class="integration-pill">
-        <svg width="22" height="22" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#4285F4"/><rect x="2" y="2" width="20" height="20" rx="3" fill="white"/><rect x="6" y="1" width="2.5" height="5" rx="1.25" fill="#4285F4"/><rect x="15.5" y="1" width="2.5" height="5" rx="1.25" fill="#4285F4"/><rect x="2" y="8" width="20" height="2" fill="#4285F4"/><text x="12" y="19" font-size="8" font-weight="700" fill="#4285F4" text-anchor="middle" font-family="sans-serif">G</text></svg>
-        <span>Google Calendar</span>
-      </div>
-      <div class="integration-pill">
-        <svg width="22" height="22" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="#1C1C1E"/><rect x="2" y="2" width="20" height="20" rx="4" fill="white"/><rect x="6" y="1" width="2.5" height="5" rx="1.25" fill="#FF3B30"/><rect x="15.5" y="1" width="2.5" height="5" rx="1.25" fill="#FF3B30"/><rect x="2" y="8" width="20" height="2" fill="#FF3B30"/><text x="12" y="19" font-size="7.5" font-weight="700" fill="#1C1C1E" text-anchor="middle" font-family="sans-serif">31</text></svg>
-        <span>Apple Calendar</span>
-      </div>
-      <div class="integration-pill">
-        <svg width="22" height="22" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#0078D4"/><rect x="2" y="6" width="12" height="12" rx="2" fill="#fff" opacity="0.9"/><path d="M8 9a3 3 0 100 6 3 3 0 000-6z" fill="#0078D4"/><rect x="14" y="8" width="8" height="1.5" fill="white" opacity="0.8"/><rect x="14" y="11" width="8" height="1.5" fill="white" opacity="0.8"/><rect x="14" y="14" width="6" height="1.5" fill="white" opacity="0.8"/></svg>
-        <span>Outlook</span>
-      </div>
-      <div class="integration-pill">
-        <svg width="22" height="22" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#00B398"/><text x="12" y="16" font-size="6.5" font-weight="700" fill="white" text-anchor="middle" font-family="sans-serif">TW</text></svg>
-        <span>Treatwell</span>
-      </div>
-      <div class="integration-pill">
-        <svg width="22" height="22" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#FF6B35"/><text x="12" y="16" font-size="7" font-weight="700" fill="white" text-anchor="middle" font-family="sans-serif">Shore</text></svg>
-        <span>Shore</span>
-      </div>
-      <div class="integration-pill">
-        <svg width="22" height="22" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#7B2D8B"/><text x="12" y="16" font-size="6.5" font-weight="700" fill="white" text-anchor="middle" font-family="sans-serif">Booksy</text></svg>
-        <span>Booksy</span>
-      </div>
-      <div class="integration-pill">
-        <svg width="22" height="22" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#27AE60"/><text x="12" y="16" font-size="6.5" font-weight="700" fill="white" text-anchor="middle" font-family="sans-serif">Fresha</text></svg>
-        <span>Fresha</span>
-      </div>
-      <div class="integration-pill">
-        <svg width="22" height="22" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#0C6EFC"/><text x="12" y="16.5" font-size="9" font-weight="700" fill="white" text-anchor="middle" font-family="sans-serif">Wix</text></svg>
-        <span>Wix Bookings</span>
-      </div>
-      <div class="integration-pill">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="8" height="8" rx="1.5" stroke="#C9A84C" stroke-width="1.5"/><rect x="4.5" y="4.5" width="3" height="3" fill="#C9A84C"/><rect x="14" y="2" width="8" height="8" rx="1.5" stroke="#C9A84C" stroke-width="1.5"/><rect x="16.5" y="4.5" width="3" height="3" fill="#C9A84C"/><rect x="2" y="14" width="8" height="8" rx="1.5" stroke="#C9A84C" stroke-width="1.5"/><rect x="4.5" y="16.5" width="3" height="3" fill="#C9A84C"/><rect x="14" y="14" width="3" height="3" fill="#C9A84C"/><rect x="19" y="14" width="3" height="3" fill="#C9A84C"/><rect x="14" y="19" width="3" height="3" fill="#C9A84C"/><rect x="19" y="19" width="3" height="3" fill="#C9A84C"/></svg>
-        <span>QR-Code</span>
-      </div>
-      <div class="integration-pill">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C9.6 21 3 14.4 3 6c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z" fill="#C9A84C"/></svg>
-        <span>Rufweiterleitung</span>
-      </div>
-      <div class="integration-pill" style="border-style:dashed; opacity:0.5;">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="rgba(201,168,76,0.6)" stroke-width="1.5"/><path d="M12 8v8M8 12h8" stroke="rgba(201,168,76,0.6)" stroke-width="1.5" stroke-linecap="round"/></svg>
-        <span style="color:rgba(255,255,255,0.4);">Weitere folgen</span>
-      </div>
-    </div>
-    <p class="integrations-note">Keine neue App für Ihre Kunden — alles über WhatsApp, das sie bereits täglich nutzen</p>
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item">
+    <div class="trust-number">24/7</div>
+    <div class="trust-label">Automatisch erreichbar</div>
   </div>
-</section>
+  <div class="trust-sep"></div>
+  <div class="trust-item">
+    <div class="trust-number">0</div>
+    <div class="trust-label">Neue Apps für Kunden</div>
+  </div>
+  <div class="trust-sep"></div>
+  <div class="trust-item">
+    <div class="trust-number">2 Min.</div>
+    <div class="trust-label">Einrichtungszeit</div>
+  </div>
+  <div class="trust-sep"></div>
+  <div class="trust-item">
+    <div class="trust-number">100%</div>
+    <div class="trust-label">WhatsApp-basiert</div>
+  </div>
+</div>
 
 <!-- DEMO / TESTEN -->
 <section class="demo" id="demo">
