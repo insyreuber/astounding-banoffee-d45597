@@ -431,6 +431,14 @@ function availSlots(){
 
   return openSlots.map(function(s){
     var slotMin=parseInt(s.split(':')[0])*60+parseInt(s.split(':')[1]);
+    // Vergangene Slots prüfen
+    var isPast=false;
+    if(st.day){
+      var parts=st.day.split('-');
+      var slotDate=new Date(+parts[0],+parts[1]-1,+parts[2],Math.floor(slotMin/60),slotMin%60);
+      if(slotDate<new Date())isPast=true;
+    }
+    if(isPast)return{time:s,busy:false,closed:true,past:true};
     // Zu nah an Schließzeit — Termin würde nicht reinpassen
     if(totalMin>0&&slotMin+totalMin>endMin){
       return{time:s,busy:false,closed:true};
@@ -627,6 +635,7 @@ function mkCal(){
        +'<path d="M16 4 A12 12 0 0 1 28 16"/></svg></div>'
       :'<div class="slot-lbl">Verfügbare Zeiten'+(st.stf1&&st.stf1!=='any'?' — '+fname(st.stf1):'')+'</div>'
       +'<div class="slots">'+slots.filter(function(s){return!s.busy&&!s.closed;}).map(function(s){
+        if(s.past)return'<div class="sl sb" style="opacity:0.4;cursor:not-allowed">'+s.time+'<br><span style="font-size:8px">vergangen</span></div>';
         return'<div class="sl '+(st.slot===s.time?'ss':'')+'" onclick="pickSlot(\''+s.time+'\')">'
           +s.time+'</div>';
       }).join('')+'</div>'
@@ -1019,6 +1028,8 @@ async function loadMitarbeiter(salonId){
         allowedVarianten:allowedVarianten
       });
     });
+    // Ersten Mitarbeiter als Standard setzen
+    if(STAFF.length>1){st.stf1=STAFF[1].id;}
     render();
   }catch(err){console.error('loadMitarbeiter Fehler:',err);}
 }
