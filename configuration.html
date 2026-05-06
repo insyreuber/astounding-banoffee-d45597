@@ -1064,9 +1064,12 @@ document.addEventListener('change',function(e){
 function switchTab(n){
   // Auto-save nur wenn Änderungen gemacht wurden
   if(_currentTab!==n&&_dirty){
+    var confirmed=confirm('Möchtest du die Änderungen speichern?');
     _dirty=false;
-    if(_currentTab==='profil')saveProfil(true);
-    else if(_currentTab==='mitarbeiter')saveStaff(true);
+    if(confirmed){
+      if(_currentTab==='profil')saveProfil(true);
+      else if(_currentTab==='mitarbeiter')saveStaff(true);
+    }
     _currentTab=n;
   } else {
     _currentTab=n;
