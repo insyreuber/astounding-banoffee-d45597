@@ -580,88 +580,34 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       <!-- LINKS: Insy-Features -->
       <div style="display:flex;flex-direction:column;gap:10px">
 
-        <!-- Missed Call -->
-        <div class="card" id="feat-missed-call">
+        <!-- WhatsApp Benachrichtigungen (kombiniert) -->
+        <div class="card" id="feat-whatsapp">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
             <div style="display:flex;align-items:flex-start;gap:11px">
-              <div style="width:38px;height:38px;border-radius:10px;background:var(--tpp);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              <div style="width:38px;height:38px;border-radius:10px;background:#e8f8ee;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.072 22l4.948-1.348A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
               </div>
               <div>
-                <div class="feat-title">Missed Call</div>
-                <div class="feat-desc">Verpasste Anrufe automatisch per SMS/WhatsApp beantworten mit Buchungslink</div>
+                <div class="feat-title">WhatsApp Benachrichtigungen</div>
+                <div class="feat-desc">Automatische Nachrichten für Buchungen, Erinnerungen & Follow-Ups</div>
               </div>
             </div>
-            <label class="toggle-sw" style="flex-shrink:0;margin-top:2px"><input type="checkbox" id="feat-missed-call-on" onchange="toggleFeature('missed-call')"><span class="slider"></span></label>
+            <label class="toggle-sw" style="flex-shrink:0;margin-top:2px"><input type="checkbox" id="feat-whatsapp-on" onchange="toggleFeature('whatsapp')"><span class="slider"></span></label>
           </div>
-          <!-- Rufweiterleitung Verifikation -->
-          <div id="missed-call-setup" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
-            <div style="font-size:11px;font-weight:600;color:var(--td);margin-bottom:8px">Rufweiterleitung einrichten</div>
-            <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.5">
-              Bestätige deine Telefonnummer auf die die Weiterleitung geschaltet wird. Wir senden dir einen Bestätigungscode.
-            </div>
-            <div style="display:flex;gap:8px;align-items:flex-end">
-              <div class="field" style="flex:1">
-                <label>Weiterleitungs-Nummer</label>
-                <input type="tel" id="missed-call-phone" placeholder="+49 2262 79679975">
+          <div id="whatsapp-setup" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <!-- Terminverwaltung -->
+              <div class="feat-sub-row">
+                <div class="feat-sub-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="9 16 11 18 15 14"/></svg>
+                </div>
+                <div style="flex:1">
+                  <strong style="font-size:12px">Terminverwaltung</strong>
+                  <div style="font-size:11px;color:var(--muted)">Bestätigung, Verschiebung & Storno per WhatsApp</div>
+                </div>
+                <label class="toggle-sw toggle-sm"><input type="checkbox" id="feat-termine-on" onchange="toggleFeature('termine')" checked><span class="slider"></span></label>
               </div>
-              <button class="btn btn-sm btn-outline" onclick="sendMissedCallVerification()" style="flex-shrink:0">Code senden</button>
-            </div>
-            <div id="missed-call-verify" style="display:none;margin-top:8px;display:flex;gap:8px;align-items:flex-end">
-              <div class="field" style="flex:1">
-                <label>Bestätigungscode</label>
-                <input type="text" id="missed-call-code" placeholder="6-stelliger Code" maxlength="6">
-              </div>
-              <button class="btn btn-sm btn-primary" onclick="verifyMissedCall()" style="flex-shrink:0">Bestätigen</button>
-            </div>
-            <div id="missed-call-verified" style="display:none;margin-top:8px;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--success)">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              Nummer verifiziert ✓
-            </div>
-          </div>
-        </div>
-
-        <!-- Terminverwaltung -->
-        <div class="card" id="feat-termine">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
-            <div style="display:flex;align-items:flex-start;gap:11px">
-              <div style="width:38px;height:38px;border-radius:10px;background:var(--tpp);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="9 16 11 18 15 14"/></svg>
-              </div>
-              <div>
-                <div class="feat-title">Terminverwaltung</div>
-                <div class="feat-desc">Bestätigung, Verschiebung & Storno automatisch verwalten</div>
-              </div>
-            </div>
-            <label class="toggle-sw" style="flex-shrink:0;margin-top:2px"><input type="checkbox" id="feat-termine-on" onchange="toggleFeature('termine')"><span class="slider"></span></label>
-          </div>
-          <div id="termine-setup" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
-            <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg);border-radius:8px">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.072 22l4.948-1.348A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
-              <div>
-                <div style="font-size:12px;font-weight:600;color:var(--td)">Buchungsübersicht per WhatsApp</div>
-                <div style="font-size:11px;color:var(--muted);margin-top:1px">Bestätigung, Verschiebung & Storno werden automatisch per WhatsApp versendet</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Erinnerung & Follow-Up -->
-        <div class="card" id="feat-reminder">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
-            <div style="display:flex;align-items:flex-start;gap:11px">
-              <div style="width:38px;height:38px;border-radius:10px;background:var(--tpp);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-              </div>
-              <div>
-                <div class="feat-title">Erinnerung & Follow-Up</div>
-                <div class="feat-desc">Terminerinnerungen & automatische Nachfass-Nachrichten</div>
-              </div>
-            </div>
-            <label class="toggle-sw" style="flex-shrink:0;margin-top:2px"><input type="checkbox" id="feat-reminder-on" onchange="toggleFeature('reminder')"><span class="slider"></span></label>
-          </div>
-          <div id="reminder-setup" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
-            <div style="display:flex;flex-direction:column;gap:7px">
+              <!-- Erinnerung -->
               <div class="feat-sub-row">
                 <div class="feat-sub-icon">🔔</div>
                 <div style="flex:1">
@@ -678,6 +624,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
                   <label class="toggle-sw toggle-sm"><input type="checkbox" id="reminder-aktiv" checked><span class="slider"></span></label>
                 </div>
               </div>
+              <!-- Follow-Up -->
               <div class="feat-sub-row">
                 <div class="feat-sub-icon">💬</div>
                 <div style="flex:1">
@@ -1583,41 +1530,25 @@ async function loadFeatureSettings(){
   var res=await sb.from('kunden_profile').select('feature_settings').eq('id',SALON_ID).single();
   if(res.error||!res.data.feature_settings)return;
   var f=res.data.feature_settings;
-  // Missed Call
-  if(f.missed_call_on){
-    document.getElementById('feat-missed-call-on').checked=true;
-    document.getElementById('missed-call-setup').style.display='block';
-    if(f.missed_call_verified){document.getElementById('missed-call-verified').style.display='flex';}
-    if(f.missed_call_phone)document.getElementById('missed-call-phone').value=f.missed_call_phone;
+  // WhatsApp Benachrichtigungen
+  if(f.whatsapp_on){
+    document.getElementById('feat-whatsapp-on').checked=true;
+    document.getElementById('whatsapp-setup').style.display='block';
   }
-  // Terminverwaltung
-  if(f.termine_on){
-    document.getElementById('feat-termine-on').checked=true;
-    document.getElementById('termine-setup').style.display='block';
-    if(f.termine_bestaetigung===false)document.getElementById('termine-bestaetigung').checked=false;
-    if(f.termine_verschieben===false)document.getElementById('termine-verschieben').checked=false;
-    if(f.termine_storno===false)document.getElementById('termine-storno').checked=false;
-    if(f.channel)setChannel(f.channel);
+  if(f.termine_on!==false&&document.getElementById('feat-termine-on')){
+    document.getElementById('feat-termine-on').checked=f.termine_on!==false;
   }
-  // Reminder
-  if(f.reminder_on){
-    document.getElementById('feat-reminder-on').checked=true;
-    document.getElementById('reminder-setup').style.display='block';
-    if(f.reminder_timing)document.getElementById('reminder-timing').value=f.reminder_timing;
-    if(f.followup_timing)document.getElementById('followup-timing').value=f.followup_timing;
-    if(f.reminder_aktiv===false)document.getElementById('reminder-aktiv').checked=false;
-    if(f.followup_aktiv===false)document.getElementById('followup-aktiv').checked=false;
-  }
+  if(f.reminder_timing)document.getElementById('reminder-timing').value=f.reminder_timing;
+  if(f.followup_timing)document.getElementById('followup-timing').value=f.followup_timing;
+  if(f.reminder_aktiv===false)document.getElementById('reminder-aktiv').checked=false;
+  if(f.followup_aktiv===false)document.getElementById('followup-aktiv').checked=false;
 }
 
 async function saveFeatureSettings(){
   if(!SALON_ID)return;
   var settings={
-    missed_call_on:document.getElementById('feat-missed-call-on').checked,
-    missed_call_phone:document.getElementById('missed-call-phone').value.trim(),
-    missed_call_verified:document.getElementById('missed-call-verified').style.display!=='none',
-    termine_on:document.getElementById('feat-termine-on').checked,
-    reminder_on:document.getElementById('feat-reminder-on').checked,
+    whatsapp_on:document.getElementById('feat-whatsapp-on').checked,
+    termine_on:document.getElementById('feat-termine-on')?document.getElementById('feat-termine-on').checked:true,
     reminder_timing:document.getElementById('reminder-timing').value,
     reminder_aktiv:document.getElementById('reminder-aktiv').checked,
     followup_timing:document.getElementById('followup-timing').value,
