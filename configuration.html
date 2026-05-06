@@ -1050,7 +1050,22 @@ var weekPlanOffset=0; // KW-Offset für Wochenplan-Navigation
 var cachedSalonAz=null;
 
 // ── TABS ──────────────────────────────────────────────────────
+var _currentTab='profil';
+
 function switchTab(n){
+  // Auto-save beim Tab-Wechsel
+  if(_currentTab!==n){
+    if(_currentTab==='profil')saveProfil(true);
+    else if(_currentTab==='services'){
+      // Alle offenen Services speichern
+      document.querySelectorAll('[id^="svc-item-"]').forEach(function(el){
+        var id=el.id.replace('svc-item-','');
+        if(id)saveSvcAll(id,true);
+      });
+    }
+    else if(_currentTab==='mitarbeiter')saveStaff(true);
+    _currentTab=n;
+  }
   // Mobile: Nav zuklappen nach Tab-Auswahl
   if(window.innerWidth<=768){
     document.querySelector('.nav-tabs').classList.remove('open');
@@ -1315,7 +1330,7 @@ async function loadProfil(){
   }
 }
 
-async function saveProfil(){
+async function saveProfil(silent){
   if(!SALON_ID){toast('Keine salon_id','error');return;}
   var btn=document.getElementById('btn-save-profil');
   var st=document.getElementById('profil-status');
@@ -1338,7 +1353,7 @@ async function saveProfil(){
   }).eq('id',SALON_ID);
   btn.disabled=false;
   if(res.error){st.className='save-status error';st.textContent='Fehler: '+res.error.message;toast('Speichern fehlgeschlagen','error');}
-  else{st.className='save-status saved';st.textContent='✓ Gespeichert';toast('Profil gespeichert ✓','success');setTimeout(function(){st.textContent='';st.className='save-status';},3000);}
+  else{if(!silent){st.className='save-status saved';st.textContent='✓ Gespeichert';toast('Profil gespeichert ✓','success');setTimeout(function(){st.textContent='';st.className='save-status';},3000);}}
 }
 
 // ── GOOGLE KALENDER MITARBEITER ───────────────────────────────
@@ -2514,7 +2529,7 @@ function editStaff(id){
   if(item)openStaffModal(item);
 }
 
-async function saveStaff(){
+async function saveStaff(silent){
   var name=document.getElementById('s-name').value.trim();
   if(!name){toast('Name ist Pflichtfeld','error');return;}
   var btn=document.getElementById('btn-staff-save');btn.disabled=true;
@@ -2556,7 +2571,7 @@ async function saveStaff(){
     console.log('insert result:', insRes);
   }
   closeStaffModal();
-  toast((editingStaffId?'Mitarbeiter aktualisiert':'Mitarbeiter angelegt')+' ✓','success');
+  if(!silent)toast((editingStaffId?'Mitarbeiter aktualisiert':'Mitarbeiter angelegt')+' ✓','success');
   await loadStaff();}
 
 async function deleteStaff(id){
