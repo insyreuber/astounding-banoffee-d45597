@@ -117,8 +117,9 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .cd:hover:not(.cp):not(.ce){background:var(--tpp);color:var(--tp)}
 .cd.cs{background:var(--tp);color:#fff;font-weight:500}
 .cd.ce,.cd.cp{pointer-events:none}
-.cd.cp{color:#ccc}
+.cd.cp{color:#ccc;opacity:0.5}
 .cd.ct{color:var(--tp);font-weight:500}
+.cd.ct.cp{color:#ccc;opacity:0.45;font-weight:400}
 .slot-lbl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:500;margin:8px 0 5px}
 .slots{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
 .sl{border:1.5px solid #e8e0f0;border-radius:6px;padding:6px 2px;text-align:center;font-size:11px;cursor:pointer;color:var(--td)}
@@ -634,7 +635,7 @@ function mkCal(){
       todayNoSlots=nowMin>=endMin;
     }
     var isBlocked=isPast||isClosed||todayNoSlots;
-    days+='<div class="cd '+(isBlocked?'cp':'')+' '+(isToday&&!isSel?'ct':'')+' '+(isSel?'cs':'')+'"'
+    days+='<div class="cd '+(isBlocked?'cp':'')+' '+(isToday&&!isSel&&!isBlocked?'ct':'')+' '+(isSel?'cs':'')+'"'
       +(isBlocked?'':' onclick="pickDay(\''+key+'\')"')+' style="'+(isClosed&&!isPast?'text-decoration:line-through;opacity:0.35':'')+'">'+d+'</div>';
   }
   var slots=availSlots();
