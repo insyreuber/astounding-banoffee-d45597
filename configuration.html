@@ -1051,19 +1051,24 @@ var cachedSalonAz=null;
 
 // ── TABS ──────────────────────────────────────────────────────
 var _currentTab='profil';
+var _dirty=false;
+
+// Alle Inputs/Textareas/Selects im main beobachten
+document.addEventListener('input',function(e){
+  if(e.target.closest('.main'))_dirty=true;
+});
+document.addEventListener('change',function(e){
+  if(e.target.closest('.main'))_dirty=true;
+});
 
 function switchTab(n){
-  // Auto-save beim Tab-Wechsel
-  if(_currentTab!==n){
+  // Auto-save nur wenn Änderungen gemacht wurden
+  if(_currentTab!==n&&_dirty){
+    _dirty=false;
     if(_currentTab==='profil')saveProfil(true);
-    else if(_currentTab==='services'){
-      // Alle offenen Services speichern
-      document.querySelectorAll('[id^="svc-item-"]').forEach(function(el){
-        var id=el.id.replace('svc-item-','');
-        if(id)saveSvcAll(id,true);
-      });
-    }
     else if(_currentTab==='mitarbeiter')saveStaff(true);
+    _currentTab=n;
+  } else {
     _currentTab=n;
   }
   // Mobile: Nav zuklappen nach Tab-Auswahl
