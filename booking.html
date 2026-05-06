@@ -375,7 +375,11 @@ window.toggleSvc=function(id){
   if(idx>=0){
     st.services.splice(idx,1);
   } else {
-    st.services.push({svcId:id,varId:null});
+    var vars=VARIANTEN[id]||[];
+    var allowedVars=vars.filter(function(v){return isVarAllowed(v.id);});
+    // Wenn nur eine Variante verfügbar — direkt auswählen
+    var autoVar=allowedVars.length===1?allowedVars[0].id:null;
+    st.services.push({svcId:id,varId:autoVar});
   }
   st.slot=null;
   render();
@@ -598,7 +602,7 @@ function mkStaffGrid(){
   return'<div class="staff-grid">'+STAFF.map(function(p){
     var isSel=st.stf1===p.id;
     var canHandle=st.services.length===0||staffCanHandleSelectedServices(p);
-    var availHtml=p.id==='any'?'':(p.avail?'<div class="stf-av">● Verfügbar</div>':'<div class="stf-na">● Heute belegt</div>');
+    var availHtml=p.avail?'<div class="stf-av">● Verfügbar</div>':'<div class="stf-na">● Heute belegt</div>';
     var blocked=!canHandle&&!isSel;
     var html='<div class="stf '+(isSel?'sel1only':blocked?'stf-blocked':'')+'" '+(blocked?'':'onclick="pickStf(\''+p.id+'\')"')+' style="'+(blocked?'opacity:0.45;cursor:not-allowed':'cursor:pointer')+'">';
     html+='<div class="stf-inner">';
@@ -622,7 +626,14 @@ function mkCal(){
     var dayKey=DAY_KEYS[dateObj.getDay()];
     var az=window.SALON_AZ;
     var isClosed=az&&az[dayKey]&&az[dayKey].aktiv===false;
-    var isBlocked=isPast||isClosed;
+    // Heutigen Tag sperren wenn keine Slots mehr
+    var todayNoSlots=false;
+    if(isToday&&az&&az[dayKey]&&az[dayKey].aktiv){
+      var endMin=parseInt((az[dayKey].end||'23:59').split(':')[0])*60+parseInt((az[dayKey].end||'23:59').split(':')[1]);
+      var nowMin=cd.now.getHours()*60+cd.now.getMinutes();
+      todayNoSlots=nowMin>=endMin;
+    }
+    var isBlocked=isPast||isClosed||todayNoSlots;
     days+='<div class="cd '+(isBlocked?'cp':'')+' '+(isToday&&!isSel?'ct':'')+' '+(isSel?'cs':'')+'"'
       +(isBlocked?'':' onclick="pickDay(\''+key+'\')"')+' style="'+(isClosed&&!isPast?'text-decoration:line-through;opacity:0.35':'')+'">'+d+'</div>';
   }
@@ -1012,7 +1023,7 @@ async function loadMitarbeiter(salonId){
     var perms=permRes.data||[];
 
     // STAFF aufbauen mit erlaubten Varianten-IDs
-    STAFF=[{id:'any',name:'Ohne Präferenz',role:'Nächste verfügbare Person',ini:'?',gold:true,avail:true,allowedVarianten:null}];
+    STAFF=[];
     mitarbeiter.forEach(function(m){
       var name=m.display_name||m.name||'?';
       var ini=name.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
