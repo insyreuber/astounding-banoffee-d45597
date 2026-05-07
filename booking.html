@@ -838,41 +838,22 @@ window.submitBooking=async function(){
     console.log('n8n response:', raw, 'bookingId:', bookingId, 'googleEventId:', googleEventId);
 
     if(res.ok&&!raw.error){
-      var dayStr2=dp[2]+'. '+new Date(+dp[0],+dp[1]-1,+dp[2]).toLocaleDateString('de-DE',{month:'short',day:'numeric'});
+      // Zur Success-Seite weiterleiten
+      var dp2=st.day.split('-');
+      var dayStr2=new Date(+dp2[0],+dp2[1]-1,+dp2[2]).toLocaleDateString('de-DE',{weekday:'short',day:'numeric',month:'long'});
       var svcNames=st.services.map(function(s){var svc=fsvc(s.svcId);return svc?svc.name:'';}).filter(Boolean).join(' + ');
       var tot=totalPreis();
-      document.getElementById('app').innerHTML='<div class="conf">'
-        +'<div class="conf-cc"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>'
-        +'<div class="conf-t">Buchung bestätigt!</div>'
-        +'<p class="conf-s">Du erhältst eine Bestätigung per WhatsApp an <strong style="color:#fff">'+normPhone(st.phone)+'</strong></p>'
-        +'<div>'
-        +'<span class="cpill">'+svcNames+'</span>'
-        +(tot?'<span class="cpill g">'+tot+' €</span>':'')
-        +'<span class="cpill g">'+st.slot+' Uhr · '+dayStr2+'</span>'
-        +'</div>'
-        +'<div style="display:flex;gap:10px;margin-top:1.2rem;flex-wrap:wrap;justify-content:center">'
-        +'<button class="reset-btn conf-cancel-btn" data-bid="'+(bookingId||'')+'" data-eid="'+(googleEventId||'')+'" style="border-color:rgba(255,100,100,.5);color:#ffaaaa">'
-          +'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:5px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
-          +'Termin stornieren'
-        +'</button>'
-        +'<button class="reset-btn conf-reschedule-btn" data-bid="'+(bookingId||'')+'" data-eid="'+(googleEventId||'')+'">'
-          +'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:5px"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>'
-          +'Termin verschieben'
-        +'</button>'
-        +'</div>'
-        +'</div>';
-
-      // Event Listener nach dem Rendern
-      setTimeout(function(){
-        var cancelBtn=document.querySelector('.conf-cancel-btn');
-        var rescheduleBtn=document.querySelector('.conf-reschedule-btn');
-        if(cancelBtn)cancelBtn.addEventListener('click',function(){
-          cancelBooking(this.dataset.bid,this.dataset.eid);
-        });
-        if(rescheduleBtn)rescheduleBtn.addEventListener('click',function(){
-          rescheduleBooking(this.dataset.bid,this.dataset.eid);
-        });
-      },50);
+      var staffObj=STAFF.filter(function(s){return s.id===st.stf1;})[0];
+      var staffName=staffObj?staffObj.name:'';
+      var successUrl='https://insy-reception.com/success?salon_id='+encodeURIComponent(salonId||'')
+        +'&booking_id='+encodeURIComponent(bookingId||'')
+        +'&google_event_id='+encodeURIComponent(googleEventId||'')
+        +'&services='+encodeURIComponent(svcNames)
+        +'&staff='+encodeURIComponent(staffName)
+        +'&date='+encodeURIComponent(dayStr2)
+        +'&time='+encodeURIComponent(st.slot||'')
+        +(tot?'&price='+encodeURIComponent(tot):'');
+      window.location.href=successUrl;
     } else {
       var msg=raw.message||raw.error||'Bitte wähle einen anderen Zeitpunkt.';
       if(btn){btn.disabled=false;btn.textContent='Termin buchen →';}
