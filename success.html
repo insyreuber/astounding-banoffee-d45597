@@ -17,6 +17,8 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#f3f0f7;min-height:10
   width:100%;
   text-align:center;
   box-shadow:0 20px 60px rgba(74,28,107,0.25);
+  position:relative;
+  overflow:hidden;
 }
 
 /* Salon Info */
@@ -26,7 +28,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#f3f0f7;min-height:10
   border-bottom:1px solid rgba(255,255,255,0.12);
   text-align:left;
 }
-.salon-brand{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:4px}
+.salon-brand{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#c9a84c;margin-bottom:4px;font-weight:600}
 .salon-name{font-size:16px;font-weight:600;color:#fff;margin-bottom:8px}
 .salon-chips{display:flex;flex-wrap:wrap;gap:6px}
 .salon-chip{display:flex;align-items:center;gap:4px;font-size:11px;color:rgba(255,255,255,.55)}
@@ -91,7 +93,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#f3f0f7;min-height:10
   <!-- Termin-Details -->
   <div class="details" id="booking-details">
     <div class="detail-row"><span class="detail-label">Service</span><span class="detail-value" id="d-service">—</span></div>
-    <div class="detail-row"><span class="detail-label">Mitarbeiter</span><span class="detail-value" id="d-staff">—</span></div>
+    <div class="detail-row" id="d-staff-row"><span class="detail-label">Mitarbeiter</span><span class="detail-value" id="d-staff">—</span></div>
     <div class="detail-row"><span class="detail-label">Datum</span><span class="detail-value" id="d-date">—</span></div>
     <div class="detail-row"><span class="detail-label">Uhrzeit</span><span class="detail-value" id="d-time">—</span></div>
     <div class="detail-row" id="d-price-row"><span class="detail-label">Preis</span><span class="detail-value" id="d-price">—</span></div>
@@ -103,7 +105,11 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#f3f0f7;min-height:10
     Termin stornieren
   </button>
 
-  <a class="new-link" id="new-booking-link" href="#">+ Neuen Termin buchen</a>
+  <!-- Neuen Termin buchen — nur nach Stornierung sichtbar -->
+  <a class="new-link" id="new-booking-link" href="#" style="display:none">+ Neuen Termin buchen</a>
+
+  <!-- Hintergrund Wasserzeichen -->
+  <div style="position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);font-size:52px;font-weight:700;color:rgba(255,255,255,0.04);white-space:nowrap;pointer-events:none;letter-spacing:0.05em;user-select:none" id="watermark">INSY RECEPTION</div>
 </div>
 
 <script>
@@ -125,7 +131,6 @@ var SKEY='sb_publishable__XubcF5yPDyIMpfE7kO9Rg_Xp7kj0hL';
 async function init(){
   // Buchungsdetails aus URL setzen
   document.getElementById('d-service').textContent=decodeURIComponent(svcNames);
-  document.getElementById('d-staff').textContent=decodeURIComponent(staffName);
   document.getElementById('d-date').textContent=decodeURIComponent(date);
   document.getElementById('d-time').textContent=time?time+' Uhr':'—';
   if(price&&price!=='null'){
@@ -138,18 +143,19 @@ async function init(){
   var link=document.getElementById('new-booking-link');
   if(salonId)link.href='https://insy-reception.com/booking?salon_id='+salonId;
 
-  // Salon Info laden
+  // Salon Info + Mitarbeiter laden
   if(salonId){
     try{
-      var res=await fetch(SURL+'/rest/v1/kunden_profile?id=eq.'+salonId+'&select=brand_name,name,street,house_number,city,area_code,phone_number,instagram_url,website_url,google_maps_url',{
+      var res=await fetch(SURL+'/rest/v1/kunden_profile?id=eq.'+salonId+'&select=brand_name,name,street,house_number,postal_code,city,area_code,phone_number,instagram_url,website_url,google_maps_url',{
         headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}
       });
       var data=await res.json();
       if(data&&data[0]){
         var d=data[0];
         document.getElementById('salon-name').textContent=d.brand_name||d.name||'Salon';
+        document.getElementById('watermark').textContent=d.brand_name||d.name||'INSY RECEPTION';
         var chips='';
-        var addr=[d.street,d.house_number,d.postal_code,d.city].filter(Boolean).join(' ');
+        var addr=[d.street,d.house_number,(d.postal_code||''),d.city].filter(Boolean).join(' ');
         if(addr){
           var mapsHref=d.google_maps_url?'href="'+d.google_maps_url+'" target="_blank"':'';
           chips+='<div class="salon-chip"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><a '+mapsHref+'>'+addr+'</a></div>';
@@ -166,6 +172,26 @@ async function init(){
         document.getElementById('salon-chips').innerHTML=chips;
       }
     }catch(e){console.error(e);}
+
+    // Mitarbeiter aus URL-Parameter laden
+    var staffParam=params.get('staff_id');
+    if(staffParam){
+      try{
+        var sres=await fetch(SURL+'/rest/v1/mitarbeiter?id=eq.'+staffParam+'&select=display_name,name',{
+          headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}
+        });
+        var sdata=await sres.json();
+        if(sdata&&sdata[0]){
+          document.getElementById('d-staff').textContent=sdata[0].display_name||sdata[0].name;
+        } else {
+          document.getElementById('d-staff-row').style.display='none';
+        }
+      }catch(e){document.getElementById('d-staff-row').style.display='none';}
+    } else if(staffName&&staffName!=='—'){
+      document.getElementById('d-staff').textContent=decodeURIComponent(staffName);
+    } else {
+      document.getElementById('d-staff-row').style.display='none';
+    }
   }
 }
 
@@ -183,8 +209,9 @@ async function cancelBooking(){
       '<div class="check-wrap" style="background:rgba(255,100,100,.2)">'
       +'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>'
       +'<div class="conf-title">Termin storniert</div>'
-      +'<p style="font-size:13px;color:rgba(255,255,255,.5);margin-bottom:20px">Dein Termin wurde erfolgreich storniert.</p>'
-      +'<a class="new-link" href="https://insy-reception.com/booking?salon_id='+salonId+'" style="color:rgba(255,255,255,.6);font-size:13px">+ Neuen Termin buchen</a>';
+      +'<p style="font-size:13px;color:rgba(255,255,255,.5);margin-bottom:24px">Dein Termin wurde erfolgreich storniert.</p>'
+      +'<a href="https://insy-reception.com/booking?salon_id='+salonId+'" style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);border-radius:10px;padding:10px 20px;font-size:13px;color:#fff;text-decoration:none;font-family:inherit">+ Neuen Termin buchen</a>'
+      +'<div style="position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);font-size:52px;font-weight:700;color:rgba(255,255,255,0.04);white-space:nowrap;pointer-events:none;user-select:none">INSY RECEPTION</div>';
   }catch(e){
     btn.disabled=false;btn.textContent='Termin stornieren';
     alert('Fehler beim Stornieren. Bitte ruf uns an.');
