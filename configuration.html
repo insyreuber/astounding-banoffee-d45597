@@ -1540,11 +1540,6 @@ function verifyMissedCall(){
   saveFeatureSettings();
 }
 
-function connectAdminGoogle(e){
-  e.preventDefault();
-  var redirectUrl='https://insy-n8n-u71054.vm.elestio.app/webhook/google-auth-start?salon_id='+SALON_ID+'&type=admin';
-  window.location.href=redirectUrl;
-}
 
 async function loadAdminGoogleStatus(){
   if(!SALON_ID)return;
@@ -1556,11 +1551,13 @@ async function loadAdminGoogleStatus(){
     document.getElementById('gcal-admin-btn').textContent='Neu verbinden';
   }
 }
+
+async function loadFeatureSettings(){
   if(!SALON_ID)return;
   var res=await sb.from('kunden_profile').select('feature_settings').eq('id',SALON_ID).single();
   if(res.error||!res.data.feature_settings)return;
   var f=res.data.feature_settings;
-  // WhatsApp Benachrichtigungen
+
   if(f.whatsapp_on){
     document.getElementById('feat-whatsapp-on').checked=true;
     document.getElementById('whatsapp-setup').style.display='block';
