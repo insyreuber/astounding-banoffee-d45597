@@ -422,10 +422,14 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 <nav class="nav">
   <div class="nav-brand" onclick="if(window.innerWidth<=768)document.querySelector('.nav-tabs').classList.toggle('open')">
     <div class="nav-logo">Insy Reception</div>
-    <div class="nav-title">Einstellungen</div>
+    <div class="nav-title">Dashboard</div>
   </div>
   <div class="nav-tabs">
-    <div class="nav-tab active" onclick="switchTab('profil')" id="tab-profil">
+    <div class="nav-tab active" onclick="switchTab('dashboard')" id="tab-dashboard">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </div>
+    <div class="nav-tab" onclick="switchTab('profil')" id="tab-profil">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       Salon-Profil
     </div>
@@ -465,8 +469,143 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
 <div class="main">
 
+  <!-- ════ DASHBOARD ════ -->
+  <div class="tab-panel active" id="panel-dashboard">
+    <div class="sec-hdr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div>
+        <div class="sec-title" id="dash-salon-name">Willkommen</div>
+        <div class="sec-sub" id="dash-date"></div>
+      </div>
+      <a class="nav-booking-btn" id="dash-booking-btn" href="#" target="_blank" style="font-size:12px;padding:8px 16px">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Buchungsseite öffnen
+      </a>
+    </div>
+
+    <!-- ROW 1: Systemstatus + Geschäft -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px">
+
+      <!-- Systemstatus -->
+      <div class="card" style="padding:18px">
+        <div class="card-title" style="margin-bottom:14px">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Systemstatus
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <!-- WhatsApp -->
+          <div style="display:flex;align-items:center;gap:10px">
+            <div id="dash-status-wa" style="width:8px;height:8px;border-radius:50%;background:#ccc;flex-shrink:0"></div>
+            <span style="font-size:12px;color:var(--td);flex:1">WhatsApp</span>
+            <span id="dash-status-wa-label" style="font-size:11px;color:var(--muted)">—</span>
+          </div>
+          <!-- Google Kalender -->
+          <div style="display:flex;align-items:center;gap:10px">
+            <div id="dash-status-gcal" style="width:8px;height:8px;border-radius:50%;background:#ccc;flex-shrink:0"></div>
+            <span style="font-size:12px;color:var(--td);flex:1">Google Kalender</span>
+            <span id="dash-status-gcal-label" style="font-size:11px;color:var(--muted)">—</span>
+          </div>
+          <!-- Buchungsseite -->
+          <div style="display:flex;align-items:center;gap:10px">
+            <div id="dash-status-booking" style="width:8px;height:8px;border-radius:50%;background:#ccc;flex-shrink:0"></div>
+            <span style="font-size:12px;color:var(--td);flex:1">Buchungsseite</span>
+            <span id="dash-status-booking-label" style="font-size:11px;color:var(--muted)">—</span>
+          </div>
+        </div>
+        <!-- Buchungsseite Toggle -->
+        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:11px;color:var(--muted)">Buchungsseite aktiv</span>
+          <label class="toggle-sw"><input type="checkbox" id="dash-booking-active" onchange="toggleBookingActive()"><span class="slider"></span></label>
+        </div>
+      </div>
+
+      <!-- Geschäft -->
+      <div class="card" style="padding:18px">
+        <div class="card-title" style="margin-bottom:14px">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Geschäft
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:12px;color:var(--muted)">Services aktiv</span>
+            <span id="dash-svc-count" style="font-size:14px;font-weight:600;color:var(--td)">—</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:12px;color:var(--muted)">Mitarbeiter</span>
+            <span id="dash-staff-count" style="font-size:14px;font-weight:600;color:var(--td)">—</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:12px;color:var(--muted)">Mitarbeiter mit Kalender</span>
+            <span id="dash-cal-count" style="font-size:14px;font-weight:600;color:var(--td)">—</span>
+          </div>
+          <div style="margin-top:4px;padding-top:10px;border-top:1px solid var(--border)">
+            <span style="font-size:11px;color:var(--muted)">Meistgebuchter Service</span>
+            <div id="dash-top-svc" style="font-size:12px;font-weight:500;color:var(--tpl);margin-top:3px">Noch keine Daten</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Heute -->
+      <div class="card" style="padding:18px">
+        <div class="card-title" style="margin-bottom:14px">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Heute
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:12px;color:var(--muted)">Termine heute</span>
+            <span style="font-size:14px;font-weight:600;color:var(--td)">—</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:12px;color:var(--muted)">Erinnerungen versendet</span>
+            <span style="font-size:14px;font-weight:600;color:var(--td)">—</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:12px;color:var(--muted)">Konflikte</span>
+            <span style="font-size:14px;font-weight:600;color:var(--success)">0</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:inline-flex;align-items:center;gap:5px;background:var(--tgp);color:#7a5a00;padding:5px 10px;border-radius:99px;font-size:10px;font-weight:500">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Terminstatistik folgt
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ROW 2: Schnellzugriff -->
+    <div class="card" style="padding:18px">
+      <div class="card-title" style="margin-bottom:14px">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        Schnellzugriff
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-outline btn-sm" onclick="switchTab('profil')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+          Salon-Profil
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="switchTab('services')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14"/><path d="M4.93 4.93a10 10 0 000 14.14"/></svg>
+          Services
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="switchTab('mitarbeiter')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          Mitarbeiter
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="switchTab('qr')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          QR-Code
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="switchTab('bills')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Rechnungen
+        </button>
+      </div>
+    </div>
+
+  </div>
+
   <!-- ════ PROFIL ════ -->
-  <div class="tab-panel active" id="panel-profil">
+  <div class="tab-panel" id="panel-profil">
     <div class="sec-hdr">
       <div class="sec-title">Salon-Profil</div>
       <div class="sec-sub">Wird im Header des Buchungswidgets angezeigt</div>
@@ -663,33 +802,9 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       <div><div class="sec-title">Mitarbeiter</div><div class="sec-sub">Team & Wochenplan</div></div>
     </div>
     <div class="ma-layout">
-      <!-- Sidebar: Admin Kalender + Mitarbeiter-Kacheln -->
-      <div style="display:flex;flex-direction:column;gap:10px">
-
-        <!-- Admin Google Kalender Card -->
-        <div class="card" style="padding:14px">
-          <div class="card-title" style="margin-bottom:10px">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            Admin-Kalender
-          </div>
-          <div id="admin-gcal-status" style="display:none;align-items:center;gap:8px;padding:8px 10px;background:#eafaf1;border-radius:8px;border:1.5px solid #27ae60">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <span style="font-size:11px;color:#1a6b3a;font-weight:500;flex:1">Google verbunden</span>
-            <button onclick="connectAdminGoogle()" style="font-size:10px;color:var(--muted);background:none;border:none;cursor:pointer;font-family:inherit">Neu verbinden</button>
-          </div>
-          <div id="btn-admin-gcal" style="display:flex">
-            <button class="btn btn-sm btn-outline" onclick="connectAdminGoogle()" style="width:100%;justify-content:center;gap:8px;font-size:11px">
-              <svg width="14" height="14" viewBox="0 0 24 24"><path d="M21.05 11.1H12v2.8h5.15c-.22 1.17-.9 2.17-1.9 2.83v2.35h3.07c1.8-1.65 2.83-4.1 2.83-7z" fill="#4285F4"/><path d="M12 21c2.59 0 4.76-.86 6.35-2.32l-3.07-2.35c-.85.57-1.95.91-3.28.91-2.52 0-4.66-1.7-5.42-3.98H3.43v2.43C5.01 18.98 8.27 21 12 21z" fill="#34A853"/><path d="M6.58 13.26A5.98 5.98 0 016.2 12c0-.44.07-.87.18-1.28V8.3H3.43A9.97 9.97 0 002 12c0 1.61.39 3.13 1.07 4.46l3.08-2.43z" fill="#FBBC04"/><path d="M12 6.04c1.42 0 2.7.49 3.7 1.44l2.77-2.77C16.75 3.12 14.58 2 12 2 8.27 2 5.01 4.02 3.43 7.04L6.5 9.47c.76-2.28 2.9-3.43 5.5-3.43z" fill="#EA4335"/></svg>
-              Google verbinden
-            </button>
-          </div>
-        </div>
-
-        <!-- Mitarbeiter-Kacheln -->
-        <div class="ma-sidebar" id="staff-sidebar">
-          <div class="empty" style="padding:20px 10px"><div class="empty-text">Wird geladen…</div></div>
-        </div>
-
+      <!-- Sidebar: Mitarbeiter-Kacheln -->
+      <div class="ma-sidebar" id="staff-sidebar">
+        <div class="empty" style="padding:20px 10px"><div class="empty-text">Wird geladen…</div></div>
       </div>
       <!-- Wochenplan rechts -->
       <div class="week-plan" id="week-plan">
@@ -1021,7 +1136,7 @@ var weekPlanOffset=0; // KW-Offset für Wochenplan-Navigation
 var cachedSalonAz=null;
 
 // ── TABS ──────────────────────────────────────────────────────
-var _currentTab='profil';
+var _currentTab='dashboard';
 var _dirty=false;
 
 // Alle Inputs/Textareas/Selects im main beobachten
@@ -1053,6 +1168,7 @@ function switchTab(n){
   document.querySelectorAll('.nav-tab').forEach(function(t){t.classList.remove('active');});
   document.getElementById('panel-'+n).classList.add('active');
   document.getElementById('tab-'+n).classList.add('active');
+  if(n==='dashboard')loadDashboard();
   if(n==='mitarbeiter')updateWeekPlanLabel();
   if(n==='qr')generateQR();
   if(n==='bills')loadBills();
@@ -2551,6 +2667,77 @@ async function deleteStaff(id){
 // ── UTILS ─────────────────────────────────────────────────────
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
+
+// ── DASHBOARD ─────────────────────────────────────────────────
+async function loadDashboard(){
+  if(!SALON_ID)return;
+
+  // Datum anzeigen
+  var now=new Date();
+  var dateEl=document.getElementById('dash-date');
+  if(dateEl)dateEl.textContent=now.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  // Profil laden
+  var res=await sb.from('kunden_profile').select('*').eq('id',SALON_ID).single();
+  if(res.error)return;
+  var d=res.data;
+
+  // Salonname
+  var nameEl=document.getElementById('dash-salon-name');
+  if(nameEl)nameEl.textContent=d.brand_name||d.name||'Willkommen';
+
+  // Buchungsseite Button
+  var bookBtn=document.getElementById('dash-booking-btn');
+  if(bookBtn)bookBtn.href='https://insy-reception.com/booking?salon_id='+SALON_ID;
+
+  // Buchungsseite aktiv Toggle
+  var bookToggle=document.getElementById('dash-booking-active');
+  if(bookToggle)bookToggle.checked=d.booking_active!==false;
+  setStatusDot('dash-status-booking','dash-status-booking-label',
+    d.booking_active!==false,'Online','Gesperrt');
+
+  // Google Kalender
+  var gcalOk=!!(d.google_connected&&d.google_calendar_id);
+  setStatusDot('dash-status-gcal','dash-status-gcal-label',gcalOk,'Verbunden','Nicht verbunden');
+
+  // WhatsApp
+  var waOk=!!(d.feature_settings&&d.feature_settings.whatsapp_on);
+  setStatusDot('dash-status-wa','dash-status-wa-label',waOk,'Aktiv','Inaktiv');
+
+  // Services zählen
+  var svcRes=await sb.from('services').select('id,name').eq('salon_id',SALON_ID).eq('aktiv',true);
+  var svcCount=svcRes.data?svcRes.data.length:0;
+  var svcEl=document.getElementById('dash-svc-count');
+  if(svcEl)svcEl.textContent=svcCount;
+  var topSvc=svcRes.data&&svcRes.data.length?svcRes.data[0].name:'—';
+  var topEl=document.getElementById('dash-top-svc');
+  if(topEl)topEl.textContent=topSvc;
+
+  // Mitarbeiter zählen
+  var staffRes=await sb.from('mitarbeiter').select('id,google_calendar_id').eq('salon_id',SALON_ID).eq('aktiv',true);
+  var staffCount=staffRes.data?staffRes.data.length:0;
+  var calCount=staffRes.data?staffRes.data.filter(function(m){return!!m.google_calendar_id;}).length:0;
+  var staffEl=document.getElementById('dash-staff-count');
+  if(staffEl)staffEl.textContent=staffCount;
+  var calEl=document.getElementById('dash-cal-count');
+  if(calEl)calEl.textContent=calCount+' / '+staffCount;
+}
+
+function setStatusDot(dotId,labelId,ok,onLabel,offLabel){
+  var dot=document.getElementById(dotId);
+  var label=document.getElementById(labelId);
+  if(dot)dot.style.background=ok?'var(--success)':'var(--danger)';
+  if(label){label.textContent=ok?onLabel:offLabel;label.style.color=ok?'var(--success)':'var(--danger)';}
+}
+
+async function toggleBookingActive(){
+  if(!SALON_ID)return;
+  var active=document.getElementById('dash-booking-active').checked;
+  await sb.from('kunden_profile').update({booking_active:active}).eq('id',SALON_ID);
+  setStatusDot('dash-status-booking','dash-status-booking-label',active,'Online','Gesperrt');
+  toast((active?'Buchungsseite aktiviert ✓':'Buchungsseite gesperrt'),'success');
+}
+
 // ── INIT + AUTH ───────────────────────────────────────────────
 async function init(){
   var label=document.getElementById('auth-label');
@@ -2612,6 +2799,7 @@ async function init(){
   overlay.classList.add('hidden');
   setTimeout(function(){overlay.style.display='none';},300);
 
+  loadDashboard();
   loadProfil();
   loadServices().then(function(){loadStaff();});
   loadFeatureSettings();
