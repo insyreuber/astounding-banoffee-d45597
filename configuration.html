@@ -2306,14 +2306,8 @@ async function openCalendarPicker(mitarbeiterId){
 
   try{
     var res=await fetch('https://insy-n8n-u71054.vm.elestio.app/webhook/get-calendar-list?salon_id='+SALON_ID);
-    var text=await res.text();
-    var data={};
-    try{data=JSON.parse(text);}catch(e){}
-    // Verschiedene Response-Strukturen abfangen
-    var raw=Array.isArray(data)?data[0]:data;
-    var calendars=raw.calendars||raw.items||raw.data||[];
-    if(!Array.isArray(calendars))calendars=[];
-    console.log('Calendar list response:', raw, 'calendars:', calendars);
+    var data=await res.json();
+    var calendars=data.calendars||[];
     if(!calendars.length){
       list.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Keine Subkalender gefunden.</div>';
       return;
