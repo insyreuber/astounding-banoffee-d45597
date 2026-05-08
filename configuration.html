@@ -406,6 +406,10 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
   /* Kalender Wochenplan: scrollbar */
   .weekplan-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+  /* Dashboard Grid mobile */
+  .dash-grid{grid-template-columns:1fr !important}
+
 }
 
 </style>
@@ -482,8 +486,8 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       </a>
     </div>
 
-    <!-- ROW 1: Systemstatus + Geschäft -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px">
+    <!-- ROW 1: Kacheln -->
+    <div class="dash-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px">
 
       <!-- Systemstatus -->
       <div class="card" style="padding:18px">
@@ -491,27 +495,26 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           Systemstatus
         </div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <!-- WhatsApp -->
-          <div style="display:flex;align-items:center;gap:10px">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div onclick="switchTab('services')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:6px 8px;border-radius:8px;transition:background .15s" onmouseover="this.style.background='var(--tpp)'" onmouseout="this.style.background='transparent'">
             <div id="dash-status-wa" style="width:8px;height:8px;border-radius:50%;background:#ccc;flex-shrink:0"></div>
             <span style="font-size:12px;color:var(--td);flex:1">WhatsApp</span>
             <span id="dash-status-wa-label" style="font-size:11px;color:var(--muted)">—</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
-          <!-- Google Kalender -->
-          <div style="display:flex;align-items:center;gap:10px">
+          <div onclick="switchTab('mitarbeiter')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:6px 8px;border-radius:8px;transition:background .15s" onmouseover="this.style.background='var(--tpp)'" onmouseout="this.style.background='transparent'">
             <div id="dash-status-gcal" style="width:8px;height:8px;border-radius:50%;background:#ccc;flex-shrink:0"></div>
             <span style="font-size:12px;color:var(--td);flex:1">Google Kalender</span>
             <span id="dash-status-gcal-label" style="font-size:11px;color:var(--muted)">—</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
-          <!-- Buchungsseite -->
-          <div style="display:flex;align-items:center;gap:10px">
+          <div id="dash-row-booking" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:6px 8px;border-radius:8px;transition:background .15s" onmouseover="this.style.background='var(--tpp)'" onmouseout="this.style.background='transparent'">
             <div id="dash-status-booking" style="width:8px;height:8px;border-radius:50%;background:#ccc;flex-shrink:0"></div>
             <span style="font-size:12px;color:var(--td);flex:1">Buchungsseite</span>
             <span id="dash-status-booking-label" style="font-size:11px;color:var(--muted)">—</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
         </div>
-        <!-- Buchungsseite Toggle -->
         <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
           <span style="font-size:11px;color:var(--muted)">Buchungsseite aktiv</span>
           <label class="toggle-sw"><input type="checkbox" id="dash-booking-active" onchange="toggleBookingActive()"><span class="slider"></span></label>
@@ -524,18 +527,27 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
           Geschäft
         </div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div onclick="switchTab('services')" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:6px 8px;border-radius:8px;transition:background .15s" onmouseover="this.style.background='var(--tpp)'" onmouseout="this.style.background='transparent'">
             <span style="font-size:12px;color:var(--muted)">Services aktiv</span>
-            <span id="dash-svc-count" style="font-size:14px;font-weight:600;color:var(--td)">—</span>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span id="dash-svc-count" style="font-size:14px;font-weight:600;color:var(--td)">—</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
           </div>
-          <div style="display:flex;align-items:center;justify-content:space-between">
+          <div onclick="switchTab('mitarbeiter')" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:6px 8px;border-radius:8px;transition:background .15s" onmouseover="this.style.background='var(--tpp)'" onmouseout="this.style.background='transparent'">
             <span style="font-size:12px;color:var(--muted)">Mitarbeiter</span>
-            <span id="dash-staff-count" style="font-size:14px;font-weight:600;color:var(--td)">—</span>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span id="dash-staff-count" style="font-size:14px;font-weight:600;color:var(--td)">—</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
           </div>
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <span style="font-size:12px;color:var(--muted)">Mitarbeiter mit Kalender</span>
-            <span id="dash-cal-count" style="font-size:14px;font-weight:600;color:var(--td)">—</span>
+          <div onclick="switchTab('mitarbeiter')" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:6px 8px;border-radius:8px;transition:background .15s" onmouseover="this.style.background='var(--tpp)'" onmouseout="this.style.background='transparent'">
+            <span style="font-size:12px;color:var(--muted)">Mit Kalender</span>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span id="dash-cal-count" style="font-size:14px;font-weight:600;color:var(--td)">—</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
           </div>
           <div style="margin-top:4px;padding-top:10px;border-top:1px solid var(--border)">
             <span style="font-size:11px;color:var(--muted)">Meistgebuchter Service</span>
@@ -572,33 +584,23 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
     </div>
 
-    <!-- ROW 2: Schnellzugriff -->
+    <!-- ROW 2: Terminzeitstrahl -->
     <div class="card" style="padding:18px">
-      <div class="card-title" style="margin-bottom:14px">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-        Schnellzugriff
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div class="card-title" style="margin-bottom:0">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Termine — nächste 14 Tage
+        </div>
+        <div style="font-size:10px;color:var(--muted);background:var(--tgp);padding:3px 8px;border-radius:99px;color:#7a5a00;font-weight:500">Live aus Google Kalender</div>
       </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn btn-outline btn-sm" onclick="switchTab('profil')">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-          Salon-Profil
-        </button>
-        <button class="btn btn-outline btn-sm" onclick="switchTab('services')">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14"/><path d="M4.93 4.93a10 10 0 000 14.14"/></svg>
-          Services
-        </button>
-        <button class="btn btn-outline btn-sm" onclick="switchTab('mitarbeiter')">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-          Mitarbeiter
-        </button>
-        <button class="btn btn-outline btn-sm" onclick="switchTab('qr')">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          QR-Code
-        </button>
-        <button class="btn btn-outline btn-sm" onclick="switchTab('bills')">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          Rechnungen
-        </button>
+      <div id="dash-timeline" style="display:flex;gap:6px;align-items:flex-end;height:80px;overflow-x:auto;padding-bottom:4px">
+        <!-- filled by JS -->
+      </div>
+      <div id="dash-timeline-labels" style="display:flex;gap:6px;margin-top:6px;overflow-x:hidden">
+        <!-- filled by JS -->
+      </div>
+      <div id="dash-timeline-empty" style="display:none;text-align:center;padding:20px;font-size:12px;color:var(--muted)">
+        Keine Termine in den nächsten 14 Tagen gefunden
       </div>
     </div>
 
@@ -2672,29 +2674,30 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 async function loadDashboard(){
   if(!SALON_ID)return;
 
-  // Datum anzeigen
+  // Datum
   var now=new Date();
   var dateEl=document.getElementById('dash-date');
   if(dateEl)dateEl.textContent=now.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 
-  // Profil laden
+  // Profil
   var res=await sb.from('kunden_profile').select('*').eq('id',SALON_ID).single();
   if(res.error)return;
   var d=res.data;
 
-  // Salonname
   var nameEl=document.getElementById('dash-salon-name');
   if(nameEl)nameEl.textContent=d.brand_name||d.name||'Willkommen';
 
-  // Buchungsseite Button
   var bookBtn=document.getElementById('dash-booking-btn');
   if(bookBtn)bookBtn.href='https://insy-reception.com/booking?salon_id='+SALON_ID;
 
-  // Buchungsseite aktiv Toggle
+  // Buchungsseite link row
+  var rowBooking=document.getElementById('dash-row-booking');
+  if(rowBooking)rowBooking.onclick=function(){window.open('https://insy-reception.com/booking?salon_id='+SALON_ID,'_blank');};
+
+  // Buchungsseite toggle
   var bookToggle=document.getElementById('dash-booking-active');
   if(bookToggle)bookToggle.checked=d.booking_active!==false;
-  setStatusDot('dash-status-booking','dash-status-booking-label',
-    d.booking_active!==false,'Online','Gesperrt');
+  setStatusDot('dash-status-booking','dash-status-booking-label',d.booking_active!==false,'Online','Gesperrt');
 
   // Google Kalender
   var gcalOk=!!(d.google_connected&&d.google_calendar_id);
@@ -2704,23 +2707,97 @@ async function loadDashboard(){
   var waOk=!!(d.feature_settings&&d.feature_settings.whatsapp_on);
   setStatusDot('dash-status-wa','dash-status-wa-label',waOk,'Aktiv','Inaktiv');
 
-  // Services zählen
+  // Services
   var svcRes=await sb.from('services').select('id,name').eq('salon_id',SALON_ID).eq('aktiv',true);
   var svcCount=svcRes.data?svcRes.data.length:0;
   var svcEl=document.getElementById('dash-svc-count');
   if(svcEl)svcEl.textContent=svcCount;
-  var topSvc=svcRes.data&&svcRes.data.length?svcRes.data[0].name:'—';
   var topEl=document.getElementById('dash-top-svc');
-  if(topEl)topEl.textContent=topSvc;
+  if(topEl)topEl.textContent=svcRes.data&&svcRes.data.length?svcRes.data[0].name:'—';
 
-  // Mitarbeiter zählen
+  // Mitarbeiter
   var staffRes=await sb.from('mitarbeiter').select('id,google_calendar_id').eq('salon_id',SALON_ID).eq('aktiv',true);
-  var staffCount=staffRes.data?staffRes.data.length:0;
-  var calCount=staffRes.data?staffRes.data.filter(function(m){return!!m.google_calendar_id;}).length:0;
+  var staffArr=staffRes.data||[];
+  var staffCount=staffArr.length;
+  var calCount=staffArr.filter(function(m){return!!m.google_calendar_id;}).length;
   var staffEl=document.getElementById('dash-staff-count');
   if(staffEl)staffEl.textContent=staffCount;
   var calEl=document.getElementById('dash-cal-count');
   if(calEl)calEl.textContent=calCount+' / '+staffCount;
+
+  // Zeitstrahl
+  renderDashTimeline(staffArr);
+}
+
+async function renderDashTimeline(staffArr){
+  var calIds=staffArr.filter(function(m){return!!m.google_calendar_id;}).map(function(m){return m.google_calendar_id;});
+  var tlWrap=document.getElementById('dash-timeline');
+  var tlLabels=document.getElementById('dash-timeline-labels');
+  var tlEmpty=document.getElementById('dash-timeline-empty');
+  if(!tlWrap)return;
+
+  // 14 Tage aufbauen
+  var days=[];
+  var today=new Date();today.setHours(0,0,0,0);
+  for(var i=0;i<14;i++){
+    var d=new Date(today);d.setDate(today.getDate()+i);
+    days.push({date:d,count:0});
+  }
+
+  // Termine aus n8n holen (ein Request pro Mitarbeiter mit Kalender)
+  var allCounts={};
+  if(calIds.length&&SALON_ID){
+    try{
+      var fromDate=today.toISOString().split('T')[0];
+      var toD=new Date(today);toD.setDate(today.getDate()+14);
+      var toDate=toD.toISOString().split('T')[0];
+      var fetchRes=await fetch('https://insy-n8n-u71054.vm.elestio.app/webhook/get-appointments-range?salon_id='+SALON_ID+'&from='+fromDate+'&to='+toDate);
+      if(fetchRes.ok){
+        var data=await fetchRes.json();
+        var appointments=Array.isArray(data)?data:(data.appointments||data.items||[]);
+        appointments.forEach(function(apt){
+          var aptDate=apt.date||(apt.start&&apt.start.split('T')[0]);
+          if(aptDate)allCounts[aptDate]=(allCounts[aptDate]||0)+1;
+        });
+      }
+    }catch(e){}
+  }
+
+  // Counts in days eintragen
+  days.forEach(function(d){
+    var key=d.date.toISOString().split('T')[0];
+    d.count=allCounts[key]||0;
+  });
+
+  var maxCount=Math.max.apply(null,days.map(function(d){return d.count;}));
+  if(maxCount===0)maxCount=1; // verhindert Division durch 0
+
+  var hasAny=days.some(function(d){return d.count>0;});
+  if(tlEmpty)tlEmpty.style.display=hasAny?'none':'block';
+  if(!hasAny){tlWrap.style.display='none';if(tlLabels)tlLabels.style.display='none';return;}
+  tlWrap.style.display='flex';if(tlLabels)tlLabels.style.display='flex';
+
+  var dayNames=['So','Mo','Di','Mi','Do','Fr','Sa'];
+  var barWidth='calc((100% - '+((14-1)*6)+'px) / 14)';
+
+  tlWrap.innerHTML=days.map(function(d,i){
+    var isToday=i===0;
+    var heightPct=d.count>0?Math.max(20,Math.round((d.count/maxCount)*100)):4;
+    var barColor=isToday?'var(--tp)':(d.count>0?'var(--tpl)':'var(--border)');
+    var opacity=d.count>0?'1':'0.5';
+    return'<div style="flex:1;min-width:18px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px" title="'+d.date.toLocaleDateString('de-DE')+': '+d.count+' Termine">'
+      +(d.count>0?'<span style="font-size:9px;color:var(--tpl);font-weight:600">'+d.count+'</span>':'')
+      +'<div style="width:100%;border-radius:4px 4px 0 0;background:'+barColor+';height:'+heightPct+'%;opacity:'+opacity+';transition:height .3s;min-height:4px"></div>'
+    +'</div>';
+  }).join('');
+
+  if(tlLabels)tlLabels.innerHTML=days.map(function(d,i){
+    var isToday=i===0;
+    var name=isToday?'Heute':dayNames[d.date.getDay()];
+    var color=isToday?'var(--tpl)':'var(--muted)';
+    var fw=isToday?'600':'400';
+    return'<div style="flex:1;min-width:18px;text-align:center;font-size:9px;color:'+color+';font-weight:'+fw+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+name+'</div>';
+  }).join('');
 }
 
 function setStatusDot(dotId,labelId,ok,onLabel,offLabel){
