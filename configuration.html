@@ -527,26 +527,11 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       </div>
     </div>
 
-    <!-- Google Kalender Verbindung -->
     <div class="card">
       <div class="card-title">
-        <svg width="12" height="12" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" fill="currentColor"/></svg>
-        Google Kalender
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Öffnungszeiten <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;margin-left:6px">— offizielle Stammzeiten</span>
       </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-        <div>
-          <div style="font-size:13px;color:var(--td)" id="gcal-admin-status">Nicht verbunden</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:2px" id="gcal-admin-email"></div>
-        </div>
-        <a id="gcal-admin-btn" href="#" onclick="connectAdminGoogle(event)" class="btn btn-sm btn-outline" style="display:flex;align-items:center;gap:6px;flex-shrink:0">
-          <svg width="14" height="14" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-          Mit Google verbinden
-        </a>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">
       <div class="hours-cols" id="hours-cols"></div>
     </div>
 
@@ -1540,24 +1525,12 @@ function verifyMissedCall(){
   saveFeatureSettings();
 }
 
-
-async function loadAdminGoogleStatus(){
-  if(!SALON_ID)return;
-  var res=await sb.from('kunden_profile').select('google_connected,google_calendar_account_mail').eq('id',SALON_ID).single();
-  if(res.data&&res.data.google_connected){
-    document.getElementById('gcal-admin-status').textContent='Verbunden ✓';
-    document.getElementById('gcal-admin-status').style.color='var(--success,#27ae60)';
-    document.getElementById('gcal-admin-email').textContent=res.data.google_calendar_account_mail||'';
-    document.getElementById('gcal-admin-btn').textContent='Neu verbinden';
-  }
-}
-
 async function loadFeatureSettings(){
   if(!SALON_ID)return;
   var res=await sb.from('kunden_profile').select('feature_settings').eq('id',SALON_ID).single();
   if(res.error||!res.data.feature_settings)return;
   var f=res.data.feature_settings;
-
+  // WhatsApp Benachrichtigungen
   if(f.whatsapp_on){
     document.getElementById('feat-whatsapp-on').checked=true;
     document.getElementById('whatsapp-setup').style.display='block';
@@ -2333,14 +2306,8 @@ async function openCalendarPicker(mitarbeiterId){
 
   try{
     var res=await fetch('https://insy-n8n-u71054.vm.elestio.app/webhook/get-calendar-list?salon_id='+SALON_ID);
-    var text=await res.text();
-    var data={};
-    try{data=JSON.parse(text);}catch(e){}
-    // Verschiedene Response-Strukturen abfangen
-    var raw=Array.isArray(data)?data[0]:data;
-    var calendars=raw.calendars||raw.items||raw.data||[];
-    if(!Array.isArray(calendars))calendars=[];
-    console.log('Calendar list response:', raw, 'calendars:', calendars);
+    var data=await res.json();
+    var calendars=data.calendars||[];
     if(!calendars.length){
       list.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Keine Subkalender gefunden.</div>';
       return;
@@ -2623,7 +2590,6 @@ async function init(){
 
   loadProfil();
   loadServices().then(function(){loadStaff();});
-  loadAdminGoogleStatus();
   loadFeatureSettings();
   checkGcalReturn();
 }
