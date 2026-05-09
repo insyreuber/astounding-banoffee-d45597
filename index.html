@@ -516,6 +516,8 @@
   .pricing-card.featured .pricing-features li { color: rgba(255,255,255,0.75); }
   .pricing-features li::before { content: '✓'; color: var(--gold); font-weight: 600; flex-shrink: 0; }
 
+  .hero-sub-mobile { display: none; }
+
   /* TESTIMONIAL */
   .pricing-table-mobile { display: none; }
 
@@ -602,20 +604,51 @@
     .nav-links { display: none; }
     .nav-cta { padding: 0.5rem 1.1rem; font-size: 0.8rem; }
 
-    /* Hero: untereinander, WhatsApp visual ausblenden */
+    /* Hero: visual-first auf Mobile */
     .hero {
       grid-template-columns: 1fr;
-      padding: 5rem 1.5rem 2.5rem;
+      padding: 5rem 1.5rem 1.5rem;
       min-height: auto;
       text-align: center;
+      gap: 0;
     }
-    .hero-eyebrow { justify-content: center; }
-    .hero-content { max-width: 100%; }
-    .hero h1 { font-size: clamp(2rem, 8vw, 2.8rem); }
-    .hero-sub { font-size: 0.95rem; }
-    .hero-benefit { justify-content: center; }
-    .hero-actions { justify-content: center; }
-    .hero-visual { display: none; }
+    .hero-eyebrow { display: none; }
+    .hero-content { max-width: 100%; order: 1; }
+    .hero h1 { font-size: clamp(1.9rem, 7vw, 2.4rem); margin-bottom: 0.8rem; }
+    .hero-sub { display: none; }
+    .hero-benefits { display: none; }
+    .hero-sub-mobile {
+      display: block;
+      font-size: 0.88rem;
+      color: var(--text-mid);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      font-weight: 300;
+    }
+    .hero-actions { justify-content: center; margin-top: 0; }
+    /* Visual auf Mobile einblenden, unterhalb Headline */
+    .hero-visual {
+      display: flex;
+      order: 2;
+      margin: 1.2rem 0 1.2rem;
+      padding: 0;
+      justify-content: center;
+    }
+    .hero-visual-stack { width: 100%; max-width: 360px; gap: 8px; animation: none; }
+    .hv-card { padding: 12px 14px; border-radius: 14px; }
+    .hv-cal-header { padding-bottom: 8px; margin-bottom: 8px; }
+    .hv-event { padding: 4px 0; }
+    .hv-flow-line { height: 12px; }
+    .hv-wa-bubble { font-size: 0.78rem; padding: 8px 10px; }
+    /* QR-Strip: gross und zentriert, QR scannbar */
+    .hv-qr-strip {
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
+    }
+    .hv-qr-strip img { width: 140px !important; height: 140px !important; }
+    .hv-qr-text { font-size: 0.8rem; }
     .hero-deco, .hero-deco-2 { display: none; }
 
     /* Trust Bar */
@@ -755,6 +788,8 @@
       <div class="hero-benefit">In 2 Minuten startklar — einfach Google Kalender verbinden</div>
       <div class="hero-benefit">Automatische Follow-ups mit Buchungslink nach dem Termin</div>
     </div>
+    <!-- Nur Mobile: kurzer Teaser statt Bullets -->
+    <p class="hero-sub-mobile">Google Kalender verbinden — fertig. Bestätigung, Erinnerung &amp; Follow-up laufen automatisch.</p>
     <div class="hero-actions">
       <a href="https://insy-reception.com/login.html" class="btn-primary">Jetzt kostenlos starten</a>
       <a href="https://insy-reception.com/booking?salon_id=7ae1d846-097f-4cfd-bd4b-d2663551cb11" class="btn-secondary">Demo ansehen</a>
