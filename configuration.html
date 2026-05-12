@@ -2984,6 +2984,7 @@ async function loadTimelineData(){
       console.log('STAFF_MAP built:',Object.keys(STAFF_MAP).length,'entries');
     });
 
+  var svcPromise=Promise.resolve();
   if(!window.SVC_MAP||Object.keys(window.SVC_MAP||{}).length===0){
     svcPromise=sb.from('service_varianten')
       .select('id,name,service_id,preis,dauer,services(name,salon_id)')
