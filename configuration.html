@@ -410,16 +410,6 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   /* Dashboard Grid mobile */
   .dash-grid{grid-template-columns:1fr !important}
 
-  /* Timeline mobile */
-  .tl-bottom-grid{grid-template-columns:1fr !important}
-  #tl-summary{grid-template-columns:repeat(2,1fr) !important}
-  /* Zeitraum-Steuerung: stack vergangenheit/heute/zukunft */
-  #tl-summary > div:last-child{grid-column:span 2}
-  /* Zeitraum-Steuerung auf Mobile untereinander */
-  .tl-ctrl-row{flex-direction:column !important; gap:0 !important}
-  .tl-ctrl-row > div{border-right:none !important; border-bottom:1px solid var(--border)}
-  .tl-ctrl-row > div:last-child{border-bottom:none}
-
 }
 
 .tl-range-btn,.tl-tab-btn,.tl-past-btn,.tl-future-btn{background:none;border:none;padding:4px 9px;border-radius:6px;font-size:11px;font-weight:500;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s;}
@@ -620,7 +610,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       </div>
 
       <!-- Zeitraum-Steuerung: Vergangenheit | HEUTE | Zukunft -->
-      <div class="tl-ctrl-row" style="display:flex;align-items:center;gap:0;margin-bottom:16px;border-radius:10px;overflow:hidden;border:1.5px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:0;margin-bottom:16px;border-radius:10px;overflow:hidden;border:1.5px solid var(--border)">
         <!-- Vergangenheit -->
         <div style="flex:1;padding:10px 12px;background:rgba(201,168,76,0.07);border-right:1px solid var(--border)">
           <div style="font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#7a5a00;font-weight:600;margin-bottom:5px">
@@ -659,14 +649,14 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       </div>
 
       <!-- Zusammenfassung -->
-      <div id="tl-summary" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:1px;margin-bottom:14px;background:var(--border);border-radius:10px;overflow:hidden">
-        <div style="background:var(--bg);padding:10px 14px"><span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Bestätigt</span><div id="tl-total" style="font-size:20px;font-weight:700;color:var(--tpl)">—</div></div>
-        <div style="background:var(--bg);padding:10px 14px"><span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Heute</span><div id="tl-today-count" style="font-size:20px;font-weight:700;color:var(--td)">—</div></div>
-        <div style="background:var(--bg);padding:10px 14px"><span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Umsatz (est.)</span><div id="tl-revenue" style="font-size:20px;font-weight:700;color:#2d7a4f">—</div></div>
-        <div style="background:var(--bg);padding:10px 14px"><span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">No-Show Rate</span><div id="tl-noshow" style="font-size:20px;font-weight:700;color:var(--muted)">—</div></div>
-        <div style="background:var(--bg);padding:10px 14px"><span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Beste Uhrzeit</span><div id="tl-best-hour" style="font-size:16px;font-weight:700;color:var(--td)">—</div></div>
-        <div style="background:var(--bg);padding:10px 14px"><span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Stammkunden</span><div id="tl-returning" style="font-size:20px;font-weight:700;color:var(--td)">—</div></div>
-        <div style="background:var(--bg);padding:10px 14px"><span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Zeitraum</span><div id="tl-range-label" style="font-size:12px;font-weight:500;color:var(--td);margin-top:4px">—</div></div>
+      <div id="tl-summary" style="display:flex;gap:16px;margin-bottom:14px;padding:10px 14px;background:var(--bg);border-radius:10px;flex-wrap:wrap">
+        <div><span style="font-size:11px;color:var(--muted)">Bestätigt</span><div id="tl-total" style="font-size:20px;font-weight:700;color:var(--tpl)">—</div></div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div><span style="font-size:11px;color:var(--muted)">Heute</span><div id="tl-today-count" style="font-size:20px;font-weight:700;color:var(--td)">—</div></div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div><span style="font-size:11px;color:var(--muted)">Storniert</span><div id="tl-cancelled" style="font-size:20px;font-weight:700;color:var(--muted)">—</div></div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div><span style="font-size:11px;color:var(--muted)">Zeitraum</span><div id="tl-range-label" style="font-size:12px;font-weight:500;color:var(--td);margin-top:4px">—</div></div>
       </div>
 
       <!-- Chart-Bereich -->
@@ -679,7 +669,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       </div>
 
       <!-- Services + Mitarbeiter immer sichtbar -->
-      <div class="tl-bottom-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
         <div>
           <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:10px">Services</div>
           <div id="tl-services-chart" style="width:100%"></div>
@@ -2979,79 +2969,49 @@ async function loadTimelineData(){
   var fromD=new Date(today);fromD.setDate(today.getDate()-tlPastDays);
   var toD=new Date(today);toD.setDate(today.getDate()+tlFutureDays);toD.setHours(23,59,59,999);
 
-  // ── Fetch all three in parallel ──
-  var p1=sb.from('bookings')
-    .select('termin_start,status,customer_name,customer_phone,mitarbeiter_id,service_variante_id')
-    .eq('kunde_id',SALON_ID)
-    .gte('termin_start',fromD.toISOString())
-    .lte('termin_start',toD.toISOString())
-    .order('termin_start',{ascending:true});
+  // Fetch all three in parallel
+  var results=await Promise.all([
+    sb.from('bookings')
+      .select('termin_start,status,customer_name,mitarbeiter_id,service_variante_id')
+      .eq('kunde_id',SALON_ID)
+      .gte('termin_start',fromD.toISOString())
+      .lte('termin_start',toD.toISOString())
+      .order('termin_start',{ascending:true}),
+    sb.from('mitarbeiter')
+      .select('id,name,display_name')
+      .eq('salon_id',SALON_ID),
+    sb.from('service_varianten')
+      .select('id,name,preis,dauer,service_id,services!inner(id,name,salon_id)')
+      .eq('services.salon_id',SALON_ID)
+  ]);
 
-  var p2=sb.from('mitarbeiter')
-    .select('id,name,display_name')
-    .eq('salon_id',SALON_ID);
+  // Bookings
+  tlAllBookings=(!results[0].error&&Array.isArray(results[0].data))?results[0].data:[];
 
-  var p3=sb.from('service_varianten')
-    .select('id,name,preis,dauer,service_id,services!inner(id,name,salon_id)')
-    .eq('services.salon_id',SALON_ID);
-
-  var results=await Promise.all([p1,p2,p3]);
-  var bRes=results[0], mRes=results[1], vRes=results[2];
-
-  tlAllBookings=(!bRes.error&&Array.isArray(bRes.data))?bRes.data:[];
-
-  // Build STAFF_MAP
+  // STAFF_MAP
   window.STAFF_MAP={};
-  if(!mRes.error&&mRes.data)mRes.data.forEach(function(m){
-    STAFF_MAP[m.id]=m.display_name||m.name||'Mitarbeiter';
-  });
-
-  // Build SVC_MAP + SVC_PRICE_MAP
-  window.SVC_MAP={};
-  window.SVC_PRICE_MAP={};
-  if(!vRes.error&&vRes.data){
-    // Group varianten by service
-    var svcNames={};
-    vRes.data.forEach(function(v){
-      if(v.services)svcNames[v.service_id]=v.services.name;
+  if(!results[1].error&&results[1].data){
+    results[1].data.forEach(function(m){
+      STAFF_MAP[m.id]=m.display_name||m.name||'Mitarbeiter';
     });
-    // Count varianten per service to decide if we need variant label
-    var varCount={};
-    vRes.data.forEach(function(v){varCount[v.service_id]=(varCount[v.service_id]||0)+1;});
+  }
 
-    vRes.data.forEach(function(v){
-      SVC_PRICE_MAP[v.id]=parseFloat(v.preis)||0;
-      var sName=svcNames[v.service_id]||'Service';
+  // SVC_MAP — fallback: name > dauer > preis
+  window.SVC_MAP={};
+  if(!results[2].error&&results[2].data){
+    var varCount={};
+    results[2].data.forEach(function(v){varCount[v.service_id]=(varCount[v.service_id]||0)+1;});
+    results[2].data.forEach(function(v){
+      var sName=v.services?v.services.name:'Service';
       if(varCount[v.service_id]<=1){
         SVC_MAP[v.id]=sName;
       } else {
-        // Variant label: name > dauer > preis > nothing
         var vLabel='';
-        if(v.name&&v.name.trim()&&v.name.trim()!=='undefined'){
-          vLabel=v.name.trim();
-        } else if(v.dauer){
-          vLabel=v.dauer+' Min';
-        } else if(v.preis){
-          vLabel=parseFloat(v.preis).toFixed(0)+' €';
-        }
+        if(v.name&&v.name.trim()&&v.name.trim()!=='undefined') vLabel=v.name.trim();
+        else if(v.dauer) vLabel=v.dauer+' Min';
+        else if(v.preis) vLabel=parseFloat(v.preis).toFixed(0)+' €';
         SVC_MAP[v.id]=vLabel?sName+' · '+vLabel:sName;
       }
-    });
-  }
-  // Also merge servicesData if loaded
-  if(window.servicesData&&servicesData.length){
-    servicesData.forEach(function(item){
-      var s=item.service,vars=item.varianten||[];
-      vars.forEach(function(v){
-        if(!SVC_MAP[v.id]){
-          SVC_PRICE_MAP[v.id]=parseFloat(v.preis)||0;
-          var vLabel='';
-          if(v.name&&v.name.trim()&&v.name.trim()!=='undefined') vLabel=v.name.trim();
-          else if(v.dauer) vLabel=v.dauer+' Min';
-          else if(v.preis) vLabel=parseFloat(v.preis).toFixed(0)+' €';
-          SVC_MAP[v.id]=vLabel?(vars.length>1?s.name+' · '+vLabel:s.name):s.name;
-        }
-      });
     });
   }
 
@@ -3273,34 +3233,6 @@ function renderTimeline(fromD,toD){
   if(lbl)lbl.style.display='none';
 }
 
-
-function showDayDetail(dateKey){
-  var detail=document.getElementById('tl-day-detail');
-  var title=document.getElementById('tl-day-title');
-  var list=document.getElementById('tl-day-list');
-  if(!detail||!title||!list)return;
-  var dayBookings=tlAllBookings.filter(function(b){
-    return bookingDateKey(b.termin_start)===dateKey&&b.status==='confirmed';
-  });
-  var d=new Date(dateKey);
-  title.textContent=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})
-    +' — '+dayBookings.length+' Termin'+(dayBookings.length!==1?'e':'');
-  list.innerHTML=dayBookings.length===0
-    ?'<div style="font-size:12px;color:var(--muted);padding:8px 0">Keine bestätigten Termine</div>'
-    :dayBookings.map(function(b){
-      var time=new Date(b.termin_start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
-      var svc=window.SVC_MAP&&b.service_variante_id?SVC_MAP[b.service_variante_id]||'':''
-      var staff=window.STAFF_MAP&&b.mitarbeiter_id?STAFF_MAP[b.mitarbeiter_id]||'':'';
-      return'<div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:var(--bg);border-radius:8px;font-size:12px">'
-        +'<span style="font-weight:600;color:var(--tpl);min-width:38px">'+time+'</span>'
-        +'<span style="color:var(--td);flex:1">'+(b.customer_name||'—')+'</span>'
-        +(svc?'<span style="font-size:10px;color:var(--muted)">'+svc+'</span>':'')
-        +(staff?'<span style="font-size:10px;color:var(--muted);margin-left:4px">'+staff+'</span>':'')
-        +'</div>';
-    }).join('');
-  detail.style.display='block';
-  detail.scrollIntoView({behavior:'smooth',block:'nearest'});
-}
 async function renderDashTimeline(staffArr){
   // Build SVC_MAP and STAFF_MAP for label lookups
   // Build maps from available data, then loadTimelineData fills gaps from DB
