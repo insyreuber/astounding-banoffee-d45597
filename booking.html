@@ -437,7 +437,7 @@ var AVAIL_SLOTS={}; // { mitarbeiter_id: ['09:00','10:00',...] } — verfügbare
 // State: mehrere Services mit je einer Variante
 var st={
   services:[],   // [{svcId, varId}]
-  stf1:'any',
+  stf1:null,
   day:null,slot:null,
   name:'',phone:'',country:COUNTRIES[0]
 };
@@ -449,7 +449,7 @@ function fvar(id){
   Object.keys(VARIANTEN).forEach(function(k){all=all.concat(VARIANTEN[k]);});
   return all.filter(function(x){return x.id===id;})[0]||null;
 }
-function fname(id){if(!id||id==='any')return'Ohne Präferenz';var f=STAFF.filter(function(x){return x.id===id;})[0];return f?f.name:null;}
+function fname(id){if(!id)return'';if(id==='any')return'Ohne Präferenz';var f=STAFF.filter(function(x){return x.id===id;})[0];return f?f.name:null;}
 
 function totalMinuten(){
   return st.services.reduce(function(sum,s){
@@ -893,38 +893,38 @@ function lockBadge(msg,top){
 }
 
 function render(){
-  var step1done = st.services.length>0 && st.services.every(function(s){return s.varId;});
+  var staffChosen = !!st.stf1;
+  var step1done = staffChosen && st.services.length>0 && st.services.every(function(s){return s.varId;});
   var step3done = step1done && !!st.day && !!st.slot;
 
   // ── Schritt 1: Services — immer offen ──
   var c1done = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
   var card1 = '<div class="card" style="position:relative">'
     +'<div class="ctitle">'
-    +'<span class="cnum'+(step1done?' done':'')+'">'+( step1done ? c1done : '1' )+'</span>'
+    +'<span class="cnum'+(step1done?' done':'')+'">'+( step1done ? c1done : '2' )+'</span>'
     +'Services</div>'
     +'<div class="svc-grid">'+mkSvcCards()+'</div>'
     +'</div>';
 
   // ── Schritt 2: Mitarbeiter — gesperrt bis Service+Variante ──
-  var lock2 = !step1done;
-  var card2 = '<div class="card'+(lock2?' step-locked':'')+'" style="position:relative">'
-    +'<div class="acc-hdr"'+(lock2?'':' onclick="toggleStaff()"')+'>'
+  var lock2 = !staffChosen;
+  var card2 = '<div class="card" style="position:relative">'
+    +'<div class="acc-hdr" onclick="toggleStaff()">'
       +'<div class="acc-hdr-left">'
-        +'<span class="cnum">2</span>'
+        +'<span class="cnum">1</span>'
         +'<span class="acc-title">Mitarbeiter</span>'
-        +(lock2?'':'<span class="acc-current">'+fname(st.stf1)+'</span>')
+        +(st.stf1?'<span class="acc-current">'+fname(st.stf1)+'</span>':'')
       +'</div>'
-      +(lock2?'':'<span class="acc-arrow '+(staffOpen?'open':'')+'" id="acc-arrow">⌄</span>')
+      +'<span class="acc-arrow '+(staffOpen?'open':'')+'" id="acc-arrow">⌄</span>'
     +'</div>'
-    +'<div class="acc-body '+(staffOpen&&!lock2?'open':lock2?'open':'')+'" id="acc-body">'
-      +(lock2
+    +'<div class="acc-body open" id="acc-body">'
+      +(false
         ?'<div class="staff-grid">'
           +'<div class="stf"><div class="stf-inner"><div class="av">AB</div><div><div class="stf-n">Mitarbeiter 1</div><div class="stf-r">Spezialist</div></div></div></div>'
           +'<div class="stf"><div class="stf-inner"><div class="av g">CD</div><div><div class="stf-n">Mitarbeiter 2</div><div class="stf-r">Spezialist</div></div></div></div>'
           +'</div>'
         :mkStaffGrid())
     +'</div>'
-    +(lock2?lockBadge('Zuerst Service wählen'):'')
     +'</div>';
 
   // ── Schritt 3: Datum & Zeit — gesperrt bis Service gewählt ──
@@ -976,7 +976,7 @@ function render(){
     )
     +'</div>';
 
-  document.getElementById('app').innerHTML = card1 + card2 + card3 + card4;
+  document.getElementById('app').innerHTML = card2 + card1 + card3 + card4;
 
   document.addEventListener('click',function(e){
     if(dropOpen&&!e.target.closest('.phone-country')){dropOpen=false;renderPhoneOnly();}
@@ -1101,7 +1101,7 @@ window.rescheduleBooking=function(bookingId,googleEventId){
 };
 
 window.resetAll=function(){
-  st={services:[],stf1:'any',day:null,slot:null,name:'',phone:'',country:COUNTRIES[0]};
+  st={services:[],stf1:null,day:null,slot:null,name:'',phone:'',country:COUNTRIES[0]};
   calOff=0;staffOpen=false;dropOpen=false;AVAIL_SLOTS={};BUSY={};render();
 };
 render();
@@ -1206,7 +1206,7 @@ async function loadMitarbeiter(salonId){
     var perms=permRes.data||[];
 
     // STAFF aufbauen mit erlaubten Varianten-IDs
-    STAFF=[];
+    STAFF=[{id:'any',name:'Ohne Präferenz',role:'Nächste verfügbare Person',ini:'?',gold:true,avail:true}];
     mitarbeiter.forEach(function(m){
       var name=m.display_name||m.name||'?';
       var ini=name.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
@@ -1222,8 +1222,8 @@ async function loadMitarbeiter(salonId){
         allowedVarianten:allowedVarianten
       });
     });
-    // Ersten Mitarbeiter als Standard setzen
-    if(STAFF.length>1){st.stf1=STAFF[1].id;}
+    // Kein Standard — Nutzer muss Mitarbeiter wählen
+    st.stf1=null;
     render();
   }catch(err){console.error('loadMitarbeiter Fehler:',err);}
 }
