@@ -3013,15 +3013,16 @@ async function loadTimelineData(){
       });
   }
 
-  var bookingsPromise=sb.from('bookings')
+  // Wait for staff+svc maps first, then fetch bookings
+  await Promise.all([staffPromise,svcPromise]);
+
+  var res=await sb.from('bookings')
     .select('termin_start,status,customer_name,customer_phone,mitarbeiter_id,service_variante_id')
     .eq('kunde_id',SALON_ID)
     .gte('termin_start',fromD.toISOString())
     .lte('termin_start',toD.toISOString())
     .order('termin_start',{ascending:true});
 
-  var results=await Promise.all([staffPromise,svcPromise,bookingsPromise]);
-  var res=results[2];
   tlAllBookings=(!res.error&&Array.isArray(res.data))?res.data:[];
   renderAllCharts();
 }
