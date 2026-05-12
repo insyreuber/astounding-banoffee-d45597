@@ -242,6 +242,11 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .hd-hour-closed{color:#c8bcd8}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* card4-purple desktop: normal white card */
+@media (min-width: 701px){
+  .card4-purple{background:#fff !important;border-color:#e8e0f0 !important;}
+  .card4-mobile-wrap{max-width:260px !important;margin:0 auto !important;}
+}
 /* ── MOBILE ── */
 @media (max-width: 700px) {
   .wrap{padding:8px;gap:8px}
@@ -274,6 +279,72 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
   .field input{padding:9px 10px;font-size:13px}
   .phone-input{font-size:13px}
   .book-btn{padding:14px;font-size:15px}
+
+  /* Card4 auf Mobile: volle Breite, lila, kein weißer Wrapper */
+  .card4-mobile-wrap{
+    max-width:100% !important;
+    margin:0 !important;
+  }
+  .card4-mobile-wrap .sumcard{
+    border:none;
+    border-radius:0;
+    background:transparent;
+  }
+  .card4-mobile-wrap .sum-hdr{
+    background:transparent;
+    padding:0 0 10px 0;
+    border-bottom:1px solid rgba(255,255,255,0.2);
+    margin-bottom:4px;
+  }
+  .card4-mobile-wrap .sum-hdr-t{color:rgba(255,255,255,0.65);}
+  .card4-mobile-wrap .sum-hdr-p{color:var(--tgl);}
+  .card4-mobile-wrap .sumrow{
+    color:#fff;
+    border-bottom-color:rgba(255,255,255,0.12);
+    padding:9px 0;
+  }
+  .card4-mobile-wrap .sl-lbl{color:rgba(255,255,255,0.55);}
+  .card4-mobile-wrap .sl-val{color:#fff;}
+  .card4-mobile-wrap .sl-val.emp{color:rgba(255,255,255,0.3);}
+  .card4-mobile-wrap .contact-block{
+    background:rgba(255,255,255,0.08);
+    border-top-color:rgba(255,255,255,0.15);
+    border-radius:10px;
+    margin-top:10px;
+  }
+  .card4-mobile-wrap .contact-ttl{color:rgba(255,255,255,0.6);}
+  .card4-mobile-wrap .field label{color:rgba(255,255,255,0.7);}
+  .card4-mobile-wrap .field input{
+    background:rgba(255,255,255,0.1);
+    border-color:rgba(255,255,255,0.2);
+    color:#fff;
+  }
+  .card4-mobile-wrap .field input::placeholder{color:rgba(255,255,255,0.35);}
+  .card4-mobile-wrap .phone-wrap{
+    background:rgba(255,255,255,0.1);
+    border-color:rgba(255,255,255,0.2);
+  }
+  .card4-mobile-wrap .phone-country{
+    background:rgba(255,255,255,0.08);
+    border-right-color:rgba(255,255,255,0.15);
+  }
+  .card4-mobile-wrap .phone-dial{color:#fff;}
+  .card4-mobile-wrap .phone-input{color:#fff;}
+  .card4-mobile-wrap .phone-input::placeholder{color:rgba(255,255,255,0.35);}
+  .card4-mobile-wrap .phone-status.hint{color:rgba(255,255,255,0.4);}
+  .card4-mobile-wrap .phone-status.ok{color:#a8e6c8;}
+  .card4-mobile-wrap .phone-status.err{color:#ffaaaa;}
+  .card4-mobile-wrap .book-btn{border-radius:10px;margin-top:12px;}
+  /* Toggle label white */
+  .card4-mobile-wrap [style*="font-size:12px;font-weight:500"]{color:#fff !important;}
+  .card4-mobile-wrap [style*="font-size:10px;color:var(--muted)"]{color:rgba(255,255,255,0.5) !important;}
+  /* The card itself purple on mobile */
+  .card4-purple{
+    background:var(--tp) !important;
+    border-color:rgba(255,255,255,0.1) !important;
+  }
+  .card4-purple .ctitle{color:rgba(255,255,255,0.7);}
+  .card4-purple .cnum{background:rgba(255,255,255,0.2) !important;}
 
   /* Header kompakter */
   .hd-name{font-size:16px}
@@ -880,12 +951,12 @@ function render(){
 
   // ── Schritt 4: Buchungsübersicht — gesperrt bis Datum+Slot ──
   var lock4 = !step3done;
-  var card4 = '<div class="card'+(lock4?' step-locked':'')+'" style="position:relative">'
+  var card4 = '<div class="card card4-purple'+(lock4?' step-locked':'')+'" style="position:relative">'
     +'<div class="ctitle">'
     +'<span class="cnum">4</span>'
     +'Buchungssübersicht</div>'
     +(lock4
-      ?'<div style="max-width:260px;margin:0 auto;">'
+      ?'<div class="card4-mobile-wrap" style="max-width:260px;margin:0 auto;">'
          +'<div class="sumcard">'
          +'<div class="sum-hdr"><div class="sum-hdr-t">Buchungssübersicht</div><div class="sum-hdr-p" style="color:rgba(201,168,76,0.35)">— €</div></div>'
          +'<div class="sumrow"><span class="sl-lbl">Service</span><span class="sl-val emp">—</span></div>'
@@ -896,7 +967,9 @@ function render(){
          +'</div>'
          +'</div>'
          +lockBadge('Zuerst Datum &amp; Uhrzeit wählen','38px')
-      :'<div id="sum-col" style="max-width:260px;margin:0 auto;">'+mkSumCard()+'</div>'
+      :'<div id="sum-col" class="card4-mobile-wrap" style="max-width:260px;margin:0 auto;">'
+        +mkSumCard()
+        +'</div>'
     )
     +'</div>';
 
