@@ -2971,51 +2971,6 @@ async function loadTimelineData(){
   var fromD=new Date(today);fromD.setDate(today.getDate()-tlPastDays);
   var toD=new Date(today);toD.setDate(today.getDate()+tlFutureDays);toD.setHours(23,59,59,999);
 
-  // Always fetch fresh staff map
-  var staffPromise=sb.from('mitarbeiter')
-    .select('id,name,display_name')
-    .eq('salon_id',SALON_ID)
-    .then(function(r){
-      window.STAFF_MAP={};
-      if(r.error){console.warn('STAFF_MAP error:',r.error.message);return;}
-      (r.data||[]).forEach(function(m){
-        STAFF_MAP[m.id]=m.display_name||m.name||'Unbekannt';
-      });
-      console.log('STAFF_MAP built:',Object.keys(STAFF_MAP).length,'entries');
-    });
-
-  var svcPromise=Promise.resolve();
-  // Reset SVC_MAP each load to get fresh prices
-  window.SVC_MAP=null;
-  window.SVC_PRICE_MAP=null;
-  if(true){
-    svcPromise=sb.from('service_varianten')
-      .select('id,name,service_id,preis,dauer,services(name,salon_id)')
-      .eq('services.salon_id',SALON_ID)
-      .then(function(r){
-        window.SVC_MAP={};
-        if(!r.error&&r.data)r.data.forEach(function(v){
-          var svcName=v.services?v.services.name:'Service';
-          var varLabel='';
-          if(v.name&&v.name.trim()&&v.name!==svcName){
-            varLabel=' · '+v.name.trim();
-          } else if(!v.name||!v.name.trim()){
-            // Fallback: use dauer and/or preis
-            var parts=[];
-            if(v.dauer)parts.push(v.dauer+' Min');
-            if(v.preis)parts.push(v.preis+' €');
-            if(parts.length)varLabel=' · '+parts.join(' / ');
-          }
-          SVC_MAP[v.id]=svcName+varLabel;
-          if(!window.SVC_PRICE_MAP)window.SVC_PRICE_MAP={};
-          SVC_PRICE_MAP[v.id]=parseFloat(v.preis)||0;
-        });
-      });
-  }
-
-  // Wait for staff+svc maps first, then fetch bookings
-  await Promise.all([staffPromise,svcPromise]);
-
   var res=await sb.from('bookings')
     .select('termin_start,status,customer_name,customer_phone,mitarbeiter_id,service_variante_id')
     .eq('kunde_id',SALON_ID)
@@ -3024,6 +2979,26 @@ async function loadTimelineData(){
     .order('termin_start',{ascending:true});
 
   tlAllBookings=(!res.error&&Array.isArray(res.data))?res.data:[];
+
+  // Build STAFF_MAP from staffData if available
+  window.STAFF_MAP={};
+  if(window.staffData)staffData.forEach(function(m){
+    STAFF_MAP[m.id]=m.display_name||m.name||'Unbekannt';
+  });
+
+  // Build SVC_MAP from servicesData if available
+  window.SVC_MAP={};
+  window.SVC_PRICE_MAP={};
+  if(window.servicesData)servicesData.forEach(function(item){
+    var s=item.service,vars=item.varianten||[];
+    vars.forEach(function(v){
+      SVC_PRICE_MAP[v.id]=parseFloat(v.preis)||0;
+      var vn=vars.length>1?(v.name&&v.name.trim()?v.name.trim():(v.dauer?v.dauer+' Min':'')):'';
+      SVC_MAP[v.id]=vn?s.name+' · '+vn:s.name;
+    });
+    if(!vars.length)SVC_MAP[s.id]=s.name;
+  });
+
   renderAllCharts();
 }
 
