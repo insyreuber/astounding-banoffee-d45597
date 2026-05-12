@@ -2815,7 +2815,7 @@ async function loadDashboard(){
 }
 
 async function renderDashTimeline(staffArr){
-  var calIds=staffArr.filter(function(m){return!!m.google_calendar_id;}).map(function(m){return m.google_calendar_id;});
+  var staffWithCal=staffArr.filter(function(m){return!!m.google_calendar_id;});
   var tlWrap=document.getElementById('dash-timeline');
   var tlLabels=document.getElementById('dash-timeline-labels');
   var tlEmpty=document.getElementById('dash-timeline-empty');
@@ -2829,23 +2829,39 @@ async function renderDashTimeline(staffArr){
     days.push({date:d,count:0});
   }
 
-  // Termine aus n8n holen (ein Request pro Mitarbeiter mit Kalender)
+  // Termine via get-availability pro Mitarbeiter + Tag zählen
   var allCounts={};
-  if(calIds.length&&SALON_ID){
-    try{
-      var fromDate=today.toISOString().split('T')[0];
-      var toD=new Date(today);toD.setDate(today.getDate()+14);
-      var toDate=toD.toISOString().split('T')[0];
-      var fetchRes=await fetch('https://insy-n8n-u71054.vm.elestio.app/webhook/get-appointments-range?salon_id='+SALON_ID+'&from='+fromDate+'&to='+toDate);
-      if(fetchRes.ok){
-        var data=await fetchRes.json();
-        var appointments=Array.isArray(data)?data:(data.appointments||data.items||[]);
-        appointments.forEach(function(apt){
-          var aptDate=apt.date||(apt.start&&apt.start.split('T')[0]);
-          if(aptDate)allCounts[aptDate]=(allCounts[aptDate]||0)+1;
-        });
-      }
-    }catch(e){}
+  if(staffWithCal.length && SALON_ID){
+    // Alle Requests parallel aufbauen
+    var requests=[];
+    staffWithCal.forEach(function(m){
+      days.forEach(function(dayObj){
+        var dateStr=dayObj.date.toISOString().split('T')[0];
+        requests.push({mid:m.id, date:dateStr});
+      });
+    });
+
+    // In Batches von 10 parallel feuern, nicht überlasten
+    var BATCH=10;
+    for(var b=0;b<requests.length;b+=BATCH){
+      var batch=requests.slice(b,b+BATCH);
+      await Promise.all(batch.map(function(req){
+        return fetch(
+          'https://insy-n8n-u71054.vm.elestio.app/webhook/get-availability'
+          +'?salon_id='+SALON_ID
+          +'&mitarbeiter_id='+req.mid
+          +'&date='+req.date
+        ).then(function(r){return r.ok?r.json():null;})
+        .then(function(data){
+          if(!data)return;
+          // Response: Array oder Objekt mit raw.busy [{start,end}]
+          var raw=Array.isArray(data)?data[0]:data;
+          if(raw&&raw.busy&&Array.isArray(raw.busy)&&raw.busy.length){
+            allCounts[req.date]=(allCounts[req.date]||0)+raw.busy.length;
+          }
+        }).catch(function(){});
+      }));
+    }
   }
 
   // Counts in days eintragen
