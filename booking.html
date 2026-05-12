@@ -181,11 +181,20 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
   content:'';
   position:absolute;
   inset:0;
-  background:rgba(245,242,248,0.72);
+  background:linear-gradient(160deg,rgba(245,242,248,0.6) 0%,rgba(240,234,247,0.7) 100%);
   border-radius:10px;
   z-index:10;
-  backdrop-filter:blur(1.5px);
-  -webkit-backdrop-filter:blur(1.5px);
+  backdrop-filter:blur(3px) saturate(0.6);
+  -webkit-backdrop-filter:blur(3px) saturate(0.6);
+}
+.step-locked .svc-grid,
+.step-locked .staff-grid,
+.step-locked #cal-inner,
+.step-locked .acc-body,
+.step-locked .sumcard,
+.step-locked .book-btn{
+  opacity:0.3;
+  filter:grayscale(0.5);
 }
 .step-lock-badge{
   position:absolute;
@@ -194,22 +203,22 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
   z-index:11;
   display:flex;
   align-items:center;
-  gap:6px;
-  background:#fff;
-  border:1.5px solid #e8e0f0;
+  gap:7px;
+  background:rgba(255,255,255,0.97);
+  border:1.5px solid rgba(74,28,107,0.2);
   border-radius:50px;
-  padding:6px 14px;
+  padding:7px 16px;
   font-size:11px;
-  color:#9a8aaa;
+  color:#6a4a8a;
   font-weight:500;
   white-space:nowrap;
-  box-shadow:0 2px 8px rgba(74,28,107,0.08);
+  box-shadow:0 4px 16px rgba(74,28,107,0.14),0 1px 3px rgba(0,0,0,0.06);
   pointer-events:none;
 }
-.step-lock-badge svg{flex-shrink:0;}
-.card.step-locked .cnum,
-.card.step-locked .acc-title,
-.card.step-locked .ctitle{opacity:0.35;}
+.step-lock-badge svg{flex-shrink:0;opacity:0.7;}
+.card.step-locked .cnum{opacity:0.35;}
+.card.step-locked .ctitle,
+.card.step-locked .acc-title{opacity:0.4;}
 .cnum.done{background:#3b7a57 !important;}
 
 /* Hours dropdown – bleibt innerhalb des Headers */
@@ -511,9 +520,9 @@ var SLOTS_LOADING=false;
 window.pickDay=function(k){
   st.day=k;st.slot=null;
   BUSY={};AVAIL_SLOTS={};SLOTS_LOADING=true;
-  renderCalOnly();renderSumOnly();
+  render();
   var salonId=new URLSearchParams(window.location.search).get('salon_id');
-  if(!salonId){SLOTS_LOADING=false;renderCalOnly();return;}
+  if(!salonId){SLOTS_LOADING=false;render();return;}
   var staffIds=[];
   if(st.stf1&&st.stf1!=='any')staffIds.push(st.stf1);
   if(!staffIds.length){
@@ -525,9 +534,9 @@ window.pickDay=function(k){
   var pending=staffIds.length||1;
   function done(){
     pending--;
-    if(pending<=0){SLOTS_LOADING=false;renderCalOnly();}
+    if(pending<=0){SLOTS_LOADING=false;render();}
   }
-  if(!staffIds.length){SLOTS_LOADING=false;renderCalOnly();return;}
+  if(!staffIds.length){SLOTS_LOADING=false;render();return;}
   staffIds.forEach(function(mid){
     fetch('https://insy-n8n-u71054.vm.elestio.app/webhook/get-availability?salon_id='+salonId+'&mitarbeiter_id='+mid+'&date='+dateFormatted)
       .then(function(r){return r.json();})
@@ -554,7 +563,7 @@ window.pickDay=function(k){
       .catch(function(){done();});
   });
 };
-window.pickSlot=function(s){st.slot=s;renderCalOnly();renderSumOnly();};
+window.pickSlot=function(s){st.slot=s;render();};
 window.calPrev=function(){calOff--;render();};
 window.calNext=function(){calOff++;render();};
 window.toggleDrop=function(e){e&&e.stopPropagation();dropOpen=!dropOpen;dropSearch='';renderPhoneOnly();};
@@ -780,8 +789,7 @@ function renderCalOnly(){var el=document.getElementById('cal-inner');if(el)el.in
 function renderPhoneOnly(){var el=document.getElementById('phone-outer');if(el)el.innerHTML=mkPhone();}
 function renderSumOnly(){
   var el=document.getElementById('sum-col');
-  if(el)el.innerHTML=mkSumCard();
-  // Also update book button state
+  if(el){el.innerHTML=mkSumCard();}
   updateBookBtn();
 }
 
@@ -833,8 +841,13 @@ function render(){
       +'</div>'
       +(lock2?'':'<span class="acc-arrow '+(staffOpen?'open':'')+'" id="acc-arrow">⌄</span>')
     +'</div>'
-    +'<div class="acc-body '+(staffOpen&&!lock2?'open':'')+'" id="acc-body">'
-      +(lock2?'':mkStaffGrid())
+    +'<div class="acc-body '+(staffOpen&&!lock2?'open':lock2?'open':'')+'" id="acc-body">'
+      +(lock2
+        ?'<div class="staff-grid">'
+          +'<div class="stf"><div class="stf-inner"><div class="av">AB</div><div><div class="stf-n">Mitarbeiter 1</div><div class="stf-r">Spezialist</div></div></div></div>'
+          +'<div class="stf"><div class="stf-inner"><div class="av g">CD</div><div><div class="stf-n">Mitarbeiter 2</div><div class="stf-r">Spezialist</div></div></div></div>'
+          +'</div>'
+        :mkStaffGrid())
     +'</div>'
     +(lock2?lockBadge('Zuerst Service wählen'):'')
     +'</div>';
@@ -845,7 +858,22 @@ function render(){
     +'<div class="ctitle">'
     +'<span class="cnum'+(step3done?' done':'')+'">3</span>'
     +'Datum &amp; Uhrzeit</div>'
-    +'<div id="cal-inner">'+(lock3?'':mkCal())+'</div>'
+    +'<div id="cal-inner">'
+      +(lock3
+        ?'<div><div class="cal-hdr"><button class="cal-nav">&lsaquo;</button><span class="cal-mo">Monat Jahr</span><button class="cal-nav">&rsaquo;</button></div>'
+          +'<div class="cal-grid">'
+          +'<div class="cdl">Mo</div><div class="cdl">Di</div><div class="cdl">Mi</div><div class="cdl">Do</div><div class="cdl">Fr</div><div class="cdl">Sa</div><div class="cdl">So</div>'
+          +'<div class="cd cp">1</div><div class="cd cp">2</div><div class="cd cp">3</div><div class="cd cp">4</div><div class="cd cp">5</div><div class="cd cp">6</div><div class="cd cp">7</div>'
+          +'<div class="cd cp">8</div><div class="cd cp">9</div><div class="cd cp">10</div><div class="cd cp">11</div><div class="cd cp">12</div><div class="cd cp">13</div><div class="cd cp">14</div>'
+          +'<div class="cd cp">15</div><div class="cd cp">16</div><div class="cd cp">17</div><div class="cd cp">18</div><div class="cd cp">19</div><div class="cd cp">20</div><div class="cd cp">21</div>'
+          +'</div>'
+          +'<div class="slot-lbl">Verfügbare Zeiten</div>'
+          +'<div class="slots">'
+          +'<div class="sl sb">09:00</div><div class="sl sb">09:30</div><div class="sl sb">10:00</div><div class="sl sb">10:30</div>'
+          +'<div class="sl sb">11:00</div><div class="sl sb">11:30</div><div class="sl sb">12:00</div><div class="sl sb">12:30</div>'
+          +'</div></div>'
+        :mkCal())
+    +'</div>'
     +(lock3?lockBadge('Zuerst Service &amp; Mitarbeiter wählen'):'')
     +'</div>';
 
@@ -856,7 +884,21 @@ function render(){
     +'<span class="cnum">4</span>'
     +'Buchungssübersicht</div>'
     +(lock4
-      ?'<div style="min-height:100px;"></div>'+lockBadge('Zuerst Datum &amp; Uhrzeit wählen')
+      ?'<div class="sumcard">'
+         +'<div class="sum-hdr"><div class="sum-hdr-t">Buchungssübersicht</div><div class="sum-hdr-p" style="color:rgba(201,168,76,0.35)">— €</div></div>'
+         +'<div class="sumrow"><span class="sl-lbl">Service</span><span class="sl-val emp">—</span></div>'
+         +'<div class="sumrow"><span class="sl-lbl">Gesamt</span><span class="sl-val emp">—</span></div>'
+         +'<div class="sumrow"><span class="sl-lbl">Mitarbeiter</span><span class="sl-val emp">—</span></div>'
+         +'<div class="sumrow"><span class="sl-lbl">Uhrzeit</span><span class="sl-val emp">—</span></div>'
+         +'<div class="sumrow"><span class="sl-lbl">Datum</span><span class="sl-val emp">—</span></div>'
+         +'<div class="contact-block"><div class="contact-ttl">Kontaktdaten</div>'
+         +'<div class="field"><label>Name *</label><input disabled placeholder="Lena Müller" style="background:#faf8fc"></div>'
+         +'<div class="field"><label>Mobilnummer *</label>'
+         +'<div class="phone-wrap"><div class="phone-country"><span style="font-size:14px">🇩🇪</span><span class="phone-dial">+49</span></div>'
+         +'<input class="phone-input" disabled placeholder="0151 12345678"></div></div>'
+         +'</div></div>'
+         +'<button class="book-btn" disabled>Termin buchen →</button>'
+         +lockBadge('Zuerst Datum &amp; Uhrzeit wählen')
       :'<div id="sum-col">'+mkSumCard()+'</div>'
     )
     +'</div>';
