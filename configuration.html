@@ -2800,9 +2800,9 @@ async function loadDashboard(){
   var tf=document.getElementById('tl-from');
   var tt=document.getElementById('tl-to');
   if(tf&&!tf.value){
-    tf.value=today.toISOString().split('T')[0];
+    tf.value=localDateKey(today);
     var t7=new Date(today);t7.setDate(today.getDate()+6);
-    if(tt&&!tt.value)tt.value=t7.toISOString().split('T')[0];
+    if(tt&&!tt.value)tt.value=localDateKey(t7);
   }
   if(!SALON_ID)return;
 
@@ -2862,6 +2862,18 @@ async function loadDashboard(){
 }
 
 // ── TIMELINE STATE ───────────────────────────────────────────
+// Helper: returns YYYY-MM-DD in LOCAL timezone (not UTC)
+function localDateKey(d){
+  var y=d.getFullYear();
+  var m=('0'+(d.getMonth()+1)).slice(-2);
+  var day=('0'+d.getDate()).slice(-2);
+  return y+'-'+m+'-'+day;
+}
+// Helper: parse a timestamptz string to local date key
+function bookingDateKey(ts){
+  // ts = "2026-05-12T08:15:00+00:00" — convert to local date
+  return localDateKey(new Date(ts));
+}
 var tlRangeDays=7;
 var tlFromDate=null;
 var tlToDate=null;
@@ -2898,7 +2910,7 @@ async function loadTimelineData(){
   if(!tlFromDate){toD=new Date(today);toD.setDate(today.getDate()+tlRangeDays-1);toD.setHours(23,59,59,999);}
 
   var fromISO=fromD.toISOString();
-  var toISO=toD.toISOString();
+  var toISO=toD.toISOString(); // UTC range is correct for DB query
 
   // Fetch confirmed + cancelled for full picture
   var res=await sb.from('bookings')
@@ -2922,15 +2934,15 @@ function renderTimeline(fromD,toD){
   var days=[];
   var cur=new Date(fromD);
   while(cur<=toD){
-    days.push({date:new Date(cur),confirmed:0,cancelled:0,bookings:[]});
+    days.push({date:new Date(cur),dk:localDateKey(cur),confirmed:0,cancelled:0,bookings:[]});
     cur.setDate(cur.getDate()+1);
   }
 
   // Count per day
   var today=new Date();today.setHours(0,0,0,0);
   tlAllBookings.forEach(function(b){
-    var dk=b.termin_start.split('T')[0];
-    var day=days.find(function(d){return d.date.toISOString().split('T')[0]===dk;});
+    var dk=bookingDateKey(b.termin_start);
+    var day=days.find(function(d){return d.dk===dk;});
     if(!day)return;
     if(b.status==='confirmed'){day.confirmed++;day.bookings.push(b);}
     else if(b.status==='cancelled')day.cancelled++;
@@ -2939,8 +2951,8 @@ function renderTimeline(fromD,toD){
   // Summary
   var totalConf=days.reduce(function(s,d){return s+d.confirmed;},0);
   var totalCanc=days.reduce(function(s,d){return s+d.cancelled;},0);
-  var todayKey=today.toISOString().split('T')[0];
-  var todayDay=days.find(function(d){return d.date.toISOString().split('T')[0]===todayKey;});
+  var todayKey=localDateKey(today);
+  var todayDay=days.find(function(d){return d.dk===todayKey;});
   document.getElementById('tl-total').textContent=totalConf;
   document.getElementById('tl-today-count').textContent=todayDay?todayDay.confirmed:'0';
   document.getElementById('tl-cancelled').textContent=totalCanc;
@@ -2960,7 +2972,7 @@ function renderTimeline(fromD,toD){
   var dayNames=['So','Mo','Di','Mi','Do','Fr','Sa'];
 
   tlWrap.innerHTML=days.map(function(d,i){
-    var dk=d.date.toISOString().split('T')[0];
+    var dk=d.dk;
     var isToday=dk===todayKey;
     var isPast=d.date<today;
     var heightPct=d.confirmed>0?Math.max(16,Math.round((d.confirmed/maxCount)*100)):4;
@@ -2974,7 +2986,7 @@ function renderTimeline(fromD,toD){
   if(tlLabels){
     var showEvery=days.length>20?Math.ceil(days.length/14):1;
     tlLabels.innerHTML=days.map(function(d,i){
-      var isToday=d.date.toISOString().split('T')[0]===todayKey;
+      var isToday=d.dk===todayKey;
       var show=i%showEvery===0||isToday;
       var label=isToday?'Heute':(show?(days.length<=14?dayNames[d.date.getDay()]:('0'+d.date.getDate()).slice(-2)+'.'+('0'+(d.date.getMonth()+1)).slice(-2)):'');
       return'<div style="flex:1;min-width:14px;text-align:center;font-size:8px;color:'+(isToday?'var(--tpl)':'var(--muted)')+';font-weight:'+(isToday?'600':'400')+'">'+label+'</div>';
@@ -2989,7 +3001,7 @@ function showDayDetail(dateKey){
   if(!detail||!title||!list)return;
 
   var dayBookings=tlAllBookings.filter(function(b){
-    return b.termin_start.split('T')[0]===dateKey&&b.status==='confirmed';
+    return bookingDateKey(b.termin_start)===dateKey&&b.status==='confirmed';
   });
 
   var d=new Date(dateKey);
