@@ -2969,7 +2969,6 @@ async function loadTimelineData(){
   var fromD=new Date(today);fromD.setDate(today.getDate()-tlPastDays);
   var toD=new Date(today);toD.setDate(today.getDate()+tlFutureDays);toD.setHours(23,59,59,999);
 
-  // Fetch all three in parallel
   var results=await Promise.all([
     sb.from('bookings')
       .select('termin_start,status,customer_name,mitarbeiter_id,service_variante_id')
@@ -2980,9 +2979,11 @@ async function loadTimelineData(){
     sb.from('mitarbeiter')
       .select('id,name,display_name')
       .eq('salon_id',SALON_ID),
+    sb.from('services')
+      .select('id,name')
+      .eq('salon_id',SALON_ID),
     sb.from('service_varianten')
-      .select('id,name,preis,dauer,service_id,services!inner(id,name,salon_id)')
-      .eq('services.salon_id',SALON_ID)
+      .select('id,name,preis,dauer,service_id')
   ]);
 
   // Bookings
@@ -2996,13 +2997,19 @@ async function loadTimelineData(){
     });
   }
 
-  // SVC_MAP — fallback: name > dauer > preis
-  window.SVC_MAP={};
+  // Service names map
+  var svcNames={};
   if(!results[2].error&&results[2].data){
+    results[2].data.forEach(function(s){ svcNames[s.id]=s.name; });
+  }
+
+  // SVC_MAP from varianten + service names
+  window.SVC_MAP={};
+  if(!results[3].error&&results[3].data){
     var varCount={};
-    results[2].data.forEach(function(v){varCount[v.service_id]=(varCount[v.service_id]||0)+1;});
-    results[2].data.forEach(function(v){
-      var sName=v.services?v.services.name:'Service';
+    results[3].data.forEach(function(v){varCount[v.service_id]=(varCount[v.service_id]||0)+1;});
+    results[3].data.forEach(function(v){
+      var sName=svcNames[v.service_id]||'Service';
       if(varCount[v.service_id]<=1){
         SVC_MAP[v.id]=sName;
       } else {
