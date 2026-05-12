@@ -2969,7 +2969,7 @@ async function loadTimelineData(){
   var fromD=new Date(today);fromD.setDate(today.getDate()-tlPastDays);
   var toD=new Date(today);toD.setDate(today.getDate()+tlFutureDays);toD.setHours(23,59,59,999);
 
-  // 1. Load bookings + mitarbeiter + services in parallel
+  // Bookings + Mitarbeiter parallel
   var r=await Promise.all([
     sb.from('bookings')
       .select('termin_start,status,customer_name,mitarbeiter_id,service_variante_id')
@@ -2977,8 +2977,7 @@ async function loadTimelineData(){
       .gte('termin_start',fromD.toISOString())
       .lte('termin_start',toD.toISOString())
       .order('termin_start',{ascending:true}),
-    sb.from('mitarbeiter').select('id,name,display_name').eq('salon_id',SALON_ID),
-    sb.from('services').select('id,name').eq('salon_id',SALON_ID)
+    sb.from('mitarbeiter').select('id,name,display_name').eq('salon_id',SALON_ID)
   ]);
 
   tlAllBookings=(!r[0].error&&Array.isArray(r[0].data))?r[0].data:[];
@@ -2989,31 +2988,45 @@ async function loadTimelineData(){
     STAFF_MAP[m.id]=m.display_name||m.name||'Mitarbeiter';
   });
 
-  // Service names
-  var svcNames={};
-  if(!r[2].error&&r[2].data)r[2].data.forEach(function(s){svcNames[s.id]=s.name;});
-
-  // 2. Load varianten filtered by service IDs
+  // SVC_MAP — nutze servicesData wenn schon geladen, sonst aus DB
   window.SVC_MAP={};
-  var svcIds=Object.keys(svcNames);
-  if(svcIds.length){
-    var vRes=await sb.from('service_varianten')
-      .select('id,name,preis,dauer,service_id')
-      .in('service_id',svcIds);
-    if(!vRes.error&&vRes.data){
+  if(window.servicesData&&servicesData.length){
+    servicesData.forEach(function(item){
+      var s=item.service,vars=item.varianten||[];
+      vars.forEach(function(v){
+        if(vars.length<=1){SVC_MAP[v.id]=s.name;return;}
+        var vLabel='';
+        if(v.name&&v.name.trim()&&v.name.trim()!=='undefined') vLabel=v.name.trim();
+        else if(v.dauer) vLabel=v.dauer+' Min';
+        else if(v.preis) vLabel=parseFloat(v.preis).toFixed(0)+' €';
+        SVC_MAP[v.id]=vLabel?s.name+' · '+vLabel:s.name;
+      });
+      if(!vars.length)SVC_MAP[s.id]=s.name;
+    });
+  } else {
+    // Load services then varianten sequentially to avoid long URLs
+    var sRes=await sb.from('services').select('id,name').eq('salon_id',SALON_ID);
+    if(!sRes.error&&sRes.data&&sRes.data.length){
+      var svcNames={};
+      sRes.data.forEach(function(s){svcNames[s.id]=s.name;});
+      var svcIds=sRes.data.map(function(s){return s.id;});
+      // Batch in groups of 10 to avoid URL length issues
+      var allVars=[];
+      for(var b=0;b<svcIds.length;b+=10){
+        var batch=svcIds.slice(b,b+10);
+        var vRes=await sb.from('service_varianten').select('id,name,preis,dauer,service_id').in('service_id',batch);
+        if(!vRes.error&&vRes.data)allVars=allVars.concat(vRes.data);
+      }
       var varCount={};
-      vRes.data.forEach(function(v){varCount[v.service_id]=(varCount[v.service_id]||0)+1;});
-      vRes.data.forEach(function(v){
+      allVars.forEach(function(v){varCount[v.service_id]=(varCount[v.service_id]||0)+1;});
+      allVars.forEach(function(v){
         var sName=svcNames[v.service_id]||'Service';
-        if(varCount[v.service_id]<=1){
-          SVC_MAP[v.id]=sName;
-        } else {
-          var vLabel='';
-          if(v.name&&v.name.trim()&&v.name.trim()!=='undefined') vLabel=v.name.trim();
-          else if(v.dauer) vLabel=v.dauer+' Min';
-          else if(v.preis) vLabel=parseFloat(v.preis).toFixed(0)+' €';
-          SVC_MAP[v.id]=vLabel?sName+' · '+vLabel:sName;
-        }
+        if(varCount[v.service_id]<=1){SVC_MAP[v.id]=sName;return;}
+        var vLabel='';
+        if(v.name&&v.name.trim()&&v.name.trim()!=='undefined') vLabel=v.name.trim();
+        else if(v.dauer) vLabel=v.dauer+' Min';
+        else if(v.preis) vLabel=parseFloat(v.preis).toFixed(0)+' €';
+        SVC_MAP[v.id]=vLabel?sName+' · '+vLabel:sName;
       });
     }
   }
