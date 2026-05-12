@@ -612,42 +612,49 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       <div class="sec-title">Salon-Profil</div>
       <div class="sec-sub">Wird im Header des Buchungswidgets angezeigt</div>
     </div>
+    <!-- Kachel 1: Adresse -->
     <div class="card">
       <div class="card-title">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        Allgemein
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Adresse
       </div>
-      <div class="frow frow-1">
-        <div class="field"><label>Salonname (im Widget)</label><input type="text" id="f-brand" placeholder="z.B. Wellness Store Weiershagen"></div>
-      </div>
-      <div class="frow frow-2">
-        <div class="field"><label>Vorwahl</label><input type="text" id="f-area-code" placeholder="02262"></div>
-        <div class="field"><label>Telefonnummer</label><input type="text" id="f-phone-number" placeholder="79679975"></div>
-      </div>
-      <div class="frow frow-2" style="grid-template-columns:1fr 100px;gap:12px;margin-bottom:12px">
-        <div class="field"><label>Straße</label><input type="text" id="f-street" placeholder="Hückhausener Str."></div>
-        <div class="field"><label>Hausnummer</label><input type="text" id="f-house" placeholder="12a"></div>
-      </div>
-      <div class="frow frow-2" style="grid-template-columns:100px 1fr;gap:12px;margin-bottom:12px">
-        <div class="field" style="margin-bottom:0"><label>PLZ</label><input type="text" id="f-plz" placeholder="51674"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div class="field" style="margin-bottom:0"><label>Salonname (im Widget)</label><input type="text" id="f-brand" placeholder="z.B. Wellness Store"></div>
         <div class="field" style="margin-bottom:0"><label>Stadt</label><input type="text" id="f-city" placeholder="Wiehl"></div>
       </div>
-      <div class="frow frow-1">
-        <div class="field" style="margin-bottom:0">
-          <label style="display:flex;align-items:center;gap:5px">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
-            Instagram
-          </label>
-          <input type="text" id="f-instagram" placeholder="https://instagram.com/deinsalon">
-        </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div class="field" style="margin-bottom:0"><label>Vorwahl</label><input type="text" id="f-area-code" placeholder="02262"></div>
+        <div class="field" style="margin-bottom:0"><label>Telefonnummer</label><input type="text" id="f-phone-number" placeholder="79679975"></div>
       </div>
-      <div class="frow frow-2">
+      <div style="display:grid;grid-template-columns:1fr 100px;gap:12px;margin-bottom:12px">
+        <div class="field" style="margin-bottom:0"><label>Straße</label><input type="text" id="f-street" placeholder="Hückhausener Str."></div>
+        <div class="field" style="margin-bottom:0"><label>Hausnummer</label><input type="text" id="f-house" placeholder="12a"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:100px 1fr;gap:12px">
+        <div class="field" style="margin-bottom:0"><label>PLZ</label><input type="text" id="f-plz" placeholder="51674"></div>
         <div class="field" style="margin-bottom:0">
           <label style="display:flex;align-items:center;gap:5px">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
             Handynummer
           </label>
           <input type="text" id="f-mobile" placeholder="+49 151 12345678">
+        </div>
+      </div>
+    </div>
+
+    <!-- Kachel 2: Links -->
+    <div class="card">
+      <div class="card-title">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+        Links
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div class="field" style="margin-bottom:0">
+          <label style="display:flex;align-items:center;gap:5px">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            Instagram
+          </label>
+          <input type="text" id="f-instagram" placeholder="https://instagram.com/deinsalon">
         </div>
         <div class="field" style="margin-bottom:0">
           <label style="display:flex;align-items:center;gap:5px">
@@ -657,14 +664,12 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
           <input type="text" id="f-website" placeholder="https://meinsalon.de">
         </div>
       </div>
-      <div class="frow frow-1">
-        <div class="field" style="margin-bottom:0">
-          <label style="display:flex;align-items:center;gap:5px">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            Google Maps Link
-          </label>
-          <input type="text" id="f-maps" placeholder="https://maps.google.com/?q=...">
-        </div>
+      <div class="field" style="margin-bottom:0">
+        <label style="display:flex;align-items:center;gap:5px">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Google Maps Link
+        </label>
+        <input type="text" id="f-maps" placeholder="https://maps.google.com/?q=...">
       </div>
     </div>
 
