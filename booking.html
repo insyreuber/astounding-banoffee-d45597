@@ -171,6 +171,47 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .cpill.g{background:var(--tgp);color:#7a5a00}
 .reset-btn{background:none;border:1.5px solid rgba(255,255,255,.3);border-radius:8px;padding:8px 18px;font-size:13px;color:#fff;cursor:pointer;font-family:inherit;margin-top:1rem}
 
+/* ── STEP LOCK ── */
+.step-locked{
+  position:relative;
+  pointer-events:none;
+  user-select:none;
+}
+.step-locked::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:rgba(245,242,248,0.72);
+  border-radius:10px;
+  z-index:10;
+  backdrop-filter:blur(1.5px);
+  -webkit-backdrop-filter:blur(1.5px);
+}
+.step-lock-badge{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  z-index:11;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  background:#fff;
+  border:1.5px solid #e8e0f0;
+  border-radius:50px;
+  padding:6px 14px;
+  font-size:11px;
+  color:#9a8aaa;
+  font-weight:500;
+  white-space:nowrap;
+  box-shadow:0 2px 8px rgba(74,28,107,0.08);
+  pointer-events:none;
+}
+.step-lock-badge svg{flex-shrink:0;}
+.card.step-locked .cnum,
+.card.step-locked .acc-title,
+.card.step-locked .ctitle{opacity:0.35;}
+.cnum.done{background:#3b7a57 !important;}
+
 /* Hours dropdown – bleibt innerhalb des Headers */
 .hd-hours-inline{cursor:pointer;position:relative;user-select:none}
 .hd-hours-inline:hover{color:rgba(255,255,255,.82)}
@@ -737,7 +778,17 @@ function mkSumCard(){
 
 function renderCalOnly(){var el=document.getElementById('cal-inner');if(el)el.innerHTML=mkCal();}
 function renderPhoneOnly(){var el=document.getElementById('phone-outer');if(el)el.innerHTML=mkPhone();}
-function renderSumOnly(){var el=document.getElementById('sum-col');if(el)el.innerHTML=mkSumCard();}
+function renderSumOnly(){
+  var el=document.getElementById('sum-col');
+  if(el)el.innerHTML=mkSumCard();
+  // Also update book button state
+  updateBookBtn();
+}
+
+function updateBookBtn(){
+  var btn=document.querySelector('.book-btn');
+  if(btn){btn.disabled=!canBook();}
+}
 
 function updatePhoneStatus(){
   var statusEl=document.querySelector('.phone-status');
@@ -752,36 +803,71 @@ function updatePhoneStatus(){
   updateBookBtn();
 }
 
+function lockBadge(msg){
+  return '<div class="step-lock-badge">'
+    +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9a8aaa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>'
+    +msg+'</div>';
+}
+
 function render(){
-  document.getElementById('app').innerHTML=
-    '<div class="card">'
-      +'<div class="ctitle"><span class="cnum">1</span>Services</div>'
-      +'<div class="svc-grid">'+mkSvcCards()+'</div>'
-    +'</div>'
-    +'<div class="card">'
-      +'<div class="acc-hdr" onclick="toggleStaff()">'
-        +'<div class="acc-hdr-left">'
-          +'<span class="cnum">2</span>'
-          +'<span class="acc-title">Mitarbeiter</span>'
-          +'<span class="acc-current">'+fname(st.stf1)+'</span>'
-        +'</div>'
-        +'<span class="acc-arrow '+(staffOpen?'open':'')+'" id="acc-arrow">\u2304</span>'
-      +'</div>'
-      +'<div class="acc-body '+(staffOpen?'open':'')+'" id="acc-body">'
-        +mkStaffGrid()
-      +'</div>'
-    +'</div>'
-    +'<div class="card"><div class="ctitle"><span class="cnum">3</span>Datum & Uhrzeit</div>'
-      +'<div class="cal-sum-row">'
-        +'<div id="cal-inner">'+mkCal()+'</div>'
-        +'<div id="sum-col">'+mkSumCard()+'</div>'
-      +'</div>'
+  var step1done = st.services.length>0 && st.services.every(function(s){return s.varId;});
+  var step3done = step1done && !!st.day && !!st.slot;
+
+  // ── Schritt 1: Services — immer offen ──
+  var c1done = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
+  var card1 = '<div class="card" style="position:relative">'
+    +'<div class="ctitle">'
+    +'<span class="cnum'+(step1done?' done':'')+'">'+( step1done ? c1done : '1' )+'</span>'
+    +'Services</div>'
+    +'<div class="svc-grid">'+mkSvcCards()+'</div>'
     +'</div>';
+
+  // ── Schritt 2: Mitarbeiter — gesperrt bis Service+Variante ──
+  var lock2 = !step1done;
+  var card2 = '<div class="card'+(lock2?' step-locked':'')+'" style="position:relative">'
+    +'<div class="acc-hdr"'+(lock2?'':' onclick="toggleStaff()"')+'>'
+      +'<div class="acc-hdr-left">'
+        +'<span class="cnum">2</span>'
+        +'<span class="acc-title">Mitarbeiter</span>'
+        +(lock2?'':'<span class="acc-current">'+fname(st.stf1)+'</span>')
+      +'</div>'
+      +(lock2?'':'<span class="acc-arrow '+(staffOpen?'open':'')+'" id="acc-arrow">⌄</span>')
+    +'</div>'
+    +'<div class="acc-body '+(staffOpen&&!lock2?'open':'')+'" id="acc-body">'
+      +(lock2?'':mkStaffGrid())
+    +'</div>'
+    +(lock2?lockBadge('Zuerst Service wählen'):'')
+    +'</div>';
+
+  // ── Schritt 3: Datum & Zeit — gesperrt bis Service gewählt ──
+  var lock3 = !step1done;
+  var card3 = '<div class="card'+(lock3?' step-locked':'')+'" style="position:relative">'
+    +'<div class="ctitle">'
+    +'<span class="cnum'+(step3done?' done':'')+'">3</span>'
+    +'Datum &amp; Uhrzeit</div>'
+    +'<div id="cal-inner">'+(lock3?'':mkCal())+'</div>'
+    +(lock3?lockBadge('Zuerst Service &amp; Mitarbeiter wählen'):'')
+    +'</div>';
+
+  // ── Schritt 4: Buchungsübersicht — gesperrt bis Datum+Slot ──
+  var lock4 = !step3done;
+  var card4 = '<div class="card'+(lock4?' step-locked':'')+'" style="position:relative">'
+    +'<div class="ctitle">'
+    +'<span class="cnum">4</span>'
+    +'Buchungssübersicht</div>'
+    +(lock4
+      ?'<div style="min-height:100px;"></div>'+lockBadge('Zuerst Datum &amp; Uhrzeit wählen')
+      :'<div id="sum-col">'+mkSumCard()+'</div>'
+    )
+    +'</div>';
+
+  document.getElementById('app').innerHTML = card1 + card2 + card3 + card4;
 
   document.addEventListener('click',function(e){
     if(dropOpen&&!e.target.closest('.phone-country')){dropOpen=false;renderPhoneOnly();}
   },{once:true});
 }
+
 
 window.submitBooking=async function(){
   if(!canBook())return;
