@@ -417,9 +417,7 @@ document.addEventListener('click',function(e){
 // Dynamisch aus Supabase befüllt
 var SVCS=[];
 var VARIANTEN={};
-var STAFF=[
-  {id:'any',name:'Ohne Präferenz',role:'Nächste verfügbare Person',ini:'?',gold:true,avail:true}
-];
+var STAFF=[];
 var STAFF_BUSY={};
 var COUNTRIES=[
   {code:'DE',flag:'🇩🇪',name:'Deutschland',dial:'+49',re:/^(\+49|0049|0)?1[5-7]\d{8,9}$/},
@@ -1206,7 +1204,7 @@ async function loadMitarbeiter(salonId){
     var perms=permRes.data||[];
 
     // STAFF aufbauen mit erlaubten Varianten-IDs
-    STAFF=[{id:'any',name:'Ohne Präferenz',role:'Nächste verfügbare Person',ini:'?',gold:true,avail:true}];
+    STAFF=[];
     mitarbeiter.forEach(function(m){
       var name=m.display_name||m.name||'?';
       var ini=name.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
