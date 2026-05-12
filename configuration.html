@@ -345,7 +345,11 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   /* Formularfelder */
   .frow{grid-template-columns:1fr !important}
   .frow-2{grid-template-columns:1fr 1fr !important}
-  /* Stadt/PLZ/Hausnummer Zeile bleibt nebeneinander auf Mobile */
+  .custom-link-row{display:grid;grid-template-columns:1fr 1fr 24px;gap:5px;align-items:center;}
+.custom-link-row input{font-size:12px;padding:5px 8px;}
+.custom-link-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:15px;padding:0;line-height:1;display:flex;align-items:center;justify-content:center;}
+.custom-link-del:hover{color:var(--danger);}
+/* Stadt/PLZ/Hausnummer Zeile bleibt nebeneinander auf Mobile */
   .frow[style*="grid-template-columns:1fr 80px"]{grid-template-columns:1fr 70px 80px !important}
 
   /* Services: Insy + Eigene untereinander */
@@ -666,13 +670,24 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
           <input type="text" id="f-website" placeholder="https://meinsalon.de">
         </div>
       </div>
-      <div class="field" style="margin-bottom:0">
+      <div class="field" style="margin-bottom:12px">
         <label style="display:flex;align-items:center;gap:5px">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
           Google Maps Link
         </label>
         <input type="text" id="f-maps" placeholder="https://maps.google.com/?q=...">
       </div>
+
+      <!-- Eigene Links -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600">Eigene Links</div>
+        <button type="button" class="btn btn-sm btn-ghost" onclick="addCustomLink()">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Hinzufügen
+        </button>
+      </div>
+      <div id="custom-links-list" style="display:flex;flex-direction:column;gap:7px"></div>
+      <div id="custom-links-empty" style="font-size:11px;color:var(--muted);padding:4px 0 2px">Noch keine eigenen Links</div>
     </div>
     </div><!-- end adresse+links grid -->
 
@@ -1433,6 +1448,8 @@ async function loadProfil(){
   document.getElementById('f-mobile').value=d.mobile_url||'';
   document.getElementById('f-website').value=d.website_url||'';
   document.getElementById('f-maps').value=d.google_maps_url||'';
+    customLinks = Array.isArray(d.custom_links) ? d.custom_links : [];
+    renderCustomLinks();
   buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
   // Temporäre Öffnungszeiten laden
   tempEntries=[];tempIdCounter=0;tempCalOffset={};
@@ -1442,6 +1459,43 @@ async function loadProfil(){
   } else {
     renderTempEntries();
   }
+}
+
+// ── EIGENE LINKS ─────────────────────────────────────────────
+var customLinks = [];
+
+function renderCustomLinks(){
+  var list = document.getElementById('custom-links-list');
+  var empty = document.getElementById('custom-links-empty');
+  if(!list) return;
+  if(customLinks.length === 0){
+    list.innerHTML = '';
+    if(empty) empty.style.display = 'block';
+    return;
+  }
+  if(empty) empty.style.display = 'none';
+  list.innerHTML = customLinks.map(function(l, i){
+    return '<div class="custom-link-row">'
+      +'<input type="text" placeholder="Titel z.B. TikTok" value="'+esc(l.title||'')+'" oninput="customLinks['+i+'].title=this.value">'
+      +'<input type="text" placeholder="https://..." value="'+esc(l.url||'')+'" oninput="customLinks['+i+'].url=this.value">'
+      +'<button class="custom-link-del" onclick="removeCustomLink('+i+')" title="Entfernen">'
+        +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+      +'</button>'
+      +'</div>';
+  }).join('');
+}
+
+function addCustomLink(){
+  customLinks.push({title:'', url:''});
+  renderCustomLinks();
+  // Focus first empty title input
+  var inputs = document.querySelectorAll('#custom-links-list .custom-link-row:last-child input');
+  if(inputs[0]) setTimeout(function(){inputs[0].focus();}, 50);
+}
+
+function removeCustomLink(i){
+  customLinks.splice(i, 1);
+  renderCustomLinks();
 }
 
 async function saveProfil(silent){
@@ -1462,6 +1516,7 @@ async function saveProfil(silent){
     mobile_url:document.getElementById('f-mobile').value.trim(),
     website_url:document.getElementById('f-website').value.trim(),
     google_maps_url:document.getElementById('f-maps').value.trim(),
+    custom_links:customLinks.filter(function(l){return l.url.trim();}),
     arbeitszeiten:readHours('h-'),
     temp_arbeitszeiten:readTempEntries()
   }).eq('id',SALON_ID);
