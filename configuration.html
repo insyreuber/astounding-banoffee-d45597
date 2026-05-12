@@ -410,6 +410,15 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   /* Dashboard Grid mobile */
   .dash-grid{grid-template-columns:1fr !important}
 
+  /* Timeline mobile */
+  .tl-bottom-grid{grid-template-columns:1fr !important}
+  .tl-ctrl-row{flex-direction:column !important; border-radius:10px}
+  .tl-ctrl-row > div{border-right:none !important; border-bottom:1px solid var(--border) !important; border-radius:0 !important}
+  .tl-ctrl-row > div:first-child{border-radius:10px 10px 0 0 !important}
+  .tl-ctrl-row > div:last-child{border-bottom:none !important; border-radius:0 0 10px 10px !important}
+  /* Heute mittig bei mobile */
+  .tl-ctrl-row > div:nth-child(2){text-align:center}
+
 }
 
 .tl-range-btn,.tl-tab-btn,.tl-past-btn,.tl-future-btn{background:none;border:none;padding:4px 9px;border-radius:6px;font-size:11px;font-weight:500;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s;}
@@ -610,7 +619,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       </div>
 
       <!-- Zeitraum-Steuerung: Vergangenheit | HEUTE | Zukunft -->
-      <div style="display:flex;align-items:center;gap:0;margin-bottom:16px;border-radius:10px;overflow:hidden;border:1.5px solid var(--border)">
+      <div class="tl-ctrl-row" style="display:flex;align-items:center;gap:0;margin-bottom:16px;border-radius:10px;overflow:hidden;border:1.5px solid var(--border)">
         <!-- Vergangenheit -->
         <div style="flex:1;padding:10px 12px;background:rgba(201,168,76,0.07);border-right:1px solid var(--border)">
           <div style="font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#7a5a00;font-weight:600;margin-bottom:5px">
@@ -618,6 +627,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
           </div>
           <div style="display:flex;align-items:center;gap:6px">
             <div style="display:flex;gap:3px">
+              <button class="tl-past-btn" data-days="0" onclick="setPastDays(0,this)">0T</button>
               <button class="tl-past-btn active" data-days="7" onclick="setPastDays(7,this)">7T</button>
               <button class="tl-past-btn" data-days="14" onclick="setPastDays(14,this)">14T</button>
               <button class="tl-past-btn" data-days="30" onclick="setPastDays(30,this)">30T</button>
@@ -638,6 +648,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
           </div>
           <div style="display:flex;align-items:center;gap:6px">
             <div style="display:flex;gap:3px">
+              <button class="tl-future-btn" data-days="0" onclick="setFutureDays(0,this)">0T</button>
               <button class="tl-future-btn active" data-days="7" onclick="setFutureDays(7,this)">7T</button>
               <button class="tl-future-btn" data-days="14" onclick="setFutureDays(14,this)">14T</button>
               <button class="tl-future-btn" data-days="30" onclick="setFutureDays(30,this)">30T</button>
@@ -669,7 +680,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       </div>
 
       <!-- Services + Mitarbeiter immer sichtbar -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+      <div class="tl-bottom-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
         <div>
           <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:10px">Services</div>
           <div id="tl-services-chart" style="width:100%"></div>
