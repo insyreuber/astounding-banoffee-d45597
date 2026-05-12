@@ -2985,7 +2985,10 @@ async function loadTimelineData(){
     });
 
   var svcPromise=Promise.resolve();
-  if(!window.SVC_MAP||Object.keys(window.SVC_MAP||{}).length===0){
+  // Reset SVC_MAP each load to get fresh prices
+  window.SVC_MAP=null;
+  window.SVC_PRICE_MAP=null;
+  if(true){
     svcPromise=sb.from('service_varianten')
       .select('id,name,service_id,preis,dauer,services(name,salon_id)')
       .eq('services.salon_id',SALON_ID)
@@ -3027,9 +3030,12 @@ function renderAllCharts(){
   var today=new Date();today.setHours(0,0,0,0);
   var fromD=new Date(today);fromD.setDate(today.getDate()-tlPastDays);
   var toD=new Date(today);toD.setDate(today.getDate()+tlFutureDays);toD.setHours(23,59,59,999);
-  renderTimeline(fromD,toD);
-  renderServicesChart();
-  renderStaffChart();
+  // Use requestAnimationFrame so containers have rendered width
+  requestAnimationFrame(function(){
+    renderTimeline(fromD,toD);
+    renderServicesChart();
+    renderStaffChart();
+  });
 }
 
 function renderServicesChart(){
