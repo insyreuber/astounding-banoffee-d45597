@@ -2965,20 +2965,60 @@ async function loadTimelineData(){
   if(!SALON_ID)return;
   var today=new Date();today.setHours(0,0,0,0);
 
-  // Update heute label
   var hl=document.getElementById('tl-heute-label');
   if(hl)hl.textContent=today.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'});
 
   var fromD=new Date(today);fromD.setDate(today.getDate()-tlPastDays);
   var toD=new Date(today);toD.setDate(today.getDate()+tlFutureDays);toD.setHours(23,59,59,999);
 
-  var res=await sb.from('bookings')
+  // Ensure STAFF_MAP and SVC_MAP are populated — fetch fresh if needed
+  var staffPromise=Promise.resolve();
+  var svcPromise=Promise.resolve();
+
+  if(!window.STAFF_MAP||Object.keys(window.STAFF_MAP||{}).length===0){
+    staffPromise=sb.from('mitarbeiter')
+      .select('id,name,display_name')
+      .eq('salon_id',SALON_ID)
+      .then(function(r){
+        window.STAFF_MAP={};
+        if(!r.error&&r.data)r.data.forEach(function(m){
+          STAFF_MAP[m.id]=m.display_name||m.name||'Mitarbeiter';
+        });
+      });
+  }
+
+  if(!window.SVC_MAP||Object.keys(window.SVC_MAP||{}).length===0){
+    svcPromise=sb.from('service_varianten')
+      .select('id,name,service_id,preis,dauer,services(name,salon_id)')
+      .eq('services.salon_id',SALON_ID)
+      .then(function(r){
+        window.SVC_MAP={};
+        if(!r.error&&r.data)r.data.forEach(function(v){
+          var svcName=v.services?v.services.name:'Service';
+          var varLabel='';
+          if(v.name&&v.name.trim()&&v.name!==svcName){
+            varLabel=' · '+v.name.trim();
+          } else if(!v.name||!v.name.trim()){
+            // Fallback: use dauer and/or preis
+            var parts=[];
+            if(v.dauer)parts.push(v.dauer+' Min');
+            if(v.preis)parts.push(v.preis+' €');
+            if(parts.length)varLabel=' · '+parts.join(' / ');
+          }
+          SVC_MAP[v.id]=svcName+varLabel;
+        });
+      });
+  }
+
+  var bookingsPromise=sb.from('bookings')
     .select('termin_start,status,customer_name,mitarbeiter_id,service_variante_id')
     .eq('kunde_id',SALON_ID)
     .gte('termin_start',fromD.toISOString())
     .lte('termin_start',toD.toISOString())
     .order('termin_start',{ascending:true});
 
+  var results=await Promise.all([staffPromise,svcPromise,bookingsPromise]);
+  var res=results[2];
   tlAllBookings=(!res.error&&Array.isArray(res.data))?res.data:[];
   renderAllCharts();
 }
@@ -3200,16 +3240,24 @@ function renderTimeline(fromD,toD){
 
 async function renderDashTimeline(staffArr){
   // Build SVC_MAP and STAFF_MAP for label lookups
-  // Always rebuild maps from latest data
-  window.SVC_MAP={};
+  // Build maps from available data, then loadTimelineData fills gaps from DB
+  window.SVC_MAP=window.SVC_MAP||{};
   if(window.servicesData)servicesData.forEach(function(item){
     var s=item.service,vars=item.varianten||[];
     vars.forEach(function(v){
-      SVC_MAP[v.id]=vars.length>1?s.name+' · '+v.name:s.name;
+      if(vars.length<=1){SVC_MAP[v.id]=s.name;return;}
+      var vn=v.name&&v.name.trim()?v.name.trim():'';
+      if(!vn){
+        var parts=[];
+        if(v.dauer)parts.push(v.dauer+' Min');
+        if(v.preis)parts.push(v.preis+' €');
+        vn=parts.length?parts.join(' / '):'Variante';
+      }
+      SVC_MAP[v.id]=s.name+' · '+vn;
     });
     if(!vars.length)SVC_MAP[s.id]=s.name;
   });
-  window.STAFF_MAP={};
+  window.STAFF_MAP=window.STAFF_MAP||{};
   if(window.staffData)staffData.forEach(function(m){STAFF_MAP[m.id]=m.display_name||m.name;});
   if(staffArr)staffArr.forEach(function(m){STAFF_MAP[m.id]=m.display_name||m.name;});
   loadTimelineData();
