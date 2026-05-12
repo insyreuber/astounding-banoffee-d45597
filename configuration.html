@@ -2969,57 +2969,53 @@ async function loadTimelineData(){
   var fromD=new Date(today);fromD.setDate(today.getDate()-tlPastDays);
   var toD=new Date(today);toD.setDate(today.getDate()+tlFutureDays);toD.setHours(23,59,59,999);
 
-  var results=await Promise.all([
+  // 1. Load bookings + mitarbeiter + services in parallel
+  var r=await Promise.all([
     sb.from('bookings')
       .select('termin_start,status,customer_name,mitarbeiter_id,service_variante_id')
       .eq('kunde_id',SALON_ID)
       .gte('termin_start',fromD.toISOString())
       .lte('termin_start',toD.toISOString())
       .order('termin_start',{ascending:true}),
-    sb.from('mitarbeiter')
-      .select('id,name,display_name')
-      .eq('salon_id',SALON_ID),
-    sb.from('services')
-      .select('id,name')
-      .eq('salon_id',SALON_ID),
-    sb.from('service_varianten')
-      .select('id,name,preis,dauer,service_id')
+    sb.from('mitarbeiter').select('id,name,display_name').eq('salon_id',SALON_ID),
+    sb.from('services').select('id,name').eq('salon_id',SALON_ID)
   ]);
 
-  // Bookings
-  tlAllBookings=(!results[0].error&&Array.isArray(results[0].data))?results[0].data:[];
+  tlAllBookings=(!r[0].error&&Array.isArray(r[0].data))?r[0].data:[];
 
   // STAFF_MAP
   window.STAFF_MAP={};
-  if(!results[1].error&&results[1].data){
-    results[1].data.forEach(function(m){
-      STAFF_MAP[m.id]=m.display_name||m.name||'Mitarbeiter';
-    });
-  }
+  if(!r[1].error&&r[1].data)r[1].data.forEach(function(m){
+    STAFF_MAP[m.id]=m.display_name||m.name||'Mitarbeiter';
+  });
 
-  // Service names map
+  // Service names
   var svcNames={};
-  if(!results[2].error&&results[2].data){
-    results[2].data.forEach(function(s){ svcNames[s.id]=s.name; });
-  }
+  if(!r[2].error&&r[2].data)r[2].data.forEach(function(s){svcNames[s.id]=s.name;});
 
-  // SVC_MAP from varianten + service names
+  // 2. Load varianten filtered by service IDs
   window.SVC_MAP={};
-  if(!results[3].error&&results[3].data){
-    var varCount={};
-    results[3].data.forEach(function(v){varCount[v.service_id]=(varCount[v.service_id]||0)+1;});
-    results[3].data.forEach(function(v){
-      var sName=svcNames[v.service_id]||'Service';
-      if(varCount[v.service_id]<=1){
-        SVC_MAP[v.id]=sName;
-      } else {
-        var vLabel='';
-        if(v.name&&v.name.trim()&&v.name.trim()!=='undefined') vLabel=v.name.trim();
-        else if(v.dauer) vLabel=v.dauer+' Min';
-        else if(v.preis) vLabel=parseFloat(v.preis).toFixed(0)+' €';
-        SVC_MAP[v.id]=vLabel?sName+' · '+vLabel:sName;
-      }
-    });
+  var svcIds=Object.keys(svcNames);
+  if(svcIds.length){
+    var vRes=await sb.from('service_varianten')
+      .select('id,name,preis,dauer,service_id')
+      .in('service_id',svcIds);
+    if(!vRes.error&&vRes.data){
+      var varCount={};
+      vRes.data.forEach(function(v){varCount[v.service_id]=(varCount[v.service_id]||0)+1;});
+      vRes.data.forEach(function(v){
+        var sName=svcNames[v.service_id]||'Service';
+        if(varCount[v.service_id]<=1){
+          SVC_MAP[v.id]=sName;
+        } else {
+          var vLabel='';
+          if(v.name&&v.name.trim()&&v.name.trim()!=='undefined') vLabel=v.name.trim();
+          else if(v.dauer) vLabel=v.dauer+' Min';
+          else if(v.preis) vLabel=parseFloat(v.preis).toFixed(0)+' €';
+          SVC_MAP[v.id]=vLabel?sName+' · '+vLabel:sName;
+        }
+      });
+    }
   }
 
   renderAllCharts();
