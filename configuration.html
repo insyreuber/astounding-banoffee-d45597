@@ -2971,21 +2971,18 @@ async function loadTimelineData(){
   var fromD=new Date(today);fromD.setDate(today.getDate()-tlPastDays);
   var toD=new Date(today);toD.setDate(today.getDate()+tlFutureDays);toD.setHours(23,59,59,999);
 
-  // Ensure STAFF_MAP and SVC_MAP are populated — fetch fresh if needed
-  var staffPromise=Promise.resolve();
-  var svcPromise=Promise.resolve();
-
-  if(!window.STAFF_MAP||Object.keys(window.STAFF_MAP||{}).length===0){
-    staffPromise=sb.from('mitarbeiter')
-      .select('id,name,display_name')
-      .eq('salon_id',SALON_ID)
-      .then(function(r){
-        window.STAFF_MAP={};
-        if(!r.error&&r.data)r.data.forEach(function(m){
-          STAFF_MAP[m.id]=m.display_name||m.name||'Mitarbeiter';
-        });
+  // Always fetch fresh staff map
+  var staffPromise=sb.from('mitarbeiter')
+    .select('id,name,display_name')
+    .eq('salon_id',SALON_ID)
+    .then(function(r){
+      window.STAFF_MAP={};
+      if(r.error){console.warn('STAFF_MAP error:',r.error.message);return;}
+      (r.data||[]).forEach(function(m){
+        STAFF_MAP[m.id]=m.display_name||m.name||'Unbekannt';
       });
-  }
+      console.log('STAFF_MAP built:',Object.keys(STAFF_MAP).length,'entries');
+    });
 
   if(!window.SVC_MAP||Object.keys(window.SVC_MAP||{}).length===0){
     svcPromise=sb.from('service_varianten')
