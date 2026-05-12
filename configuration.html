@@ -412,9 +412,11 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
 }
 
-.tl-range-btn{background:none;border:none;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:500;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s;}
-.tl-range-btn.active{background:var(--white);color:var(--tpl);box-shadow:0 1px 4px rgba(74,28,107,.1);}
-.tl-range-btn:hover:not(.active){color:var(--td);}
+.tl-range-btn,.tl-tab-btn,.tl-past-btn,.tl-future-btn{background:none;border:none;padding:4px 9px;border-radius:6px;font-size:11px;font-weight:500;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s;}
+.tl-range-btn.active,.tl-tab-btn.active{background:var(--white);color:var(--tpl);box-shadow:0 1px 4px rgba(74,28,107,.1);}
+.tl-past-btn.active{background:rgba(201,168,76,0.15);color:#7a5a00;}
+.tl-future-btn.active{background:rgba(92,31,138,0.12);color:var(--tpl);}
+.tl-range-btn:hover:not(.active),.tl-tab-btn:hover:not(.active),.tl-past-btn:hover:not(.active),.tl-future-btn:hover:not(.active){color:var(--td);}
 .tl-bar{cursor:pointer;border-radius:4px 4px 0 0;transition:opacity .15s;}
 .tl-bar:hover{opacity:0.75;}
 .custom-link-row{display:grid;grid-template-columns:1fr 1fr 28px;gap:6px;align-items:center;}
@@ -597,48 +599,91 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
     <!-- ROW 2: Terminzeitstrahl -->
     <div class="card" style="padding:18px">
-      <!-- Header + Zeitraum-Selector -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+
+      <!-- Header -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
         <div class="card-title" style="margin-bottom:0">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
           Terminübersicht
         </div>
-        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-          <div style="display:flex;gap:4px;background:var(--bg);border-radius:8px;padding:3px">
-            <button class="tl-range-btn active" data-range="7" onclick="setTimelineRange(7,this)">7 T</button>
-            <button class="tl-range-btn" data-range="14" onclick="setTimelineRange(14,this)">14 T</button>
-            <button class="tl-range-btn" data-range="30" onclick="setTimelineRange(30,this)">30 T</button>
-            <button class="tl-range-btn" data-range="90" onclick="setTimelineRange(90,this)">3 Mo</button>
+        <!-- Tab-Switcher -->
+        <div style="display:flex;gap:3px;background:var(--bg);border-radius:8px;padding:3px">
+          <button class="tl-tab-btn active" onclick="switchTlTab('termine',this)">Termine</button>
+          <button class="tl-tab-btn" onclick="switchTlTab('services',this)">Services</button>
+          <button class="tl-tab-btn" onclick="switchTlTab('mitarbeiter',this)">Mitarbeiter</button>
+        </div>
+      </div>
+
+      <!-- Zeitraum-Steuerung: Vergangenheit | HEUTE | Zukunft -->
+      <div style="display:flex;align-items:center;gap:0;margin-bottom:16px;border-radius:10px;overflow:hidden;border:1.5px solid var(--border)">
+        <!-- Vergangenheit -->
+        <div style="flex:1;padding:10px 12px;background:rgba(201,168,76,0.07);border-right:1px solid var(--border)">
+          <div style="font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#7a5a00;font-weight:600;margin-bottom:5px">
+            ← Vergangenheit
           </div>
-          <div style="display:flex;align-items:center;gap:4px">
-            <input type="date" id="tl-from" style="font-size:11px;padding:4px 7px;border:1.5px solid var(--border);border-radius:7px;color:var(--td);background:var(--white);outline:none;font-family:inherit" onchange="setTimelineCustom()">
-            <span style="font-size:11px;color:var(--muted)">—</span>
-            <input type="date" id="tl-to" style="font-size:11px;padding:4px 7px;border:1.5px solid var(--border);border-radius:7px;color:var(--td);background:var(--white);outline:none;font-family:inherit" onchange="setTimelineCustom()">
+          <div style="display:flex;align-items:center;gap:6px">
+            <div style="display:flex;gap:3px">
+              <button class="tl-past-btn active" data-days="7" onclick="setPastDays(7,this)">7T</button>
+              <button class="tl-past-btn" data-days="14" onclick="setPastDays(14,this)">14T</button>
+              <button class="tl-past-btn" data-days="30" onclick="setPastDays(30,this)">30T</button>
+            </div>
+            <input type="number" id="tl-past-custom" min="0" max="365" placeholder="—" style="width:38px;font-size:11px;padding:3px 5px;border:1px solid var(--border);border-radius:5px;color:var(--td);background:var(--white);text-align:center;outline:none;font-family:inherit" onchange="setPastCustom()" title="Eigene Anzahl Tage">
+            <span style="font-size:10px;color:var(--muted)">Tage</span>
+          </div>
+        </div>
+        <!-- Heute Marker -->
+        <div style="padding:10px 14px;background:var(--tp);text-align:center;flex-shrink:0">
+          <div style="font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,0.7);font-weight:600;margin-bottom:3px">Heute</div>
+          <div id="tl-heute-label" style="font-size:11px;font-weight:700;color:#fff"></div>
+        </div>
+        <!-- Zukunft -->
+        <div style="flex:1;padding:10px 12px;background:rgba(92,31,138,0.05);border-left:1px solid var(--border)">
+          <div style="font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:5px">
+            Zukunft →
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <div style="display:flex;gap:3px">
+              <button class="tl-future-btn active" data-days="7" onclick="setFutureDays(7,this)">7T</button>
+              <button class="tl-future-btn" data-days="14" onclick="setFutureDays(14,this)">14T</button>
+              <button class="tl-future-btn" data-days="30" onclick="setFutureDays(30,this)">30T</button>
+            </div>
+            <input type="number" id="tl-future-custom" min="0" max="365" placeholder="—" style="width:38px;font-size:11px;padding:3px 5px;border:1px solid var(--border);border-radius:5px;color:var(--td);background:var(--white);text-align:center;outline:none;font-family:inherit" onchange="setFutureCustom()" title="Eigene Anzahl Tage">
+            <span style="font-size:10px;color:var(--muted)">Tage</span>
           </div>
         </div>
       </div>
 
       <!-- Zusammenfassung -->
-      <div id="tl-summary" style="display:flex;gap:16px;margin-bottom:14px;padding:10px 14px;background:var(--bg);border-radius:10px">
-        <div><span style="font-size:11px;color:var(--muted)">Gesamt</span><div id="tl-total" style="font-size:18px;font-weight:700;color:var(--tpl)">—</div></div>
+      <div id="tl-summary" style="display:flex;gap:16px;margin-bottom:14px;padding:10px 14px;background:var(--bg);border-radius:10px;flex-wrap:wrap">
+        <div><span style="font-size:11px;color:var(--muted)">Bestätigt</span><div id="tl-total" style="font-size:20px;font-weight:700;color:var(--tpl)">—</div></div>
         <div style="width:1px;background:var(--border)"></div>
-        <div><span style="font-size:11px;color:var(--muted)">Heute</span><div id="tl-today-count" style="font-size:18px;font-weight:700;color:var(--td)">—</div></div>
+        <div><span style="font-size:11px;color:var(--muted)">Heute</span><div id="tl-today-count" style="font-size:20px;font-weight:700;color:var(--td)">—</div></div>
         <div style="width:1px;background:var(--border)"></div>
-        <div><span style="font-size:11px;color:var(--muted)">Storniert</span><div id="tl-cancelled" style="font-size:18px;font-weight:700;color:var(--muted)">—</div></div>
+        <div><span style="font-size:11px;color:var(--muted)">Storniert</span><div id="tl-cancelled" style="font-size:20px;font-weight:700;color:var(--muted)">—</div></div>
         <div style="width:1px;background:var(--border)"></div>
         <div><span style="font-size:11px;color:var(--muted)">Zeitraum</span><div id="tl-range-label" style="font-size:12px;font-weight:500;color:var(--td);margin-top:4px">—</div></div>
       </div>
 
-      <!-- Balken-Chart -->
+      <!-- Chart-Bereich -->
       <div style="position:relative">
-        <div id="dash-timeline" style="width:100%;min-height:160px"></div>
+        <div id="dash-timeline" style="width:100%;min-height:170px"></div>
         <div id="dash-timeline-labels" style="display:none"></div>
         <div id="dash-timeline-empty" style="display:none;text-align:center;padding:24px;font-size:12px;color:var(--muted)">
           Keine bestätigten Termine im gewählten Zeitraum
         </div>
       </div>
 
-      <!-- Tagesdetails (erscheint beim Klick auf Balken) -->
+      <!-- Tab: Services -->
+      <div id="tl-tab-services" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+        <div id="tl-services-chart" style="width:100%;min-height:140px"></div>
+      </div>
+
+      <!-- Tab: Mitarbeiter -->
+      <div id="tl-tab-mitarbeiter" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+        <div id="tl-staff-chart" style="width:100%;min-height:140px"></div>
+      </div>
+
+      <!-- Tagesdetails -->
       <div id="tl-day-detail" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
           <div id="tl-day-title" style="font-size:13px;font-weight:600;color:var(--td)"></div>
@@ -2869,59 +2914,166 @@ function localDateKey(d){
   var day=('0'+d.getDate()).slice(-2);
   return y+'-'+m+'-'+day;
 }
-// Helper: parse a timestamptz string to local date key
-function bookingDateKey(ts){
-  // ts = "2026-05-12T08:15:00+00:00" — convert to local date
-  return localDateKey(new Date(ts));
-}
-var tlRangeDays=7;
-var tlFromDate=null;
-var tlToDate=null;
+function bookingDateKey(ts){ return localDateKey(new Date(ts)); }
+
+var tlPastDays=7;
+var tlFutureDays=7;
 var tlAllBookings=[];
+var tlCurrentTab='termine';
 
-function setTimelineRange(days,btn){
-  tlRangeDays=days;
-  tlFromDate=null;tlToDate=null;
-  document.querySelectorAll('.tl-range-btn').forEach(function(b){b.classList.remove('active');});
+function switchTlTab(tab,btn){
+  tlCurrentTab=tab;
+  document.querySelectorAll('.tl-tab-btn').forEach(function(b){b.classList.remove('active');});
   if(btn)btn.classList.add('active');
-  // Clear custom date inputs
-  var fi=document.getElementById('tl-from');var ti=document.getElementById('tl-to');
-  if(fi)fi.value='';if(ti)ti.value='';
+  document.getElementById('tl-tab-services').style.display=tab==='services'?'block':'none';
+  document.getElementById('tl-tab-mitarbeiter').style.display=tab==='mitarbeiter'?'block':'none';
+  renderAllCharts();
+}
+
+function setPastDays(d,btn){
+  tlPastDays=d;
+  document.getElementById('tl-past-custom').value='';
+  document.querySelectorAll('.tl-past-btn').forEach(function(b){b.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+  loadTimelineData();
+}
+function setPastCustom(){
+  var v=parseInt(document.getElementById('tl-past-custom').value)||0;
+  tlPastDays=v;
+  document.querySelectorAll('.tl-past-btn').forEach(function(b){b.classList.remove('active');});
+  loadTimelineData();
+}
+function setFutureDays(d,btn){
+  tlFutureDays=d;
+  document.getElementById('tl-future-custom').value='';
+  document.querySelectorAll('.tl-future-btn').forEach(function(b){b.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+  loadTimelineData();
+}
+function setFutureCustom(){
+  var v=parseInt(document.getElementById('tl-future-custom').value)||0;
+  tlFutureDays=v;
+  document.querySelectorAll('.tl-future-btn').forEach(function(b){b.classList.remove('active');});
   loadTimelineData();
 }
 
-function setTimelineCustom(){
-  var fi=document.getElementById('tl-from');
-  var ti=document.getElementById('tl-to');
-  if(!fi||!ti||!fi.value||!ti.value)return;
-  tlFromDate=new Date(fi.value);tlFromDate.setHours(0,0,0,0);
-  tlToDate=new Date(ti.value);tlToDate.setHours(23,59,59,999);
-  if(tlFromDate>tlToDate)return;
-  tlRangeDays=0;
-  document.querySelectorAll('.tl-range-btn').forEach(function(b){b.classList.remove('active');});
-  loadTimelineData();
-}
+// Legacy stubs (keep for compatibility)
+function setTimelineRange(d,btn){ setPastDays(d,null); setFutureDays(d,null); }
+function setTimelineCustom(){}
 
 async function loadTimelineData(){
   if(!SALON_ID)return;
   var today=new Date();today.setHours(0,0,0,0);
-  var fromD=tlFromDate||new Date(today);
-  var toD=tlToDate||new Date(today);
-  if(!tlFromDate){toD=new Date(today);toD.setDate(today.getDate()+tlRangeDays-1);toD.setHours(23,59,59,999);}
 
-  var fromISO=fromD.toISOString();
-  var toISO=toD.toISOString(); // UTC range is correct for DB query
+  // Update heute label
+  var hl=document.getElementById('tl-heute-label');
+  if(hl)hl.textContent=today.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'});
 
-  // Fetch confirmed + cancelled for full picture
+  var fromD=new Date(today);fromD.setDate(today.getDate()-tlPastDays);
+  var toD=new Date(today);toD.setDate(today.getDate()+tlFutureDays);toD.setHours(23,59,59,999);
+
   var res=await sb.from('bookings')
-    .select('termin_start,status,customer_name,mitarbeiter_id')
+    .select('termin_start,status,customer_name,mitarbeiter_id,service_variante_id')
     .eq('kunde_id',SALON_ID)
-    .gte('termin_start',fromISO)
-    .lte('termin_start',toISO)
+    .gte('termin_start',fromD.toISOString())
+    .lte('termin_start',toD.toISOString())
     .order('termin_start',{ascending:true});
 
   tlAllBookings=(!res.error&&Array.isArray(res.data))?res.data:[];
+  renderAllCharts();
+}
+
+function renderAllCharts(){
+  var today=new Date();today.setHours(0,0,0,0);
+  var fromD=new Date(today);fromD.setDate(today.getDate()-tlPastDays);
+  var toD=new Date(today);toD.setDate(today.getDate()+tlFutureDays);toD.setHours(23,59,59,999);
   renderTimeline(fromD,toD);
+  if(tlCurrentTab==='services') renderServicesChart();
+  if(tlCurrentTab==='mitarbeiter') renderStaffChart();
+}
+
+function renderServicesChart(){
+  var wrap=document.getElementById('tl-services-chart');
+  if(!wrap)return;
+  // Count by service_variante_id
+  var counts={};
+  tlAllBookings.filter(function(b){return b.status==='confirmed';}).forEach(function(b){
+    var k=b.service_variante_id||'Unbekannt';
+    counts[k]=(counts[k]||0)+1;
+  });
+  var entries=Object.keys(counts).map(function(k){return{id:k,count:counts[k]};});
+  entries.sort(function(a,b){return b.count-a.count;});
+  if(!entries.length){wrap.innerHTML='<div style="font-size:12px;color:var(--muted);padding:20px 0">Keine Daten</div>';return;}
+  // Look up service names from SERVICES global if available
+  var total=entries.reduce(function(s,e){return s+e.count;},0);
+  var maxC=entries[0].count;
+  var H=Math.max(120,entries.length*36+20);
+  var W=wrap.offsetWidth||600;
+  var barMaxW=W-180;
+  var svg='<svg width="100%" height="'+H+'" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">';
+  var colors=['#7c3aed','#a78bfa','#c4b5fd','#ddd6fe','#ede9fe'];
+  entries.forEach(function(e,i){
+    var y=i*36+10;
+    var bw=Math.max(4,Math.round((e.count/maxC)*barMaxW));
+    var name=e.id.length>20?e.id.slice(0,18)+'…':e.id;
+    // Try to find service name
+    if(window.SVC_MAP&&SVC_MAP[e.id])name=SVC_MAP[e.id];
+    var pct=Math.round(e.count/total*100);
+    svg+='<text x="0" y="'+(y+14)+'" font-size="11" fill="#555" font-family="sans-serif">'+name+'</text>';
+    svg+='<rect x="130" y="'+(y+2)+'" width="'+bw+'" height="20" rx="4" fill="'+(colors[i%colors.length])+'"/>';
+    svg+='<text x="'+(130+bw+6)+'" y="'+(y+16)+'" font-size="11" fill="var(--tpl)" font-weight="600" font-family="sans-serif">'+e.count+' ('+pct+'%)</text>';
+  });
+  svg+='</svg>';
+  wrap.innerHTML=svg;
+}
+
+function renderStaffChart(){
+  var wrap=document.getElementById('tl-staff-chart');
+  if(!wrap)return;
+  var counts={};
+  var svcByStaff={};
+  tlAllBookings.filter(function(b){return b.status==='confirmed';}).forEach(function(b){
+    var k=b.mitarbeiter_id||'Unbekannt';
+    counts[k]=(counts[k]||0)+1;
+    if(!svcByStaff[k])svcByStaff[k]={};
+    var sv=b.service_variante_id||'?';
+    svcByStaff[k][sv]=(svcByStaff[k][sv]||0)+1;
+  });
+  var entries=Object.keys(counts).map(function(k){return{id:k,count:counts[k],svcs:svcByStaff[k]};});
+  entries.sort(function(a,b){return b.count-a.count;});
+  if(!entries.length){wrap.innerHTML='<div style="font-size:12px;color:var(--muted);padding:20px 0">Keine Daten</div>';return;}
+  var maxC=entries[0].count;
+  var H=Math.max(120,entries.length*44+20);
+  var W=wrap.offsetWidth||600;
+  var barMaxW=W-180;
+  var colors=['#4c1d95','#6d28d9','#7c3aed','#8b5cf6','#a78bfa'];
+  var svg='<svg width="100%" height="'+H+'" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">';
+  entries.forEach(function(e,i){
+    var y=i*44+10;
+    var bw=Math.max(4,Math.round((e.count/maxC)*barMaxW));
+    // Get display name
+    var name=e.id;
+    if(window.STAFF_MAP&&STAFF_MAP[e.id])name=STAFF_MAP[e.id];
+    else if(name.length>20)name=name.slice(0,18)+'…';
+    // Top service
+    var topSvc='';
+    if(e.svcs){
+      var svcArr=Object.keys(e.svcs).map(function(k){return{k:k,v:e.svcs[k]};});
+      svcArr.sort(function(a,b){return b.v-a.v;});
+      if(svcArr.length){
+        var sn=svcArr[0].k;
+        if(window.SVC_MAP&&SVC_MAP[sn])sn=SVC_MAP[sn];
+        topSvc=sn.length>18?sn.slice(0,16)+'…':sn;
+        topSvc=' · '+topSvc+' ('+svcArr[0].v+'×)';
+      }
+    }
+    svg+='<text x="0" y="'+(y+14)+'" font-size="11" fill="#555" font-weight="500" font-family="sans-serif">'+name+'</text>';
+    svg+='<rect x="130" y="'+(y+2)+'" width="'+bw+'" height="22" rx="4" fill="'+(colors[i%colors.length])+'"/>';
+    svg+='<text x="'+(130+bw+6)+'" y="'+(y+16)+'" font-size="11" fill="var(--tpl)" font-weight="600" font-family="sans-serif">'+e.count+'×</text>';
+    if(topSvc)svg+='<text x="0" y="'+(y+32)+'" font-size="9" fill="#9a8aaa" font-family="sans-serif">'+topSvc+'</text>';
+  });
+  svg+='</svg>';
+  wrap.innerHTML=svg;
 }
 
 function renderTimeline(fromD,toD){
@@ -2929,7 +3081,6 @@ function renderTimeline(fromD,toD){
   var tlEmpty=document.getElementById('dash-timeline-empty');
   if(!tlWrap)return;
 
-  // Build days
   var days=[];
   var cur=new Date(fromD);
   while(cur<=toD){
@@ -2946,7 +3097,6 @@ function renderTimeline(fromD,toD){
     else if(b.status==='cancelled')day.cancelled++;
   });
 
-  // Summary
   var totalConf=days.reduce(function(s,d){return s+d.confirmed;},0);
   var totalCanc=days.reduce(function(s,d){return s+d.cancelled;},0);
   var todayKey=localDateKey(today);
@@ -2962,122 +3112,104 @@ function renderTimeline(fromD,toD){
   if(tlEmpty)tlEmpty.style.display=hasAny?'none':'block';
   tlWrap.style.display='block';
 
-  // SVG chart dimensions
   var W=tlWrap.offsetWidth||700;
-  var H=160;
-  var padL=28,padR=12,padT=24,padB=28;
+  var H=170;
+  var padL=24,padR=36,padT=28,padB=24;
   var chartW=W-padL-padR;
   var chartH=H-padT-padB;
   var n=days.length;
-  var barW=Math.max(4,Math.floor(chartW/n*0.6));
   var gap=chartW/n;
+  var barW=Math.max(3,Math.floor(gap*0.55));
 
   var maxCount=Math.max.apply(null,days.map(function(d){return d.confirmed;}));
   if(maxCount<1)maxCount=1;
-  var avg=totalConf/n;
+  var avg=n>0?totalConf/n:0;
+  var yMax=Math.max(Math.ceil(maxCount*1.25),1);
 
-  // Y-axis scale: round up maxCount to nice number
-  var yMax=Math.ceil(maxCount*1.2)||1;
-
-  function yPos(v){ return padT+chartH-(v/yMax)*chartH; }
-  function xPos(i){ return padL+i*gap+gap/2; }
+  function yPos(v){return padT+chartH-(v/yMax)*chartH;}
+  function xPos(i){return padL+i*gap+gap/2;}
 
   var dayNames=['So','Mo','Di','Mi','Do','Fr','Sa'];
+  var svg='<svg width="100%" height="'+H+'" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">';
 
-  // Build SVG
-  var svg='<svg width="100%" height="'+H+'" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">';
-
-  // Y grid lines + labels (3 levels)
-  var gridLevels=[0,Math.round(yMax/2),yMax];
-  gridLevels.forEach(function(v){
+  // Grid lines
+  [0,Math.round(yMax/2),yMax].forEach(function(v){
     var y=yPos(v);
-    svg+='<line x1="'+padL+'" y1="'+y+'" x2="'+(W-padR)+'" y2="'+y+'" stroke="#e8e0f0" stroke-width="1" stroke-dasharray="'+(v===0?'none':'3,3')+'"/>';
+    svg+='<line x1="'+padL+'" y1="'+y+'" x2="'+(W-padR)+'" y2="'+y+'" stroke="#e8e0f0" stroke-width="1"'+(v>0?' stroke-dasharray="3,3"':'')+'/>';
     if(v>0)svg+='<text x="'+(padL-4)+'" y="'+(y+4)+'" text-anchor="end" font-size="9" fill="#9a8aaa">'+v+'</text>';
   });
 
-  // Average line
-  var avgY=yPos(avg);
-  svg+='<line x1="'+padL+'" y1="'+avgY+'" x2="'+(W-padR)+'" y2="'+avgY+'" stroke="#C9A84C" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.7"/>';
-  svg+='<text x="'+(W-padR+3)+'" y="'+(avgY+4)+'" font-size="8" fill="#C9A84C" font-weight="600">Ø</text>';
+  // Average line (gold)
+  if(avg>0){
+    var avgY=yPos(avg);
+    svg+='<line x1="'+padL+'" y1="'+avgY+'" x2="'+(W-padR)+'" y2="'+avgY+'" stroke="#C9A84C" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.8"/>';
+    svg+='<text x="'+(W-padR+3)+'" y="'+(avgY+4)+'" font-size="8" fill="#C9A84C" font-weight="600">\u00d8</text>';
+  }
 
-  // Max line
-  var maxY=yPos(maxCount);
-  svg+='<line x1="'+padL+'" y1="'+maxY+'" x2="'+(W-padR)+'" y2="'+maxY+'" stroke="#5C1F8A" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.5"/>';
-  svg+='<text x="'+(W-padR+3)+'" y="'+(maxY+4)+'" font-size="8" fill="#5C1F8A" font-weight="600">Max</text>';
+  // Max line (purple)
+  if(maxCount>0&&maxCount!==Math.round(avg)){
+    var maxY=yPos(maxCount);
+    svg+='<line x1="'+padL+'" y1="'+maxY+'" x2="'+(W-padR)+'" y2="'+maxY+'" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.5"/>';
+    svg+='<text x="'+(W-padR+3)+'" y="'+(maxY+4)+'" font-size="8" fill="#7c3aed" font-weight="600">Max</text>';
+  }
+
+  // Today vertical line (drawn before bars so bars sit on top)
+  var todayIdx=days.findIndex(function(d){return d.dk===todayKey;});
+  if(todayIdx>=0){
+    var tx=xPos(todayIdx);
+    svg+='<line x1="'+tx+'" y1="'+(padT-10)+'" x2="'+tx+'" y2="'+(padT+chartH)+'" stroke="#4c1d95" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.5"/>';
+    svg+='<text x="'+tx+'" y="'+(padT-13)+'" text-anchor="middle" font-size="8" fill="#4c1d95" font-weight="700">Heute</text>';
+  }
 
   // Bars
   days.forEach(function(d,i){
-    var x=xPos(i);
     var isToday=d.dk===todayKey;
     var isPast=d.date<today;
     var v=d.confirmed;
     var barH=v>0?(v/yMax)*chartH:2;
     var y=padT+chartH-barH;
-    var fill=isToday?'#4c1d95':isPast?'#d8d0e8':(v>0?'#7c3aed':'#e8e0f0');
+    var fill=isToday?'#4c1d95':isPast?(v>0?'#a78bfa':'#ede9fe'):(v>0?'#7c3aed':'#f0edf7');
     var rx=Math.min(4,barW/2);
-    // Clickable bar group
-    svg+='<g class="tl-bar-g" data-dk="'+d.dk+'" style="cursor:pointer" onclick="showDayDetail(\''+d.dk+'\')">';
-    svg+='<rect x="'+(x-barW/2)+'" y="'+y+'" width="'+barW+'" height="'+Math.max(barH,2)+'" rx="'+rx+'" fill="'+fill+'" opacity="'+(isPast&&!isToday?0.5:1)+'"/>';
-    // Hover hit area
-    svg+='<rect x="'+(x-gap/2)+'" y="'+padT+'" width="'+gap+'" height="'+chartH+'" fill="transparent"/>';
-    if(v>0)svg+='<text x="'+x+'" y="'+(y-4)+'" text-anchor="middle" font-size="9" fill="'+(isToday?'#4c1d95':'#7c3aed')+'" font-weight="600">'+v+'</text>';
+    svg+='<g onclick="showDayDetail(\''+d.dk+'\')" style="cursor:pointer">';
+    svg+='<rect x="'+(xPos(i)-barW/2)+'" y="'+y+'" width="'+barW+'" height="'+Math.max(barH,2)+'" rx="'+rx+'" fill="'+fill+'" opacity="'+(isPast&&!isToday?0.6:1)+'"/>';
+    svg+='<rect x="'+(xPos(i)-gap/2)+'" y="'+padT+'" width="'+gap+'" height="'+chartH+'" fill="transparent"/>';
+    if(v>0)svg+='<text x="'+xPos(i)+'" y="'+(y-3)+'" text-anchor="middle" font-size="9" fill="'+(isToday?'#4c1d95':'#7c3aed')+'" font-weight="600">'+v+'</text>';
     svg+='</g>';
-
-    // X-axis label
-    var showLabel=n<=14||(i%(Math.ceil(n/14))===0)||isToday;
-    if(showLabel){
-      var lbl=isToday?'Heute':dayNames[d.date.getDay()];
-      if(n>14)lbl=('0'+d.date.getDate()).slice(-2)+'.'+('0'+(d.date.getMonth()+1)).slice(-2);
-      svg+='<text x="'+x+'" y="'+(H-6)+'" text-anchor="middle" font-size="9" fill="'+(isToday?'#7c3aed':'#9a8aaa')+'" font-weight="'+(isToday?'600':'400')+'">'+lbl+'</text>';
+    // X labels
+    var showLbl=n<=21||(i%Math.ceil(n/14)===0)||isToday;
+    if(showLbl){
+      var lbl=isToday?'Heute':(n<=14?dayNames[d.date.getDay()]:(('0'+d.date.getDate()).slice(-2)+'.'+('0'+(d.date.getMonth()+1)).slice(-2)));
+      svg+='<text x="'+xPos(i)+'" y="'+(H-4)+'" text-anchor="middle" font-size="8.5" fill="'+(isToday?'#4c1d95':'#9a8aaa')+'" font-weight="'+(isToday?700:400)+'">'+lbl+'</text>';
     }
   });
 
-  // X axis base line
-  svg+='<line x1="'+padL+'" y1="'+(padT+chartH)+'" x2="'+(W-padR)+'" y2="'+(padT+chartH)+'" stroke="#e8e0f0" stroke-width="1.5"/>';
-
+  // X base line
+  svg+='<line x1="'+padL+'" y1="'+(padT+chartH)+'" x2="'+(W-padR)+'" y2="'+(padT+chartH)+'" stroke="#ddd6fe" stroke-width="1.5"/>';
   svg+='</svg>';
 
   // Legend
-  var legend='<div style="display:flex;gap:14px;margin-top:8px;padding-left:'+padL+'px">'
-    +'<div style="display:flex;align-items:center;gap:5px"><div style="width:16px;height:1.5px;background:#5C1F8A;border-top:1.5px dashed #5C1F8A"></div><span style="font-size:10px;color:#9a8aaa">Maximum ('+maxCount+')</span></div>'
-    +'<div style="display:flex;align-items:center;gap:5px"><div style="width:16px;height:0;border-top:1.5px dashed #C9A84C"></div><span style="font-size:10px;color:#9a8aaa">Durchschnitt ('+avg.toFixed(1)+')</span></div>'
+  var legend='<div style="display:flex;gap:16px;margin-top:6px;padding-left:'+padL+'px;flex-wrap:wrap">'
+    +'<div style="display:flex;align-items:center;gap:5px"><div style="width:18px;border-top:1.5px dashed #7c3aed"></div><span style="font-size:10px;color:#9a8aaa">Max ('+maxCount+')</span></div>'
+    +(avg>0?'<div style="display:flex;align-items:center;gap:5px"><div style="width:18px;border-top:1.5px dashed #C9A84C"></div><span style="font-size:10px;color:#9a8aaa">Ø ('+avg.toFixed(1)+')</span></div>':'')
+    +'<div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;background:#a78bfa;border-radius:2px"></div><span style="font-size:10px;color:#9a8aaa">Vergangenheit</span></div>'
+    +'<div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;background:#7c3aed;border-radius:2px"></div><span style="font-size:10px;color:#9a8aaa">Zukunft</span></div>'
     +'</div>';
 
   tlWrap.innerHTML=svg+legend;
-  // Remove old labels div
   var lbl=document.getElementById('dash-timeline-labels');
   if(lbl)lbl.style.display='none';
 }
 
-function showDayDetail(dateKey){
-  var detail=document.getElementById('tl-day-detail');
-  var title=document.getElementById('tl-day-title');
-  var list=document.getElementById('tl-day-list');
-  if(!detail||!title||!list)return;
-
-  var dayBookings=tlAllBookings.filter(function(b){
-    return bookingDateKey(b.termin_start)===dateKey&&b.status==='confirmed';
-  });
-
-  var d=new Date(dateKey);
-  title.textContent=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})
-    +' — '+dayBookings.length+' Termin'+(dayBookings.length!==1?'e':'');
-
-  if(dayBookings.length===0){
-    list.innerHTML='<div style="font-size:12px;color:var(--muted);padding:8px 0">Keine bestätigten Termine</div>';
-  } else {
-    list.innerHTML=dayBookings.map(function(b){
-      var time=new Date(b.termin_start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
-      return'<div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:var(--bg);border-radius:8px;font-size:12px">'
-        +'<span style="font-weight:600;color:var(--tpl);min-width:38px">'+time+'</span>'
-        +'<span style="color:var(--td);flex:1">'+(b.customer_name||'—')+'</span>'
-        +'</div>';
-    }).join('');
-  }
-  detail.style.display='block';
-}
-
 async function renderDashTimeline(staffArr){
+  // Build SVC_MAP and STAFF_MAP for label lookups
+  if(!window.SVC_MAP){
+    window.SVC_MAP={};
+    if(window.SERVICES)SERVICES.forEach(function(s){if(s.varianten)s.varianten.forEach(function(v){SVC_MAP[v.id]=s.name+(s.varianten.length>1?' · '+v.name:'');});});
+  }
+  if(!window.STAFF_MAP){
+    window.STAFF_MAP={};
+    if(staffArr)staffArr.forEach(function(m){STAFF_MAP[m.id]=m.display_name||m.name;});
+  }
   loadTimelineData();
 }
 
