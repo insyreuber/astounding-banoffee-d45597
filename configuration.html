@@ -2582,6 +2582,7 @@ function pickColor(hex){
 function openStaffModal(data){
   editingStaffId=data?data.mitarbeiter.id:null;
   document.getElementById('staff-modal-title').textContent=data?'Mitarbeiter bearbeiten':'Mitarbeiter hinzufügen';
+  document.getElementById('s-delete-wrap').style.display=data?'block':'none';
   var m=data?data.mitarbeiter:{};
   document.getElementById('s-name').value=m.name||'';
   document.getElementById('s-display').value=m.display_name||'';
@@ -2608,7 +2609,7 @@ function openStaffModal(data){
   buildStaffSvcList(data?data.varianteIds:[]);
   document.getElementById('staff-overlay').style.display='block';
   document.getElementById('staff-modal').classList.add('open');
-  setTimeout(function(){document.getElementById('s-name').focus();},80);
+  setTimeout(function(){document.getElementById('s-display').focus();},80);
 }
 function closeStaffModal(){
   document.getElementById('staff-overlay').style.display='none';
@@ -2621,8 +2622,10 @@ function editStaff(id){
 }
 
 async function saveStaff(silent){
-  var name=document.getElementById('s-name').value.trim();
-  if(!name){toast('Name ist Pflichtfeld','error');return;}
+  var display=document.getElementById('s-display').value.trim();
+  if(!display){toast('Anzeigename ist Pflichtfeld','error');return;}
+  var name=display;
+  document.getElementById('s-name').value=name;
   var btn=document.getElementById('btn-staff-save');btn.disabled=true;
   var hasCustom=document.getElementById('s-custom-hours').checked;
   var nextSort=staffData.length;
