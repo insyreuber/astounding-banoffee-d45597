@@ -412,6 +412,11 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
 }
 
+.tl-range-btn{background:none;border:none;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:500;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s;}
+.tl-range-btn.active{background:var(--white);color:var(--tpl);box-shadow:0 1px 4px rgba(74,28,107,.1);}
+.tl-range-btn:hover:not(.active){color:var(--td);}
+.tl-bar{cursor:pointer;border-radius:4px 4px 0 0;transition:opacity .15s;}
+.tl-bar:hover{opacity:0.75;}
 .custom-link-row{display:grid;grid-template-columns:1fr 1fr 28px;gap:6px;align-items:center;}
 .custom-link-row input{border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--td);background:var(--white);font-family:inherit;transition:border-color .15s;outline:none;width:100%;box-sizing:border-box;}
 .custom-link-row input:focus{border-color:var(--tpl);}
@@ -592,21 +597,54 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
     <!-- ROW 2: Terminzeitstrahl -->
     <div class="card" style="padding:18px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <!-- Header + Zeitraum-Selector -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
         <div class="card-title" style="margin-bottom:0">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          Termine — nächste 14 Tage
+          Terminübersicht
         </div>
-        <div style="font-size:10px;color:var(--muted);background:var(--tgp);padding:3px 8px;border-radius:99px;color:#7a5a00;font-weight:500">Live aus Google Kalender</div>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <div style="display:flex;gap:4px;background:var(--bg);border-radius:8px;padding:3px">
+            <button class="tl-range-btn active" data-range="7" onclick="setTimelineRange(7,this)">7 T</button>
+            <button class="tl-range-btn" data-range="14" onclick="setTimelineRange(14,this)">14 T</button>
+            <button class="tl-range-btn" data-range="30" onclick="setTimelineRange(30,this)">30 T</button>
+            <button class="tl-range-btn" data-range="90" onclick="setTimelineRange(90,this)">3 Mo</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:4px">
+            <input type="date" id="tl-from" style="font-size:11px;padding:4px 7px;border:1.5px solid var(--border);border-radius:7px;color:var(--td);background:var(--white);outline:none;font-family:inherit" onchange="setTimelineCustom()">
+            <span style="font-size:11px;color:var(--muted)">—</span>
+            <input type="date" id="tl-to" style="font-size:11px;padding:4px 7px;border:1.5px solid var(--border);border-radius:7px;color:var(--td);background:var(--white);outline:none;font-family:inherit" onchange="setTimelineCustom()">
+          </div>
+        </div>
       </div>
-      <div id="dash-timeline" style="display:flex;gap:6px;align-items:flex-end;height:80px;overflow-x:auto;padding-bottom:4px">
-        <!-- filled by JS -->
+
+      <!-- Zusammenfassung -->
+      <div id="tl-summary" style="display:flex;gap:16px;margin-bottom:14px;padding:10px 14px;background:var(--bg);border-radius:10px">
+        <div><span style="font-size:11px;color:var(--muted)">Gesamt</span><div id="tl-total" style="font-size:18px;font-weight:700;color:var(--tpl)">—</div></div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div><span style="font-size:11px;color:var(--muted)">Heute</span><div id="tl-today-count" style="font-size:18px;font-weight:700;color:var(--td)">—</div></div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div><span style="font-size:11px;color:var(--muted)">Storniert</span><div id="tl-cancelled" style="font-size:18px;font-weight:700;color:var(--muted)">—</div></div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div><span style="font-size:11px;color:var(--muted)">Zeitraum</span><div id="tl-range-label" style="font-size:12px;font-weight:500;color:var(--td);margin-top:4px">—</div></div>
       </div>
-      <div id="dash-timeline-labels" style="display:flex;gap:6px;margin-top:6px;overflow-x:hidden">
-        <!-- filled by JS -->
+
+      <!-- Balken-Chart -->
+      <div style="position:relative">
+        <div id="dash-timeline" style="display:flex;gap:3px;align-items:flex-end;height:90px;overflow-x:auto;padding-bottom:2px"></div>
+        <div id="dash-timeline-labels" style="display:flex;gap:3px;margin-top:4px;overflow-x:hidden"></div>
+        <div id="dash-timeline-empty" style="display:none;text-align:center;padding:24px;font-size:12px;color:var(--muted)">
+          Keine bestätigten Termine im gewählten Zeitraum
+        </div>
       </div>
-      <div id="dash-timeline-empty" style="display:none;text-align:center;padding:20px;font-size:12px;color:var(--muted)">
-        Keine Termine in den nächsten 14 Tagen gefunden
+
+      <!-- Tagesdetails (erscheint beim Klick auf Balken) -->
+      <div id="tl-day-detail" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div id="tl-day-title" style="font-size:13px;font-weight:600;color:var(--td)"></div>
+          <button onclick="document.getElementById('tl-day-detail').style.display='none'" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;line-height:1">×</button>
+        </div>
+        <div id="tl-day-list" style="display:flex;flex-direction:column;gap:6px"></div>
       </div>
     </div>
 
@@ -2757,6 +2795,15 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 
 // ── DASHBOARD ─────────────────────────────────────────────────
 async function loadDashboard(){
+  // Init timeline date pickers with today + 7 days
+  var today=new Date();
+  var tf=document.getElementById('tl-from');
+  var tt=document.getElementById('tl-to');
+  if(tf&&!tf.value){
+    tf.value=today.toISOString().split('T')[0];
+    var t7=new Date(today);t7.setDate(today.getDate()+6);
+    if(tt&&!tt.value)tt.value=t7.toISOString().split('T')[0];
+  }
   if(!SALON_ID)return;
 
   // Datum
@@ -2814,91 +2861,158 @@ async function loadDashboard(){
   renderDashTimeline(staffArr);
 }
 
-async function renderDashTimeline(staffArr){
-  var staffWithCal=staffArr.filter(function(m){return!!m.google_calendar_id;});
+// ── TIMELINE STATE ───────────────────────────────────────────
+var tlRangeDays=7;
+var tlFromDate=null;
+var tlToDate=null;
+var tlAllBookings=[];
+
+function setTimelineRange(days,btn){
+  tlRangeDays=days;
+  tlFromDate=null;tlToDate=null;
+  document.querySelectorAll('.tl-range-btn').forEach(function(b){b.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+  // Clear custom date inputs
+  var fi=document.getElementById('tl-from');var ti=document.getElementById('tl-to');
+  if(fi)fi.value='';if(ti)ti.value='';
+  loadTimelineData();
+}
+
+function setTimelineCustom(){
+  var fi=document.getElementById('tl-from');
+  var ti=document.getElementById('tl-to');
+  if(!fi||!ti||!fi.value||!ti.value)return;
+  tlFromDate=new Date(fi.value);tlFromDate.setHours(0,0,0,0);
+  tlToDate=new Date(ti.value);tlToDate.setHours(23,59,59,999);
+  if(tlFromDate>tlToDate)return;
+  tlRangeDays=0;
+  document.querySelectorAll('.tl-range-btn').forEach(function(b){b.classList.remove('active');});
+  loadTimelineData();
+}
+
+async function loadTimelineData(){
+  if(!SALON_ID)return;
+  var today=new Date();today.setHours(0,0,0,0);
+  var fromD=tlFromDate||new Date(today);
+  var toD=tlToDate||new Date(today);
+  if(!tlFromDate){toD=new Date(today);toD.setDate(today.getDate()+tlRangeDays-1);toD.setHours(23,59,59,999);}
+
+  var fromISO=fromD.toISOString();
+  var toISO=toD.toISOString();
+
+  // Fetch confirmed + cancelled for full picture
+  var res=await sb.from('bookings')
+    .select('termin_start,status,customer_name,mitarbeiter_id')
+    .eq('kunde_id',SALON_ID)
+    .gte('termin_start',fromISO)
+    .lte('termin_start',toISO)
+    .order('termin_start',{ascending:true});
+
+  tlAllBookings=(!res.error&&Array.isArray(res.data))?res.data:[];
+  renderTimeline(fromD,toD);
+}
+
+function renderTimeline(fromD,toD){
   var tlWrap=document.getElementById('dash-timeline');
   var tlLabels=document.getElementById('dash-timeline-labels');
   var tlEmpty=document.getElementById('dash-timeline-empty');
   if(!tlWrap)return;
 
-  // 14 Tage aufbauen
+  // Build days array
   var days=[];
+  var cur=new Date(fromD);
+  while(cur<=toD){
+    days.push({date:new Date(cur),confirmed:0,cancelled:0,bookings:[]});
+    cur.setDate(cur.getDate()+1);
+  }
+
+  // Count per day
   var today=new Date();today.setHours(0,0,0,0);
-  for(var i=0;i<14;i++){
-    var d=new Date(today);d.setDate(today.getDate()+i);
-    days.push({date:d,count:0});
-  }
-
-  // Termine via get-availability pro Mitarbeiter + Tag zählen
-  var allCounts={};
-  if(staffWithCal.length && SALON_ID){
-    // Alle Requests parallel aufbauen
-    var requests=[];
-    staffWithCal.forEach(function(m){
-      days.forEach(function(dayObj){
-        var dateStr=dayObj.date.toISOString().split('T')[0];
-        requests.push({mid:m.id, date:dateStr});
-      });
-    });
-
-    // In Batches von 10 parallel feuern, nicht überlasten
-    var BATCH=10;
-    for(var b=0;b<requests.length;b+=BATCH){
-      var batch=requests.slice(b,b+BATCH);
-      await Promise.all(batch.map(function(req){
-        return fetch(
-          'https://insy-n8n-u71054.vm.elestio.app/webhook/get-availability'
-          +'?salon_id='+SALON_ID
-          +'&mitarbeiter_id='+req.mid
-          +'&date='+req.date
-        ).then(function(r){return r.ok?r.json():null;})
-        .then(function(data){
-          if(!data)return;
-          // Response: Array oder Objekt mit raw.busy [{start,end}]
-          var raw=Array.isArray(data)?data[0]:data;
-          if(raw&&raw.busy&&Array.isArray(raw.busy)&&raw.busy.length){
-            allCounts[req.date]=(allCounts[req.date]||0)+raw.busy.length;
-          }
-        }).catch(function(){});
-      }));
-    }
-  }
-
-  // Counts in days eintragen
-  days.forEach(function(d){
-    var key=d.date.toISOString().split('T')[0];
-    d.count=allCounts[key]||0;
+  tlAllBookings.forEach(function(b){
+    var dk=b.termin_start.split('T')[0];
+    var day=days.find(function(d){return d.date.toISOString().split('T')[0]===dk;});
+    if(!day)return;
+    if(b.status==='confirmed'){day.confirmed++;day.bookings.push(b);}
+    else if(b.status==='cancelled')day.cancelled++;
   });
 
-  var maxCount=Math.max.apply(null,days.map(function(d){return d.count;}));
-  if(maxCount===0)maxCount=1; // verhindert Division durch 0
+  // Summary
+  var totalConf=days.reduce(function(s,d){return s+d.confirmed;},0);
+  var totalCanc=days.reduce(function(s,d){return s+d.cancelled;},0);
+  var todayKey=today.toISOString().split('T')[0];
+  var todayDay=days.find(function(d){return d.date.toISOString().split('T')[0]===todayKey;});
+  document.getElementById('tl-total').textContent=totalConf;
+  document.getElementById('tl-today-count').textContent=todayDay?todayDay.confirmed:'0';
+  document.getElementById('tl-cancelled').textContent=totalCanc;
+  // Range label
+  var opts={day:'2-digit',month:'2-digit'};
+  document.getElementById('tl-range-label').textContent=
+    fromD.toLocaleDateString('de-DE',opts)+' – '+toD.toLocaleDateString('de-DE',opts);
 
-  var hasAny=days.some(function(d){return d.count>0;});
+  var hasAny=days.some(function(d){return d.confirmed>0;});
   if(tlEmpty)tlEmpty.style.display=hasAny?'none':'block';
-  if(!hasAny){tlWrap.style.display='none';if(tlLabels)tlLabels.style.display='none';return;}
-  tlWrap.style.display='flex';if(tlLabels)tlLabels.style.display='flex';
+  tlWrap.style.display=hasAny?'flex':'none';
+  if(tlLabels)tlLabels.style.display=hasAny?'flex':'none';
+  if(!hasAny)return;
 
+  var maxCount=Math.max.apply(null,days.map(function(d){return d.confirmed;}));
+  if(maxCount===0)maxCount=1;
   var dayNames=['So','Mo','Di','Mi','Do','Fr','Sa'];
-  var barWidth='calc((100% - '+((14-1)*6)+'px) / 14)';
 
   tlWrap.innerHTML=days.map(function(d,i){
-    var isToday=i===0;
-    var heightPct=d.count>0?Math.max(20,Math.round((d.count/maxCount)*100)):4;
-    var barColor=isToday?'var(--tp)':(d.count>0?'var(--tpl)':'var(--border)');
-    var opacity=d.count>0?'1':'0.5';
-    return'<div style="flex:1;min-width:18px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px" title="'+d.date.toLocaleDateString('de-DE')+': '+d.count+' Termine">'
-      +(d.count>0?'<span style="font-size:9px;color:var(--tpl);font-weight:600">'+d.count+'</span>':'')
-      +'<div style="width:100%;border-radius:4px 4px 0 0;background:'+barColor+';height:'+heightPct+'%;opacity:'+opacity+';transition:height .3s;min-height:4px"></div>'
-    +'</div>';
+    var dk=d.date.toISOString().split('T')[0];
+    var isToday=dk===todayKey;
+    var isPast=d.date<today;
+    var heightPct=d.confirmed>0?Math.max(16,Math.round((d.confirmed/maxCount)*100)):4;
+    var barColor=isToday?'var(--tp)':isPast?'var(--border)':(d.confirmed>0?'var(--tpl)':'var(--border)');
+    var opacity=isPast&&!isToday?'0.45':'1';
+    return'<div style="flex:1;min-width:14px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px">'
+      +(d.confirmed>0?'<span style="font-size:8px;color:var(--tpl);font-weight:600">'+d.confirmed+'</span>':'')
+      +'<div class="tl-bar" style="width:100%;height:'+heightPct+'%;background:'+barColor+';opacity:'+opacity+';min-height:4px" onclick="showDayDetail(''+dk+'')" title="'+d.date.toLocaleDateString('de-DE')+': '+d.confirmed+' Termine"></div>'
+      +'</div>';
   }).join('');
 
-  if(tlLabels)tlLabels.innerHTML=days.map(function(d,i){
-    var isToday=i===0;
-    var name=isToday?'Heute':dayNames[d.date.getDay()];
-    var color=isToday?'var(--tpl)':'var(--muted)';
-    var fw=isToday?'600':'400';
-    return'<div style="flex:1;min-width:18px;text-align:center;font-size:9px;color:'+color+';font-weight:'+fw+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+name+'</div>';
-  }).join('');
+  if(tlLabels){
+    var showEvery=days.length>20?Math.ceil(days.length/14):1;
+    tlLabels.innerHTML=days.map(function(d,i){
+      var isToday=d.date.toISOString().split('T')[0]===todayKey;
+      var show=i%showEvery===0||isToday;
+      var label=isToday?'Heute':(show?(days.length<=14?dayNames[d.date.getDay()]:('0'+d.date.getDate()).slice(-2)+'.'+('0'+(d.date.getMonth()+1)).slice(-2)):'');
+      return'<div style="flex:1;min-width:14px;text-align:center;font-size:8px;color:'+(isToday?'var(--tpl)':'var(--muted)')+';font-weight:'+(isToday?'600':'400')+'">'+label+'</div>';
+    }).join('');
+  }
+}
+
+function showDayDetail(dateKey){
+  var detail=document.getElementById('tl-day-detail');
+  var title=document.getElementById('tl-day-title');
+  var list=document.getElementById('tl-day-list');
+  if(!detail||!title||!list)return;
+
+  var dayBookings=tlAllBookings.filter(function(b){
+    return b.termin_start.split('T')[0]===dateKey&&b.status==='confirmed';
+  });
+
+  var d=new Date(dateKey);
+  title.textContent=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})
+    +' — '+dayBookings.length+' Termin'+(dayBookings.length!==1?'e':'');
+
+  if(dayBookings.length===0){
+    list.innerHTML='<div style="font-size:12px;color:var(--muted);padding:8px 0">Keine bestätigten Termine</div>';
+  } else {
+    list.innerHTML=dayBookings.map(function(b){
+      var time=new Date(b.termin_start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+      return'<div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:var(--bg);border-radius:8px;font-size:12px">'
+        +'<span style="font-weight:600;color:var(--tpl);min-width:38px">'+time+'</span>'
+        +'<span style="color:var(--td);flex:1">'+(b.customer_name||'—')+'</span>'
+        +'</div>';
+    }).join('');
+  }
+  detail.style.display='block';
+}
+
+async function renderDashTimeline(staffArr){
+  loadTimelineData();
 }
 
 function setStatusDot(dotId,labelId,ok,onLabel,offLabel){
