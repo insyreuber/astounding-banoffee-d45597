@@ -2968,8 +2968,7 @@ function renderTimeline(fromD,toD){
     var opacity=isPast&&!isToday?'0.45':'1';
     return'<div style="flex:1;min-width:14px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px">'
       +(d.confirmed>0?'<span style="font-size:8px;color:var(--tpl);font-weight:600">'+d.confirmed+'</span>':'')
-      +'<div class="tl-bar" style="width:100%;height:'+heightPct+'%;background:'+barColor+';opacity:'+opacity+';min-height:4px" onclick="showDayDetail(''+dk+'')" title="'+d.date.toLocaleDateString('de-DE')+': '+d.confirmed+' Termine"></div>'
-      +'</div>';
+      +'<div class="tl-bar" style="width:100%;height:'+heightPct+'%;background:'+barColor+';opacity:'+opacity+';min-height:4px" data-date="'+dk+'" onclick="showDayDetail(this.getAttribute(\'data-date\'))" title="'+d.confirmed+' Termine"></div>';
   }).join('');
 
   if(tlLabels){
