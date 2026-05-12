@@ -1054,7 +1054,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
     <!-- Anzeigename & Rolle -->
     <div class="frow frow-2" style="margin-bottom:12px">
-      <div class="field"><label>Anzeigename (im Buchungswidget)</label><input type="text" id="s-display" placeholder="z.B. Niran T."></div>
+      <div class="field"><label>Anzeigename (im Buchungswidget) *</label><input type="text" id="s-display" placeholder="z.B. Niran T." required></div>
       <div class="field"><label>Rolle / Berufsbezeichnung</label><input type="text" id="s-role" placeholder="z.B. Massagetherapeutin"></div>
     </div>
     <!-- Hidden name field — uses display name as fallback -->
@@ -1110,18 +1110,9 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       <input type="hidden" id="s-cal" value="">
     </div>
 
-    <hr class="div">
-
     <!-- Mitarbeiter löschen (nur im Edit-Modus) -->
-    <div id="s-delete-wrap" style="display:none;margin-bottom:4px">
-      <button type="button" onclick="deleteCurrentStaff()" style="
-        width:100%;padding:9px;border-radius:8px;
-        border:1.5px solid var(--danger);
-        background:transparent;color:var(--danger);
-        font-size:13px;font-weight:500;cursor:pointer;
-        display:flex;align-items:center;justify-content:center;gap:6px;
-        transition:background .15s;
-      " onmouseover="this.style.background='rgba(231,76,60,0.06)'" onmouseout="this.style.background='transparent'">
+    <div id="s-delete-wrap" style="display:none;margin-top:8px;margin-bottom:4px">
+      <button type="button" onclick="deleteCurrentStaff()" style="width:100%;padding:9px;border-radius:8px;border:1.5px solid var(--danger);background:transparent;color:var(--danger);font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .15s;" onmouseover="this.style.background='rgba(231,76,60,0.06)'" onmouseout="this.style.background='transparent'">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
         Mitarbeiter löschen
       </button>
