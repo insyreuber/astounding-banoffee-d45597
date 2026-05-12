@@ -612,8 +612,10 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       <div class="sec-title">Salon-Profil</div>
       <div class="sec-sub">Wird im Header des Buchungswidgets angezeigt</div>
     </div>
+    <!-- Adresse + Links nebeneinander -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:0;align-items:start">
     <!-- Kachel 1: Adresse -->
-    <div class="card">
+    <div class="card" style="margin-bottom:0">
       <div class="card-title">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
         Adresse
@@ -672,6 +674,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
         <input type="text" id="f-maps" placeholder="https://maps.google.com/?q=...">
       </div>
     </div>
+    </div><!-- end adresse+links grid -->
 
     <div class="card">
       <div class="card-title">
