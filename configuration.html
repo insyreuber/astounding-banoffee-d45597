@@ -345,9 +345,11 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   /* Formularfelder */
   .frow{grid-template-columns:1fr !important}
   .frow-2{grid-template-columns:1fr 1fr !important}
-  .custom-link-row{display:grid;grid-template-columns:1fr 1fr 24px;gap:5px;align-items:center;}
-.custom-link-row input{font-size:12px;padding:5px 8px;}
-.custom-link-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:15px;padding:0;line-height:1;display:flex;align-items:center;justify-content:center;}
+  .custom-link-row{display:grid;grid-template-columns:1fr 1fr 20px;gap:6px;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 8px;}
+.custom-link-row input{font-size:12px;padding:4px 0;border:none;background:transparent;color:var(--td);outline:none;width:100%;}
+.custom-link-row input::placeholder{color:var(--muted);}
+.custom-link-row input:first-child{border-right:1px solid var(--border);padding-right:8px;}
+.custom-link-del{background:none;border:none;color:var(--muted);cursor:pointer;padding:0;line-height:1;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .custom-link-del:hover{color:var(--danger);}
 /* Stadt/PLZ/Hausnummer Zeile bleibt nebeneinander auf Mobile */
   .frow[style*="grid-template-columns:1fr 80px"]{grid-template-columns:1fr 70px 80px !important}
@@ -697,10 +699,9 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
         Öffnungszeiten <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;margin-left:6px">— offizielle Stammzeiten</span>
       </div>
       <div class="hours-cols" id="hours-cols"></div>
-    </div>
 
-    <!-- Temporäre Öffnungszeiten -->
-    <div class="card">
+      <div style="height:1px;background:var(--border);margin:18px 0"></div>
+
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
         <div class="card-title" style="margin-bottom:0">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -717,7 +718,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       </div>
     </div>
 
-    <div class="save-bar">
+    <div style="display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-bottom:16px">
       <div class="save-status" id="profil-status"></div>
       <button class="btn btn-primary" onclick="saveProfil()" id="btn-save-profil">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
