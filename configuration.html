@@ -2400,8 +2400,12 @@ function renderStaffSidebar(){
       +'</div>'
       +'<div class="staff-card-actions">'
         +'<button class="staff-action" onclick="editStaff(\''+m.id+'\')" title="Bearbeiten">✎</button>'
-        +'<button class="staff-action" onclick="openCalendarPicker(\''+m.id+'\')" title="Kalender wählen" style="color:'+(gcalConnected?'#27ae60':'var(--muted)')+'">📅</button>'
-        +'<button class="staff-action" onclick="deleteStaff(\''+m.id+'\')" style="color:var(--danger)" title="Löschen">✕</button>'
+        +'<button class="staff-action" onclick="openCalendarPicker(\''+m.id+'\')" style="display:flex;align-items:center;gap:4px;font-size:11px;color:'+(gcalConnected?'#27ae60':'var(--muted)')+'" title="Google Kalender verbinden">'
+          +(gcalConnected
+            ?'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Kalender verbunden'
+            :'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Google Kalender verbinden'
+          )
+        +'</button>'
       +'</div>'
     +'</div>';
   }).join('');
