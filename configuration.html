@@ -606,12 +606,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
           Terminübersicht
         </div>
-        <!-- Tab-Switcher -->
-        <div style="display:flex;gap:3px;background:var(--bg);border-radius:8px;padding:3px">
-          <button class="tl-tab-btn active" onclick="switchTlTab('termine',this)">Termine</button>
-          <button class="tl-tab-btn" onclick="switchTlTab('services',this)">Services</button>
-          <button class="tl-tab-btn" onclick="switchTlTab('mitarbeiter',this)">Mitarbeiter</button>
-        </div>
+
       </div>
 
       <!-- Zeitraum-Steuerung: Vergangenheit | HEUTE | Zukunft -->
@@ -673,14 +668,16 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
         </div>
       </div>
 
-      <!-- Tab: Services -->
-      <div id="tl-tab-services" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
-        <div id="tl-services-chart" style="width:100%;min-height:140px"></div>
-      </div>
-
-      <!-- Tab: Mitarbeiter -->
-      <div id="tl-tab-mitarbeiter" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
-        <div id="tl-staff-chart" style="width:100%;min-height:140px"></div>
+      <!-- Services + Mitarbeiter immer sichtbar -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+        <div>
+          <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:10px">Services</div>
+          <div id="tl-services-chart" style="width:100%"></div>
+        </div>
+        <div>
+          <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:10px">Mitarbeiter</div>
+          <div id="tl-staff-chart" style="width:100%"></div>
+        </div>
       </div>
 
       <!-- Tagesdetails -->
@@ -1869,6 +1866,8 @@ async function loadServices(){
 }
 
 function renderSvcList(){
+  // Invalidate SVC_MAP so it rebuilds with fresh data
+  window.SVC_MAP=null;
   var list=document.getElementById('svc-list');
   if(!servicesData.length){list.innerHTML='<div class="empty"><div class="empty-icon">✦</div><div class="empty-text">Noch keine Services</div></div>';return;}
   list.innerHTML=servicesData.map(function(item){
@@ -2921,7 +2920,8 @@ var tlFutureDays=7;
 var tlAllBookings=[];
 var tlCurrentTab='termine';
 
-function switchTlTab(tab,btn){
+function switchTlTab(tab,btn){ // legacy stub
+  renderAllCharts(); return;
   tlCurrentTab=tab;
   document.querySelectorAll('.tl-tab-btn').forEach(function(b){b.classList.remove('active');});
   if(btn)btn.classList.add('active');
@@ -2988,8 +2988,8 @@ function renderAllCharts(){
   var fromD=new Date(today);fromD.setDate(today.getDate()-tlPastDays);
   var toD=new Date(today);toD.setDate(today.getDate()+tlFutureDays);toD.setHours(23,59,59,999);
   renderTimeline(fromD,toD);
-  if(tlCurrentTab==='services') renderServicesChart();
-  if(tlCurrentTab==='mitarbeiter') renderStaffChart();
+  renderServicesChart();
+  renderStaffChart();
 }
 
 function renderServicesChart(){
@@ -3015,9 +3015,8 @@ function renderServicesChart(){
   entries.forEach(function(e,i){
     var y=i*36+10;
     var bw=Math.max(4,Math.round((e.count/maxC)*barMaxW));
-    var name=e.id.length>20?e.id.slice(0,18)+'…':e.id;
-    // Try to find service name
-    if(window.SVC_MAP&&SVC_MAP[e.id])name=SVC_MAP[e.id];
+    var name=(window.SVC_MAP&&SVC_MAP[e.id])?SVC_MAP[e.id]:'Unbekannt';
+    name=name.length>22?name.slice(0,20)+'…':name;
     var pct=Math.round(e.count/total*100);
     svg+='<text x="0" y="'+(y+14)+'" font-size="11" fill="#555" font-family="sans-serif">'+name+'</text>';
     svg+='<rect x="130" y="'+(y+2)+'" width="'+bw+'" height="20" rx="4" fill="'+(colors[i%colors.length])+'"/>';
@@ -3052,9 +3051,8 @@ function renderStaffChart(){
     var y=i*44+10;
     var bw=Math.max(4,Math.round((e.count/maxC)*barMaxW));
     // Get display name
-    var name=e.id;
-    if(window.STAFF_MAP&&STAFF_MAP[e.id])name=STAFF_MAP[e.id];
-    else if(name.length>20)name=name.slice(0,18)+'…';
+    var name=(window.STAFF_MAP&&STAFF_MAP[e.id])?STAFF_MAP[e.id]:'Unbekannt';
+    name=name.length>20?name.slice(0,18)+'…':name;
     // Top service
     var topSvc='';
     if(e.svcs){
@@ -3062,7 +3060,7 @@ function renderStaffChart(){
       svcArr.sort(function(a,b){return b.v-a.v;});
       if(svcArr.length){
         var sn=svcArr[0].k;
-        if(window.SVC_MAP&&SVC_MAP[sn])sn=SVC_MAP[sn];
+        if(window.SVC_MAP&&SVC_MAP[sn])sn=SVC_MAP[sn]; else sn='Unbekannt';
         topSvc=sn.length>18?sn.slice(0,16)+'…':sn;
         topSvc=' · '+topSvc+' ('+svcArr[0].v+'×)';
       }
@@ -3202,14 +3200,18 @@ function renderTimeline(fromD,toD){
 
 async function renderDashTimeline(staffArr){
   // Build SVC_MAP and STAFF_MAP for label lookups
-  if(!window.SVC_MAP){
-    window.SVC_MAP={};
-    if(window.SERVICES)SERVICES.forEach(function(s){if(s.varianten)s.varianten.forEach(function(v){SVC_MAP[v.id]=s.name+(s.varianten.length>1?' · '+v.name:'');});});
-  }
-  if(!window.STAFF_MAP){
-    window.STAFF_MAP={};
-    if(staffArr)staffArr.forEach(function(m){STAFF_MAP[m.id]=m.display_name||m.name;});
-  }
+  // Always rebuild maps from latest data
+  window.SVC_MAP={};
+  if(window.servicesData)servicesData.forEach(function(item){
+    var s=item.service,vars=item.varianten||[];
+    vars.forEach(function(v){
+      SVC_MAP[v.id]=vars.length>1?s.name+' · '+v.name:s.name;
+    });
+    if(!vars.length)SVC_MAP[s.id]=s.name;
+  });
+  window.STAFF_MAP={};
+  if(window.staffData)staffData.forEach(function(m){STAFF_MAP[m.id]=m.display_name||m.name;});
+  if(staffArr)staffArr.forEach(function(m){STAFF_MAP[m.id]=m.display_name||m.name;});
   loadTimelineData();
 }
 
