@@ -345,12 +345,12 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   /* Formularfelder */
   .frow{grid-template-columns:1fr !important}
   .frow-2{grid-template-columns:1fr 1fr !important}
-  .custom-link-row{display:grid;grid-template-columns:1fr 1fr 20px;gap:6px;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 8px;}
-.custom-link-row input{font-size:12px;padding:4px 0;border:none;background:transparent;color:var(--td);outline:none;width:100%;}
+  .custom-link-row{display:grid;grid-template-columns:1fr 1fr 28px;gap:6px;align-items:center;}
+.custom-link-row input{border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--td);background:var(--white);font-family:inherit;transition:border-color .15s;outline:none;width:100%;box-sizing:border-box;}
+.custom-link-row input:focus{border-color:var(--tpl);}
 .custom-link-row input::placeholder{color:var(--muted);}
-.custom-link-row input:first-child{border-right:1px solid var(--border);padding-right:8px;}
-.custom-link-del{background:none;border:none;color:var(--muted);cursor:pointer;padding:0;line-height:1;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.custom-link-del:hover{color:var(--danger);}
+.custom-link-del{background:none;border:1.5px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;padding:0;width:32px;height:38px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .15s,color .15s;}
+.custom-link-del:hover{border-color:var(--danger);color:var(--danger);}
 /* Stadt/PLZ/Hausnummer Zeile bleibt nebeneinander auf Mobile */
   .frow[style*="grid-template-columns:1fr 80px"]{grid-template-columns:1fr 70px 80px !important}
 
