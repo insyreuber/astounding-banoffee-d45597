@@ -428,6 +428,17 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 .tl-range-btn:hover:not(.active),.tl-tab-btn:hover:not(.active),.tl-past-btn:hover:not(.active),.tl-future-btn:hover:not(.active){color:var(--td);}
 .tl-bar{cursor:pointer;border-radius:4px 4px 0 0;transition:opacity .15s;}
 .tl-bar:hover{opacity:0.75;}
+/* Custom Link Icon Picker */
+.cl-icon-pick{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px;}
+.cl-icon-btn{
+  width:34px;height:34px;border-radius:8px;border:1.5px solid var(--border);
+  background:var(--white);cursor:pointer;display:flex;align-items:center;
+  justify-content:center;font-size:16px;transition:all .15s;flex-shrink:0;
+  padding:0;
+}
+.cl-icon-btn:hover{border-color:var(--tpl);background:var(--bg);}
+.cl-icon-btn.selected{border-color:var(--tpl);background:rgba(92,31,138,0.08);}
+.cl-icon-btn[data-icon="custom"]{font-size:11px;color:var(--muted);width:auto;padding:0 8px;}
 .custom-link-row{display:grid;grid-template-columns:1fr 1fr 28px;gap:6px;align-items:center;}
 .custom-link-row input{border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--td);background:var(--white);font-family:inherit;transition:border-color .15s;outline:none;width:100%;box-sizing:border-box;}
 .custom-link-row input:focus{border-color:var(--tpl);}
@@ -1556,39 +1567,79 @@ async function loadProfil(){
 // ── EIGENE LINKS ─────────────────────────────────────────────
 var customLinks = [];
 
+var CL_ICONS=[
+  {key:'tiktok',    emoji:'🎵', label:'TikTok',     placeholder:'https://tiktok.com/@...'},
+  {key:'instagram', emoji:'📸', label:'Instagram',  placeholder:'https://instagram.com/...'},
+  {key:'facebook',  emoji:'👥', label:'Facebook',   placeholder:'https://facebook.com/...'},
+  {key:'whatsapp',  emoji:'💬', label:'WhatsApp',   placeholder:'https://wa.me/49...'},
+  {key:'youtube',   emoji:'▶️', label:'YouTube',    placeholder:'https://youtube.com/@...'},
+  {key:'twitter',   emoji:'🐦', label:'Twitter/X',  placeholder:'https://x.com/...'},
+  {key:'linkedin',  emoji:'💼', label:'LinkedIn',   placeholder:'https://linkedin.com/in/...'},
+  {key:'website',   emoji:'🌐', label:'Website',    placeholder:'https://meinewebsite.de'},
+  {key:'maps',      emoji:'📍', label:'Google Maps',placeholder:'https://maps.app.goo.gl/...'},
+  {key:'phone',     emoji:'📞', label:'Telefon',    placeholder:'tel:+49...'},
+  {key:'email',     emoji:'✉️', label:'E-Mail',     placeholder:'mailto:info@...'},
+  {key:'custom',    emoji:'✏️', label:'Eigener Titel', placeholder:'https://...'},
+];
+
+function clPlaceholder(key){var ic=CL_ICONS.find(function(x){return x.key===key;});return ic?ic.placeholder:'https://';}
+function clLabel(key){var ic=CL_ICONS.find(function(x){return x.key===key;});return ic&&ic.key!=='custom'?ic.label:'';}
+
+function clIconsHtml(i,selectedKey){
+  return '<div class="cl-icon-pick">'
+    +CL_ICONS.map(function(ic){
+      var sel=selectedKey===ic.key?' selected':'';
+            return'<button type="button" class="cl-icon-btn'+sel+'" data-key="'+ic.key+'" onclick="pickClIcon('+i+',this.dataset.key)" title="'+ic.label+'">'+(ic.key==='custom'?'\u270f\ufe0f':ic.emoji)+'</button>';
+    }).join('')
+    +'</div>';
+}
+
+window.pickClIcon=function(i,key){
+  customLinks[i].icon=key;
+  renderCustomLinks();
+  setTimeout(function(){
+    var rows=document.querySelectorAll('#custom-links-list .cl-row');
+    if(rows[i]){var inp=rows[i].querySelector('.cl-url-input');if(inp)inp.focus();}
+  },50);
+};
+
 function renderCustomLinks(){
-  var list = document.getElementById('custom-links-list');
-  var empty = document.getElementById('custom-links-empty');
-  if(!list) return;
-  if(customLinks.length === 0){
-    list.innerHTML = '';
-    if(empty) empty.style.display = 'block';
+  var list=document.getElementById('custom-links-list');
+  var empty=document.getElementById('custom-links-empty');
+  if(!list)return;
+  if(customLinks.length===0){
+    list.innerHTML='';
+    if(empty)empty.style.display='block';
     return;
   }
-  if(empty) empty.style.display = 'none';
-  list.innerHTML = customLinks.map(function(l, i){
-    return '<div class="custom-link-row">'
-      +'<input type="text" placeholder="Titel z.B. TikTok" value="'+esc(l.title||'')+'" oninput="customLinks['+i+'].title=this.value">'
-      +'<input type="text" placeholder="https://..." value="'+esc(l.url||'')+'" oninput="customLinks['+i+'].url=this.value">'
-      +'<button class="custom-link-del" onclick="removeCustomLink('+i+')" title="Entfernen">'
-        +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
-      +'</button>'
-      +'</div>';
-  }).join('');
+  if(empty)empty.style.display='none';
+  list.innerHTML=customLinks.map(function(l,i){
+    var icon=l.icon||'custom';
+    var isCustom=icon==='custom';
+    var ph=clPlaceholder(icon);
+    return'<div class="cl-row" style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;">'
+      +clIconsHtml(i,icon)
+      +'<div class="custom-link-row" style="margin-top:6px">'
+                +'<input type="text" placeholder="Titel (optional)" value="'+esc(l.title||'')+'" oninput="customLinks['+i+'].title=this.value" style="flex:0 0 120px">'
+        +'<input type="text" class="cl-url-input" placeholder="'+ph+'" value="'+esc(l.url||'')+'" oninput="customLinks['+i+'].url=this.value">'
+        +'<button class="custom-link-del" onclick="removeCustomLink('+i+')" title="Entfernen">'
+          +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+        +'</button>'
+      +'</div>'
+    +'</div>';
+  }).join('<div style="height:6px"></div>');
 }
 
 function addCustomLink(){
-  customLinks.push({title:'', url:''});
+  customLinks.push({icon:'',title:'',url:''});
   renderCustomLinks();
-  // Focus first empty title input
-  var inputs = document.querySelectorAll('#custom-links-list .custom-link-row:last-child input');
-  if(inputs[0]) setTimeout(function(){inputs[0].focus();}, 50);
 }
 
 function removeCustomLink(i){
-  customLinks.splice(i, 1);
+  customLinks.splice(i,1);
   renderCustomLinks();
 }
+
 
 async function saveProfil(silent){
   if(!SALON_ID){toast('Keine salon_id','error');return;}
