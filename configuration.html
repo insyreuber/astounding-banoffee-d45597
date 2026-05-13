@@ -583,34 +583,38 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
           </div>
           <div style="margin-top:4px;padding-top:10px;border-top:1px solid var(--border)">
             <span style="font-size:11px;color:var(--muted)">Meistgebuchter Service</span>
-            <div id="dash-top-svc" style="font-size:12px;font-weight:500;color:var(--tpl);margin-top:3px">Noch keine Daten</div>
+            <div id="dash-top-svc" style="font-size:12px;font-weight:500;color:var(--tpl);margin-top:3px">Wird geladen…</div>
           </div>
         </div>
       </div>
 
-      <!-- Heute -->
+      <!-- Guthaben & WA Automation -->
       <div class="card" style="padding:18px">
         <div class="card-title" style="margin-bottom:14px">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          Heute
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          WhatsApp Guthaben
         </div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <span style="font-size:12px;color:var(--muted)">Termine heute</span>
-            <span style="font-size:14px;font-weight:600;color:var(--td)">—</span>
+
+        <!-- Guthaben Balken -->
+        <div style="margin-bottom:16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+            <span style="font-size:11px;color:var(--muted)">Verbrauch</span>
+            <span id="dash-wa-usage-label" style="font-size:11px;font-weight:600;color:var(--td)">—</span>
           </div>
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <span style="font-size:12px;color:var(--muted)">Erinnerungen versendet</span>
-            <span style="font-size:14px;font-weight:600;color:var(--td)">—</span>
+          <div style="background:var(--border);border-radius:99px;height:10px;overflow:hidden">
+            <div id="dash-wa-bar" style="height:100%;border-radius:99px;background:linear-gradient(90deg,#25d366,#128c7e);width:0%;transition:width .6s ease"></div>
           </div>
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <span style="font-size:12px;color:var(--muted)">Konflikte</span>
-            <span style="font-size:14px;font-weight:600;color:var(--success)">0</span>
+          <div style="display:flex;justify-content:space-between;margin-top:4px">
+            <span style="font-size:10px;color:var(--muted)">0</span>
+            <span id="dash-wa-max-label" style="font-size:10px;color:var(--muted)">100 Nachrichten</span>
           </div>
         </div>
-        <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:inline-flex;align-items:center;gap:5px;background:var(--tgp);color:#7a5a00;padding:5px 10px;border-radius:99px;font-size:10px;font-weight:500">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          Terminstatistik folgt
+
+        <div style="border-top:1px solid var(--border);padding-top:12px">
+          <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px">Aktive Automationen</div>
+          <div id="dash-wa-automations" style="display:flex;flex-direction:column;gap:5px">
+            <!-- filled by JS -->
+          </div>
         </div>
       </div>
 
@@ -647,7 +651,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
           </div>
         </div>
         <!-- Heute Marker -->
-        <div style="padding:10px 14px;background:var(--tp);text-align:center;flex-shrink:0">
+        <div style="padding:10px 14px;background:var(--tp);text-align:center;flex-shrink:0;align-self:stretch;display:flex;flex-direction:column;align-items:center;justify-content:center;">
           <div style="font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,0.7);font-weight:600;margin-bottom:3px">Heute</div>
           <div id="tl-heute-label" style="font-size:11px;font-weight:700;color:#fff"></div>
         </div>
@@ -2964,8 +2968,9 @@ async function loadDashboard(){
   var svcCount=svcRes.data?svcRes.data.length:0;
   var svcEl=document.getElementById('dash-svc-count');
   if(svcEl)svcEl.textContent=svcCount;
+  // dash-top-svc: derived from bookings after timeline loads — set placeholder now
   var topEl=document.getElementById('dash-top-svc');
-  if(topEl)topEl.textContent=svcRes.data&&svcRes.data.length?svcRes.data[0].name:'—';
+  if(topEl)topEl.textContent='Wird geladen…';
 
   // Mitarbeiter
   var staffRes=await sb.from('mitarbeiter').select('id,google_calendar_id').eq('salon_id',SALON_ID).eq('aktiv',true);
@@ -2979,6 +2984,53 @@ async function loadDashboard(){
 
   // Zeitstrahl
   renderDashTimeline(staffArr);
+
+  // Guthaben & WA Automations
+  renderGuthabenCard(d);
+}
+
+function renderGuthabenCard(d){
+  var f=d.feature_settings||{};
+  var waOn=!!f.whatsapp_on;
+
+  // Count active automations
+  var automations=[];
+  if(waOn){
+    if(f.termine_on!==false) automations.push({icon:'📅',label:'Terminverwaltung',desc:'Bestätigung, Verschiebung & Storno'});
+    if(f.erinnerung_on!==false||f.reminder_aktiv!==false) automations.push({icon:'🔔',label:'Erinnerung',desc:'vor dem Termin'});
+    if(f.followup_on!==false||f.followup_aktiv!==false) automations.push({icon:'💬',label:'Follow-Up',desc:'nach dem Termin'});
+  }
+
+  // Simulate usage based on active automations (1=33%, 2=66%, 3=100%)
+  // In reality this would come from a messages_sent counter
+  var maxMsgs=100;
+  var usedMsgs=d.messages_sent||0;
+  var pct=Math.min(100,Math.round(usedMsgs/maxMsgs*100));
+  var barColor=pct>80?'linear-gradient(90deg,#e74c3c,#c0392b)':pct>50?'linear-gradient(90deg,#f39c12,#e67e22)':'linear-gradient(90deg,#25d366,#128c7e)';
+
+  var bar=document.getElementById('dash-wa-bar');
+  var usageLbl=document.getElementById('dash-wa-usage-label');
+  var maxLbl=document.getElementById('dash-wa-max-label');
+  var autoList=document.getElementById('dash-wa-automations');
+
+  if(bar){bar.style.width=pct+'%';bar.style.background=barColor;}
+  if(usageLbl)usageLbl.textContent=usedMsgs+' / '+maxMsgs+' Nachrichten';
+  if(maxLbl)maxLbl.textContent=maxMsgs+' Nachrichten';
+
+  if(autoList){
+    if(!waOn||automations.length===0){
+      autoList.innerHTML='<div style="font-size:11px;color:var(--muted);padding:4px 0">WhatsApp Automation nicht aktiv</div>';
+    } else {
+      autoList.innerHTML=automations.map(function(a){
+        return'<div style="display:flex;align-items:center;gap:8px;padding:5px 0">'
+          +'<span style="font-size:13px">'+a.icon+'</span>'
+          +'<div><div style="font-size:12px;font-weight:500;color:var(--td)">'+a.label+'</div>'
+          +'<div style="font-size:10px;color:var(--muted)">'+a.desc+'</div></div>'
+          +'<svg style="margin-left:auto" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#25d366" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>'
+          +'</div>';
+      }).join('');
+    }
+  }
 }
 
 // ── TIMELINE STATE ───────────────────────────────────────────
