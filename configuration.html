@@ -1602,7 +1602,8 @@ function clIconsHtml(i,selectedKey){
   return '<div class="cl-icon-pick">'
     +CL_ICONS.map(function(ic){
       var sel=selectedKey===ic.key?' selected':'';
-            return'<button type="button" class="cl-icon-btn'+sel+'" data-key="'+ic.key+'" onclick="pickClIcon('+i+',this.dataset.key)" title="'+ic.label+'">'+(ic.key==='custom'?'\u270f\ufe0f':ic.emoji)+'</button>';
+      var svgIcon=CL_SVGS[ic.key]||CL_SVGS['custom'];
+      return'<button type="button" class="cl-icon-btn'+sel+'" data-key="'+ic.key+'" onclick="pickClIcon('+i+',this.dataset.key)" title="'+ic.label+'">'+svgIcon+'</button>';
     }).join('')
     +'</div>';
 }
