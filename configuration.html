@@ -3159,6 +3159,7 @@ async function loadTimelineData(){
     }
   }
 
+  updateTopService();
   renderAllCharts();
 }
 
@@ -3166,9 +3167,12 @@ function renderAllCharts(){
   var today=new Date();today.setHours(0,0,0,0);
   var fromD=new Date(today);fromD.setDate(today.getDate()-tlPastDays);
   var toD=new Date(today);toD.setDate(today.getDate()+tlFutureDays);toD.setHours(23,59,59,999);
-  renderTimeline(fromD,toD);
-  renderServicesChart();
-  renderStaffChart();
+  requestAnimationFrame(function(){
+    renderTimeline(fromD,toD);
+    renderServicesChart();
+    renderStaffChart();
+    updateTopService();
+  });
 }
 
 function renderServicesChart(){
