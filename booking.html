@@ -394,7 +394,7 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
           </a>
           <a class="hd-chip" id="salon-mobile-link" href="#" style="display:none;text-decoration:none;color:rgba(255,255,255,.55)">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-            Mobil
+            <span id="salon-mobile-label">Mobil</span>
           </a>
         </div>
       </div>
@@ -1193,11 +1193,32 @@ async function loadSalonProfile(){
     }
     if(data.mobile_url){
       var mobileEl=document.getElementById('salon-mobile-link');
-      if(mobileEl){mobileEl.href='tel:'+data.mobile_url.replace(/\s/g,'');mobileEl.style.display='flex';hasLinks=true;}
+      var mobileLbl=document.getElementById('salon-mobile-label');
+      if(mobileEl){
+        mobileEl.href='tel:'+data.mobile_url.replace(/\s/g,'');
+        mobileEl.style.display='flex';
+        if(mobileLbl)mobileLbl.textContent=data.mobile_url;
+        hasLinks=true;
+      }
     }
     if(data.website_url){
       var webEl=document.getElementById('salon-website');
       if(webEl){webEl.href=data.website_url;webEl.style.display='flex';hasLinks=true;}
+    }
+    // Custom links from config
+    if(data.custom_links&&Array.isArray(data.custom_links)&&data.custom_links.length){
+      var linksRow2=document.getElementById('hd-links-row');
+      data.custom_links.forEach(function(lnk){
+        if(!lnk.url||!lnk.url.trim())return;
+        var a=document.createElement('a');
+        a.className='hd-chip';
+        a.href=lnk.url.trim();
+        a.target='_blank';
+        a.style.cssText='text-decoration:none;color:rgba(255,255,255,.55)';
+        a.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>'+(lnk.title||lnk.url);
+        if(linksRow2)linksRow2.appendChild(a);
+        hasLinks=true;
+      });
     }
     if(hasLinks){
       var linksRow=document.getElementById('hd-links-row');
