@@ -428,16 +428,6 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 .tl-range-btn:hover:not(.active),.tl-tab-btn:hover:not(.active),.tl-past-btn:hover:not(.active),.tl-future-btn:hover:not(.active){color:var(--td);}
 .tl-bar{cursor:pointer;border-radius:4px 4px 0 0;transition:opacity .15s;}
 .tl-bar:hover{opacity:0.75;}
-/* Custom Link Icon Picker */
-.cl-icon-pick{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px;}
-.cl-icon-btn{
-  width:34px;height:34px;border-radius:8px;border:1.5px solid var(--border);
-  background:var(--white);cursor:pointer;display:flex;align-items:center;
-  justify-content:center;color:var(--muted);transition:all .15s;flex-shrink:0;
-  padding:0;
-}
-.cl-icon-btn:hover{border-color:var(--tpl);color:var(--tpl);background:var(--bg);}
-.cl-icon-btn.selected{border-color:var(--tpl);color:var(--tpl);background:rgba(92,31,138,0.08);}
 .custom-link-row{display:grid;grid-template-columns:1fr 1fr 28px;gap:6px;align-items:center;}
 .custom-link-row input{border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--td);background:var(--white);font-family:inherit;transition:border-color .15s;outline:none;width:100%;box-sizing:border-box;}
 .custom-link-row input:focus{border-color:var(--tpl);}
@@ -583,38 +573,34 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
           </div>
           <div style="margin-top:4px;padding-top:10px;border-top:1px solid var(--border)">
             <span style="font-size:11px;color:var(--muted)">Meistgebuchter Service</span>
-            <div id="dash-top-svc" style="font-size:12px;font-weight:500;color:var(--tpl);margin-top:3px">Wird geladen…</div>
+            <div id="dash-top-svc" style="font-size:12px;font-weight:500;color:var(--tpl);margin-top:3px">Noch keine Daten</div>
           </div>
         </div>
       </div>
 
-      <!-- Guthaben & WA Automation -->
+      <!-- Heute -->
       <div class="card" style="padding:18px">
         <div class="card-title" style="margin-bottom:14px">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-          WhatsApp Guthaben
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Heute
         </div>
-
-        <!-- Guthaben Balken -->
-        <div style="margin-bottom:16px">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-            <span style="font-size:11px;color:var(--muted)">Verbrauch</span>
-            <span id="dash-wa-usage-label" style="font-size:11px;font-weight:600;color:var(--td)">—</span>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:12px;color:var(--muted)">Termine heute</span>
+            <span style="font-size:14px;font-weight:600;color:var(--td)">—</span>
           </div>
-          <div style="background:var(--border);border-radius:99px;height:10px;overflow:hidden">
-            <div id="dash-wa-bar" style="height:100%;border-radius:99px;background:linear-gradient(90deg,#25d366,#128c7e);width:0%;transition:width .6s ease"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:12px;color:var(--muted)">Erinnerungen versendet</span>
+            <span style="font-size:14px;font-weight:600;color:var(--td)">—</span>
           </div>
-          <div style="display:flex;justify-content:space-between;margin-top:4px">
-            <span style="font-size:10px;color:var(--muted)">0</span>
-            <span id="dash-wa-max-label" style="font-size:10px;color:var(--muted)">100 Nachrichten</span>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:12px;color:var(--muted)">Konflikte</span>
+            <span style="font-size:14px;font-weight:600;color:var(--success)">0</span>
           </div>
         </div>
-
-        <div style="border-top:1px solid var(--border);padding-top:12px">
-          <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px">Aktive Automationen</div>
-          <div id="dash-wa-automations" style="display:flex;flex-direction:column;gap:5px">
-            <!-- filled by JS -->
-          </div>
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:inline-flex;align-items:center;gap:5px;background:var(--tgp);color:#7a5a00;padding:5px 10px;border-radius:99px;font-size:10px;font-weight:500">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Terminstatistik folgt
         </div>
       </div>
 
@@ -651,7 +637,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
           </div>
         </div>
         <!-- Heute Marker -->
-        <div style="padding:10px 14px;background:var(--tp);text-align:center;flex-shrink:0;align-self:stretch;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div style="padding:10px 14px;background:var(--tp);text-align:center;flex-shrink:0">
           <div style="font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,0.7);font-weight:600;margin-bottom:3px">Heute</div>
           <div id="tl-heute-label" style="font-size:11px;font-weight:700;color:#fff"></div>
         </div>
@@ -1570,94 +1556,39 @@ async function loadProfil(){
 // ── EIGENE LINKS ─────────────────────────────────────────────
 var customLinks = [];
 
-var CL_SVGS={
-  'tiktok':'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.77 1.52V6.76a4.85 4.85 0 01-1-.07z"/></svg>',
-  'instagram':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>',
-  'facebook':'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>',
-  'whatsapp':'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.962-1.424A9.953 9.953 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>',
-  'youtube':'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>',
-  'twitter':'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.736-8.852L1.254 2.25H8.08l4.253 5.622 5.91-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>',
-  'linkedin':'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>',
-  'website':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>',
-  'maps':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>',
-  'phone':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>',
-  'email':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
-  'custom':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>'
-};
-var CL_ICONS=[
-  {key:'tiktok',    emoji:'🎵', label:'TikTok',     placeholder:'https://tiktok.com/@...'},
-  {key:'instagram', emoji:'📸', label:'Instagram',  placeholder:'https://instagram.com/...'},
-  {key:'facebook',  emoji:'👥', label:'Facebook',   placeholder:'https://facebook.com/...'},
-  {key:'whatsapp',  emoji:'💬', label:'WhatsApp',   placeholder:'https://wa.me/49...'},
-  {key:'youtube',   emoji:'▶️', label:'YouTube',    placeholder:'https://youtube.com/@...'},
-  {key:'twitter',   emoji:'🐦', label:'Twitter/X',  placeholder:'https://x.com/...'},
-  {key:'linkedin',  emoji:'💼', label:'LinkedIn',   placeholder:'https://linkedin.com/in/...'},
-  {key:'website',   emoji:'🌐', label:'Website',    placeholder:'https://meinewebsite.de'},
-  {key:'maps',      emoji:'📍', label:'Google Maps',placeholder:'https://maps.app.goo.gl/...'},
-  {key:'phone',     emoji:'📞', label:'Telefon',    placeholder:'tel:+49...'},
-  {key:'email',     emoji:'✉️', label:'E-Mail',     placeholder:'mailto:info@...'},
-  {key:'custom',    emoji:'✏️', label:'Eigener Titel', placeholder:'https://...'},
-];
-
-function clPlaceholder(key){var ic=CL_ICONS.find(function(x){return x.key===key;});return ic?ic.placeholder:'https://';}
-function clLabel(key){var ic=CL_ICONS.find(function(x){return x.key===key;});return ic&&ic.key!=='custom'?ic.label:'';}
-
-function clIconsHtml(i,selectedKey){
-  return '<div class="cl-icon-pick">'
-    +CL_ICONS.map(function(ic){
-      var sel=selectedKey===ic.key?' selected':'';
-      var svgIcon=CL_SVGS[ic.key]||CL_SVGS['custom'];
-      return'<button type="button" class="cl-icon-btn'+sel+'" data-key="'+ic.key+'" onclick="pickClIcon('+i+',this.dataset.key)" title="'+ic.label+'">'+svgIcon+'</button>';
-    }).join('')
-    +'</div>';
-}
-
-window.pickClIcon=function(i,key){
-  customLinks[i].icon=key;
-  renderCustomLinks();
-  setTimeout(function(){
-    var rows=document.querySelectorAll('#custom-links-list .cl-row');
-    if(rows[i]){var inp=rows[i].querySelector('.cl-url-input');if(inp)inp.focus();}
-  },50);
-};
-
 function renderCustomLinks(){
-  var list=document.getElementById('custom-links-list');
-  var empty=document.getElementById('custom-links-empty');
-  if(!list)return;
-  if(customLinks.length===0){
-    list.innerHTML='';
-    if(empty)empty.style.display='block';
+  var list = document.getElementById('custom-links-list');
+  var empty = document.getElementById('custom-links-empty');
+  if(!list) return;
+  if(customLinks.length === 0){
+    list.innerHTML = '';
+    if(empty) empty.style.display = 'block';
     return;
   }
-  if(empty)empty.style.display='none';
-  list.innerHTML=customLinks.map(function(l,i){
-    var icon=l.icon||'custom';
-    var isCustom=icon==='custom';
-    var ph=clPlaceholder(icon);
-    return'<div class="cl-row" style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;">'
-      +clIconsHtml(i,icon)
-      +'<div class="custom-link-row" style="margin-top:6px">'
-                +'<input type="text" placeholder="Titel (optional)" value="'+esc(l.title||'')+'" oninput="customLinks['+i+'].title=this.value" style="flex:0 0 120px">'
-        +'<input type="text" class="cl-url-input" placeholder="'+ph+'" value="'+esc(l.url||'')+'" oninput="customLinks['+i+'].url=this.value">'
-        +'<button class="custom-link-del" onclick="removeCustomLink('+i+')" title="Entfernen">'
-          +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
-        +'</button>'
-      +'</div>'
-    +'</div>';
-  }).join('<div style="height:6px"></div>');
+  if(empty) empty.style.display = 'none';
+  list.innerHTML = customLinks.map(function(l, i){
+    return '<div class="custom-link-row">'
+      +'<input type="text" placeholder="Titel z.B. TikTok" value="'+esc(l.title||'')+'" oninput="customLinks['+i+'].title=this.value">'
+      +'<input type="text" placeholder="https://..." value="'+esc(l.url||'')+'" oninput="customLinks['+i+'].url=this.value">'
+      +'<button class="custom-link-del" onclick="removeCustomLink('+i+')" title="Entfernen">'
+        +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+      +'</button>'
+      +'</div>';
+  }).join('');
 }
 
 function addCustomLink(){
-  customLinks.push({icon:'',title:'',url:''});
+  customLinks.push({title:'', url:''});
   renderCustomLinks();
+  // Focus first empty title input
+  var inputs = document.querySelectorAll('#custom-links-list .custom-link-row:last-child input');
+  if(inputs[0]) setTimeout(function(){inputs[0].focus();}, 50);
 }
 
 function removeCustomLink(i){
-  customLinks.splice(i,1);
+  customLinks.splice(i, 1);
   renderCustomLinks();
 }
-
 
 async function saveProfil(silent){
   if(!SALON_ID){toast('Keine salon_id','error');return;}
@@ -2968,9 +2899,8 @@ async function loadDashboard(){
   var svcCount=svcRes.data?svcRes.data.length:0;
   var svcEl=document.getElementById('dash-svc-count');
   if(svcEl)svcEl.textContent=svcCount;
-  // dash-top-svc: derived from bookings after timeline loads — set placeholder now
   var topEl=document.getElementById('dash-top-svc');
-  if(topEl)topEl.textContent='Wird geladen…';
+  if(topEl)topEl.textContent=svcRes.data&&svcRes.data.length?svcRes.data[0].name:'—';
 
   // Mitarbeiter
   var staffRes=await sb.from('mitarbeiter').select('id,google_calendar_id').eq('salon_id',SALON_ID).eq('aktiv',true);
@@ -2984,53 +2914,6 @@ async function loadDashboard(){
 
   // Zeitstrahl
   renderDashTimeline(staffArr);
-
-  // Guthaben & WA Automations
-  renderGuthabenCard(d);
-}
-
-function renderGuthabenCard(d){
-  var f=d.feature_settings||{};
-  var waOn=!!f.whatsapp_on;
-
-  // Count active automations
-  var automations=[];
-  if(waOn){
-    if(f.termine_on!==false) automations.push({icon:'📅',label:'Terminverwaltung',desc:'Bestätigung, Verschiebung & Storno'});
-    if(f.erinnerung_on!==false||f.reminder_aktiv!==false) automations.push({icon:'🔔',label:'Erinnerung',desc:'vor dem Termin'});
-    if(f.followup_on!==false||f.followup_aktiv!==false) automations.push({icon:'💬',label:'Follow-Up',desc:'nach dem Termin'});
-  }
-
-  // Simulate usage based on active automations (1=33%, 2=66%, 3=100%)
-  // In reality this would come from a messages_sent counter
-  var maxMsgs=100;
-  var usedMsgs=d.messages_sent||0;
-  var pct=Math.min(100,Math.round(usedMsgs/maxMsgs*100));
-  var barColor=pct>80?'linear-gradient(90deg,#e74c3c,#c0392b)':pct>50?'linear-gradient(90deg,#f39c12,#e67e22)':'linear-gradient(90deg,#25d366,#128c7e)';
-
-  var bar=document.getElementById('dash-wa-bar');
-  var usageLbl=document.getElementById('dash-wa-usage-label');
-  var maxLbl=document.getElementById('dash-wa-max-label');
-  var autoList=document.getElementById('dash-wa-automations');
-
-  if(bar){bar.style.width=pct+'%';bar.style.background=barColor;}
-  if(usageLbl)usageLbl.textContent=usedMsgs+' / '+maxMsgs+' Nachrichten';
-  if(maxLbl)maxLbl.textContent=maxMsgs+' Nachrichten';
-
-  if(autoList){
-    if(!waOn||automations.length===0){
-      autoList.innerHTML='<div style="font-size:11px;color:var(--muted);padding:4px 0">WhatsApp Automation nicht aktiv</div>';
-    } else {
-      autoList.innerHTML=automations.map(function(a){
-        return'<div style="display:flex;align-items:center;gap:8px;padding:5px 0">'
-          +'<span style="font-size:13px">'+a.icon+'</span>'
-          +'<div><div style="font-size:12px;font-weight:500;color:var(--td)">'+a.label+'</div>'
-          +'<div style="font-size:10px;color:var(--muted)">'+a.desc+'</div></div>'
-          +'<svg style="margin-left:auto" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#25d366" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>'
-          +'</div>';
-      }).join('');
-    }
-  }
 }
 
 // ── TIMELINE STATE ───────────────────────────────────────────
@@ -3159,7 +3042,6 @@ async function loadTimelineData(){
     }
   }
 
-  updateTopService();
   renderAllCharts();
 }
 
@@ -3167,12 +3049,9 @@ function renderAllCharts(){
   var today=new Date();today.setHours(0,0,0,0);
   var fromD=new Date(today);fromD.setDate(today.getDate()-tlPastDays);
   var toD=new Date(today);toD.setDate(today.getDate()+tlFutureDays);toD.setHours(23,59,59,999);
-  requestAnimationFrame(function(){
-    renderTimeline(fromD,toD);
-    renderServicesChart();
-    renderStaffChart();
-    updateTopService();
-  });
+  renderTimeline(fromD,toD);
+  renderServicesChart();
+  renderStaffChart();
 }
 
 function renderServicesChart(){
@@ -3207,6 +3086,14 @@ function renderServicesChart(){
   });
   svg+='</svg>';
   wrap.innerHTML=svg;
+
+  // Meistgebuchter Service → Dashboard Geschäft-Kachel
+  var topEl=document.getElementById('dash-top-svc');
+  if(topEl&&entries.length){
+    var topPct=Math.round(entries[0].count/total*100);
+    var topName=(window.SVC_MAP&&SVC_MAP[entries[0].id])?SVC_MAP[entries[0].id]:'—';
+    topEl.textContent=topName+' ('+topPct+'%)';
+  }
 }
 
 function renderStaffChart(){
