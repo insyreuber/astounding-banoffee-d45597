@@ -369,6 +369,10 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
         <div class="hd-meta-row">
           <a class="hd-chip" id="salon-address" href="#" style="display:none;text-decoration:none;color:rgba(255,255,255,.55);cursor:default"></a>
           <div class="hd-chip" id="salon-phone" style="display:none"></div>
+          <a class="hd-chip" id="salon-mobile-link" href="#" style="display:none;text-decoration:none;color:rgba(255,255,255,.55)">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            <span id="salon-mobile-label">Mobil</span>
+          </a>
           <div class="hd-chip hd-hours-inline" id="hours-pill" onclick="toggleHours()">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
@@ -392,10 +396,7 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
             Website
           </a>
-          <a class="hd-chip" id="salon-mobile-link" href="#" style="display:none;text-decoration:none;color:rgba(255,255,255,.55)">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-            <span id="salon-mobile-label">Mobil</span>
-          </a>
+
         </div>
       </div>
     </div>
@@ -1240,7 +1241,7 @@ async function loadSalonProfile(){
         mobileEl.href='tel:'+data.mobile_url.replace(/\s/g,'');
         mobileEl.style.display='flex';
         if(mobileLbl)mobileLbl.textContent=data.mobile_url;
-        hasLinks=true;
+        // Mobile is in address row, not links row — no hasLinks=true
       }
     }
     if(data.website_url){
@@ -1283,6 +1284,12 @@ async function loadSalonProfile(){
       if(linksRow)linksRow.style.display='flex';
     }
     // Öffnungszeiten global speichern für Kalender
+    if(data.note&&data.note.trim()){
+      var noteEl=document.getElementById('hd-note');
+      var noteTxt=document.getElementById('hd-note-text');
+      if(noteEl){noteEl.style.display='flex';}
+      if(noteTxt){noteTxt.textContent=data.note.trim();}
+    }
     window.SALON_AZ=data.arbeitszeiten||null;
     window.SALON_TEMP_AZ=data.temp_arbeitszeiten||null;
     renderWorkingHours(data.arbeitszeiten);
