@@ -863,33 +863,40 @@ function buildWaBlock(){
   var wa=window.SALON_WA||{enabled:true,bestaetigung:true,erinnerung:true,followup:true};
   var masterTog=document.getElementById('wa-toggle');
   var isOn=masterTog?masterTog.checked:false;
+
   var sub='';
-  // Bestätigung: pre-checked (Vertragserfüllung, kein Opt-in nötig)
-  if(wa.bestaetigung) sub+='<div style="display:flex;align-items:center;justify-content:space-between;padding:3px 0">'
-    +'<span style="font-size:11px;color:var(--muted)">📅 Buchungsbestätigung</span>'
-    +'<label class="toggle-sw toggle-sm"><input type="checkbox" id="wa-bestaetigung" checked><span class="slider"></span></label>'
-    +'</div>';
-  // Erinnerung + Follow-Up: NOT pre-checked (Direktmarketing → Opt-in)
-  if(wa.erinnerung) sub+='<div style="display:flex;align-items:center;justify-content:space-between;padding:3px 0">'
-    +'<span style="font-size:11px;color:var(--muted)">🔔 Terminerinnerung</span>'
-    +'<label class="toggle-sw toggle-sm"><input type="checkbox" id="wa-erinnerung"><span class="slider"></span></label>'
-    +'</div>';
-  if(wa.followup) sub+='<div style="display:flex;align-items:center;justify-content:space-between;padding:3px 0">'
-    +'<span style="font-size:11px;color:var(--muted)">💬 Follow-Up</span>'
-    +'<label class="toggle-sw toggle-sm"><input type="checkbox" id="wa-followup"><span class="slider"></span></label>'
-    +'</div>';
+  if(isOn){
+    if(wa.bestaetigung) sub+='<div style="display:flex;align-items:center;justify-content:space-between;padding:3px 0">'
+      +'<span style="font-size:11px;color:var(--muted)">📅 Buchungsbestätigung</span>'
+      +'<label class="toggle-sw toggle-sm"><input type="checkbox" id="wa-bestaetigung" checked><span class="slider"></span></label>'
+      +'</div>';
+    if(wa.erinnerung) sub+='<div style="display:flex;align-items:center;justify-content:space-between;padding:3px 0">'
+      +'<span style="font-size:11px;color:var(--muted)">🔔 Terminerinnerung</span>'
+      +'<label class="toggle-sw toggle-sm"><input type="checkbox" id="wa-erinnerung"><span class="slider"></span></label>'
+      +'</div>';
+    if(wa.followup) sub+='<div style="display:flex;align-items:center;justify-content:space-between;padding:3px 0">'
+      +'<span style="font-size:11px;color:var(--muted)">💬 Follow-Up</span>'
+      +'<label class="toggle-sw toggle-sm"><input type="checkbox" id="wa-followup"><span class="slider"></span></label>'
+      +'</div>';
+  }
 
   return '<div style="margin-top:10px;padding:8px 10px;background:var(--bg);border-radius:8px;border:1px solid var(--border)">'
-    // Header row — subtle, smaller
     +'<div style="display:flex;align-items:center;justify-content:space-between">'
       +'<span style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px">'
         +'<svg width="11" height="11" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.962-1.424A9.953 9.953 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>'
         +'WhatsApp Benachrichtigungen'
       +'</span>'
-      +'<label class="toggle-sw toggle-sm"><input type="checkbox" id="wa-toggle" onchange="renderSumOnly()"'+(isOn?' checked':'')+' /><span class="slider"></span></label>'
+      +'<label class="toggle-sw toggle-sm"><input type="checkbox" id="wa-toggle" onchange="renderSumOnly()"'+(isOn?' checked':'')+'/><span class="slider"></span></label>'
     +'</div>'
-    // Sub-options
-    +(sub&&isOn?'<div style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border)">'+sub+'</div>':'')
+    // Trust hint — always visible
+    +'<div style="font-size:10px;color:var(--muted);margin-top:4px;line-height:1.4">'
+      +(isOn
+        ? 'Kostenlos für dich — nur relevante Nachrichten zu deinem Termin, kein Spam.'
+        : 'Aktiviere für kostenlose Terminbestätigung & Erinnerung per WhatsApp.'
+      )
+    +'</div>'
+    // Sub-options only when master is on
+    +(sub?'<div style="margin-top:8px;padding-top:6px;border-top:1px solid var(--border)">'+sub+'</div>':'')
     +'</div>';
 }
 
