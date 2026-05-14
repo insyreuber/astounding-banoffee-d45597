@@ -747,7 +747,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
         <div class="field" style="margin-bottom:0"><label>PLZ</label><input type="text" id="f-plz" placeholder="51674"></div>
         <div class="field" style="margin-bottom:0">
           <label style="display:flex;align-items:center;gap:5px">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
             Handynummer
           </label>
           <input type="text" id="f-mobile" placeholder="+49 151 12345678">
@@ -797,6 +797,18 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       <div id="custom-links-empty" style="font-size:11px;color:var(--muted);padding:4px 0 2px">Noch keine eigenen Links</div>
     </div>
     </div><!-- end adresse+links grid -->
+
+    <!-- Bemerkung -->
+    <div class="card">
+      <div class="card-title">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Bemerkung im Buchungswidget
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>Hinweis für Kunden <span style="font-size:10px;color:var(--muted);font-weight:400">(wird im Header der Buchungsseite angezeigt)</span></label>
+        <input type="text" id="f-note" placeholder="z.B. Keine Kartenzahlung möglich" maxlength="120">
+      </div>
+    </div>
 
     <div class="card">
       <div class="card-title">
@@ -1675,6 +1687,7 @@ async function saveProfil(silent){
     city:document.getElementById('f-city').value.trim(),
     instagram_url:document.getElementById('f-instagram').value.trim(),
     mobile_url:document.getElementById('f-mobile').value.trim(),
+    note:document.getElementById('f-note')?document.getElementById('f-note').value.trim():'',
     website_url:document.getElementById('f-website').value.trim(),
     google_maps_url:document.getElementById('f-maps').value.trim(),
     custom_links:customLinks.filter(function(l){return l.url.trim();}),
