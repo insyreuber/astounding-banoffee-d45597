@@ -2992,9 +2992,7 @@ async function loadDashboard(){
   var svcCount=svcRes.data?svcRes.data.length:0;
   var svcEl=document.getElementById('dash-svc-count');
   if(svcEl)svcEl.textContent=svcCount;
-  // dash-top-svc: derived from bookings after timeline loads — set placeholder now
-  var topEl=document.getElementById('dash-top-svc');
-  if(topEl)topEl.textContent='Wird geladen…';
+  // dash-top-svc wird von renderServicesChart gesetzt
 
   // Mitarbeiter
   var staffRes=await sb.from('mitarbeiter').select('id,google_calendar_id').eq('salon_id',SALON_ID).eq('aktiv',true);
@@ -3227,6 +3225,14 @@ function renderServicesChart(){
   });
   svg+='</svg>';
   wrap.innerHTML=svg;
+
+  // Meistgebuchter Service → Geschäft-Kachel
+  var topEl=document.getElementById('dash-top-svc');
+  if(topEl&&entries.length){
+    var topName=(window.SVC_MAP&&SVC_MAP[entries[0].id])?SVC_MAP[entries[0].id]:'—';
+    var topPct=Math.round(entries[0].count/total*100);
+    topEl.textContent=topName+' ('+topPct+'%)';
+  }
 }
 
 function renderStaffChart(){
