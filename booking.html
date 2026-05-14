@@ -873,6 +873,26 @@ function mkPhone(){
     +'</div>'+statusMsg+'</div>';
 }
 
+function buildWaBlock(){
+  var wa=window.SALON_WA||{enabled:true,bestaetigung:true,erinnerung:true,followup:true};
+  var waIcon='<svg width="13" height="13" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.098.541 4.07 1.487 5.786L.057 23.857l6.233-1.63A11.93 11.93 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.795 9.795 0 01-5.001-1.371l-.358-.213-3.714.974.992-3.617-.234-.371A9.818 9.818 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182c5.419 0 9.818 4.398 9.818 9.818 0 5.419-4.399 9.818-9.818 9.818z"/></svg>';
+  var masterTog=document.getElementById('wa-toggle');
+  var isOn=masterTog?masterTog.checked:false;
+  var sub='';
+  if(wa.bestaetigung) sub+='<div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--muted)">📅 Buchungsbestätigung</span><label class="toggle-sw toggle-sm"><input type="checkbox" id="wa-bestaetigung" checked><span class="slider"></span></label></div>';
+  if(wa.erinnerung) sub+='<div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--muted)">🔔 Terminerinnerung</span><label class="toggle-sw toggle-sm"><input type="checkbox" id="wa-erinnerung" checked><span class="slider"></span></label></div>';
+  if(wa.followup) sub+='<div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--muted)">💬 Follow-Up</span><label class="toggle-sw toggle-sm"><input type="checkbox" id="wa-followup" checked><span class="slider"></span></label></div>';
+  return '<div style="border-top:1px solid var(--border);margin-top:8px;padding-top:10px">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'
+      +'<div style="display:flex;align-items:center;gap:6px">'+waIcon
+        +'<span style="font-size:12px;font-weight:500;color:var(--td)">WhatsApp Benachrichtigungen</span>'
+      +'</div>'
+      +'<label class="toggle-sw"><input type="checkbox" id="wa-toggle" onchange="renderSumOnly()"'+(isOn?' checked':'')+' /><span class="slider"></span></label>'
+    +'</div>'
+    +(sub?'<div id="wa-subopts" style="'+(isOn?'':'display:none;')+'flex-direction:column;gap:5px">'+sub+'</div>':'')
+    +'</div>';
+}
+
 function mkSumCard(){
   var dp=st.day?st.day.split('-'):null;
   var dayStr=dp?new Date(+dp[0],+dp[1]-1,+dp[2]).toLocaleDateString('de-DE',{weekday:'short',day:'numeric',month:'short'})+' '+dp[0]:'';
@@ -903,17 +923,7 @@ function mkSumCard(){
     +'<input type="text" placeholder="Lena Müller" value="'+st.name+'" id="sum-name-input" oninput="st.name=this.value;var p=this.selectionStart;renderSumOnly();var el=document.getElementById(\'sum-name-input\');if(el){el.focus();el.setSelectionRange(p,p);}"></div>'
     +'<div class="field"><label>Mobilnummer *</label>'
     +'<div id="phone-outer">'+mkPhone()+'</div></div>'
-    +((!window.SALON_WA||window.SALON_WA.enabled)?
-      '<div style="border-top:1px solid var(--border);margin-top:8px;padding-top:10px">'\
-        +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'\
-          +'<div style="display:flex;align-items:center;gap:6px">'\
-            +'<svg width="13" height="13" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.098.541 4.07 1.487 5.786L.057 23.857l6.233-1.63A11.93 11.93 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.795 9.795 0 01-5.001-1.371l-.358-.213-3.714.974.992-3.617-.234-.371A9.818 9.818 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182c5.419 0 9.818 4.398 9.818 9.818 0 5.419-4.399 9.818-9.818 9.818z"/></svg>'\
-            +'<span style="font-size:12px;font-weight:500;color:var(--td)">WhatsApp Benachrichtigungen</span>'\
-          +'</div>'\
-          +'<label class="toggle-sw"><input type="checkbox" id="wa-toggle" onchange="renderSumOnly()"><span class="slider"></span></label>'\
-        +'</div>'\
-        +'<div id="wa-subopts" style="display:none;flex-direction:column;gap:5px">'\
-          +((!window.SALON_WA||window.SALON_WA.bestaetigung)?'<div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--muted)">📅 Buchungsbestätigung</span><label class="toggle-sw toggle-sm"><input type="checkbox" id="wa-bestaetigung" checked><span class="slider"></span></label></div>':'')\
+    +((!window.SALON_WA||window.SALON_WA.enabled)?buildWaBlock():'')
           +((!window.SALON_WA||window.SALON_WA.erinnerung)?'<div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--muted)">🔔 Terminerinnerung</span><label class="toggle-sw toggle-sm"><input type="checkbox" id="wa-erinnerung" checked><span class="slider"></span></label></div>':'')\
           +((!window.SALON_WA||window.SALON_WA.followup)?'<div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--muted)">💬 Follow-Up</span><label class="toggle-sw toggle-sm"><input type="checkbox" id="wa-followup" checked><span class="slider"></span></label></div>':'')\
         +'</div>'\
