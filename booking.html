@@ -552,6 +552,14 @@ function getISOWeek(d){
 
 // Get effective arbeitszeiten for a date — priority:
 // 1. Staff temp KW  2. Staff personal AZ  3. Salon temp KW  4. Salon AZ
+function getISOWeek(d){
+  var date=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
+  var dayNum=date.getUTCDay()||7;
+  date.setUTCDate(date.getUTCDate()+4-dayNum);
+  var yearStart=new Date(Date.UTC(date.getUTCFullYear(),0,1));
+  return{kw:Math.ceil((((date-yearStart)/86400000)+1)/7),year:date.getUTCFullYear()};
+}
+
 function getEffectiveAz(dateStr){
   var DAY_KEYS=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
   var parts=dateStr.split('-');
@@ -911,8 +919,6 @@ function mkSumCard(){
         +'</div>'\
       +'</div>'
     :'')
-      +'<label class="toggle-sw"><input type="checkbox" id="wa-toggle" checked><span class="slider"></span></label>'
-    +'</div>'
     +'<p class="hint" style="margin-top:6px">* Pflichtfelder</p>'
     +'</div></div>'
     +'<button class="book-btn" '+(canBook()?'':'disabled')+' onclick="submitBooking()">Termin buchen →</button>';
