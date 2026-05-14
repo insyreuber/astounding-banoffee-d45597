@@ -407,6 +407,10 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   /* Kalender Wochenplan: scrollbar */
   .weekplan-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 
+  /* Adresse+Links+Bemerkung: untereinander auf Mobile */
+  div[style*="adresse+links"] > .card,
+  .adresse-links-grid{grid-template-columns:1fr !important}
+
   /* Dashboard Grid mobile */
   .dash-grid{grid-template-columns:1fr !important}
 
@@ -724,7 +728,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       <div class="sec-sub">Wird im Header des Buchungswidgets angezeigt</div>
     </div>
     <!-- Adresse + Links nebeneinander -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:0;align-items:start">
+    <div class="adresse-links-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:0;align-items:start">
     <!-- Kachel 1: Adresse -->
     <div class="card" style="margin-bottom:0">
       <div class="card-title">
@@ -737,7 +741,13 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
         <div class="field" style="margin-bottom:0"><label>Vorwahl</label><input type="text" id="f-area-code" placeholder="02262"></div>
-        <div class="field" style="margin-bottom:0"><label>Telefonnummer</label><input type="text" id="f-phone-number" placeholder="79679975"></div>
+        <div class="field" style="margin-bottom:0">
+          <label style="display:flex;align-items:center;gap:5px">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            Telefonnummer
+          </label>
+          <input type="text" id="f-phone-number" placeholder="79679975">
+        </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 100px;gap:12px;margin-bottom:12px">
         <div class="field" style="margin-bottom:0"><label>Straße</label><input type="text" id="f-street" placeholder="Hückhausener Str."></div>
