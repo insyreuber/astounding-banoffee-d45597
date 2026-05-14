@@ -1173,13 +1173,32 @@ function formatHours(d){if(!d)return'—';if(!d.aktiv)return'Geschlossen';return
 function renderWorkingHours(arbeitszeiten){
   if(!arbeitszeiten)return;
   var todayKey=getTodayKey();
-  var todayData=arbeitszeiten[todayKey];
+
+  // Build effective AZ per day — temp KW overrides standard
+  function getEffectiveDayAz(dayKey){
+    var dateKeys={'sunday':0,'monday':1,'tuesday':2,'wednesday':3,'thursday':4,'friday':5,'saturday':6};
+    // Find today's date for the given dayKey to get KW
+    var today=new Date();
+    var todayDow=today.getDay();
+    var targetDow=dateKeys[dayKey];
+    var diff=targetDow-todayDow;
+    var targetDate=new Date(today);
+    targetDate.setDate(today.getDate()+diff);
+    var isoW=getISOWeek(targetDate);
+    if(window.SALON_TEMP_AZ&&Array.isArray(window.SALON_TEMP_AZ)){
+      var match=window.SALON_TEMP_AZ.filter(function(t){return t.kw===isoW.kw&&t.year===isoW.year;})[0];
+      if(match&&match.zeiten&&match.zeiten[dayKey])return match.zeiten[dayKey];
+    }
+    return arbeitszeiten[dayKey];
+  }
+
+  var todayData=getEffectiveDayAz(todayKey);
   var lbl=document.getElementById('today-hours-label');
   var drop=document.getElementById('hours-drop');
   if(lbl)lbl.textContent=formatHours(todayData)+' ▾';
   if(drop){
     drop.innerHTML=DAY_ORDER.map(function(k){
-      var d=arbeitszeiten[k],isToday=k===todayKey,isClosed=!d||!d.aktiv;
+      var d=getEffectiveDayAz(k),isToday=k===todayKey,isClosed=!d||!d.aktiv;
       var cls='hd-hour-row'+(isToday?' hd-hour-today':'')+(isClosed?' hd-hour-closed':'');
       return'<div class="'+cls+'"><span>'+DAY_LABELS[k]+'</span><span>'+formatHours(d)+'</span></div>';
     }).join('');
