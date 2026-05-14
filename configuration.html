@@ -1576,6 +1576,7 @@ async function loadProfil(){
   document.getElementById('f-mobile').value=d.mobile_url||'';
   document.getElementById('f-website').value=d.website_url||'';
   document.getElementById('f-maps').value=d.google_maps_url||'';
+  if(document.getElementById('f-note'))document.getElementById('f-note').value=d.note||'';
     customLinks = Array.isArray(d.custom_links) ? d.custom_links : [];
     renderCustomLinks();
   buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
