@@ -535,19 +535,60 @@ window.toggleStaff=function(){
   if(a)a.className='acc-arrow'+(staffOpen?' open':'');
 };
 
+// ISO week number
+function getISOWeek(d){
+  var date=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
+  var dayNum=date.getUTCDay()||7;
+  date.setUTCDate(date.getUTCDate()+4-dayNum);
+  var yearStart=new Date(Date.UTC(date.getUTCFullYear(),0,1));
+  return{kw:Math.ceil((((date-yearStart)/86400000)+1)/7),year:date.getUTCFullYear()};
+}
+
+// Get effective arbeitszeiten for a date — priority:
+// 1. Staff temp KW  2. Staff personal AZ  3. Salon temp KW  4. Salon AZ
+function getEffectiveAz(dateStr){
+  var DAY_KEYS=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+  var parts=dateStr.split('-');
+  var dateObj=new Date(+parts[0],+parts[1]-1,+parts[2]);
+  var dayKey=DAY_KEYS[dateObj.getDay()];
+  var isoW=getISOWeek(dateObj);
+
+  // Selected staff
+  var staff=st.stf1?STAFF.filter(function(s){return s.id===st.stf1;})[0]:null;
+
+  // 1. Staff temporary KW
+  if(staff&&staff.tempAz&&Array.isArray(staff.tempAz)){
+    var match=staff.tempAz.filter(function(t){return t.kw===isoW.kw&&t.year===isoW.year;})[0];
+    if(match&&match.zeiten&&match.zeiten[dayKey])return match.zeiten[dayKey];
+  }
+
+  // 2. Staff personal AZ
+  if(staff&&staff.az&&staff.az[dayKey])return staff.az[dayKey];
+
+  // 3. Salon temporary KW
+  if(window.SALON_TEMP_AZ&&Array.isArray(window.SALON_TEMP_AZ)){
+    var sMatch=window.SALON_TEMP_AZ.filter(function(t){return t.kw===isoW.kw&&t.year===isoW.year;})[0];
+    if(sMatch&&sMatch.zeiten&&sMatch.zeiten[dayKey])return sMatch.zeiten[dayKey];
+  }
+
+  // 4. Salon standard AZ
+  if(window.SALON_AZ&&window.SALON_AZ[dayKey])return window.SALON_AZ[dayKey];
+
+  return null;
+}
+
 function availSlots(){
   var mid=st.stf1&&st.stf1!=='any'?st.stf1:null;
   var startMin=0, endMin=24*60;
 
-  if(st.day&&window.SALON_AZ){
-    var DAY_KEYS=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
-    var parts=st.day.split('-');
-    var dateObj=new Date(+parts[0],+parts[1]-1,+parts[2]);
-    var dayKey=DAY_KEYS[dateObj.getDay()];
-    var az=window.SALON_AZ[dayKey];
+  if(st.day){
+    var az=getEffectiveAz(st.day);
     if(az&&az.aktiv&&az.start&&az.end){
       startMin=parseInt(az.start.split(':')[0])*60+parseInt(az.start.split(':')[1]);
       endMin=parseInt(az.end.split(':')[0])*60+parseInt(az.end.split(':')[1]);
+    } else if(az&&az.aktiv===false){
+      // Day is explicitly closed
+      startMin=0;endMin=0;
     }
   }
 
@@ -752,11 +793,12 @@ function mkCal(){
     var DAY_KEYS=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
     var dateObj=new Date(cd.base.getFullYear(),cd.base.getMonth(),d);
     var dayKey=DAY_KEYS[dateObj.getDay()];
-    var az=window.SALON_AZ;
-    var isClosed=az&&az[dayKey]&&az[dayKey].aktiv===false;
+    var az=window.SALON_AZ; // used for day closed check below
+    var effAz=getEffectiveAz(key);
+    var isClosed=effAz?effAz.aktiv===false:(az&&az[dayKey]&&az[dayKey].aktiv===false);
     // Heutigen Tag sperren wenn keine Slots mehr
     var todayNoSlots=false;
-    if(isToday&&az&&az[dayKey]&&az[dayKey].aktiv){
+    if(isToday&&effAz&&effAz.aktiv){
       var endMin=parseInt((az[dayKey].end||'23:59').split(':')[0])*60+parseInt((az[dayKey].end||'23:59').split(':')[1]);
       var nowMin=cd.now.getHours()*60+cd.now.getMinutes();
       todayNoSlots=nowMin>=endMin;
@@ -1242,6 +1284,7 @@ async function loadSalonProfile(){
     }
     // Öffnungszeiten global speichern für Kalender
     window.SALON_AZ=data.arbeitszeiten||null;
+    window.SALON_TEMP_AZ=data.temp_arbeitszeiten||null;
     renderWorkingHours(data.arbeitszeiten);
     await loadServices(salonId);
     await loadMitarbeiter(salonId);
@@ -1280,7 +1323,9 @@ async function loadMitarbeiter(salonId){
         avail:true,
         color:m.farbe||'#4a1c6b',
         calendar_id:m.google_calendar_id,
-        allowedVarianten:allowedVarianten
+        allowedVarianten:allowedVarianten,
+        az:m.arbeitszeiten||null,
+        tempAz:m.temp_arbeitszeiten||null
       });
     });
     // Kein Standard — Nutzer muss Mitarbeiter wählen
