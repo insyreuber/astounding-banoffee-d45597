@@ -1257,7 +1257,9 @@ async function loadMitarbeiter(salonId){
       .not('google_calendar_id','is',null)
       .order('sortierung');
     if(res.error){console.error('Mitarbeiter Fehler:',res.error);return;}
-    var mitarbeiter=res.data||[];
+    var mitarbeiter=(res.data||[]).filter(function(m){
+      return m.google_calendar_id&&m.google_calendar_id.trim()!=='';
+    });
 
     // Berechtigungen laden
     var mIds=mitarbeiter.map(function(m){return m.id;});
