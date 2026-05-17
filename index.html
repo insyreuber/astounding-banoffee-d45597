@@ -612,7 +612,7 @@
     section[style*="height:100vh"] {
       height: auto !important;
       min-height: 100svh !important;
-      padding: 90px 6vw 48px !important;
+      padding: 100px 6vw 48px !important;
       display: flex !important;
       flex-direction: column !important;
       align-items: flex-start !important;
@@ -632,52 +632,112 @@
       width: 100% !important;
     }
 
-    /* Powered by */
+    /* Powered by — weiter runter damit nicht im Header */
     section[style*="height:100vh"] > div[style*="top:90px"] {
       font-size: 10px !important;
       margin-bottom: 10px !important;
-      padding-top: 10px !important;
+      padding-top: 30px !important;
+      order: 1;
     }
 
-    /* H1 + H2 */
-    section[style*="height:100vh"] > h1,
-    section[style*="height:100vh"] > h2 {
+    /* H1 */
+    section[style*="height:100vh"] > h1 {
       font-size: clamp(1.9rem, 8vw, 2.6rem) !important;
       white-space: normal !important;
       margin-bottom: 4px !important;
+      order: 2;
+    }
+
+    /* H2 */
+    section[style*="height:100vh"] > h2 {
+      font-size: clamp(1.9rem, 8vw, 2.6rem) !important;
+      white-space: normal !important;
+      margin-bottom: 12px !important;
+      order: 3;
     }
 
     /* Subtext */
     section[style*="height:100vh"] > p {
       font-size: 0.9rem !important;
       max-width: 100% !important;
-      margin-bottom: 20px !important;
+      margin-bottom: 16px !important;
+      order: 4;
     }
 
-    /* Buttons + QR + Vorschau: untereinander */
+    /* Buttons+QR Container → order 7 (nach Kacheln) + alle Kinder verstecken außer Google-Button */
     section[style*="height:100vh"] > div[style*="top:320px"] {
+      order: 7 !important;
       flex-direction: column !important;
       align-items: flex-start !important;
-      gap: 16px !important;
+      gap: 0 !important;
       padding-right: 0 !important;
       justify-content: flex-start !important;
+      width: 100% !important;
     }
 
-    /* QR + Buchungsvorschau auf Mobile ausblenden */
-    section[style*="height:100vh"] > div[style*="top:320px"] > a[style*="flex-direction:column"],
+    /* QR + Buchungsvorschau + Live-Button container ausblenden */
+    section[style*="height:100vh"] > div[style*="top:320px"] > a,
     section[style*="height:100vh"] > div[style*="top:320px"] > div[style*="flex-direction:column"] {
       display: none !important;
     }
 
-    /* Buttons auf Mobile */
-    section[style*="height:100vh"] > div[style*="top:320px"] > div[style*="flex-direction:column;gap:16px"] {
+    /* Nur Google-Button zeigen */
+    section[style*="height:100vh"] > div[style*="top:320px"] > div[style*="gap:16px"] {
       display: flex !important;
       flex-direction: column !important;
-      align-items: flex-start !important;
       width: 100% !important;
     }
 
-    /* 3 Kacheln: 1 Spalte */
+    /* Live-Buchungsseite Link im Button-div ausblenden */
+    section[style*="height:100vh"] > div[style*="top:320px"] > div[style*="gap:16px"] > a:last-child {
+      display: none !important;
+    }
+
+    /* Mobile Buchungsseite Bild + Live-Button → order 5 */
+    .mobile-booking-preview {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 12px !important;
+      width: 100% !important;
+      order: 5 !important;
+      margin-bottom: 16px !important;
+    }
+
+    /* 3 Kacheln: 1 Spalte → order 6 */
+    section[style*="height:100vh"] > div[style*="top:600px"] {
+      grid-template-columns: 1fr !important;
+      gap: 10px !important;
+      margin-bottom: 16px !important;
+      order: 6 !important;
+    }
+
+    /* Bogen + bg glow: ausblenden */
+    section[style*="height:100vh"] > div[style*="bottom:0"],
+    section[style*="height:100vh"] > div[style*="radial-gradient"] {
+      display: none !important;
+    }
+
+    /* Pricing */
+    section[id="pricing"] {
+      padding-top: 40px !important;
+      padding-left: 6vw !important;
+      padding-right: 6vw !important;
+      padding-bottom: 60px !important;
+    }
+    section[id="pricing"] > div > div[style*="grid-template-columns:1fr 1fr"] {
+      grid-template-columns: 1fr !important;
+      gap: 20px !important;
+    }
+    section[id="pricing"] > div > div > div[style*="padding:44px"] {
+      padding: 28px !important;
+    }
+    section[id="pricing"] div[style*="font-size:64px"] {
+      font-size: 44px !important;
+    }
+    section[id="pricing"] div[style*="display:inline-block"] {
+      display: block !important;
+      width: 100% !important;
+    }
     section[style*="height:100vh"] > div[style*="top:600px"] {
       grid-template-columns: 1fr !important;
       gap: 10px !important;
@@ -974,6 +1034,22 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- MOBILE ONLY: Buchungsseite Vorschau + Live-Button -->
+  <div class="mobile-booking-preview" style="display:none;">
+    <a href="https://insy-reception.com/booking?salon_id=7ae1d846-097f-4cfd-bd4b-d2663551cb11" target="_blank" style="display:block;text-decoration:none;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.3);border:1.5px solid rgba(201,168,76,0.5);">
+      <img src="https://insy-reception.com/booking?salon_id=7ae1d846-097f-4cfd-bd4b-d2663551cb11" 
+           onerror="this.onerror=null;this.src='https://api.screenshotmachine.com/?url=https://insy-reception.com/booking?salon_id=7ae1d846-097f-4cfd-bd4b-d2663551cb11&dimension=400x300&zoom=50';"
+           style="width:100%;display:block;border-radius:10px;" alt="Live-Buchungsseite"/>
+      <div style="background:#fff;padding:10px 14px;border-radius:0 0 10px 10px;">
+        <div style="font-family:-apple-system,sans-serif;font-size:13px;font-weight:600;color:#2a1a50;">Hier Termin buchen</div>
+        <div style="font-family:-apple-system,sans-serif;font-size:11px;color:#888;">insy-reception.com</div>
+      </div>
+    </a>
+    <a href="https://insy-reception.com/booking?salon_id=7ae1d846-097f-4cfd-bd4b-d2663551cb11" target="_blank" style="background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.4);color:#fff;border-radius:50px;padding:12px 24px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;text-decoration:none;display:inline-block;">
+      Live-Buchungsseite ansehen →
+    </a>
   </div>
 
   <!-- 3 KACHELN — top anpassen -->
