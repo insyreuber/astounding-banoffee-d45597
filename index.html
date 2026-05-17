@@ -601,130 +601,124 @@
   @media (max-width: 768px) {
 
     /* Kein seitliches Wischen */
-    html, body {
-      overflow-x: hidden;
-      max-width: 100vw;
-    }
+    html, body { overflow-x: hidden; max-width: 100vw; }
 
     /* Nav */
     nav { padding: 1rem 1.5rem; }
     .nav-links { display: none; }
     .nav-cta { padding: 0.5rem 1.1rem; font-size: 0.8rem; }
 
-    /* Hero: alle absoluten Elemente auf normalen Flow umstellen */
+    /* ── HERO SECTION MOBILE ── */
     section[style*="height:100vh"] {
       height: auto !important;
-      min-height: 100vh !important;
-      padding: 120px 5vw 40px !important;
+      min-height: 100svh !important;
+      padding: 90px 6vw 48px !important;
       display: flex !important;
       flex-direction: column !important;
       align-items: flex-start !important;
       overflow: hidden !important;
+      box-sizing: border-box !important;
     }
 
-    /* Alle absolut positionierten Hero-Elemente */
-    section[style*="height:100vh"] > div[style*="position:absolute;top:90px"],
+    /* Alle absolut positionierten Elemente → normaler Flow */
+    section[style*="height:100vh"] > div[style*="position:absolute"],
     section[style*="height:100vh"] > h1[style*="position:absolute"],
     section[style*="height:100vh"] > h2[style*="position:absolute"],
-    section[style*="height:100vh"] > p[style*="position:absolute"],
-    section[style*="height:100vh"] > div[style*="position:absolute;top:400px"],
-    section[style*="height:100vh"] > div[style*="position:absolute;top:600px"],
-    section[style*="height:100vh"] > div[style*="position:absolute;top:700px"] {
+    section[style*="height:100vh"] > p[style*="position:absolute"] {
       position: relative !important;
-      top: auto !important;
-      left: auto !important;
-      right: auto !important;
+      top: auto !important; left: auto !important;
+      right: auto !important; bottom: auto !important;
+      transform: none !important;
       width: 100% !important;
-      white-space: normal !important;
     }
 
-    /* Powered by: tiefer damit nicht vom Header verdeckt */
-    section[style*="height:100vh"] > div[style*="position:absolute;top:90px"] {
-      margin-bottom: 12px;
+    /* Powered by */
+    section[style*="height:100vh"] > div[style*="top:90px"] {
       font-size: 10px !important;
-      padding-top: 20px !important;
-    }
-
-    /* Weniger Abstand unten auf Seite 1 */
-    section[style*="height:100vh"] {
-      height: auto !important;
-      min-height: 100vh !important;
-      padding: 120px 5vw 40px !important;
-      display: flex !important;
-      flex-direction: column !important;
-      align-items: flex-start !important;
-      overflow: hidden !important;
-    }
-
-    /* Bogen auf Mobile einblenden */
-    section[style*="height:100vh"] > div[style*="position:absolute;bottom:0"] {
-      display: block !important;
-      position: relative !important;
-      bottom: auto !important;
-      width: 100% !important;
-      margin-top: 16px !important;
-    }
-
-    /* Pricing Section: weniger Padding oben */
-    section[id="pricing"] {
-      padding-top: 40px !important;
-      padding-bottom: 60px !important;
-    }
-
-    /* Pricing cards: untereinander */
-    section[id="pricing"] > div > div[style*="grid-template-columns:1fr 1fr"] {
-      grid-template-columns: 1fr !important;
-      gap: 20px !important;
+      margin-bottom: 10px !important;
+      padding-top: 10px !important;
     }
 
     /* H1 + H2 */
     section[style*="height:100vh"] > h1,
     section[style*="height:100vh"] > h2 {
-      font-size: clamp(1.8rem, 7vw, 2.4rem) !important;
+      font-size: clamp(1.9rem, 8vw, 2.6rem) !important;
       white-space: normal !important;
-      margin-bottom: 6px !important;
+      margin-bottom: 4px !important;
     }
 
     /* Subtext */
     section[style*="height:100vh"] > p {
       font-size: 0.9rem !important;
       max-width: 100% !important;
-      margin-bottom: 24px !important;
+      margin-bottom: 20px !important;
     }
 
-    /* Buttons + QR: untereinander statt nebeneinander */
-    section[style*="height:100vh"] > div[style*="position:absolute;top:400px"] {
+    /* Buttons + QR + Vorschau: untereinander */
+    section[style*="height:100vh"] > div[style*="top:320px"] {
       flex-direction: column !important;
       align-items: flex-start !important;
       gap: 16px !important;
-      margin-bottom: 28px !important;
+      padding-right: 0 !important;
+      justify-content: flex-start !important;
     }
 
-    /* QR Code auf Mobile ausblenden */
-    section[style*="height:100vh"] > div[style*="position:absolute;top:400px"] > a[style*="flex-direction:column"] {
+    /* QR + Buchungsvorschau auf Mobile ausblenden */
+    section[style*="height:100vh"] > div[style*="top:320px"] > a[style*="flex-direction:column"],
+    section[style*="height:100vh"] > div[style*="top:320px"] > div[style*="flex-direction:column"] {
       display: none !important;
+    }
+
+    /* Buttons auf Mobile */
+    section[style*="height:100vh"] > div[style*="top:320px"] > div[style*="flex-direction:column;gap:16px"] {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      width: 100% !important;
     }
 
     /* 3 Kacheln: 1 Spalte */
-    section[style*="height:100vh"] > div[style*="position:absolute;top:600px"] {
+    section[style*="height:100vh"] > div[style*="top:600px"] {
       grid-template-columns: 1fr !important;
       gap: 10px !important;
-      margin-bottom: 16px !important;
+      margin-bottom: 14px !important;
     }
 
-    /* WhatsApp Bubble */
-    section[style*="height:100vh"] > div[style*="position:absolute;top:700px"] {
+    /* WA Bubble */
+    section[style*="height:100vh"] > div[style*="top:700px"],
+    section[style*="height:100vh"] div[style*="margin-left:160px"] {
+      margin-left: 0 !important;
       max-width: 100% !important;
     }
 
-    /* Bogen auf Mobile ausblenden */
-    section[style*="height:100vh"] > div[style*="position:absolute;bottom:0"] {
+    /* Bogen: ausblenden auf Mobile */
+    section[style*="height:100vh"] > div[style*="bottom:0"],
+    section[style*="height:100vh"] > div[style*="radial-gradient"] {
       display: none !important;
     }
 
-    /* bg glow: ausblenden */
-    section[style*="height:100vh"] > div[style*="radial-gradient"] {
-      display: none !important;
+    /* Pricing */
+    section[id="pricing"] {
+      padding-top: 40px !important;
+      padding-left: 6vw !important;
+      padding-right: 6vw !important;
+      padding-bottom: 60px !important;
+    }
+    section[id="pricing"] > div > div[style*="grid-template-columns:1fr 1fr"] {
+      grid-template-columns: 1fr !important;
+      gap: 20px !important;
+    }
+    section[id="pricing"] > div > div > div[style*="padding:44px"] {
+      padding: 28px !important;
+    }
+    section[id="pricing"] div[style*="font-size:64px"] {
+      font-size: 48px !important;
+    }
+
+    /* WA bubble in pricing: volle Breite */
+    section[id="pricing"] div[style*="display:inline-block"] {
+      display: block !important;
+      width: 100% !important;
     }
 
     /* Hero: visual-first auf Mobile */
