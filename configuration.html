@@ -451,8 +451,6 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
 /* Profil Loading */
 #profil-loader{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;border-radius:12px;}
-.profil-spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--tpl);border-radius:50%;animation:spin .7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg)}}
 .profil-loader-bar{width:200px;height:4px;background:var(--border);border-radius:99px;overflow:hidden;}
 .profil-loader-bar-inner{height:100%;background:linear-gradient(90deg,var(--tpl),var(--tg));border-radius:99px;animation:loadbar 1.2s ease-in-out infinite;}
 @keyframes loadbar{0%{width:0%;margin-left:0}50%{width:60%;margin-left:20%}100%{width:0%;margin-left:100%}}
@@ -513,7 +511,6 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       <div class="sec-sub">Alle Einstellungen deines Salons</div>
     </div>
     <div id="profil-loader" style="position:relative;padding:60px 20px;display:flex;">
-      <div class="profil-spinner"></div>
       <div class="profil-loader-bar"><div class="profil-loader-bar-inner"></div></div>
       <div class="profil-loader-txt">Daten werden geladen…</div>
     </div>
@@ -3342,7 +3339,12 @@ function renderProfilContent(id){
         '<button class="btn btn-sm btn-outline" onclick="openSvcModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>'+
       '</div>'+
       '<div class="svc-list" id="svc-list"><div class="empty"><div class="empty-icon">⟳</div><div class="empty-text">Wird geladen…</div></div></div>';
-    loadServices().then(function(){ if(typeof servicesData!=='undefined'&&servicesData.length>0)_profilSaved['service']=true; _pill_refresh(); });
+    // Daten bereits beim Start geladen — direkt rendern
+    if(typeof servicesData!=='undefined'&&servicesData.length>=0){
+      renderSvcList();
+      if(servicesData.length>0)_profilSaved['service']=true;
+      _pill_refresh();
+    } else { loadServices().then(function(){_pill_refresh();}); }
   }
   else if(id==='whatsapp'){
     if(!_allRequiredFilled()){
@@ -3381,7 +3383,12 @@ function renderProfilContent(id){
         '<div style="font-size:12px;color:var(--muted)">Name <span style="color:var(--tg)">*</span> · Google Calendar <span style="color:var(--tg)">*</span></div></div>'+
       '</div>'+
       '<div class="ma-sidebar" id="staff-sidebar" style="max-width:100%;"><div class="empty" style="padding:20px 10px"><div class="empty-text">Wird geladen…</div></div></div>';
-    loadStaff().then(function(){ if(document.querySelector('#staff-sidebar .staff-card'))_profilSaved['team']=true; _pill_refresh(); });
+    // Daten bereits beim Start geladen — direkt rendern
+    if(typeof staffData!=='undefined'&&staffData.length>=0){
+      renderStaffGrid();
+      if(staffData.length>0)_profilSaved['team']=true;
+      _pill_refresh();
+    } else { loadStaff().then(function(){_pill_refresh();}); }
   }
 }
 init();
