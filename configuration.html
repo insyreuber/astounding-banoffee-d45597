@@ -263,165 +263,85 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 @media (max-width: 768px) {
 
   /* Nav: Akkordion auf Mobile */
-  .nav{
-    flex-direction:column;
-    padding:0;
-    gap:0;
-    width:100%;
-  }
-  .nav-brand{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:16px 20px;
-    cursor:pointer;
-    border-bottom:1px solid rgba(255,255,255,.1);
-    width:100%;
-    border-right:none;
-    margin-right:0;
-  }
-  .nav-brand::after{
-    content:'☰';
-    font-size:20px;
-    color:rgba(255,255,255,.7);
-  }
+  .nav{flex-direction:column;padding:0;gap:0;width:100%;}
+  .nav-brand{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.1);width:100%;border-right:none;margin-right:0;}
+  .nav-brand::after{content:'☰';font-size:20px;color:rgba(255,255,255,.7);}
   .nav-logo{font-size:10px;letter-spacing:.2em}
   .nav-title{font-size:15px}
-  .nav-tabs{
-    display:none;
-    flex-direction:column;
-    gap:0;
-    border-bottom:1.5px solid rgba(255,255,255,.1);
-    width:100%;
-  }
+  .nav-tabs{display:none;flex-direction:column;gap:0;border-bottom:1.5px solid rgba(255,255,255,.1);width:100%;}
   .nav-tabs.open{display:flex}
-  .nav-tab{
-    padding:14px 20px;
-    font-size:13px;
-    border-radius:0;
-    border-bottom:1px solid rgba(255,255,255,.07);
-    border-bottom-width:1px !important;
-    white-space:normal;
-  }
+  .nav-tab{padding:14px 20px;font-size:13px;border-radius:0;border-bottom:1px solid rgba(255,255,255,.07);border-bottom-width:1px !important;white-space:normal;}
   .nav-tab svg{display:inline-block;margin-right:8px}
   .nav-tab.active{border-left:3px solid var(--tg);background:rgba(255,255,255,.07)}
   .nav-right{display:none}
   .fab-booking{display:flex}
 
-  /* Kein seitliches Wischen bei Services */
+  /* Layout */
   body{overflow-x:hidden}
   .main{overflow-x:hidden;padding:10px}
-  #panel-services > div{overflow-x:hidden}
+  .card{padding:12px}
+  .sec-hdr{flex-direction:column;align-items:flex-start;gap:8px}
 
-  /* Services: untereinander */
-  #panel-services > div[style*="grid-template-columns"]{
+  /* Profil Toggles: wrappen sauber */
+  #profil-toggles{padding:10px 12px !important;gap:6px !important;margin-bottom:20px !important;}
+  #profil-toggles button{font-size:11px !important;padding:6px 12px !important;}
+
+  /* Adresse & Kontakt — alle Felder untereinander */
+  #profil-content div[style*="grid-template-columns:2fr 0.6fr 1fr"],
+  #profil-content div[style*="grid-template-columns:2fr 0.5fr"],
+  #profil-content div[style*="grid-template-columns:0.6fr 1fr 1fr"]{
     grid-template-columns:1fr !important;
-    overflow-x:hidden;
   }
 
-  /* Varianten: Stack auf Mobile mit Labels */
+  /* Öffnungszeiten — Zeile kompakter, selects kleiner */
+  .hours-col{padding:7px 10px !important;gap:8px !important;}
+  .hours-col select{font-size:11px !important;padding:4px 4px !important;}
+  .hours-time-wrap{gap:4px !important;}
+
+  /* Varianten: Stack */
   .var-header{display:none}
-  .var-row{
-    grid-template-columns:1fr !important;
-    gap:8px;
-  }
-  .var-group::before{
-    font-size:10px;
-    color:var(--muted);
-    padding:0 8px;
-    white-space:nowrap;
-    flex-shrink:0;
-  }
+  .mvar-header{display:none}
+  .var-row{grid-template-columns:1fr !important;gap:6px;}
+  .mvar-row{grid-template-columns:1fr !important;gap:6px !important;}
+  .var-group::before{font-size:10px;color:var(--muted);padding:0 8px;white-space:nowrap;flex-shrink:0;}
   .var-row .var-group:nth-child(1)::before{content:'Name'}
   .var-row .var-group:nth-child(2)::before{content:'Min'}
   .var-row .var-group:nth-child(3)::before{content:'Preis €'}
   .var-row .var-group:nth-child(4)::before{content:'Puffer'}
 
-  /* Main content */
-  .main{padding:12px 10px}
-
-  /* Sec header */
-  .sec-hdr{flex-direction:column;align-items:flex-start;gap:8px}
-
-  /* Formularfelder */
-  .frow{grid-template-columns:1fr !important}
-  .frow-2{grid-template-columns:1fr 1fr !important}
-/* Stadt/PLZ/Hausnummer Zeile bleibt nebeneinander auf Mobile */
-  .frow[style*="grid-template-columns:1fr 80px"]{grid-template-columns:1fr 70px 80px !important}
-
-  /* Services: Insy + Eigene untereinander */
-  #panel-services > div[style*="grid-template-columns"]{
-    grid-template-columns:1fr !important;
-  }
-
-  /* Varianten: kompakter */
-  .var-row{
-    grid-template-columns:1fr !important;
-    gap:6px;
-  }
-  .var-header{display:none}
-
-  /* Mitarbeiter Layout: sidebar + wochenplan untereinander */
+  /* Team sidebar volle Breite */
   .ma-layout{grid-template-columns:1fr !important;flex-direction:column}
   .ma-sidebar{max-height:none}
-
-  /* Staff cards: volle Breite */
   .staff-card{width:100%}
 
-  /* Öffnungszeiten: 4 Tage pro Zeile */
-  .hours-cols-sm{grid-template-columns:repeat(4,1fr) !important}
-
-  /* Modal: volle Breite */
-  .modal{
-    width:calc(100vw - 24px) !important;
-    max-width:none !important;
-    max-height:90vh;
-    overflow-y:auto;
-    margin:12px;
-    top:auto !important;
-    left:12px !important;
-    transform:none !important;
-    bottom:0;
-  }
+  /* Modal: volle Breite von unten */
+  .modal{width:calc(100vw - 24px) !important;max-width:none !important;max-height:90vh;overflow-y:auto;margin:12px;top:auto !important;left:12px !important;transform:none !important;bottom:0;}
   .modal-overlay{align-items:flex-end}
 
   /* QR: untereinander */
-  #panel-qr > div[style*="grid-template-columns"]{
-    grid-template-columns:1fr !important;
-  }
+  #panel-qr > div[style*="grid-template-columns"]{grid-template-columns:1fr !important;}
 
-  /* Bills: kompakter */
-  #bills-list .card{
-    flex-direction:column;
-    align-items:flex-start !important;
-    gap:8px;
-  }
-
-  /* Karten */
-  .card{padding:12px}
+  /* Rechnungen */
+  #bills-list .card{flex-direction:column;align-items:flex-start !important;gap:8px;}
 
   /* Save bar */
   .save-bar{flex-direction:column;gap:8px;align-items:stretch}
   .save-bar .btn{width:100%;justify-content:center}
 
-  /* Kalender Wochenplan: scrollbar */
-  .weekplan-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-
-  /* Adresse+Links+Bemerkung: untereinander auf Mobile */
-  div[style*="adresse+links"] > .card,
-  .adresse-links-grid{grid-template-columns:1fr !important}
-
-  /* Dashboard Grid mobile */
-  .dash-grid{grid-template-columns:1fr !important}
+  /* Formularfelder allgemein */
+  .frow{grid-template-columns:1fr !important}
+  .frow-2{grid-template-columns:1fr 1fr !important}
 
   /* Timeline mobile */
   .tl-bottom-grid{grid-template-columns:1fr !important}
-  .tl-ctrl-row{flex-direction:column !important; border-radius:10px}
-  .tl-ctrl-row > div{border-right:none !important; border-bottom:1px solid var(--border) !important; border-radius:0 !important}
+  .tl-ctrl-row{flex-direction:column !important;border-radius:10px}
+  .tl-ctrl-row > div{border-right:none !important;border-bottom:1px solid var(--border) !important;border-radius:0 !important}
   .tl-ctrl-row > div:first-child{border-radius:10px 10px 0 0 !important}
-  .tl-ctrl-row > div:last-child{border-bottom:none !important; border-radius:0 0 10px 10px !important}
-  /* Heute mittig bei mobile */
+  .tl-ctrl-row > div:last-child{border-bottom:none !important;border-radius:0 0 10px 10px !important}
   .tl-ctrl-row > div:nth-child(2){text-align:center}
+
+  /* Kleinere hours-col-sm für Mitarbeiter-Modal */
+  .hours-cols-sm{grid-template-columns:repeat(4,1fr) !important}
 
 }
 
