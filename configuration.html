@@ -1406,6 +1406,7 @@ function switchTab(n){
   if(n==='mitarbeiter')updateWeekPlanLabel();
   if(n==='qr')generateQR();
   if(n==='bills')loadBills();
+  if(n==='profil')setTimeout(function(){buildProfilToggles();checkProfilRequired();},50);
 }
 
 // ── TOAST ─────────────────────────────────────────────────────
@@ -3214,14 +3215,12 @@ function checkWaLocked() {
   }
 }
 
-// init on tab switch
-const _origSwitchTab = typeof switchTab === 'function' ? switchTab : null;
-function switchTab(name) {
-  if (_origSwitchTab) _origSwitchTab(name);
-  if (name === 'profil') {
-    setTimeout(() => { buildProfilToggles(); checkProfilRequired(); }, 50);
+// init profil toggles on load if profil is active
+document.addEventListener('DOMContentLoaded', function() {
+  if (document.getElementById('panel-profil') && document.getElementById('panel-profil').classList.contains('active')) {
+    buildProfilToggles(); checkProfilRequired();
   }
-}
+});
 
 
   renderGuthabenCard(d);
