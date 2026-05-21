@@ -51,7 +51,7 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .sec-sub{font-size:13px;color:var(--muted)}
 
 /* ── CARDS ── */
-.card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(74,28,107,.05),0 0 0 0px transparent}
 .card-title{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:7px}
 
 /* ── FORM ── */
@@ -124,9 +124,9 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .var-row{display:grid;grid-template-columns:2fr 1.2fr 1.2fr 1.2fr 28px;gap:8px;align-items:center;background:#faf8fc;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px}
 /* Jede Gruppe = Input + Toggle nebeneinander */
 .var-group{display:flex;align-items:center;gap:5px;background:var(--white);border:1.5px solid var(--border);border-radius:6px;padding:0 6px 0 0;overflow:hidden;min-width:0}
-.var-group input[type="number"]{border:none;outline:none;padding:6px 6px;font-size:12px;font-family:inherit;color:var(--td);background:transparent;width:100%;text-align:center;min-width:40px}
-.var-group input[type="text"]{border:none;outline:none;padding:6px 8px;font-size:12px;font-family:inherit;color:var(--td);background:transparent;width:100%;min-width:0}
-.var-group input[type="number"]:focus,.var-group input[type="text"]:focus{outline:none}
+.var-group input[type="number"]{border:1.5px solid var(--border);border-radius:6px;outline:none;padding:6px 6px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);width:100%;text-align:center;min-width:40px;box-shadow:0 1px 3px rgba(74,28,107,.06);transition:border-color .2s,box-shadow .2s}
+.var-group input[type="text"]{border:1.5px solid var(--border);border-radius:6px;outline:none;padding:6px 8px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);width:100%;min-width:0;box-shadow:0 1px 3px rgba(74,28,107,.06);transition:border-color .2s,box-shadow .2s}
+.var-group input[type="number"]:focus,.var-group input[type="text"]:focus{outline:none;border-color:var(--tpl);box-shadow:0 0 0 3px rgba(90,45,130,.15)}
 .var-group:focus-within{border-color:var(--tpl)}
 .var-group .toggle-sw{flex-shrink:0}
 .var-del{width:28px;height:28px;border-radius:6px;border:1.5px solid #fde8e8;background:#fff5f5;color:#c0392b;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit;transition:all .15s}
@@ -219,7 +219,7 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .hours-col-sm.aktiv{border-color:var(--tpl);background:var(--tpp)}
 .hours-col-sm-day{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;width:22px;flex-shrink:0}
 .hours-col-sm.aktiv .hours-col-sm-day{color:var(--tpl)}
-.hours-col-sm select{border:1.5px solid var(--border);border-radius:6px;padding:4px 4px;font-size:11px;font-family:'DM Mono',monospace;color:var(--td);outline:none;background:var(--white);cursor:pointer;appearance:none;-webkit-appearance:none;text-align-last:center}
+.hours-col-sm select{border:1.5px solid var(--border);border-radius:6px;padding:4px 4px;font-size:11px;font-family:'DM Mono',monospace;color:var(--td);outline:none;background:var(--white);cursor:pointer;appearance:none;-webkit-appearance:none;text-align-last:center;box-shadow:0 1px 3px rgba(74,28,107,.06);transition:border-color .2s,box-shadow .2s}
 .hours-col-sm select:focus{border-color:var(--tpl)}
 .hours-col-sm input[type="time"]{border:1.5px solid var(--border);border-radius:5px;padding:4px 2px;font-size:10px;font-family:'DM Mono',monospace;color:var(--td);outline:none;background:var(--white);text-align:center}
 .hours-col-sm input[type="time"]:focus{border-color:var(--tpl)}
@@ -475,7 +475,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
         </div>
 
         <!-- URL Anzeige -->
-        <div style="background:var(--bg);border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:11px;font-family:'DM Mono',monospace;color:var(--tpl);word-break:break-all" id="qr-url-display">
+        <div style="background:var(--bg);border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:11px;font-family:'DM Mono',monospace;color:var(--tpl);word-break:break-all;border:1.5px solid var(--border);box-shadow:inset 0 1px 2px rgba(0,0,0,.04)" id="qr-url-display">
           Buchungs-URL wird geladen…
         </div>
 
