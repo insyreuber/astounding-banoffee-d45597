@@ -448,6 +448,15 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 .custom-link-row input::placeholder{color:var(--muted);}
 .custom-link-del{background:none;border:1.5px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;padding:0;width:32px;height:38px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .15s,color .15s;}
 .custom-link-del:hover{border-color:var(--danger);color:var(--danger);}
+
+/* Profil Loading */
+#profil-loader{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;border-radius:12px;}
+.profil-spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--tpl);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.profil-loader-bar{width:200px;height:4px;background:var(--border);border-radius:99px;overflow:hidden;}
+.profil-loader-bar-inner{height:100%;background:linear-gradient(90deg,var(--tpl),var(--tg));border-radius:99px;animation:loadbar 1.2s ease-in-out infinite;}
+@keyframes loadbar{0%{width:0%;margin-left:0}50%{width:60%;margin-left:20%}100%{width:0%;margin-left:100%}}
+.profil-loader-txt{font-size:12px;color:var(--muted);}
 </style>
 </head>
 <body>
@@ -503,7 +512,12 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       <div class="sec-title">Profil</div>
       <div class="sec-sub">Alle Einstellungen deines Salons</div>
     </div>
-    <div id="profil-toggles" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;padding:12px 16px;background:#fff;border:1.5px solid var(--border);border-radius:12px;min-height:44px;"></div>
+    <div id="profil-loader" style="position:relative;padding:60px 20px;display:flex;">
+      <div class="profil-spinner"></div>
+      <div class="profil-loader-bar"><div class="profil-loader-bar-inner"></div></div>
+      <div class="profil-loader-txt">Daten werden geladen…</div>
+    </div>
+    <div id="profil-toggles" style="display:none;" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;padding:12px 16px;background:#fff;border:1.5px solid var(--border);border-radius:12px;min-height:44px;"></div>
     <div id="profil-content"></div>
   </div>
 
@@ -1092,7 +1106,7 @@ async function loadProfil(){
 // Felder aus Cache befüllen — immer aufrufen nach renderProfilContent
 function _fillProfilFields(){
   var d=_profilCache;
-  if(!d) return;
+  if(!d) return; // Cache noch nicht geladen
   var _safe=function(id,v){var e=document.getElementById(id);if(e)e.value=v||'';};
 
   _safe('f-brand',    d.brand_name||d.name);
@@ -3132,13 +3146,17 @@ async function init(){
   loadFeatureSettings();
   checkGcalReturn();
 
-  // Alle Daten beim Start laden — dann Toggles bauen und Felder befüllen
+  // Loader zeigen bis Daten geladen sind
+  // buildProfilToggles wird erst nach Promise.all aufgerufen
+
   Promise.all([
     loadProfil(),
     loadServices(),
     loadStaff()
   ]).then(function(){
+    // Daten geladen — aktiven Block neu rendern damit Felder befüllt werden
     buildProfilToggles();
+    renderProfilContent(_profilActive);
   });
 }
 /* Stadt/PLZ/Hausnummer Zeile bleibt nebeneinander auf Mobile */
