@@ -1085,77 +1085,15 @@ function readTempEntries(){
   });
 }
 // Zentraler Datencache — einmal geladen, immer verfügbar
-var _profilCache = null;
-
 async function loadProfil(){
   if(!SALON_ID){toast('Keine salon_id in der URL','error');return;}
   var bookingBtn=document.getElementById('nav-booking-link');
   if(bookingBtn)bookingBtn.href='https://insy-reception.com/booking?salon_id='+SALON_ID;
   var desktopBtn=document.getElementById('nav-booking-btn-desktop');
   if(desktopBtn)desktopBtn.href='https://insy-reception.com/booking?salon_id='+SALON_ID;
-
   var res=await sb.from('kunden_profile').select('*').eq('id',SALON_ID).single();
   if(res.error){toast('Profil nicht gefunden','error');return;}
-  _profilCache = res.data;
-  _fillProfilFields();
-}
-
-// Felder aus Cache befüllen — immer aufrufen nach renderProfilContent
-function _fillProfilFields(){
-  var d=_profilCache;
-  if(!d) return; // Cache noch nicht geladen
-  var _safe=function(id,v){var e=document.getElementById(id);if(e)e.value=v||'';};
-
-  _safe('f-brand',    d.brand_name||d.name);
-  _safe('f-area-code',d.area_code);
-  _safe('f-phone-number',d.phone_number);
-  _safe('f-street',   d.street);
-  _safe('f-house',    d.house_number);
-  _safe('f-plz',      d.postal_code);
-  _safe('f-city',     d.city);
-  _safe('f-mobile',   d.mobile_url);
-  _safe('f-note',     d.note);
-  _safe('f-instagram',d.instagram_url);
-  _safe('f-website',  d.website_url);
-  _safe('f-maps',     d.google_maps_url);
-
-  // Admin Google Kalender Status
-  var statusEl=document.getElementById('admin-gcal-status');
-  var btnEl=document.getElementById('btn-admin-gcal');
-  if(statusEl&&btnEl){
-    if(d.google_connected&&d.google_calendar_id){statusEl.style.display='flex';btnEl.style.display='none';}
-    else{statusEl.style.display='none';btnEl.style.display='flex';}
-  }
-
-  // Öffnungszeiten
-  if(document.getElementById('hours-cols')){
-    buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
-  }
-
-  // Custom Links
-  customLinks = Array.isArray(d.custom_links) ? d.custom_links : [];
-  if(document.getElementById('custom-links-list')) renderCustomLinks();
-
-  // Temporäre Öffnungszeiten
-  if(document.getElementById('temp-entries-list')){
-    tempEntries=[];tempIdCounter=0;tempCalOffset={};
-    var tempData=d.temp_arbeitszeiten;
-    if(tempData&&Array.isArray(tempData)&&tempData.length){
-      tempData.forEach(function(t){addTempEntry(t);});
-    } else {
-      renderTempEntries();
-    }
-  }
-
-  // Ampel-Status aus gespeicherten Daten setzen
-  if(d.brand_name||d.name) _profilSaved['adresse']=true;
-  if(d.arbeitszeiten&&Object.keys(d.arbeitszeiten).some(function(k){
-    return d.arbeitszeiten[k]&&d.arbeitszeiten[k].aktiv;
-  })) _profilSaved['zeiten']=true;
-  if(d.instagram_url||d.website_url||d.google_maps_url||(d.custom_links&&d.custom_links.length)) _profilSaved['links']=true;
-  if(d.note) _profilSaved['notiz']=true;
-
-  _pill_refresh();
+  window._pData=res.data;
 }
 
 
@@ -1306,31 +1244,26 @@ async function saveProfil(silent){
     toast('Speichern fehlgeschlagen','error');
   } else {
     // Mark this toggle as saved → permanent green
-    _profilSaved[_profilActive]=true;
     // Update cache so fields stay filled on tab switch
-    if(_profilCache){
-      var _gv2=function(id){var e=document.getElementById(id);return e?e.value.trim():null;};
-      if(_gv2('f-brand')!==null)_profilCache.brand_name=_gv2('f-brand');
-      if(_gv2('f-area-code')!==null)_profilCache.area_code=_gv2('f-area-code');
-      if(_gv2('f-phone-number')!==null)_profilCache.phone_number=_gv2('f-phone-number');
-      if(_gv2('f-street')!==null)_profilCache.street=_gv2('f-street');
-      if(_gv2('f-house')!==null)_profilCache.house_number=_gv2('f-house');
-      if(_gv2('f-plz')!==null)_profilCache.postal_code=_gv2('f-plz');
-      if(_gv2('f-city')!==null)_profilCache.city=_gv2('f-city');
-      if(_gv2('f-mobile')!==null)_profilCache.mobile_url=_gv2('f-mobile');
-      if(_gv2('f-note')!==null)_profilCache.note=_gv2('f-note');
-      if(document.getElementById('hours-cols'))_profilCache.arbeitszeiten=readHours('h-');
-      if(document.getElementById('temp-entries-list'))_profilCache.temp_arbeitszeiten=readTempEntries();
-      if(document.getElementById('custom-links-list'))_profilCache.custom_links=customLinks.slice();
-    }
+    if(!window._pData) window._pData={};
+    var _gv2=function(id){var e=document.getElementById(id);return e?e.value.trim():null;};
+    if(_gv2('f-brand')!==null) window._pData.brand_name=_gv2('f-brand');
+    if(_gv2('f-area-code')!==null) window._pData.area_code=_gv2('f-area-code');
+    if(_gv2('f-phone-number')!==null) window._pData.phone_number=_gv2('f-phone-number');
+    if(_gv2('f-street')!==null) window._pData.street=_gv2('f-street');
+    if(_gv2('f-house')!==null) window._pData.house_number=_gv2('f-house');
+    if(_gv2('f-plz')!==null) window._pData.postal_code=_gv2('f-plz');
+    if(_gv2('f-city')!==null) window._pData.city=_gv2('f-city');
+    if(_gv2('f-mobile')!==null) window._pData.mobile_url=_gv2('f-mobile');
+    if(_gv2('f-note')!==null) window._pData.note=_gv2('f-note');
+    if(document.getElementById('hours-cols')) window._pData.arbeitszeiten=readHours('h-');
+    if(document.getElementById('temp-entries-list')) window._pData.temp_arbeitszeiten=readTempEntries();
+    if(document.getElementById('custom-links-list')) window._pData.custom_links=customLinks.slice();
+    buildProfilToggles();
     if(st){st.className='save-status saved';st.textContent='✓ Gespeichert';}
     toast('Profil gespeichert ✓','success');
-    // Reload fields so they stay filled after save
-    loadProfil();
-    setTimeout(function(){
-      if(st){st.textContent='';st.className='save-status';}
-      _pill_refresh();
-    },2000);
+    loadProfil().then(function(){ buildProfilToggles(); });
+    setTimeout(function(){if(st){st.textContent='';st.className='save-status';}},2000);
   }
 }
 
@@ -1590,7 +1523,6 @@ async function loadServices(){
     if(!vRes.error)allVars=vRes.data||[];
   }
   servicesData=svcs.map(function(s){return{service:s,varianten:allVars.filter(function(v){return v.service_id===s.id;})};});
-  if(svcs.length>0) _profilSaved['service']=true;
   renderSvcList();
 }
 
@@ -2223,8 +2155,6 @@ async function loadStaff(){
   var res=await sb.from('mitarbeiter').select('*').eq('salon_id',SALON_ID).order('sortierung');
   if(res.error){staffData=[];renderStaffGrid();return;}
   var staff=res.data||[];
-  // Mark team as saved if staff exists in DB
-  if(staff.length>0) _profilSaved['team']=true;
   var assigns=[];
   if(staff.length){
     var aRes=await sb.from('mitarbeiter_service_varianten').select('*').in('mitarbeiter_id',staff.map(function(s){return s.id;}));
@@ -3145,29 +3075,30 @@ async function init(){
   loadFeatureSettings();
   checkGcalReturn();
 
-  // Loader zeigen bis Daten geladen sind
-  // buildProfilToggles wird erst nach Promise.all aufgerufen
+  // Loader anzeigen
+  var _loader=document.getElementById('profil-loader');
+  var _toggles=document.getElementById('profil-toggles');
+  if(_loader)_loader.style.display='flex';
+  if(_toggles)_toggles.style.display='none';
 
-  Promise.all([
-    loadProfil(),
-    loadServices(),
-    loadStaff()
-  ]).then(function(){
-    // Daten geladen — aktiven Block neu rendern damit Felder befüllt werden
-    buildProfilToggles();
-    renderProfilContent(_profilActive);
-  });
+  // Alles laden, dann Profil aufbauen
+  Promise.all([loadProfil(), loadServices(), loadStaff()])
+    .then(function(){
+      if(_loader)_loader.style.display='none';
+      if(_toggles)_toggles.style.display='flex';
+      buildProfilToggles();
+    });
 }
+
 /* Stadt/PLZ/Hausnummer Zeile bleibt nebeneinander auf Mobile */
 
 // ══════════════════════════════════════════════
-// PROFIL TOGGLES — Ampelsystem
+// PROFIL — einfach & direkt
 // ══════════════════════════════════════════════
-var _profilActive = 'adresse';
-var _profilDataLoaded = false;
-var loadProfilData_pending = false;
 
-var PROFIL_TABS = [
+var _pActive = 'adresse';
+
+var PTABS = [
   {id:'adresse',  label:'Adresse & Kontakt', req:true},
   {id:'zeiten',   label:'Öffnungszeiten',    req:true},
   {id:'links',    label:'Links',             req:false},
@@ -3177,139 +3108,122 @@ var PROFIL_TABS = [
   {id:'team',     label:'Team',              req:true},
 ];
 
-var PC = {
-  red:   {off:'rgba(160,30,30,0.5)',   on:'#c0392b',  border:'rgba(200,60,60,0.7)',  glow:'rgba(200,60,60,0.35)',  txt:{off:'#ffaaaa',on:'#fff'}},
-  yellow:{off:'rgba(140,100,0,0.45)',  on:'#a07800',  border:'rgba(180,130,0,0.7)',  glow:'rgba(180,130,0,0.35)', txt:{off:'#ffd97a',on:'#fff'}},
-  green: {off:'rgba(40,120,60,0.45)',  on:'#1e7a3c',  border:'rgba(40,160,80,0.7)',  glow:'rgba(40,160,80,0.35)', txt:{off:'#88e8a8',on:'#fff'}},
-  gray:  {off:'rgba(100,100,120,0.3)', on:'rgba(100,100,120,0.3)', border:'rgba(140,140,160,0.3)', glow:'none', txt:{off:'rgba(180,180,200,0.5)',on:'rgba(180,180,200,0.5)'}},
+// Farben: rot=pflichtfeld offen, gelb=optional, grün=ausgefüllt, grau=gesperrt
+var PCOL = {
+  red:   {bg:'#c0392b', border:'rgba(200,60,60,0.7)',   glow:'rgba(200,60,60,0.4)',   dim:'rgba(160,30,30,0.45)',  txt:'#ffaaaa'},
+  yellow:{bg:'#a07800', border:'rgba(180,130,0,0.7)',   glow:'rgba(180,130,0,0.4)',   dim:'rgba(140,100,0,0.4)',   txt:'#ffd97a'},
+  green: {bg:'#1e7a3c', border:'rgba(40,160,80,0.7)',   glow:'rgba(40,160,80,0.4)',   dim:'rgba(30,120,55,0.45)',  txt:'#88e8a8'},
+  gray:  {bg:'rgba(100,100,120,0.3)', border:'rgba(140,140,160,0.3)', glow:'none', dim:'rgba(100,100,120,0.25)', txt:'rgba(180,180,200,0.5)'},
 };
 
-// Persistent saved state per toggle
-var _profilSaved = {};
-
-function _pColor(t){
-  if(t.wa) return _allRequiredFilled() ? (_profilSaved['whatsapp']?'green':'yellow') : 'gray';
-  // Non-required: yellow unless something saved → green
-  if(!t.req){
-    return _profilSaved[t.id] ? 'green' : 'yellow';
+function _ptColor(t){
+  if(t.wa){
+    // WhatsApp gesperrt bis Name + Öffnungszeiten + Service + Team gespeichert
+    var ok = _pSaved('adresse') && _pSaved('zeiten') && _pSaved('service') && _pSaved('team');
+    return ok ? 'yellow' : 'gray';
   }
-  // Required fields: check DOM first, then saved state
-  if(t.id==='adresse'){
-    var v=document.getElementById('f-brand');
-    if(v&&v.value.trim()) return 'green';
-    return _profilSaved['adresse'] ? 'green' : 'red';
-  }
-  if(t.id==='zeiten'){
-    var aktiv=document.querySelectorAll('.hours-col.aktiv').length>0;
-    return (aktiv||_profilSaved['zeiten']) ? 'green' : 'red';
-  }
-  if(t.id==='service'){
-    return (typeof servicesData!=='undefined'&&servicesData.length>0) ? 'green' : 'red';
-  }
-  if(t.id==='team'){
-    if(_profilSaved['team']) return 'green';
-    var sb2=document.getElementById('staff-sidebar');
-    return (sb2&&sb2.querySelector('.staff-card')) ? 'green' : 'red';
-  }
-  return 'red';
+  if(!t.req) return _pSaved(t.id) ? 'green' : 'yellow';
+  return _pSaved(t.id) ? 'green' : 'red';
 }
 
-function _allRequiredFilled(){
-  return _profilSaved['adresse'] && _profilSaved['zeiten'] &&
-    _profilSaved['service'] && _profilSaved['team'];
+function _pSaved(id){
+  // Check Supabase data
+  var d = window._pData || {};
+  if(id==='adresse') return !!(d.brand_name||d.name);
+  if(id==='zeiten'){
+    var az=d.arbeitszeiten||{};
+    return Object.keys(az).some(function(k){return az[k]&&az[k].aktiv;});
+  }
+  if(id==='service') return (typeof servicesData!=='undefined'&&servicesData.length>0);
+  if(id==='team')    return (typeof staffData!=='undefined'&&staffData.length>0);
+  if(id==='links')   return !!(d.instagram_url||d.website_url||d.google_maps_url||(d.custom_links&&d.custom_links.length));
+  if(id==='notiz')   return !!(d.note);
+  return false;
 }
 
 function buildProfilToggles(){
   var wrap=document.getElementById('profil-toggles');
   if(!wrap) return;
-  wrap.innerHTML=PROFIL_TABS.map(function(t){
-    var c=_pColor(t);
-    var locked=(t.wa&&!_allRequiredFilled());
+  wrap.innerHTML=PTABS.map(function(t){
+    var c=_ptColor(t);
+    var locked=(t.wa && c==='gray');
     return '<button id="ptgl-'+t.id+'" onclick="selectProfil(\''+t.id+'\')"'
-      +' style="padding:7px 16px;border-radius:20px;font-size:12px;font-weight:600;font-family:inherit;cursor:'+(locked?'not-allowed':'pointer')+';'
-      +'border:1.5px solid '+PC[c].border+';background:'+PC[c].off+';color:'+PC[c].txt.off+';'
-      +'opacity:'+(locked?'0.45':'1')+';transition:all .2s;"'
+      +' style="padding:7px 16px;border-radius:20px;font-size:12px;font-weight:600;font-family:inherit;'
+      +'border:1.5px solid '+PCOL[c].border+';background:'+PCOL[c].dim+';color:'+PCOL[c].txt+';'
+      +'cursor:'+(locked?'not-allowed':'pointer')+';opacity:'+(locked?'0.4':'1')+';transition:all .2s;"'
       +(locked?' disabled':'')+'>'+t.label+'</button>';
   }).join('');
-  _setPillActive(_profilActive);
-  renderProfilContent(_profilActive);
+  _ptActivate(_pActive);
+  renderProfilContent(_pActive);
 }
 
-function _setPillActive(id){
-  PROFIL_TABS.forEach(function(t){
+function _ptActivate(id){
+  PTABS.forEach(function(t){
     var pill=document.getElementById('ptgl-'+t.id); if(!pill)return;
-    var c=_pColor(t); var active=(t.id===id);
-    pill.style.background=active?PC[c].on:PC[c].off;
-    pill.style.color=active?PC[c].txt.on:PC[c].txt.off;
-    pill.style.borderColor=PC[c].border;
-    pill.style.boxShadow=active?'0 3px 14px '+PC[c].glow:'none';
+    var c=_ptColor(t); var on=(t.id===id);
+    pill.style.background=on?PCOL[c].bg:PCOL[c].dim;
+    pill.style.color='#fff';
+    pill.style.borderColor=PCOL[c].border;
+    pill.style.boxShadow=on?'0 3px 14px '+PCOL[c].glow:'none';
   });
 }
 
 function selectProfil(id){
-  var t=PROFIL_TABS.find(function(x){return x.id===id;});
-  if(!t||( t.wa&&!_allRequiredFilled())) return;
-  _profilActive=id;
-  _setPillActive(id);
+  var t=PTABS.find(function(x){return x.id===id;});
+  if(!t) return;
+  if(t.wa && _ptColor(t)==='gray') return;
+  _pActive=id;
+  _ptActivate(id);
   renderProfilContent(id);
-}
-
-function _pill_refresh(){
-  PROFIL_TABS.forEach(function(t){
-    var pill=document.getElementById('ptgl-'+t.id); if(!pill)return;
-    var c=_pColor(t); var locked=(t.wa&&!_allRequiredFilled());
-    var active=(_profilActive===t.id);
-    pill.style.background=active?PC[c].on:PC[c].off;
-    pill.style.color=active?PC[c].txt.on:PC[c].txt.off;
-    pill.style.borderColor=PC[c].border;
-    pill.style.boxShadow=active?'0 3px 14px '+PC[c].glow:'none';
-    pill.style.opacity=locked?'0.4':'1';
-    pill.style.cursor=locked?'not-allowed':'pointer';
-    if(locked){pill.setAttribute('disabled','');}else{pill.removeAttribute('disabled');}
-  });
 }
 
 function renderProfilContent(id){
   var wrap=document.getElementById('profil-content'); if(!wrap) return;
+  var d=window._pData||{};
+
   if(id==='adresse'){
     wrap.innerHTML=
       '<div class="card">'+
         '<div class="card-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Adresse &amp; Kontakt</div>'+
         '<div style="display:grid;grid-template-columns:2fr 0.6fr 1fr;gap:12px;margin-bottom:12px">'+
-          '<div class="field" style="margin-bottom:0"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="f-brand" placeholder="z.B. Wellness Store" oninput="_pill_refresh()"></div>'+
-          '<div class="field" style="margin-bottom:0"><label>PLZ</label><input type="text" id="f-plz" placeholder="51674"></div>'+
-          '<div class="field" style="margin-bottom:0"><label>Stadt</label><input type="text" id="f-city" placeholder="Wiehl"></div>'+
+          '<div class="field" style="margin-bottom:0"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="f-brand" placeholder="z.B. Wellness Store" value="'+(d.brand_name||d.name||'')+'" oninput="buildProfilToggles()"></div>'+
+          '<div class="field" style="margin-bottom:0"><label>PLZ</label><input type="text" id="f-plz" placeholder="51674" value="'+(d.postal_code||'')+'"></div>'+
+          '<div class="field" style="margin-bottom:0"><label>Stadt</label><input type="text" id="f-city" placeholder="Wiehl" value="'+(d.city||'')+'"></div>'+
         '</div>'+
         '<div style="display:grid;grid-template-columns:2fr 0.5fr;gap:12px;margin-bottom:12px">'+
-          '<div class="field" style="margin-bottom:0"><label>Straße</label><input type="text" id="f-street" placeholder="Fritz-Raue Strasse"></div>'+
-          '<div class="field" style="margin-bottom:0"><label>Hausnummer</label><input type="text" id="f-house" placeholder="1"></div>'+
+          '<div class="field" style="margin-bottom:0"><label>Straße</label><input type="text" id="f-street" placeholder="Fritz-Raue Strasse" value="'+(d.street||'')+'"></div>'+
+          '<div class="field" style="margin-bottom:0"><label>Hausnummer</label><input type="text" id="f-house" placeholder="1" value="'+(d.house_number||'')+'"></div>'+
         '</div>'+
         '<div style="display:grid;grid-template-columns:0.6fr 1fr 1fr;gap:12px">'+
-          '<div class="field" style="margin-bottom:0"><label>Vorwahl</label><input type="text" id="f-area-code" placeholder="02262"></div>'+
-          '<div class="field" style="margin-bottom:0"><label>Telefon</label><input type="text" id="f-phone-number" placeholder="12131243"></div>'+
-          '<div class="field" style="margin-bottom:0"><label>Handy <span style="font-size:10px;color:var(--muted)">(optional)</span></label><input type="text" id="f-mobile" placeholder="+49 151 12345678"></div>'+
+          '<div class="field" style="margin-bottom:0"><label>Vorwahl</label><input type="text" id="f-area-code" placeholder="02262" value="'+(d.area_code||'')+'"></div>'+
+          '<div class="field" style="margin-bottom:0"><label>Telefon</label><input type="text" id="f-phone-number" placeholder="12131243" value="'+(d.phone_number||'')+'"></div>'+
+          '<div class="field" style="margin-bottom:0"><label>Handy</label><input type="text" id="f-mobile" placeholder="+49 151 …" value="'+(d.mobile_url||'')+'"></div>'+
         '</div>'+
       '</div>'+
-      '<div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-primary" onclick="saveProfil()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Speichern</button></div>';
-    _fillProfilFields();
+      '<div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
   }
+
   else if(id==='zeiten'){
     wrap.innerHTML=
       '<div class="card">'+
-        '<div class="card-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Öffnungszeiten <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;margin-left:6px">— mind. 1 Tag <span style="color:var(--tg)">*</span></span></div>'+
+        '<div class="card-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Öffnungszeiten <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;margin-left:6px">mind. 1 Tag <span style="color:var(--tg)">*</span></span></div>'+
         '<div class="hours-cols" id="hours-cols"></div>'+
         '<div style="height:1px;background:var(--border);margin:18px 0"></div>'+
         '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'+
-          '<div class="card-title" style="margin-bottom:0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Temporäre Öffnungszeiten</div>'+
+          '<div class="card-title" style="margin-bottom:0">Temporäre Öffnungszeiten</div>'+
           '<button class="btn btn-sm btn-outline" onclick="addTempEntry()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> KW hinzufügen</button>'+
         '</div>'+
         '<div id="temp-entries-list" style="display:flex;flex-direction:column;gap:14px"></div>'+
         '<div id="temp-empty" style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0">Noch keine temporären Zeiten</div>'+
       '</div>'+
       '<div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
-    // Zuerst leere Kacheln zeigen, dann mit Daten füllen
-    _fillProfilFields();
+    buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
+    tempEntries=[];tempIdCounter=0;tempCalOffset={};
+    if(d.temp_arbeitszeiten&&d.temp_arbeitszeiten.length){
+      d.temp_arbeitszeiten.forEach(function(t){addTempEntry(t);});
+    } else { renderTempEntries(); }
   }
+
   else if(id==='links'){
     wrap.innerHTML=
       '<div class="card">'+
@@ -3321,18 +3235,20 @@ function renderProfilContent(id){
         '<div id="custom-links-empty" style="font-size:11px;color:var(--muted);padding:8px 0 4px;text-align:center">Noch keine Links — klicke Hinzufügen</div>'+
       '</div>'+
       '<div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
-    _fillProfilFields();
+    customLinks=Array.isArray(d.custom_links)?d.custom_links:[];
+    renderCustomLinks();
   }
+
   else if(id==='notiz'){
     wrap.innerHTML=
       '<div class="card">'+
         '<div class="card-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> Bemerkung im Buchungswidget</div>'+
         '<div class="field" style="margin-bottom:0"><label>Hinweis für Kunden <span style="font-size:10px;color:var(--muted);font-weight:400">(wird im Header angezeigt)</span></label>'+
-        '<input type="text" id="f-note" placeholder="z.B. Keine Kartenzahlung möglich" maxlength="120" oninput="if(this.value.trim()){_profilSaved[\'notiz\']=true;}_pill_refresh();"></div>'+
+        '<input type="text" id="f-note" placeholder="z.B. Keine Kartenzahlung möglich" maxlength="120" value="'+(d.note||'')+'" oninput="buildProfilToggles()"></div>'+
       '</div>'+
       '<div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
-    _fillProfilFields();
   }
+
   else if(id==='service'){
     wrap.innerHTML=
       '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'+
@@ -3340,19 +3256,11 @@ function renderProfilContent(id){
         '<div style="font-size:12px;color:var(--muted)">Name <span style="color:var(--tg)">*</span> · Dauer <span style="color:var(--tg)">*</span> · Preis <span style="color:var(--tg)">*</span></div></div>'+
         '<button class="btn btn-sm btn-outline" onclick="openSvcModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>'+
       '</div>'+
-      '<div class="svc-list" id="svc-list"><div class="empty"><div class="empty-icon">⟳</div><div class="empty-text">Wird geladen…</div></div></div>';
-    // Daten bereits beim Start geladen — direkt rendern
-    if(typeof servicesData!=='undefined'&&servicesData.length>=0){
-      renderSvcList();
-      if(servicesData.length>0)_profilSaved['service']=true;
-      _pill_refresh();
-    } else { loadServices().then(function(){_pill_refresh();}); }
+      '<div class="svc-list" id="svc-list"></div>';
+    renderSvcList();
   }
+
   else if(id==='whatsapp'){
-    if(!_allRequiredFilled()){
-      wrap.innerHTML='<div class="card" style="text-align:center;padding:40px 24px"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" style="margin-bottom:12px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><div style="font-size:14px;font-weight:600;color:var(--muted);margin-bottom:6px">Noch gesperrt</div><div style="font-size:12px;color:var(--muted)">Fülle zuerst alle Pflichtfelder aus: Name, Öffnungszeiten, Services und Team</div></div>';
-      return;
-    }
     wrap.innerHTML=
       '<div class="card" id="feat-whatsapp">'+
         '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">'+
@@ -3360,40 +3268,26 @@ function renderProfilContent(id){
             '<div style="width:38px;height:38px;border-radius:10px;background:#e8f8ee;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+
               '<svg width="20" height="20" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.072 22l4.948-1.348A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>'+
             '</div>'+
-            '<div><div style="font-size:13px;font-weight:600;color:var(--td)">WhatsApp Benachrichtigungen</div><div style="font-size:12px;color:var(--muted)">Automatische Nachrichten für Buchungen, Erinnerungen &amp; Follow-Ups</div></div>'+
+            '<div><div style="font-size:13px;font-weight:600;color:var(--td)">WhatsApp Benachrichtigungen</div><div style="font-size:12px;color:var(--muted)">Automatische Nachrichten für Buchungen &amp; Erinnerungen</div></div>'+
           '</div>'+
           '<label class="toggle-sw" style="flex-shrink:0;margin-top:2px"><input type="checkbox" id="feat-whatsapp-on" onchange="toggleFeature(\'whatsapp\')"><span class="slider"></span></label>'+
         '</div>'+
         '<div id="whatsapp-setup" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)"></div>'+
-      '</div>'+
-      '<div class="card" style="padding:18px;margin-top:0">'+
-        '<div class="card-title" style="margin-bottom:14px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg> WhatsApp Guthaben</div>'+
-        '<div id="dash-wa-usage-label" style="font-size:13px;color:var(--td);margin-bottom:8px">—</div>'+
-        '<div style="background:var(--border);border-radius:99px;height:10px;overflow:hidden"><div id="dash-wa-bar" style="height:100%;border-radius:99px;background:linear-gradient(90deg,#25d366,#128c7e);width:0%;transition:width .6s ease"></div></div>'+
-        '<div style="border-top:1px solid var(--border);padding-top:12px;margin-top:12px">'+
-          '<div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px">Aktive Automationen</div>'+
-          '<div id="dash-wa-automations" style="display:flex;flex-direction:column;gap:5px"></div>'+
-        '</div>'+
       '</div>';
     loadFeatureSettings();
-    if(typeof renderGuthabenCard==='function') renderGuthabenCard(window._lastDashData||{});
   }
+
   else if(id==='team'){
     wrap.innerHTML=
       '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'+
         '<div><div style="font-size:15px;font-weight:600;color:var(--td)">Team</div>'+
         '<div style="font-size:12px;color:var(--muted)">Name <span style="color:var(--tg)">*</span> · Google Calendar <span style="color:var(--tg)">*</span></div></div>'+
       '</div>'+
-      '<div class="ma-sidebar" id="staff-sidebar" style="max-width:100%;"><div class="empty" style="padding:20px 10px"><div class="empty-text">Wird geladen…</div></div></div>';
-    // Daten bereits beim Start geladen — direkt rendern
-    if(typeof staffData!=='undefined'&&staffData.length>=0){
-      renderStaffGrid();
-      if(staffData.length>0)_profilSaved['team']=true;
-      _pill_refresh();
-    } else { loadStaff().then(function(){_pill_refresh();}); }
+      '<div class="ma-sidebar" id="staff-sidebar"></div>';
+    renderStaffSidebar();
   }
 }
-init();
+// ══════════════════════════════════════════════
 // ══════════════════════════════════════════════
 </script>
 </body>
