@@ -1560,10 +1560,11 @@ async function loadFeatureSettings(){
   if(f.termine_on!==false&&document.getElementById('feat-termine-on')){
     document.getElementById('feat-termine-on').checked=f.termine_on!==false;
   }
-  if(f.reminder_timing)document.getElementById('reminder-timing').value=f.reminder_timing;
-  if(f.followup_timing)document.getElementById('followup-timing').value=f.followup_timing;
-  if(f.reminder_aktiv===false)document.getElementById('reminder-aktiv').checked=false;
-  if(f.followup_aktiv===false)document.getElementById('followup-aktiv').checked=false;
+  var _lf=function(id,p,v){var e=document.getElementById(id);if(e)e[p]=v;};
+  if(f.reminder_timing)_lf('reminder-timing','value',f.reminder_timing);
+  if(f.followup_timing)_lf('followup-timing','value',f.followup_timing);
+  if(f.reminder_aktiv===false)_lf('reminder-aktiv','checked',false);
+  if(f.followup_aktiv===false)_lf('followup-aktiv','checked',false);
 }
 
 async function saveFeatureSettings(){
@@ -2257,6 +2258,7 @@ function hexToRgba(hex,alpha){
 
 function renderStaffSidebar(){
   var sidebar=document.getElementById('staff-sidebar');
+  if(!sidebar)return;
   if(!staffData.length){
     sidebar.innerHTML='<div style="font-size:12px;color:var(--muted);padding:12px 4px">Noch kein Team</div>';
     sidebar.insertAdjacentHTML('beforeend','<button class="staff-add-btn" onclick="openStaffModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Hinzufügen</button>');
