@@ -1207,9 +1207,10 @@ async function saveProfil(silent){
   if(gv('f-city')!==null)     update.city          = gv('f-city');
   if(gv('f-mobile')!==null)   update.mobile_url    = gv('f-mobile');
   if(gv('f-note')!==null)     update.note          = gv('f-note');
-  if(gv('f-instagram')!==null)update.instagram_url = gv('f-instagram');
-  if(gv('f-website')!==null)  update.website_url   = gv('f-website');
-  if(gv('f-maps')!==null)     update.google_maps_url= gv('f-maps');
+  // Legacy-Felder leeren — Links laufen jetzt nur über custom_links
+  update.instagram_url   = null;
+  update.website_url     = null;
+  update.google_maps_url = null;
 
   // Hours — only save if hours-cols is in DOM
   if(document.getElementById('hours-cols')){
