@@ -1119,6 +1119,12 @@ async function loadProfil(){
   } else {
     renderTempEntries();
   }
+  // Set persistent saved state based on loaded data
+  if(d.brand_name||d.name) _profilSaved['adresse']=true;
+  if(d.arbeitszeiten&&Object.keys(d.arbeitszeiten).some(function(k){return d.arbeitszeiten[k]&&d.arbeitszeiten[k].aktiv;})) _profilSaved['zeiten']=true;
+  if(d.instagram_url||d.website_url||d.google_maps_url||(d.custom_links&&d.custom_links.length)) _profilSaved['links']=true;
+  if(d.note) _profilSaved['notiz']=true;
+  _pill_refresh();
 }
 
 // ── EIGENE LINKS ─────────────────────────────────────────────
@@ -1263,12 +1269,16 @@ async function saveProfil(silent){
   if(btn)btn.disabled=false;
 
   if(res.error){
+    contentBtns.forEach(function(b){b.textContent='Speichern';});
     if(st){st.className='save-status error';st.textContent='Fehler: '+res.error.message;}
     toast('Speichern fehlgeschlagen','error');
   } else {
+    // Mark this toggle as saved → permanent green
+    _profilSaved[_profilActive]=true;
     if(st){st.className='save-status saved';st.textContent='✓ Gespeichert';}
     toast('Profil gespeichert ✓','success');
-    // Reload current block to reflect saved state + refresh pills
+    // Reload fields so they stay filled after save
+    loadProfil();
     setTimeout(function(){
       if(st){st.textContent='';st.className='save-status';}
       _pill_refresh();
@@ -3098,25 +3108,44 @@ var PROFIL_TABS = [
 ];
 
 var PC = {
-  red:   {off:'rgba(200,50,50,0.35)',  on:'#d63c3c',  border:'rgba(220,80,80,0.6)',  txt:{off:'rgba(255,180,180,0.9)',on:'#fff'}},
-  yellow:{off:'rgba(180,130,0,0.35)', on:'#c49a00',  border:'rgba(210,160,0,0.6)',  txt:{off:'rgba(255,220,100,0.9)',on:'#fff'}},
-  green: {off:'rgba(20,140,70,0.35)', on:'#1a8f4e',  border:'rgba(30,180,90,0.6)',  txt:{off:'rgba(140,240,170,0.9)',on:'#fff'}},
-  gray:  {off:'rgba(120,120,120,0.2)',on:'rgba(120,120,120,0.2)',border:'rgba(150,150,150,0.3)',txt:{off:'rgba(180,180,180,0.6)',on:'rgba(180,180,180,0.6)'}},
+  red:   {off:'rgba(160,30,30,0.5)',   on:'#c0392b',  border:'rgba(200,60,60,0.7)',  glow:'rgba(200,60,60,0.35)',  txt:{off:'#ffaaaa',on:'#fff'}},
+  yellow:{off:'rgba(140,100,0,0.45)',  on:'#a07800',  border:'rgba(180,130,0,0.7)',  glow:'rgba(180,130,0,0.35)', txt:{off:'#ffd97a',on:'#fff'}},
+  green: {off:'rgba(40,120,60,0.45)',  on:'#1e7a3c',  border:'rgba(40,160,80,0.7)',  glow:'rgba(40,160,80,0.35)', txt:{off:'#88e8a8',on:'#fff'}},
+  gray:  {off:'rgba(100,100,120,0.3)', on:'rgba(100,100,120,0.3)', border:'rgba(140,140,160,0.3)', glow:'none', txt:{off:'rgba(180,180,200,0.5)',on:'rgba(180,180,200,0.5)'}},
 };
 
+// Persistent saved state per toggle
+var _profilSaved = {};
+
 function _pColor(t){
-  if(t.wa) return _allRequiredFilled() ? 'yellow' : 'gray';
-  if(!t.req) return 'yellow';
-  if(t.id==='adresse'){ var v=document.getElementById('f-brand'); return(v&&v.value.trim())?'green':'red'; }
-  if(t.id==='zeiten') return document.querySelectorAll('.hours-col.aktiv').length>0?'green':'red';
-  if(t.id==='service') return (typeof servicesData!=='undefined'&&servicesData.length>0)?'green':'red';
-  if(t.id==='team'){ var sb2=document.getElementById('staff-sidebar'); return(sb2&&sb2.querySelector('.staff-card'))?'green':'red'; }
+  if(t.wa) return _allRequiredFilled() ? (_profilSaved['whatsapp']?'green':'yellow') : 'gray';
+  // Non-required: yellow unless something saved → green
+  if(!t.req){
+    return _profilSaved[t.id] ? 'green' : 'yellow';
+  }
+  // Required fields: check DOM first, then saved state
+  if(t.id==='adresse'){
+    var v=document.getElementById('f-brand');
+    if(v&&v.value.trim()) return 'green';
+    return _profilSaved['adresse'] ? 'green' : 'red';
+  }
+  if(t.id==='zeiten'){
+    var aktiv=document.querySelectorAll('.hours-col.aktiv').length>0;
+    return (aktiv||_profilSaved['zeiten']) ? 'green' : 'red';
+  }
+  if(t.id==='service'){
+    return (typeof servicesData!=='undefined'&&servicesData.length>0) ? 'green' : 'red';
+  }
+  if(t.id==='team'){
+    var sb2=document.getElementById('staff-sidebar');
+    return (sb2&&sb2.querySelector('.staff-card')) ? 'green' : 'red';
+  }
   return 'red';
 }
 
 function _allRequiredFilled(){
-  var name=document.getElementById('f-brand');
-  return (name&&name.value.trim()) && document.querySelectorAll('.hours-col.aktiv').length>0 && (typeof servicesData!=='undefined'&&servicesData.length>0);
+  return _profilSaved['adresse'] && _profilSaved['zeiten'] &&
+    (typeof servicesData!=='undefined'&&servicesData.length>0);
 }
 
 function buildProfilToggles(){
@@ -3141,7 +3170,8 @@ function _setPillActive(id){
     var c=_pColor(t); var active=(t.id===id);
     pill.style.background=active?PC[c].on:PC[c].off;
     pill.style.color=active?PC[c].txt.on:PC[c].txt.off;
-    pill.style.boxShadow=active?'0 3px 12px '+PC[c].border:'none';
+    pill.style.borderColor=PC[c].border;
+    pill.style.boxShadow=active?'0 3px 14px '+PC[c].glow:'none';
   });
 }
 
@@ -3161,7 +3191,8 @@ function _pill_refresh(){
     pill.style.background=active?PC[c].on:PC[c].off;
     pill.style.color=active?PC[c].txt.on:PC[c].txt.off;
     pill.style.borderColor=PC[c].border;
-    pill.style.opacity=locked?'0.45':'1';
+    pill.style.boxShadow=active?'0 3px 14px '+PC[c].glow:'none';
+    pill.style.opacity=locked?'0.4':'1';
     pill.style.cursor=locked?'not-allowed':'pointer';
     if(locked){pill.setAttribute('disabled','');}else{pill.removeAttribute('disabled');}
   });
@@ -3228,7 +3259,7 @@ function renderProfilContent(id){
       '<div class="card">'+
         '<div class="card-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> Bemerkung im Buchungswidget</div>'+
         '<div class="field" style="margin-bottom:0"><label>Hinweis für Kunden <span style="font-size:10px;color:var(--muted);font-weight:400">(wird im Header angezeigt)</span></label>'+
-        '<input type="text" id="f-note" placeholder="z.B. Keine Kartenzahlung möglich" maxlength="120"></div>'+
+        '<input type="text" id="f-note" placeholder="z.B. Keine Kartenzahlung möglich" maxlength="120" oninput="if(this.value.trim()){_profilSaved[\'notiz\']=true;}_pill_refresh();"></div>'+
       '</div>'+
       '<div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
     loadProfil();
