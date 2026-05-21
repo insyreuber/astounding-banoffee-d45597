@@ -817,6 +817,27 @@ function buildTimeOptions(selected){
   }).join('');
 }
 
+function _slotsFor(h){
+  // Normalize legacy {start,end} or new {slots:[...]}
+  if(h.slots&&h.slots.length) return h.slots;
+  if(h.start||h.end) return [{start:h.start||'09:00',end:h.end||'18:00'}];
+  return [{start:'09:00',end:'18:00'}];
+}
+
+function buildSlotHtml(prefix,dayKey,slots,aktiv){
+  return slots.map(function(sl,si){
+    return'<div class="hours-slot" id="'+prefix+'slot-'+dayKey+'-'+si+'" style="display:flex;align-items:center;gap:5px;'+(si>0?'margin-top:4px;':'')+'">'
+      +'<select class="hz-start" onchange="syncHourSlot()">'+buildTimeOptions(sl.start||'09:00')+'</select>'
+      +'<span style="font-size:10px;color:var(--muted)">–</span>'
+      +'<select class="hz-end" onchange="syncHourSlot()">'+buildTimeOptions(sl.end||'18:00')+'</select>'
+      +(si===0
+        ?'<button type="button" onclick="addHourSlot(\''+prefix+'\',\''+dayKey+'\')" title="Slot hinzufügen" style="background:none;border:1px solid var(--border);border-radius:5px;width:20px;height:20px;cursor:pointer;font-size:13px;color:var(--tpl);display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">+</button>'
+        :'<button type="button" onclick="removeHourSlot(\''+prefix+'\',\''+dayKey+'\','+si+')" title="Entfernen" style="background:none;border:1px solid var(--border);border-radius:5px;width:20px;height:20px;cursor:pointer;font-size:13px;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">×</button>'
+      )
+    +'</div>';
+  }).join('');
+}
+
 function buildHoursCols(az,containerId,prefix,small,allActive){
   var cols=document.getElementById(containerId);
   if(!cols)return;
@@ -824,21 +845,19 @@ function buildHoursCols(az,containerId,prefix,small,allActive){
   var dayLblCls=small?'hours-col-sm-day':'hours-col-day';
   cols.innerHTML=DAYS.map(function(d){
     var defaultAktiv=allActive?true:d.key!=='sunday';
-    var h=az&&az[d.key]?az[d.key]:{aktiv:defaultAktiv,start:'09:00',end:'18:00'};
-    return'<div class="'+cls+' '+(h.aktiv?'aktiv':'')+'" id="'+prefix+'col-'+d.key+'">'
-      +'<label class="toggle-sw"><input type="checkbox" id="'+prefix+'aktiv-'+d.key+'" '+(h.aktiv?'checked':'')+' onchange="toggleHourCol(\''+d.key+'\',\''+prefix+'\')" ><span class="slider"></span></label>'
-      +'<div class="'+dayLblCls+'">'+d.label+'</div>'
-      +'<div class="hours-time-wrap" id="'+prefix+'times-'+d.key+'" style="'+(h.aktiv?'':'opacity:.3;pointer-events:none')+'">'
-        +'<select id="'+prefix+'start-'+d.key+'">'+buildTimeOptions(h.start||'09:00')+'</select>'
-        +'<span style="font-size:10px;color:var(--muted)">–</span>'
-        +'<select id="'+prefix+'end-'+d.key+'">'+buildTimeOptions(h.end||'18:00')+'</select>'
+    var h=az&&az[d.key]?az[d.key]:{aktiv:defaultAktiv,slots:[{start:'09:00',end:'18:00'}]};
+    var aktiv=h.aktiv;
+    var slots=_slotsFor(h);
+    return'<div class="'+cls+' '+(aktiv?'aktiv':'')+'" id="'+prefix+'col-'+d.key+'">'
+      +'<label class="toggle-sw" style="flex-shrink:0"><input type="checkbox" id="'+prefix+'aktiv-'+d.key+'" '+(aktiv?'checked':'')+' onchange="toggleHourCol(\''+d.key+'\',\''+prefix+'\')" ><span class="slider"></span></label>'
+      +'<div class="'+dayLblCls+'" style="flex-shrink:0">'+d.label+'</div>'
+      +'<div id="'+prefix+'times-'+d.key+'" style="display:flex;flex-direction:column;flex:1;'+(aktiv?'':'opacity:.3;pointer-events:none')+'">'
+        +buildSlotHtml(prefix,d.key,slots,aktiv)
       +'</div>'
-      +(h.aktiv?'':'<span class="hours-col-closed">Geschl.</span>')
+      +(aktiv?'':'<span class="hours-col-closed">Geschl.</span>')
     +'</div>';
   }).join('');
 }
-
-
 
 function toggleHourCol(key,prefix){
   var aktiv=document.getElementById(prefix+'aktiv-'+key).checked;
@@ -846,19 +865,51 @@ function toggleHourCol(key,prefix){
   var times=document.getElementById(prefix+'times-'+key);
   col.classList.toggle('aktiv',aktiv);
   if(times){times.style.opacity=aktiv?'1':'0.3';times.style.pointerEvents=aktiv?'auto':'none';}
-  // Update geschlossen text
-  var closedEl=col.querySelector('[style*="font-style:italic"]');
+  var closedEl=col.querySelector('.hours-col-closed');
   if(aktiv&&closedEl)closedEl.remove();
-  if(!aktiv&&!col.querySelector('[style*="font-style:italic"]'))col.insertAdjacentHTML('beforeend','<div style="font-size:9px;color:#c8bcd8;font-style:italic">Geschl.</div>');
+  if(!aktiv&&!col.querySelector('.hours-col-closed'))col.insertAdjacentHTML('beforeend','<span class="hours-col-closed">Geschl.</span>');
 }
+
+function addHourSlot(prefix,dayKey){
+  var wrap=document.getElementById(prefix+'times-'+dayKey);
+  if(!wrap)return;
+  var existing=wrap.querySelectorAll('.hours-slot').length;
+  var newSlot=document.createElement('div');
+  newSlot.className='hours-slot';
+  newSlot.style.cssText='display:flex;align-items:center;gap:5px;margin-top:4px';
+  newSlot.innerHTML=
+    '<select class="hz-start">'+buildTimeOptions('09:00')+'</select>'
+    +'<span style="font-size:10px;color:var(--muted)">–</span>'
+    +'<select class="hz-end">'+buildTimeOptions('18:00')+'</select>'
+    +'<button type="button" onclick="this.closest(\'.hours-slot\').remove()" title="Entfernen" style="background:none;border:1px solid var(--border);border-radius:5px;width:20px;height:20px;cursor:pointer;font-size:13px;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">×</button>';
+  wrap.appendChild(newSlot);
+}
+
+function removeHourSlot(prefix,dayKey,idx){
+  var wrap=document.getElementById(prefix+'times-'+dayKey);
+  if(!wrap)return;
+  var slots=wrap.querySelectorAll('.hours-slot');
+  if(slots[idx])slots[idx].remove();
+}
+
+function syncHourSlot(){} // hook for future validation
 
 function readHours(prefix){
   var az={};
   DAYS.forEach(function(d){
+    var aktiv=document.getElementById(prefix+'aktiv-'+d.key);
+    var wrap=document.getElementById(prefix+'times-'+d.key);
+    var slots=[];
+    if(wrap){
+      wrap.querySelectorAll('.hours-slot').forEach(function(row){
+        var s=row.querySelector('.hz-start');
+        var e=row.querySelector('.hz-end');
+        if(s&&e)slots.push({start:s.value,end:e.value});
+      });
+    }
     az[d.key]={
-      aktiv:document.getElementById(prefix+'aktiv-'+d.key).checked,
-      start:document.getElementById(prefix+'start-'+d.key).value||'09:00',
-      end:document.getElementById(prefix+'end-'+d.key).value||'18:00'
+      aktiv:aktiv?aktiv.checked:false,
+      slots:slots.length?slots:[{start:'09:00',end:'18:00'}]
     };
   });
   return az;
