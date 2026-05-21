@@ -465,22 +465,13 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
     <div class="nav-title">Dashboard</div>
   </div>
   <div class="nav-tabs">
-    <div class="nav-tab active" onclick="switchTab('dashboard')" id="tab-dashboard">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      Dashboard
-    </div>
-    <div class="nav-tab" onclick="switchTab('profil')" id="tab-profil">
+
+    <div onclick="switchTab('profil')" id="tab-profil" class="nav-tab active">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       Profil
     </div>
-    <div class="nav-tab" onclick="switchTab('services')" id="tab-services">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14"/><path d="M4.93 4.93a10 10 0 000 14.14"/></svg>
-      Services
-    </div>
-    <div class="nav-tab" onclick="switchTab('mitarbeiter')" id="tab-mitarbeiter">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-      Mitarbeiter
-    </div>
+
+
     <div class="nav-tab" onclick="switchTab('pakete')" id="tab-pakete">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
       Pakete
@@ -510,220 +501,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 <div class="main">
 
   <!-- ════ DASHBOARD ════ -->
-  <div class="tab-panel active" id="panel-dashboard">
-    <div class="sec-hdr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-      <div>
-        <div class="sec-title" id="dash-salon-name">Willkommen</div>
-        <div class="sec-sub" id="dash-date"></div>
-      </div>
-      <a class="nav-booking-btn" id="dash-booking-btn" href="#" target="_blank" style="font-size:12px;padding:8px 16px">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        Buchungsseite öffnen
-      </a>
-    </div>
-
-    <!-- ROW 1: Kacheln -->
-    <div class="dash-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px">
-
-      <!-- Systemstatus -->
-      <div class="card" style="padding:18px">
-        <div class="card-title" style="margin-bottom:14px">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          Systemstatus
-        </div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <div onclick="switchTab('services')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:6px 8px;border-radius:8px;transition:background .15s" onmouseover="this.style.background='var(--tpp)'" onmouseout="this.style.background='transparent'">
-            <div id="dash-status-wa" style="width:8px;height:8px;border-radius:50%;background:#ccc;flex-shrink:0"></div>
-            <span style="font-size:12px;color:var(--td);flex:1">WhatsApp</span>
-            <span id="dash-status-wa-label" style="font-size:11px;color:var(--muted)">—</span>
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-          </div>
-          <div onclick="switchTab('mitarbeiter')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:6px 8px;border-radius:8px;transition:background .15s" onmouseover="this.style.background='var(--tpp)'" onmouseout="this.style.background='transparent'">
-            <div id="dash-status-gcal" style="width:8px;height:8px;border-radius:50%;background:#ccc;flex-shrink:0"></div>
-            <span style="font-size:12px;color:var(--td);flex:1">Google Kalender</span>
-            <span id="dash-status-gcal-label" style="font-size:11px;color:var(--muted)">—</span>
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-          </div>
-          <div id="dash-row-booking" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:6px 8px;border-radius:8px;transition:background .15s" onmouseover="this.style.background='var(--tpp)'" onmouseout="this.style.background='transparent'">
-            <div id="dash-status-booking" style="width:8px;height:8px;border-radius:50%;background:#ccc;flex-shrink:0"></div>
-            <span style="font-size:12px;color:var(--td);flex:1">Buchungsseite</span>
-            <span id="dash-status-booking-label" style="font-size:11px;color:var(--muted)">—</span>
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-          </div>
-        </div>
-        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-          <span style="font-size:11px;color:var(--muted)">Buchungsseite aktiv</span>
-          <label class="toggle-sw"><input type="checkbox" id="dash-booking-active" onchange="toggleBookingActive()"><span class="slider"></span></label>
-        </div>
-      </div>
-
-      <!-- Geschäft -->
-      <div class="card" style="padding:18px">
-        <div class="card-title" style="margin-bottom:14px">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-          Geschäft
-        </div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <div onclick="switchTab('services')" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:6px 8px;border-radius:8px;transition:background .15s" onmouseover="this.style.background='var(--tpp)'" onmouseout="this.style.background='transparent'">
-            <span style="font-size:12px;color:var(--muted)">Services aktiv</span>
-            <div style="display:flex;align-items:center;gap:6px">
-              <span id="dash-svc-count" style="font-size:14px;font-weight:600;color:var(--td)">—</span>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-            </div>
-          </div>
-          <div onclick="switchTab('mitarbeiter')" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:6px 8px;border-radius:8px;transition:background .15s" onmouseover="this.style.background='var(--tpp)'" onmouseout="this.style.background='transparent'">
-            <span style="font-size:12px;color:var(--muted)">Mitarbeiter</span>
-            <div style="display:flex;align-items:center;gap:6px">
-              <span id="dash-staff-count" style="font-size:14px;font-weight:600;color:var(--td)">—</span>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-            </div>
-          </div>
-          <div onclick="switchTab('mitarbeiter')" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:6px 8px;border-radius:8px;transition:background .15s" onmouseover="this.style.background='var(--tpp)'" onmouseout="this.style.background='transparent'">
-            <span style="font-size:12px;color:var(--muted)">Mit Kalender</span>
-            <div style="display:flex;align-items:center;gap:6px">
-              <span id="dash-cal-count" style="font-size:14px;font-weight:600;color:var(--td)">—</span>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-            </div>
-          </div>
-          <div style="margin-top:4px;padding-top:10px;border-top:1px solid var(--border)">
-            <span style="font-size:11px;color:var(--muted)">Meistgebuchter Service</span>
-            <div id="dash-top-svc" style="font-size:12px;font-weight:500;color:var(--tpl);margin-top:3px">Wird geladen…</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Guthaben & WA Automation -->
-      <div class="card" style="padding:18px">
-        <div class="card-title" style="margin-bottom:14px">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-          WhatsApp Guthaben
-        </div>
-
-        <!-- Guthaben Balken -->
-        <div style="margin-bottom:16px">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-            <span style="font-size:11px;color:var(--muted)">Verbrauch</span>
-            <span id="dash-wa-usage-label" style="font-size:11px;font-weight:600;color:var(--td)">—</span>
-          </div>
-          <div style="background:var(--border);border-radius:99px;height:10px;overflow:hidden">
-            <div id="dash-wa-bar" style="height:100%;border-radius:99px;background:linear-gradient(90deg,#25d366,#128c7e);width:0%;transition:width .6s ease"></div>
-          </div>
-          <div style="display:flex;justify-content:space-between;margin-top:4px">
-            <span style="font-size:10px;color:var(--muted)">0</span>
-            <span id="dash-wa-max-label" style="font-size:10px;color:var(--muted)">100 Nachrichten</span>
-          </div>
-        </div>
-
-        <div style="border-top:1px solid var(--border);padding-top:12px">
-          <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px">Aktive Automationen</div>
-          <div id="dash-wa-automations" style="display:flex;flex-direction:column;gap:5px">
-            <!-- filled by JS -->
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ROW 2: Terminzeitstrahl -->
-    <div class="card" style="padding:18px">
-
-      <!-- Header -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
-        <div class="card-title" style="margin-bottom:0">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          Terminübersicht
-        </div>
-
-      </div>
-
-      <!-- Zeitraum-Steuerung: Vergangenheit | HEUTE | Zukunft -->
-      <div class="tl-ctrl-row" style="display:flex;align-items:center;gap:0;margin-bottom:16px;border-radius:10px;overflow:hidden;border:1.5px solid var(--border)">
-        <!-- Vergangenheit -->
-        <div style="flex:1;padding:10px 12px;background:rgba(201,168,76,0.07);border-right:1px solid var(--border)">
-          <div style="font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#7a5a00;font-weight:600;margin-bottom:5px">
-            ← Vergangenheit
-          </div>
-          <div style="display:flex;align-items:center;gap:6px">
-            <div style="display:flex;gap:3px">
-              <button class="tl-past-btn" data-days="0" onclick="setPastDays(0,this)">0T</button>
-              <button class="tl-past-btn active" data-days="7" onclick="setPastDays(7,this)">7T</button>
-              <button class="tl-past-btn" data-days="14" onclick="setPastDays(14,this)">14T</button>
-              <button class="tl-past-btn" data-days="30" onclick="setPastDays(30,this)">30T</button>
-            </div>
-            <input type="number" id="tl-past-custom" min="0" max="365" placeholder="—" style="width:38px;font-size:11px;padding:3px 5px;border:1px solid var(--border);border-radius:5px;color:var(--td);background:var(--white);text-align:center;outline:none;font-family:inherit" onchange="setPastCustom()" title="Eigene Anzahl Tage">
-            <span style="font-size:10px;color:var(--muted)">Tage</span>
-          </div>
-        </div>
-        <!-- Heute Marker -->
-        <div style="padding:10px 14px;background:var(--tp);text-align:center;flex-shrink:0;align-self:stretch;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-          <div style="font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,0.7);font-weight:600;margin-bottom:3px">Heute</div>
-          <div id="tl-heute-label" style="font-size:11px;font-weight:700;color:#fff"></div>
-        </div>
-        <!-- Zukunft -->
-        <div style="flex:1;padding:10px 12px;background:rgba(92,31,138,0.05);border-left:1px solid var(--border)">
-          <div style="font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:5px">
-            Zukunft →
-          </div>
-          <div style="display:flex;align-items:center;gap:6px">
-            <div style="display:flex;gap:3px">
-              <button class="tl-future-btn" data-days="0" onclick="setFutureDays(0,this)">0T</button>
-              <button class="tl-future-btn active" data-days="7" onclick="setFutureDays(7,this)">7T</button>
-              <button class="tl-future-btn" data-days="14" onclick="setFutureDays(14,this)">14T</button>
-              <button class="tl-future-btn" data-days="30" onclick="setFutureDays(30,this)">30T</button>
-            </div>
-            <input type="number" id="tl-future-custom" min="0" max="365" placeholder="—" style="width:38px;font-size:11px;padding:3px 5px;border:1px solid var(--border);border-radius:5px;color:var(--td);background:var(--white);text-align:center;outline:none;font-family:inherit" onchange="setFutureCustom()" title="Eigene Anzahl Tage">
-            <span style="font-size:10px;color:var(--muted)">Tage</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Zusammenfassung -->
-      <div id="tl-summary" style="display:flex;gap:16px;margin-bottom:14px;padding:10px 14px;background:var(--bg);border-radius:10px;flex-wrap:wrap">
-        <div><span style="font-size:11px;color:var(--muted)">Bestätigt</span><div id="tl-total" style="font-size:20px;font-weight:700;color:var(--tpl)">—</div></div>
-        <div style="width:1px;background:var(--border)"></div>
-        <div><span style="font-size:11px;color:var(--muted)">Heute</span><div id="tl-today-count" style="font-size:20px;font-weight:700;color:var(--td)">—</div></div>
-        <div style="width:1px;background:var(--border)"></div>
-        <div><span style="font-size:11px;color:var(--muted)">Storniert</span><div id="tl-cancelled" style="font-size:20px;font-weight:700;color:var(--muted)">—</div></div>
-        <div style="width:1px;background:var(--border)"></div>
-        <div><span style="font-size:11px;color:var(--muted)">Zeitraum</span><div id="tl-range-label" style="font-size:12px;font-weight:500;color:var(--td);margin-top:4px">—</div></div>
-      </div>
-
-      <!-- Chart-Bereich -->
-      <div style="position:relative">
-        <div id="dash-timeline" style="width:100%;min-height:170px"></div>
-        <div id="dash-timeline-labels" style="display:none"></div>
-        <div id="dash-timeline-empty" style="display:none;text-align:center;padding:24px;font-size:12px;color:var(--muted)">
-          Keine bestätigten Termine im gewählten Zeitraum
-        </div>
-      </div>
-
-      <!-- Services + Mitarbeiter immer sichtbar -->
-      <div class="tl-bottom-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
-        <div>
-          <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:10px">Services</div>
-          <div id="tl-services-chart" style="width:100%"></div>
-        </div>
-        <div>
-          <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:10px">Mitarbeiter</div>
-          <div id="tl-staff-chart" style="width:100%"></div>
-        </div>
-      </div>
-
-      <!-- Tagesdetails -->
-      <div id="tl-day-detail" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-          <div id="tl-day-title" style="font-size:13px;font-weight:600;color:var(--td)"></div>
-          <button onclick="document.getElementById('tl-day-detail').style.display='none'" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;line-height:1">×</button>
-        </div>
-        <div id="tl-day-list" style="display:flex;flex-direction:column;gap:6px"></div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ════ PROFIL ════ -->
-  <!-- ════ PROFIL ════ -->
-  <div class="tab-panel" id="panel-profil">
+  <div class="tab-panel active" id="panel-profil">
     <div class="sec-hdr" style="margin-bottom:16px;">
       <div class="sec-title">Profil</div>
       <div class="sec-sub">Alle Einstellungen deines Salons</div>
@@ -736,131 +514,6 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
     <div id="profil-content"></div>
   </div>
 
-  <div class="tab-panel" id="panel-services">
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px">
-      <div>
-        <div class="sec-title">Services</div>
-        <div class="sec-sub">Insy-Funktionen & eigene Dienstleistungen</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px">
-        <button class="btn btn-sm btn-outline" onclick="openSvcModal()">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Hinzufügen
-        </button>
-      </div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1.8fr;gap:16px;align-items:start">
-
-      <!-- LINKS: Insy-Features -->
-      <div style="display:flex;flex-direction:column;gap:10px">
-
-        <!-- WhatsApp Benachrichtigungen (kombiniert) -->
-        <div class="card" id="feat-whatsapp">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
-            <div style="display:flex;align-items:flex-start;gap:11px">
-              <div style="width:38px;height:38px;border-radius:10px;background:#e8f8ee;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.072 22l4.948-1.348A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
-              </div>
-              <div>
-                <div class="feat-title">WhatsApp Benachrichtigungen</div>
-                <div class="feat-desc">Automatische Nachrichten für Buchungen, Erinnerungen & Follow-Ups</div>
-              </div>
-            </div>
-            <label class="toggle-sw" style="flex-shrink:0;margin-top:2px"><input type="checkbox" id="feat-whatsapp-on" onchange="toggleFeature('whatsapp')"><span class="slider"></span></label>
-          </div>
-          <div id="whatsapp-setup" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
-            <div style="display:flex;flex-direction:column;gap:8px">
-              <!-- Terminverwaltung -->
-              <div class="feat-sub-row">
-                <div class="feat-sub-icon">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="9 16 11 18 15 14"/></svg>
-                </div>
-                <div style="flex:1">
-                  <strong style="font-size:12px">Terminverwaltung</strong>
-                  <div style="font-size:11px;color:var(--muted)">Bestätigung, Verschiebung & Storno per WhatsApp</div>
-                </div>
-                <label class="toggle-sw toggle-sm"><input type="checkbox" id="feat-termine-on" onchange="toggleFeature('termine')" checked><span class="slider"></span></label>
-              </div>
-              <!-- Erinnerung -->
-              <div class="feat-sub-row">
-                <div class="feat-sub-icon">🔔</div>
-                <div style="flex:1">
-                  <strong style="font-size:12px">Erinnerung</strong>
-                  <div style="font-size:11px;color:var(--muted)">vor dem Termin</div>
-                </div>
-                <div style="display:flex;align-items:center;gap:6px">
-                  <select id="reminder-timing" style="border:1.5px solid var(--border);border-radius:6px;padding:4px 8px;font-size:11px;font-family:inherit;outline:none;color:var(--td)">
-                    <option value="1h">1 Stunde vorher</option>
-                    <option value="2h">2 Stunden vorher</option>
-                    <option value="24h" selected>24 Stunden vorher</option>
-                    <option value="48h">48 Stunden vorher</option>
-                  </select>
-                  <label class="toggle-sw toggle-sm"><input type="checkbox" id="reminder-aktiv" checked><span class="slider"></span></label>
-                </div>
-              </div>
-              <!-- Follow-Up -->
-              <div class="feat-sub-row">
-                <div class="feat-sub-icon">💬</div>
-                <div style="flex:1">
-                  <strong style="font-size:12px">Follow-Up</strong>
-                  <div style="font-size:11px;color:var(--muted)">nach dem Termin</div>
-                </div>
-                <div style="display:flex;align-items:center;gap:6px">
-                  <select id="followup-timing" style="border:1.5px solid var(--border);border-radius:6px;padding:4px 8px;font-size:11px;font-family:inherit;outline:none;color:var(--td)">
-                    <option value="2h">2 Stunden nach</option>
-                    <option value="24h" selected>1 Tag nach</option>
-                    <option value="72h">3 Tage nach</option>
-                    <option value="168h">1 Woche nach</option>
-                  </select>
-                  <label class="toggle-sw toggle-sm"><input type="checkbox" id="followup-aktiv" checked><span class="slider"></span></label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div><!-- /links -->
-
-      <!-- RECHTS: Eigene Services -->
-      <div>
-        <div class="svc-list" id="svc-list">
-          <div class="empty"><div class="empty-icon">⟳</div><div class="empty-text">Wird geladen…</div></div>
-        </div>
-      </div>
-
-    </div><!-- /grid -->
-  </div>
-
-  <!-- ════ MITARBEITER ════ -->
-  <div class="tab-panel" id="panel-mitarbeiter">
-    <div class="sec-hdr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-      <div><div class="sec-title">Mitarbeiter</div><div class="sec-sub">Team & Wochenplan</div></div>
-    </div>
-    <div class="ma-layout">
-      <!-- Sidebar: Mitarbeiter-Kacheln -->
-      <div class="ma-sidebar" id="staff-sidebar">
-        <div class="empty" style="padding:20px 10px"><div class="empty-text">Wird geladen…</div></div>
-      </div>
-      <!-- Wochenplan rechts -->
-      <div class="week-plan" id="week-plan">
-        <div class="week-plan-hdr">
-          <div class="week-plan-title">Wochenübersicht</div>
-          <div style="display:flex;align-items:center;gap:8px">
-            <button onclick="weekPlanNav(-1)" style="background:none;border:1px solid rgba(255,255,255,.2);border-radius:5px;padding:2px 9px;cursor:pointer;font-size:13px;color:rgba(255,255,255,.7)">‹</button>
-            <span id="week-plan-label" style="font-size:11px;color:rgba(255,255,255,.6);font-family:'DM Mono',monospace;min-width:60px;text-align:center"></span>
-            <button onclick="weekPlanNav(1)" style="background:none;border:1px solid rgba(255,255,255,.2);border-radius:5px;padding:2px 9px;cursor:pointer;font-size:13px;color:rgba(255,255,255,.7)">›</button>
-            <button onclick="weekPlanNav(0)" style="background:none;border:1px solid rgba(255,255,255,.2);border-radius:5px;padding:2px 9px;cursor:pointer;font-size:10px;color:rgba(255,255,255,.6)">Heute</button>
-          </div>
-          <div class="week-plan-legend" id="week-legend"></div>
-        </div>
-        <div class="week-scroll">
-          <div id="week-grid-wrap"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ════ PAKETE ════ -->
   <div class="tab-panel" id="panel-pakete">
     <div class="sec-hdr">
       <div class="sec-title">Pakete</div>
@@ -1218,6 +871,11 @@ function switchTab(n){
   if(n==='bills')loadBills();
   if(n==='profil'){setTimeout(function(){buildProfilToggles();},80);}
 }
+
+// Auto-init profil on load
+window.addEventListener('load', function(){
+  setTimeout(function(){ buildProfilToggles(); }, 200);
+});
 
 // ── TOAST ─────────────────────────────────────────────────────
 function toast(msg,type){
@@ -3128,11 +2786,19 @@ function loadProfilData(){
   if(typeof loadProfil==='function') loadProfil();
 }
 function renderHoursCols(){
-  if(typeof buildHoursCols==='function') buildHoursCols();
-  else if(typeof renderHours==='function') renderHours();
+  if(typeof buildHoursCols==='function'){
+    var az = window.SALON_AZ || null;
+    buildHoursCols(az, 'hours-cols', '', false, false);
+  }
 }
 function loadTempEntries(){
   if(typeof loadTempAz==='function') loadTempAz();
+  else {
+    var list = document.getElementById('temp-entries-list');
+    var empty = document.getElementById('temp-empty');
+    if(list) list.innerHTML='';
+    if(empty) empty.style.display='block';
+  }
 }
 // ══════════════════════════════════════════════
   renderGuthabenCard(d);
