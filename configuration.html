@@ -1568,7 +1568,7 @@ async function saveFeatureSettings(){
   await sb.from('kunden_profile').update({feature_settings:settings}).eq('id',SALON_ID);
 }
 async function loadServices(){
-  if(!SALON_ID){document.getElementById('svc-list').innerHTML='<div class="empty"><div class="empty-text">Keine salon_id</div></div>';return;}
+  if(!SALON_ID){var sl=document.getElementById('svc-list');if(sl)sl.innerHTML='<div class="empty"><div class="empty-text">Keine salon_id</div></div>';return;}
   var sRes=await sb.from('services').select('*').eq('salon_id',SALON_ID).order('sortierung');
   if(sRes.error){toast('Services Fehler','error');return;}
   var svcs=sRes.data||[];
@@ -1578,6 +1578,7 @@ async function loadServices(){
     if(!vRes.error)allVars=vRes.data||[];
   }
   servicesData=svcs.map(function(s){return{service:s,varianten:allVars.filter(function(v){return v.service_id===s.id;})};});
+  if(svcs.length>0) _profilSaved['service']=true;
   renderSvcList();
 }
 
@@ -3130,10 +3131,15 @@ async function init(){
 
   loadFeatureSettings();
   checkGcalReturn();
-  // Load data for pill colors before building toggles
-  loadStaff();
-  loadServices();
-  buildProfilToggles();
+
+  // Alle Daten beim Start laden — dann Toggles bauen und Felder befüllen
+  Promise.all([
+    loadProfil(),
+    loadServices(),
+    loadStaff()
+  ]).then(function(){
+    buildProfilToggles();
+  });
 }
 /* Stadt/PLZ/Hausnummer Zeile bleibt nebeneinander auf Mobile */
 
