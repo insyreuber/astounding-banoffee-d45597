@@ -665,7 +665,7 @@
     }
 
     /* Buttons+QR Container → order 7 (nach Kacheln) + alle Kinder verstecken außer Google-Button */
-    section[style*="height:100vh"] > div[style*="top:320px"] {
+    section[style*="height:100vh"] > div[style*="top:130px"] {
       order: 7 !important;
       flex-direction: column !important;
       align-items: flex-start !important;
@@ -676,20 +676,20 @@
     }
 
     /* QR + Buchungsvorschau + Live-Button container ausblenden */
-    section[style*="height:100vh"] > div[style*="top:320px"] > a,
-    section[style*="height:100vh"] > div[style*="top:320px"] > div[style*="flex-direction:column"] {
+    section[style*="height:100vh"] > div[style*="top:130px"] > a,
+    section[style*="height:100vh"] > div[style*="top:130px"] > div[style*="flex-direction:column"] {
       display: none !important;
     }
 
     /* Nur Google-Button zeigen */
-    section[style*="height:100vh"] > div[style*="top:320px"] > div[style*="gap:16px"] {
+    section[style*="height:100vh"] > div[style*="top:130px"] > div[style*="gap:16px"] {
       display: flex !important;
       flex-direction: column !important;
       width: 100% !important;
     }
 
     /* Live-Buchungsseite Link im Button-div ausblenden */
-    section[style*="height:100vh"] > div[style*="top:320px"] > div[style*="gap:16px"] > a:last-child {
+    section[style*="height:100vh"] > div[style*="top:130px"] > div[style*="gap:16px"] > a:last-child {
       display: none !important;
     }
 
@@ -1000,7 +1000,7 @@
   <p style="position:absolute;top:300px;left:5vw;font-family:'DM Sans',sans-serif;font-size:1rem;color:rgba(255,255,255,0.6);line-height:1.65;max-width:340px;font-weight:300;margin:0;">Verbinden, einrichten, fertig. Dein Kalender wird zur Buchungsseite.</p>
 
   <!-- BUTTONS — zentriert in der Mitte, QR Code rechts davon -->
-  <div style="position:absolute;top:320px;left:0;right:0;display:flex;align-items:flex-start;justify-content:flex-end;padding-right:6vw;gap:60px;">
+  <div style="position:absolute;top:130px;left:0;right:0;display:flex;align-items:flex-start;justify-content:flex-end;padding-right:6vw;gap:60px;">
 
     <!-- Buttons: links -->
     <div style="display:flex;flex-direction:column;gap:16px;align-items:flex-start;">
