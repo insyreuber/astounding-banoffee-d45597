@@ -1085,9 +1085,10 @@ async function loadProfil(){
   var res=await sb.from('kunden_profile').select('*').eq('id',SALON_ID).single();
   if(res.error){toast('Profil nicht gefunden','error');buildHoursCols(null,'hours-cols','h-',false);return;}
   var d=res.data;
-  document.getElementById('f-brand').value=d.brand_name||d.name||'';
-  document.getElementById('f-area-code').value=d.area_code||'';
-  document.getElementById('f-phone-number').value=d.phone_number||'';
+  _safe('f-brand',d.brand_name||d.name||'');
+  _safe('f-area-code',d.area_code||'');
+  var _safe=function(id,v){var e=document.getElementById(id);if(e)e.value=v;};
+  _safe('f-phone-number',d.phone_number||'');
   // Admin Google Kalender Status
   var statusEl=document.getElementById('admin-gcal-status');
   var btnEl=document.getElementById('btn-admin-gcal');
@@ -1098,15 +1099,15 @@ async function loadProfil(){
     if(statusEl)statusEl.style.display='none';
     if(btnEl)btnEl.style.display='flex';
   }
-  document.getElementById('f-street').value=d.street||'';
-  document.getElementById('f-house').value=d.house_number||'';
-  document.getElementById('f-plz').value=d.postal_code||'';
-  document.getElementById('f-city').value=d.city||'';
-  document.getElementById('f-instagram').value=d.instagram_url||'';
-  document.getElementById('f-mobile').value=d.mobile_url||'';
-  document.getElementById('f-website').value=d.website_url||'';
-  document.getElementById('f-maps').value=d.google_maps_url||'';
-  if(document.getElementById('f-note'))document.getElementById('f-note').value=d.note||'';
+  _safe('f-street',d.street||'');
+  _safe('f-house',d.house_number||'');
+  _safe('f-plz',d.postal_code||'');
+  _safe('f-city',d.city||'');
+  _safe('f-instagram',d.instagram_url||'');
+  _safe('f-mobile',d.mobile_url||'');
+  _safe('f-website',d.website_url||'');
+  _safe('f-maps',d.google_maps_url||'');
+  _safe('f-note',d.note||'');
     customLinks = Array.isArray(d.custom_links) ? d.custom_links : [];
     renderCustomLinks();
   buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
@@ -1216,7 +1217,7 @@ async function saveProfil(silent){
   if(!SALON_ID){toast('Keine salon_id','error');return;}
   var btn=document.getElementById('btn-save-profil');
   var st=document.getElementById('profil-status');
-  btn.disabled=true;st.className='save-status saving';st.textContent='Wird gespeichert…';
+  if(btn)btn.disabled=true;if(st){st.className='save-status saving';st.textContent='Wird gespeichert…';}
 
   var res=await sb.from('kunden_profile').update({
     brand_name:document.getElementById('f-brand').value.trim(),
@@ -1226,18 +1227,19 @@ async function saveProfil(silent){
     house_number:document.getElementById('f-house').value.trim(),
     postal_code:document.getElementById('f-plz').value.trim(),
     city:document.getElementById('f-city').value.trim(),
-    instagram_url:document.getElementById('f-instagram').value.trim(),
-    mobile_url:document.getElementById('f-mobile').value.trim(),
-    note:document.getElementById('f-note')?document.getElementById('f-note').value.trim():'',
-    website_url:document.getElementById('f-website').value.trim(),
-    google_maps_url:document.getElementById('f-maps').value.trim(),
+    instagram_url:(document.getElementById('f-instagram')?document.getElementById('f-instagram').value.trim():''),
+    mobile_url:(document.getElementById('f-mobile')?document.getElementById('f-mobile').value.trim():''),
+    note:(document.getElementById('f-note')?document.getElementById('f-note').value.trim():''),
+    website_url:(document.getElementById('f-website')?document.getElementById('f-website').value.trim():''),
+    google_maps_url:(document.getElementById('f-maps')?document.getElementById('f-maps').value.trim():''),
+    custom_links:(typeof customLinks!=='undefined'?customLinks.filter(function(l){return l.url&&l.url.trim();}):[]),
     custom_links:customLinks.filter(function(l){return l.url.trim();}),
     arbeitszeiten:readHours('h-'),
     temp_arbeitszeiten:readTempEntries()
   }).eq('id',SALON_ID);
-  btn.disabled=false;
-  if(res.error){st.className='save-status error';st.textContent='Fehler: '+res.error.message;toast('Speichern fehlgeschlagen','error');}
-  else{if(!silent){st.className='save-status saved';st.textContent='✓ Gespeichert';toast('Profil gespeichert ✓','success');setTimeout(function(){st.textContent='';st.className='save-status';},3000);}}
+  if(btn)btn.disabled=false;
+  if(res.error){if(st){st.className='save-status error';st.textContent='Fehler: '+res.error.message;}toast('Speichern fehlgeschlagen','error');}
+  else{if(!silent){if(st){st.className='save-status saved';st.textContent='✓ Gespeichert';}toast('Profil gespeichert ✓','success');setTimeout(function(){if(st){st.textContent='';st.className='save-status';}},3000);}}
 }
 
 // ── GOOGLE KALENDER MITARBEITER ───────────────────────────────
@@ -3174,21 +3176,16 @@ function renderProfilContent(id){
   else if(id==='links'){
     wrap.innerHTML=
       '<div class="card">'+
-        '<div class="card-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg> Eigene Links</div>'+
-        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">'+
-          '<div class="field" style="margin-bottom:0"><label>Instagram</label><input type="text" id="f-instagram" placeholder="https://instagram.com/deinsalon"></div>'+
-          '<div class="field" style="margin-bottom:0"><label>Website</label><input type="text" id="f-website" placeholder="https://meinsalon.de"></div>'+
-        '</div>'+
-        '<div class="field" style="margin-bottom:12px"><label>Google Maps Link</label><input type="text" id="f-maps" placeholder="https://maps.google.com/?q=..."></div>'+
-        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'+
-          '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600">Eigene Links</div>'+
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'+
+          '<div class="card-title" style="margin-bottom:0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg> Eigene Links</div>'+
           '<button type="button" class="btn btn-sm btn-ghost" onclick="addCustomLink()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>'+
         '</div>'+
         '<div id="custom-links-list" style="display:flex;flex-direction:column;gap:7px"></div>'+
-        '<div id="custom-links-empty" style="font-size:11px;color:var(--muted);padding:4px 0 2px">Noch keine eigenen Links</div>'+
+        '<div id="custom-links-empty" style="font-size:11px;color:var(--muted);padding:8px 0 4px;text-align:center">Noch keine Links — klicke Hinzufügen</div>'+
       '</div>'+
       '<div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
-    loadProfil();
+    if(typeof customLinks!=='undefined') renderCustomLinks();
+    else loadProfil();
   }
   else if(id==='notiz'){
     wrap.innerHTML=
@@ -3242,23 +3239,12 @@ function renderProfilContent(id){
   }
   else if(id==='team'){
     wrap.innerHTML=
-      '<div class="ma-layout">'+
-        '<div class="ma-sidebar" id="staff-sidebar"><div class="empty" style="padding:20px 10px"><div class="empty-text">Wird geladen…</div></div></div>'+
-        '<div class="week-plan" id="week-plan">'+
-          '<div class="week-plan-hdr">'+
-            '<div class="week-plan-title">Mitarbeiter</div>'+
-            '<div style="display:flex;align-items:center;gap:8px">'+
-              '<button onclick="weekPlanNav(-1)" style="background:none;border:1px solid rgba(255,255,255,.2);border-radius:5px;padding:2px 9px;cursor:pointer;font-size:13px;color:rgba(255,255,255,.7)">‹</button>'+
-              '<span id="week-plan-label" style="font-size:11px;color:rgba(255,255,255,.6);font-family:\'DM Mono\',monospace;min-width:60px;text-align:center"></span>'+
-              '<button onclick="weekPlanNav(1)" style="background:none;border:1px solid rgba(255,255,255,.2);border-radius:5px;padding:2px 9px;cursor:pointer;font-size:13px;color:rgba(255,255,255,.7)">›</button>'+
-              '<button onclick="weekPlanNav(0)" style="background:none;border:1px solid rgba(255,255,255,.2);border-radius:5px;padding:2px 9px;cursor:pointer;font-size:10px;color:rgba(255,255,255,.6)">Heute</button>'+
-            '</div>'+
-            '<div class="week-plan-legend" id="week-legend"></div>'+
-          '</div>'+
-          '<div class="week-scroll"><div id="week-grid-wrap"></div></div>'+
-        '</div>'+
-      '</div>';
-    loadStaff().then(function(){ updateWeekPlanLabel(); _pill_refresh(); });
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'+
+        '<div><div style="font-size:15px;font-weight:600;color:var(--td)">Team</div>'+
+        '<div style="font-size:12px;color:var(--muted)">Name <span style="color:var(--tg)">*</span> · Google Calendar <span style="color:var(--tg)">*</span></div></div>'+
+      '</div>'+
+      '<div class="ma-sidebar" id="staff-sidebar" style="max-width:100%;"><div class="empty" style="padding:20px 10px"><div class="empty-text">Wird geladen…</div></div></div>';
+    loadStaff().then(function(){ _pill_refresh(); });
   }
 }
 init();
