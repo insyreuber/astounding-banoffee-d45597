@@ -832,8 +832,8 @@ function buildSlotHtml(prefix,dayKey,slots,aktiv){
       +'<span style="font-size:10px;color:var(--muted)">–</span>'
       +'<select class="hz-end" onchange="syncHourSlot()">'+buildTimeOptions(sl.end||'18:00')+'</select>'
       +(si===0
-        ?'<button type="button" onclick="addHourSlot(\''+prefix+'\',\''+dayKey+'\')" title="Slot hinzufügen" style="background:none;border:1px solid var(--border);border-radius:5px;width:20px;height:20px;cursor:pointer;font-size:13px;color:var(--tpl);display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">+</button>'
-        :'<button type="button" onclick="removeHourSlot(\''+prefix+'\',\''+dayKey+'\','+si+')" title="Entfernen" style="background:none;border:1px solid #f5c6c6;border-radius:5px;width:20px;height:20px;cursor:pointer;font-size:13px;color:#c0392b;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">×</button>'
+        ?'<button type="button" onclick="addHourSlot(\''+prefix+'\',\''+dayKey+'\')" title="Slot hinzufügen" style="background:var(--tpl);border:none;border-radius:5px;width:20px;height:20px;cursor:pointer;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">+</button>'
+        :'<button type="button" onclick="removeHourSlot(\''+prefix+'\',\''+dayKey+'\','+si+')" title="Entfernen" style="background:#c0392b;border:none;border-radius:5px;width:20px;height:20px;cursor:pointer;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">×</button>'
       )
     +'</div>';
   }).join('');
@@ -882,7 +882,7 @@ function addHourSlot(prefix,dayKey){
     '<select class="hz-start">'+buildTimeOptions('09:00')+'</select>'
     +'<span style="font-size:10px;color:var(--muted)">–</span>'
     +'<select class="hz-end">'+buildTimeOptions('18:00')+'</select>'
-    +'<button type="button" onclick="this.closest(\'.hours-slot\').remove()" title="Entfernen" style="background:none;border:1px solid #f5c6c6;border-radius:5px;width:20px;height:20px;cursor:pointer;font-size:13px;color:#c0392b;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">×</button>';
+    +'<button type="button" onclick="this.closest(\'.hours-slot\').remove()" title="Entfernen" style="background:#c0392b;border:none;border-radius:5px;width:20px;height:20px;cursor:pointer;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">×</button>';
   wrap.appendChild(newSlot);
 }
 
