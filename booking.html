@@ -1297,12 +1297,8 @@ async function loadSalonProfile(){
       }
     }
 
-    // Instagram — show only if set
+    // Links — nur noch custom_links, legacy Felder werden ignoriert
     var hasLinks=false;
-    if(data.instagram_url){
-      var igEl=document.getElementById('salon-instagram');
-      if(igEl){igEl.href=data.instagram_url;igEl.style.display='flex';hasLinks=true;}
-    }
     if(data.mobile_url){
       var mobileEl=document.getElementById('salon-mobile-link');
       var mobileLbl=document.getElementById('salon-mobile-label');
@@ -1310,12 +1306,7 @@ async function loadSalonProfile(){
         mobileEl.href='tel:'+data.mobile_url.replace(/\s/g,'');
         mobileEl.style.display='flex';
         if(mobileLbl)mobileLbl.textContent=data.mobile_url;
-        // Mobile is in address row, not links row — no hasLinks=true
       }
-    }
-    if(data.website_url){
-      var webEl=document.getElementById('salon-website');
-      if(webEl){webEl.href=data.website_url;webEl.style.display='flex';hasLinks=true;}
     }
     // Custom links from config
     if(data.custom_links&&Array.isArray(data.custom_links)&&data.custom_links.length){
