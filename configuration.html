@@ -1215,31 +1215,65 @@ function removeCustomLink(i){
 
 async function saveProfil(silent){
   if(!SALON_ID){toast('Keine salon_id','error');return;}
+
+  // Helper: read field value if it exists in DOM
+  function gv(id){var e=document.getElementById(id);return e?e.value.trim():null;}
+
+  // Build update object — only include fields that are currently in the DOM
+  var update={};
+
+  if(gv('f-brand')!==null)    update.brand_name    = gv('f-brand');
+  if(gv('f-area-code')!==null)update.area_code     = gv('f-area-code');
+  if(gv('f-phone-number')!==null)update.phone_number= gv('f-phone-number');
+  if(gv('f-street')!==null)   update.street        = gv('f-street');
+  if(gv('f-house')!==null)    update.house_number  = gv('f-house');
+  if(gv('f-plz')!==null)      update.postal_code   = gv('f-plz');
+  if(gv('f-city')!==null)     update.city          = gv('f-city');
+  if(gv('f-mobile')!==null)   update.mobile_url    = gv('f-mobile');
+  if(gv('f-note')!==null)     update.note          = gv('f-note');
+  if(gv('f-instagram')!==null)update.instagram_url = gv('f-instagram');
+  if(gv('f-website')!==null)  update.website_url   = gv('f-website');
+  if(gv('f-maps')!==null)     update.google_maps_url= gv('f-maps');
+
+  // Hours — only save if hours-cols is in DOM
+  if(document.getElementById('hours-cols')){
+    update.arbeitszeiten = readHours('h-');
+  }
+  // Temp entries — only save if rendered
+  if(document.getElementById('temp-entries-list')){
+    update.temp_arbeitszeiten = readTempEntries();
+  }
+  // Custom links — only save if in DOM
+  if(document.getElementById('custom-links-list')){
+    update.custom_links = (typeof customLinks!=='undefined')?customLinks.filter(function(l){return l.url&&l.url.trim();}):[];
+  }
+
+  if(Object.keys(update).length===0){toast('Nichts zu speichern','error');return;}
+
+  // Visual feedback
   var btn=document.getElementById('btn-save-profil');
   var st=document.getElementById('profil-status');
-  if(btn)btn.disabled=true;if(st){st.className='save-status saving';st.textContent='Wird gespeichert…';}
+  // Also find any .btn-primary in profil-content
+  var contentBtns=document.querySelectorAll('#profil-content .btn-primary');
+  contentBtns.forEach(function(b){b.disabled=true;b.textContent='Speichern…';});
 
-  var res=await sb.from('kunden_profile').update({
-    brand_name:document.getElementById('f-brand').value.trim(),
-    area_code:document.getElementById('f-area-code').value.trim(),
-    phone_number:document.getElementById('f-phone-number').value.trim(),
-    street:document.getElementById('f-street').value.trim(),
-    house_number:document.getElementById('f-house').value.trim(),
-    postal_code:document.getElementById('f-plz').value.trim(),
-    city:document.getElementById('f-city').value.trim(),
-    instagram_url:(document.getElementById('f-instagram')?document.getElementById('f-instagram').value.trim():''),
-    mobile_url:(document.getElementById('f-mobile')?document.getElementById('f-mobile').value.trim():''),
-    note:(document.getElementById('f-note')?document.getElementById('f-note').value.trim():''),
-    website_url:(document.getElementById('f-website')?document.getElementById('f-website').value.trim():''),
-    google_maps_url:(document.getElementById('f-maps')?document.getElementById('f-maps').value.trim():''),
-    custom_links:(typeof customLinks!=='undefined'?customLinks.filter(function(l){return l.url&&l.url.trim();}):[]),
-    custom_links:customLinks.filter(function(l){return l.url.trim();}),
-    arbeitszeiten:readHours('h-'),
-    temp_arbeitszeiten:readTempEntries()
-  }).eq('id',SALON_ID);
+  var res=await sb.from('kunden_profile').update(update).eq('id',SALON_ID);
+
+  contentBtns.forEach(function(b){b.disabled=false;b.textContent='Speichern';});
   if(btn)btn.disabled=false;
-  if(res.error){if(st){st.className='save-status error';st.textContent='Fehler: '+res.error.message;}toast('Speichern fehlgeschlagen','error');}
-  else{if(!silent){if(st){st.className='save-status saved';st.textContent='✓ Gespeichert';}toast('Profil gespeichert ✓','success');setTimeout(function(){if(st){st.textContent='';st.className='save-status';}},3000);}}
+
+  if(res.error){
+    if(st){st.className='save-status error';st.textContent='Fehler: '+res.error.message;}
+    toast('Speichern fehlgeschlagen','error');
+  } else {
+    if(st){st.className='save-status saved';st.textContent='✓ Gespeichert';}
+    toast('Profil gespeichert ✓','success');
+    // Reload current block to reflect saved state + refresh pills
+    setTimeout(function(){
+      if(st){st.textContent='';st.className='save-status';}
+      _pill_refresh();
+    },2000);
+  }
 }
 
 // ── GOOGLE KALENDER MITARBEITER ───────────────────────────────
