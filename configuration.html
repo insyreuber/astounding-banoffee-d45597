@@ -75,16 +75,17 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 
 /* ── ÖFFNUNGSZEITEN – SPALTEN ── */
 .hours-cols{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
-.hours-col{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;transition:border-color .2s}
+.hours-cols{display:flex;flex-direction:column;gap:6px}
+.hours-col{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:8px 14px;display:flex;flex-direction:row;align-items:center;gap:12px;transition:border-color .2s}
 .hours-col.aktiv{border-color:var(--tpl);background:var(--tpp)}
-.hours-col-day{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.hours-col-day{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;width:24px;flex-shrink:0}
 .hours-col.aktiv .hours-col-day{color:var(--tpl)}
-.hours-col select{border:1.5px solid var(--border);border-radius:8px;padding:5px 4px;font-size:11px;font-family:'DM Mono',monospace;color:var(--td);outline:none;background:var(--white);width:100%;text-align:center;cursor:pointer;appearance:none;-webkit-appearance:none;text-align-last:center}
+.hours-col select{border:1.5px solid var(--border);border-radius:8px;padding:5px 8px;font-size:12px;font-family:'DM Mono',monospace;color:var(--td);outline:none;background:var(--white);cursor:pointer;appearance:none;-webkit-appearance:none;text-align-last:center}
 .hours-col select:focus{border-color:var(--tpl);box-shadow:0 0 0 2px var(--tpp)}
 .hours-col.aktiv select{background:var(--white)}
 .hours-col-sep{font-size:10px;color:var(--muted)}
 .hours-col-closed{font-size:10px;color:#c8bcd8;font-style:italic}
-.hours-time-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;width:100%}
+.hours-time-wrap{display:flex;flex-direction:row;align-items:center;gap:6px;flex:1}
 
 /* ── BUTTONS ── */
 .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
@@ -368,7 +369,6 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   .staff-card{width:100%}
 
   /* Öffnungszeiten: 4 Tage pro Zeile */
-  .hours-cols{grid-template-columns:repeat(4,1fr) !important}
   .hours-cols-sm{grid-template-columns:repeat(4,1fr) !important}
 
   /* Modal: volle Breite */
@@ -899,24 +899,27 @@ function buildTimeOptions(selected){
 }
 
 function buildHoursCols(az,containerId,prefix,small,allActive){
-  var cls=small?'hours-col-sm':'hours-col';
   var cols=document.getElementById(containerId);
   if(!cols)return;
+  var cls=small?'hours-col-sm':'hours-col';
+  var dayLblCls=small?'hours-col-sm-day':'hours-col-day';
   cols.innerHTML=DAYS.map(function(d){
     var defaultAktiv=allActive?true:d.key!=='sunday';
     var h=az&&az[d.key]?az[d.key]:{aktiv:defaultAktiv,start:'09:00',end:'18:00'};
     return'<div class="'+cls+' '+(h.aktiv?'aktiv':'')+'" id="'+prefix+'col-'+d.key+'">'
-      +'<div class="'+(small?'hours-col-sm-day':'hours-col-day')+'">'+d.label+'</div>'
       +'<label class="toggle-sw"><input type="checkbox" id="'+prefix+'aktiv-'+d.key+'" '+(h.aktiv?'checked':'')+' onchange="toggleHourCol(\''+d.key+'\',\''+prefix+'\')" ><span class="slider"></span></label>'
+      +'<div class="'+dayLblCls+'">'+d.label+'</div>'
       +'<div class="hours-time-wrap" id="'+prefix+'times-'+d.key+'" style="'+(h.aktiv?'':'opacity:.3;pointer-events:none')+'">'
         +'<select id="'+prefix+'start-'+d.key+'">'+buildTimeOptions(h.start||'09:00')+'</select>'
-        +'<span style="font-size:9px;color:var(--muted)">–</span>'
+        +'<span style="font-size:10px;color:var(--muted)">–</span>'
         +'<select id="'+prefix+'end-'+d.key+'">'+buildTimeOptions(h.end||'18:00')+'</select>'
       +'</div>'
-      +(h.aktiv?'':'<div style="font-size:9px;color:#c8bcd8;font-style:italic">Geschl.</div>')
+      +(h.aktiv?'':'<span class="hours-col-closed">Geschl.</span>')
     +'</div>';
   }).join('');
 }
+
+
 
 function toggleHourCol(key,prefix){
   var aktiv=document.getElementById(prefix+'aktiv-'+key).checked;
