@@ -87,7 +87,7 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .acc-body{overflow:hidden;max-height:0;opacity:0;transition:max-height .3s ease,opacity .2s,margin .2s}
 .acc-body.open{max-height:600px;opacity:1;margin-top:10px}
 .staff-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
-.stf{border:1.5px solid #e8e0f0;border-radius:8px;padding:10px 11px;display:flex;align-items:center;gap:9px;cursor:pointer;background:#fff;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(74,28,107,.05);transition:border-color .15s,box-shadow .15s,transform .15s}
+.stf{border:1.5px solid #e8e0f0;border-radius:8px;padding:10px 11px;display:flex;align-items:center;gap:9px;cursor:pointer;background:#fff;position:relative;overflow:visible;box-shadow:0 1px 4px rgba(74,28,107,.05);transition:border-color .15s,box-shadow .15s,transform .15s}
 .stf:hover{border-color:var(--tpl);box-shadow:0 4px 12px rgba(74,28,107,.12);transform:translateY(-1px)}
 .stf.sel1only{border-color:var(--tp);background:var(--tpp)}
 .stf.sel2only{border-color:var(--tg);background:var(--tgp)}
@@ -256,7 +256,7 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
   /* Services: 1 Spalte */
   .svc-grid{grid-template-columns:1fr}
 
-  /* Mitarbeiter: 1 Spalte */
+  /* Team: 1 Spalte */
   .staff-grid{grid-template-columns:1fr}
 
   /* Kalender + Summary untereinander */
@@ -1029,7 +1029,7 @@ function render(){
     +'<div class="acc-hdr" onclick="toggleStaff()">'
       +'<div class="acc-hdr-left">'
         +'<span class="cnum">1</span>'
-        +'<span class="acc-title">Mitarbeiter</span>'
+        +'<span class="acc-title">Team</span>'
         +(st.stf1?'<span class="acc-current">'+fname(st.stf1)+'</span>':'')
       +'</div>'
       +'<span class="acc-arrow '+(staffOpen?'open':'')+'" id="acc-arrow">⌄</span>'
@@ -1066,7 +1066,7 @@ function render(){
           +'</div></div>'
         :mkCal())
     +'</div>'
-    +(lock3?lockBadge('Zuerst Service &amp; Mitarbeiter wählen'):'')
+    +(lock3?lockBadge('Zuerst Service &amp; Team wählen'):'')
     +'</div>';
 
   // ── Schritt 4: Buchungsübersicht — gesperrt bis Datum+Slot ──
@@ -1081,7 +1081,7 @@ function render(){
          +'<div class="sum-hdr"><div class="sum-hdr-t">Buchungssübersicht</div><div class="sum-hdr-p" style="color:rgba(201,168,76,0.35)">— €</div></div>'
          +'<div class="sumrow"><span class="sl-lbl">Service</span><span class="sl-val emp">—</span></div>'
          +'<div class="sumrow"><span class="sl-lbl">Gesamt</span><span class="sl-val emp">—</span></div>'
-         +'<div class="sumrow"><span class="sl-lbl">Mitarbeiter</span><span class="sl-val emp">—</span></div>'
+         +'<div class="sumrow"><span class="sl-lbl">Team</span><span class="sl-val emp">—</span></div>'
          +'<div class="sumrow"><span class="sl-lbl">Uhrzeit</span><span class="sl-val emp">—</span></div>'
          +'<div class="sumrow"><span class="sl-lbl">Datum</span><span class="sl-val emp">—</span></div>'
          +'</div>'
