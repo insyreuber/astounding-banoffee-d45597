@@ -1073,59 +1073,80 @@ function readTempEntries(){
     return{kw:entry.kw,year:entry.year,zeiten:readHours('te'+entry.id+'-')};
   });
 }
+// Zentraler Datencache — einmal geladen, immer verfügbar
+var _profilCache = null;
+
 async function loadProfil(){
-  if(!document.getElementById('f-brand'))return;
-  // Guard: only run if fields exist in DOM
-  if(!document.getElementById('f-brand'))return loadProfilData_pending=true;
-  if(!SALON_ID){toast('Keine salon_id in der URL','error');buildHoursCols(null,'hours-cols','h-',false);return;}
+  if(!SALON_ID){toast('Keine salon_id in der URL','error');return;}
   var bookingBtn=document.getElementById('nav-booking-link');
   if(bookingBtn)bookingBtn.href='https://insy-reception.com/booking?salon_id='+SALON_ID;
   var desktopBtn=document.getElementById('nav-booking-btn-desktop');
   if(desktopBtn)desktopBtn.href='https://insy-reception.com/booking?salon_id='+SALON_ID;
+
   var res=await sb.from('kunden_profile').select('*').eq('id',SALON_ID).single();
-  if(res.error){toast('Profil nicht gefunden','error');buildHoursCols(null,'hours-cols','h-',false);return;}
-  var d=res.data;
-  _safe('f-brand',d.brand_name||d.name||'');
-  _safe('f-area-code',d.area_code||'');
-  var _safe=function(id,v){var e=document.getElementById(id);if(e)e.value=v;};
-  _safe('f-phone-number',d.phone_number||'');
+  if(res.error){toast('Profil nicht gefunden','error');return;}
+  _profilCache = res.data;
+  _fillProfilFields();
+}
+
+// Felder aus Cache befüllen — immer aufrufen nach renderProfilContent
+function _fillProfilFields(){
+  var d=_profilCache;
+  if(!d) return;
+  var _safe=function(id,v){var e=document.getElementById(id);if(e)e.value=v||'';};
+
+  _safe('f-brand',    d.brand_name||d.name);
+  _safe('f-area-code',d.area_code);
+  _safe('f-phone-number',d.phone_number);
+  _safe('f-street',   d.street);
+  _safe('f-house',    d.house_number);
+  _safe('f-plz',      d.postal_code);
+  _safe('f-city',     d.city);
+  _safe('f-mobile',   d.mobile_url);
+  _safe('f-note',     d.note);
+  _safe('f-instagram',d.instagram_url);
+  _safe('f-website',  d.website_url);
+  _safe('f-maps',     d.google_maps_url);
+
   // Admin Google Kalender Status
   var statusEl=document.getElementById('admin-gcal-status');
   var btnEl=document.getElementById('btn-admin-gcal');
-  if(d.google_connected&&d.google_calendar_id){
-    if(statusEl)statusEl.style.display='flex';
-    if(btnEl)btnEl.style.display='none';
-  } else {
-    if(statusEl)statusEl.style.display='none';
-    if(btnEl)btnEl.style.display='flex';
+  if(statusEl&&btnEl){
+    if(d.google_connected&&d.google_calendar_id){statusEl.style.display='flex';btnEl.style.display='none';}
+    else{statusEl.style.display='none';btnEl.style.display='flex';}
   }
-  _safe('f-street',d.street||'');
-  _safe('f-house',d.house_number||'');
-  _safe('f-plz',d.postal_code||'');
-  _safe('f-city',d.city||'');
-  _safe('f-instagram',d.instagram_url||'');
-  _safe('f-mobile',d.mobile_url||'');
-  _safe('f-website',d.website_url||'');
-  _safe('f-maps',d.google_maps_url||'');
-  _safe('f-note',d.note||'');
-    customLinks = Array.isArray(d.custom_links) ? d.custom_links : [];
-    renderCustomLinks();
-  buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
-  // Temporäre Öffnungszeiten laden
-  tempEntries=[];tempIdCounter=0;tempCalOffset={};
-  var tempData=d.temp_arbeitszeiten;
-  if(tempData&&Array.isArray(tempData)&&tempData.length){
-    tempData.forEach(function(t){addTempEntry(t);});
-  } else {
-    renderTempEntries();
+
+  // Öffnungszeiten
+  if(document.getElementById('hours-cols')){
+    buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
   }
-  // Set persistent saved state based on loaded data
+
+  // Custom Links
+  customLinks = Array.isArray(d.custom_links) ? d.custom_links : [];
+  if(document.getElementById('custom-links-list')) renderCustomLinks();
+
+  // Temporäre Öffnungszeiten
+  if(document.getElementById('temp-entries-list')){
+    tempEntries=[];tempIdCounter=0;tempCalOffset={};
+    var tempData=d.temp_arbeitszeiten;
+    if(tempData&&Array.isArray(tempData)&&tempData.length){
+      tempData.forEach(function(t){addTempEntry(t);});
+    } else {
+      renderTempEntries();
+    }
+  }
+
+  // Ampel-Status aus gespeicherten Daten setzen
   if(d.brand_name||d.name) _profilSaved['adresse']=true;
-  if(d.arbeitszeiten&&Object.keys(d.arbeitszeiten).some(function(k){return d.arbeitszeiten[k]&&d.arbeitszeiten[k].aktiv;})) _profilSaved['zeiten']=true;
+  if(d.arbeitszeiten&&Object.keys(d.arbeitszeiten).some(function(k){
+    return d.arbeitszeiten[k]&&d.arbeitszeiten[k].aktiv;
+  })) _profilSaved['zeiten']=true;
   if(d.instagram_url||d.website_url||d.google_maps_url||(d.custom_links&&d.custom_links.length)) _profilSaved['links']=true;
   if(d.note) _profilSaved['notiz']=true;
+
   _pill_refresh();
 }
+
 
 // ── EIGENE LINKS ─────────────────────────────────────────────
 var customLinks = [];
@@ -1275,6 +1296,22 @@ async function saveProfil(silent){
   } else {
     // Mark this toggle as saved → permanent green
     _profilSaved[_profilActive]=true;
+    // Update cache so fields stay filled on tab switch
+    if(_profilCache){
+      var _gv2=function(id){var e=document.getElementById(id);return e?e.value.trim():null;};
+      if(_gv2('f-brand')!==null)_profilCache.brand_name=_gv2('f-brand');
+      if(_gv2('f-area-code')!==null)_profilCache.area_code=_gv2('f-area-code');
+      if(_gv2('f-phone-number')!==null)_profilCache.phone_number=_gv2('f-phone-number');
+      if(_gv2('f-street')!==null)_profilCache.street=_gv2('f-street');
+      if(_gv2('f-house')!==null)_profilCache.house_number=_gv2('f-house');
+      if(_gv2('f-plz')!==null)_profilCache.postal_code=_gv2('f-plz');
+      if(_gv2('f-city')!==null)_profilCache.city=_gv2('f-city');
+      if(_gv2('f-mobile')!==null)_profilCache.mobile_url=_gv2('f-mobile');
+      if(_gv2('f-note')!==null)_profilCache.note=_gv2('f-note');
+      if(document.getElementById('hours-cols'))_profilCache.arbeitszeiten=readHours('h-');
+      if(document.getElementById('temp-entries-list'))_profilCache.temp_arbeitszeiten=readTempEntries();
+      if(document.getElementById('custom-links-list'))_profilCache.custom_links=customLinks.slice();
+    }
     if(st){st.className='save-status saved';st.textContent='✓ Gespeichert';}
     toast('Profil gespeichert ✓','success');
     // Reload fields so they stay filled after save
@@ -2168,6 +2205,8 @@ async function loadStaff(){
   var res=await sb.from('mitarbeiter').select('*').eq('salon_id',SALON_ID).order('sortierung');
   if(res.error){staffData=[];renderStaffGrid();return;}
   var staff=res.data||[];
+  // Mark team as saved if staff exists in DB
+  if(staff.length>0) _profilSaved['team']=true;
   var assigns=[];
   if(staff.length){
     var aRes=await sb.from('mitarbeiter_service_varianten').select('*').in('mitarbeiter_id',staff.map(function(s){return s.id;}));
@@ -3086,6 +3125,9 @@ async function init(){
 
   loadFeatureSettings();
   checkGcalReturn();
+  // Load data for pill colors before building toggles
+  loadStaff();
+  loadServices();
   buildProfilToggles();
 }
 /* Stadt/PLZ/Hausnummer Zeile bleibt nebeneinander auf Mobile */
@@ -3137,6 +3179,7 @@ function _pColor(t){
     return (typeof servicesData!=='undefined'&&servicesData.length>0) ? 'green' : 'red';
   }
   if(t.id==='team'){
+    if(_profilSaved['team']) return 'green';
     var sb2=document.getElementById('staff-sidebar');
     return (sb2&&sb2.querySelector('.staff-card')) ? 'green' : 'red';
   }
@@ -3145,7 +3188,7 @@ function _pColor(t){
 
 function _allRequiredFilled(){
   return _profilSaved['adresse'] && _profilSaved['zeiten'] &&
-    (typeof servicesData!=='undefined'&&servicesData.length>0);
+    _profilSaved['service'] && _profilSaved['team'];
 }
 
 function buildProfilToggles(){
@@ -3220,7 +3263,7 @@ function renderProfilContent(id){
         '</div>'+
       '</div>'+
       '<div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-primary" onclick="saveProfil()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Speichern</button></div>';
-    loadProfil();
+    _fillProfilFields();
   }
   else if(id==='zeiten'){
     wrap.innerHTML=
@@ -3237,8 +3280,7 @@ function renderProfilContent(id){
       '</div>'+
       '<div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
     // Zuerst leere Kacheln zeigen, dann mit Daten füllen
-    buildHoursCols(null,'hours-cols','h-',false,false);
-    loadProfil();
+    _fillProfilFields();
   }
   else if(id==='links'){
     wrap.innerHTML=
@@ -3251,8 +3293,7 @@ function renderProfilContent(id){
         '<div id="custom-links-empty" style="font-size:11px;color:var(--muted);padding:8px 0 4px;text-align:center">Noch keine Links — klicke Hinzufügen</div>'+
       '</div>'+
       '<div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
-    if(typeof customLinks!=='undefined') renderCustomLinks();
-    else loadProfil();
+    _fillProfilFields();
   }
   else if(id==='notiz'){
     wrap.innerHTML=
@@ -3262,7 +3303,7 @@ function renderProfilContent(id){
         '<input type="text" id="f-note" placeholder="z.B. Keine Kartenzahlung möglich" maxlength="120" oninput="if(this.value.trim()){_profilSaved[\'notiz\']=true;}_pill_refresh();"></div>'+
       '</div>'+
       '<div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
-    loadProfil();
+    _fillProfilFields();
   }
   else if(id==='service'){
     wrap.innerHTML=
@@ -3272,7 +3313,7 @@ function renderProfilContent(id){
         '<button class="btn btn-sm btn-outline" onclick="openSvcModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>'+
       '</div>'+
       '<div class="svc-list" id="svc-list"><div class="empty"><div class="empty-icon">⟳</div><div class="empty-text">Wird geladen…</div></div></div>';
-    loadServices().then(function(){ _pill_refresh(); });
+    loadServices().then(function(){ if(typeof servicesData!=='undefined'&&servicesData.length>0)_profilSaved['service']=true; _pill_refresh(); });
   }
   else if(id==='whatsapp'){
     if(!_allRequiredFilled()){
@@ -3311,7 +3352,7 @@ function renderProfilContent(id){
         '<div style="font-size:12px;color:var(--muted)">Name <span style="color:var(--tg)">*</span> · Google Calendar <span style="color:var(--tg)">*</span></div></div>'+
       '</div>'+
       '<div class="ma-sidebar" id="staff-sidebar" style="max-width:100%;"><div class="empty" style="padding:20px 10px"><div class="empty-text">Wird geladen…</div></div></div>';
-    loadStaff().then(function(){ _pill_refresh(); });
+    loadStaff().then(function(){ if(document.querySelector('#staff-sidebar .staff-card'))_profilSaved['team']=true; _pill_refresh(); });
   }
 }
 init();
