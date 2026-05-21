@@ -295,6 +295,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
   /* Öffnungszeiten — Zeile kompakter, selects kleiner */
   .hours-col{padding:7px 10px !important;gap:8px !important;}
+  .hours-slots-wrap{flex-direction:column !important;gap:4px !important;}
   .hours-col select{font-size:11px !important;padding:4px 4px !important;}
   .hours-time-wrap{gap:4px !important;}
 
@@ -826,7 +827,7 @@ function _slotsFor(h){
 
 function buildSlotHtml(prefix,dayKey,slots,aktiv){
   return slots.map(function(sl,si){
-    return'<div class="hours-slot" id="'+prefix+'slot-'+dayKey+'-'+si+'" style="display:flex;align-items:center;gap:5px;'+(si>0?'margin-top:4px;':'')+'">'
+    return'<div class="hours-slot" id="'+prefix+'slot-'+dayKey+'-'+si+'" style="display:flex;align-items:center;gap:5px;">'
       +'<select class="hz-start" onchange="syncHourSlot()">'+buildTimeOptions(sl.start||'09:00')+'</select>'
       +'<span style="font-size:10px;color:var(--muted)">–</span>'
       +'<select class="hz-end" onchange="syncHourSlot()">'+buildTimeOptions(sl.end||'18:00')+'</select>'
@@ -851,7 +852,7 @@ function buildHoursCols(az,containerId,prefix,small,allActive){
     return'<div class="'+cls+' '+(aktiv?'aktiv':'')+'" id="'+prefix+'col-'+d.key+'">'
       +'<label class="toggle-sw" style="flex-shrink:0"><input type="checkbox" id="'+prefix+'aktiv-'+d.key+'" '+(aktiv?'checked':'')+' onchange="toggleHourCol(\''+d.key+'\',\''+prefix+'\')" ><span class="slider"></span></label>'
       +'<div class="'+dayLblCls+'" style="flex-shrink:0">'+d.label+'</div>'
-      +'<div id="'+prefix+'times-'+d.key+'" style="display:flex;flex-direction:column;flex:1;'+(aktiv?'':'opacity:.3;pointer-events:none')+'">'
+      +'<div class="hours-slots-wrap" id="'+prefix+'times-'+d.key+'" style="display:flex;flex-direction:row;flex-wrap:wrap;flex:1;align-items:center;gap:4px;'+(aktiv?'':'opacity:.3;pointer-events:none')+'">'
         +buildSlotHtml(prefix,d.key,slots,aktiv)
       +'</div>'
       +(aktiv?'':'<span class="hours-col-closed">Geschl.</span>')
@@ -876,7 +877,7 @@ function addHourSlot(prefix,dayKey){
   var existing=wrap.querySelectorAll('.hours-slot').length;
   var newSlot=document.createElement('div');
   newSlot.className='hours-slot';
-  newSlot.style.cssText='display:flex;align-items:center;gap:5px;margin-top:4px';
+  newSlot.style.cssText='display:flex;align-items:center;gap:5px;';
   newSlot.innerHTML=
     '<select class="hz-start">'+buildTimeOptions('09:00')+'</select>'
     +'<span style="font-size:10px;color:var(--muted)">–</span>'
