@@ -833,7 +833,7 @@ function buildSlotHtml(prefix,dayKey,slots,aktiv){
       +'<select class="hz-end" onchange="syncHourSlot()">'+buildTimeOptions(sl.end||'18:00')+'</select>'
       +(si===0
         ?'<button type="button" onclick="addHourSlot(\''+prefix+'\',\''+dayKey+'\')" title="Slot hinzufügen" style="background:none;border:1px solid var(--border);border-radius:5px;width:20px;height:20px;cursor:pointer;font-size:13px;color:var(--tpl);display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">+</button>'
-        :'<button type="button" onclick="removeHourSlot(\''+prefix+'\',\''+dayKey+'\','+si+')" title="Entfernen" style="background:none;border:1px solid var(--border);border-radius:5px;width:20px;height:20px;cursor:pointer;font-size:13px;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">×</button>'
+        :'<button type="button" onclick="removeHourSlot(\''+prefix+'\',\''+dayKey+'\','+si+')" title="Entfernen" style="background:none;border:1px solid #f5c6c6;border-radius:5px;width:20px;height:20px;cursor:pointer;font-size:13px;color:#c0392b;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">×</button>'
       )
     +'</div>';
   }).join('');
@@ -882,7 +882,7 @@ function addHourSlot(prefix,dayKey){
     '<select class="hz-start">'+buildTimeOptions('09:00')+'</select>'
     +'<span style="font-size:10px;color:var(--muted)">–</span>'
     +'<select class="hz-end">'+buildTimeOptions('18:00')+'</select>'
-    +'<button type="button" onclick="this.closest(\'.hours-slot\').remove()" title="Entfernen" style="background:none;border:1px solid var(--border);border-radius:5px;width:20px;height:20px;cursor:pointer;font-size:13px;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">×</button>';
+    +'<button type="button" onclick="this.closest(\'.hours-slot\').remove()" title="Entfernen" style="background:none;border:1px solid #f5c6c6;border-radius:5px;width:20px;height:20px;cursor:pointer;font-size:13px;color:#c0392b;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">×</button>';
   wrap.appendChild(newSlot);
 }
 
@@ -3086,7 +3086,7 @@ var PTABS = [
 // Farben: rot=pflichtfeld offen, gelb=optional, grün=ausgefüllt, grau=gesperrt
 var PCOL = {
   red:   {bg:'#c0392b', border:'rgba(200,60,60,0.7)',   glow:'rgba(200,60,60,0.4)',   dim:'rgba(160,30,30,0.45)',  txt:'#ffaaaa'},
-  yellow:{bg:'#a07800', border:'rgba(180,130,0,0.7)',   glow:'rgba(180,130,0,0.4)',   dim:'rgba(140,100,0,0.4)',   txt:'#ffd97a'},
+  yellow:{bg:'#d4a000', border:'rgba(220,170,0,0.75)',  glow:'rgba(220,170,0,0.45)',  dim:'rgba(200,150,0,0.3)',   txt:'#ffe066'},
   green: {bg:'#1e7a3c', border:'rgba(40,160,80,0.7)',   glow:'rgba(40,160,80,0.4)',   dim:'rgba(30,120,55,0.45)',  txt:'#88e8a8'},
   gray:  {bg:'rgba(100,100,120,0.3)', border:'rgba(140,140,160,0.3)', glow:'none', dim:'rgba(100,100,120,0.25)', txt:'rgba(180,180,200,0.5)'},
 };
