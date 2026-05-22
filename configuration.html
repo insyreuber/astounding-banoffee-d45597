@@ -727,9 +727,34 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
     <!-- Hidden name field — uses display name as fallback -->
     <input type="hidden" id="s-name">
     <input type="hidden" id="s-email">
-    <!-- Services zuweisen -->
-    <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:10px">Services zuweisen</div>
-    <div class="svc-check-list" id="s-svc-list"></div>
+
+    <!-- Google Kalender verbinden — über dem Services Akkordion -->
+    <div id="s-gcal-section" style="margin-bottom:14px">
+      <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Google Kalender</div>
+      <div id="s-gcal-connected" style="display:none;align-items:center;gap:8px;padding:8px 12px;background:#f0faf4;border:1.5px solid #a8e6bf;border-radius:8px;margin-bottom:6px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <span id="s-gcal-id-label" style="font-size:11px;color:#1a6b3a;font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+        <button type="button" onclick="openCalendarPicker(editingStaffId)" style="font-size:10px;color:var(--tpl);background:none;border:none;cursor:pointer;font-family:inherit;padding:0;white-space:nowrap">Ändern</button>
+      </div>
+      <button type="button" id="s-gcal-btn" onclick="openCalendarPicker(editingStaffId)"
+        style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:9px 14px;border:1.5px solid var(--border);border-radius:8px;background:var(--white);font-size:12px;font-weight:500;color:var(--td);cursor:pointer;font-family:inherit;transition:border-color .15s;">
+        <svg width="15" height="15" viewBox="0 0 24 24"><path d="M21.05 11.1H12v2.8h5.15c-.22 1.17-.9 2.17-1.9 2.83v2.35h3.07c1.8-1.65 2.83-4.1 2.83-7z" fill="#4285F4"/><path d="M12 21c2.59 0 4.76-.86 6.35-2.32l-3.07-2.35c-.85.57-1.95.91-3.28.91-2.52 0-4.66-1.7-5.42-3.98H3.43v2.43C5.01 18.98 8.27 21 12 21z" fill="#34A853"/><path d="M6.58 13.26A5.98 5.98 0 016.2 12c0-.44.07-.87.18-1.28V8.3H3.43A9.97 9.97 0 002 12c0 1.61.39 3.13 1.07 4.46l3.08-2.43z" fill="#FBBC04"/><path d="M12 6.04c1.42 0 2.7.49 3.7 1.44l2.77-2.77C16.75 3.12 14.58 2 12 2 8.27 2 5.01 4.02 3.43 7.04L6.5 9.47c.76-2.28 2.9-3.43 5.5-3.43z" fill="#EA4335"/></svg>
+        Google Kalender verbinden
+      </button>
+    </div>
+
+    <hr class="div">
+
+    <!-- Services zuweisen — Akkordion -->
+    <div style="margin-bottom:14px">
+      <div onclick="toggleStaffSvcAccordion()" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;padding:2px 0 8px">
+        <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600">Services zuweisen</div>
+        <svg id="s-svc-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2.5" style="transition:transform .2s;flex-shrink:0"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div id="s-svc-accordion" style="display:none">
+        <div class="svc-check-list" id="s-svc-list"></div>
+      </div>
+    </div>
 
     <hr class="div">
 
@@ -2389,6 +2414,15 @@ function closeCalendarPicker(){
 }
 
 // ── MITARBEITER MODAL ─────────────────────────────────────────
+function toggleStaffSvcAccordion(){
+  var body=document.getElementById('s-svc-accordion');
+  var chev=document.getElementById('s-svc-chevron');
+  if(!body)return;
+  var open=body.style.display==='block';
+  body.style.display=open?'none':'block';
+  if(chev)chev.style.transform=open?'':'rotate(180deg)';
+}
+
 function toggleCustomHours(){
   var on=document.getElementById('s-custom-hours').checked;
   var wrap=document.getElementById('s-hours-wrap');
@@ -2460,6 +2494,21 @@ function openStaffModal(data){
   document.getElementById('s-email').value=m.email||'';
   document.getElementById('s-cal').value=m.google_calendar_id||'';
   updateGcalStatus(m.google_calendar_id||'');
+  // Google Kalender UI im Modal
+  var gcalConnected=document.getElementById('s-gcal-connected');
+  var gcalBtn=document.getElementById('s-gcal-btn');
+  var gcalLbl=document.getElementById('s-gcal-id-label');
+  if(m.google_calendar_id){
+    if(gcalConnected){gcalConnected.style.display='flex';}
+    if(gcalBtn){gcalBtn.style.display='none';}
+    if(gcalLbl){gcalLbl.textContent=m.google_calendar_id;}
+  } else {
+    if(gcalConnected){gcalConnected.style.display='none';}
+    if(gcalBtn){gcalBtn.style.display='flex';}
+  }
+  // Google Kalender Button: neue Mitarbeiter noch kein editingStaffId — zeigen nach Save
+  var gcalSection=document.getElementById('s-gcal-section');
+  if(gcalSection)gcalSection.style.display=data?'block':'none';
   // Farbe setzen
   pickColor(m.farbe||'#3498db');
   var hasCustom=!!(data&&m.arbeitszeiten);
@@ -2475,6 +2524,16 @@ function openStaffModal(data){
     tempKws.forEach(function(t){addStaffTempEntry(t);});
   } else {
     renderStaffTempEntries();
+  }
+  // Accordion: Services geschlossen wenn keine zugewiesen
+  var svcAccordion=document.getElementById('s-svc-accordion');
+  var svcChevron=document.getElementById('s-svc-chevron');
+  if(svcAccordion&&data&&data.varianteIds&&data.varianteIds.length){
+    svcAccordion.style.display='block';
+    if(svcChevron)svcChevron.style.transform='rotate(180deg)';
+  } else if(svcAccordion){
+    svcAccordion.style.display='none';
+    if(svcChevron)svcChevron.style.transform='';
   }
   buildStaffSvcList(data?data.varianteIds:[]);
   document.getElementById('staff-overlay').style.display='block';
