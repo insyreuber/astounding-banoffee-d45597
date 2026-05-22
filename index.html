@@ -698,9 +698,22 @@
       display: flex !important;
       flex-direction: column !important;
       gap: 12px !important;
-      width: 100% !important;
+      width: calc(100% + 12vw) !important;
+      margin-left: -6vw !important;
+      margin-right: -6vw !important;
       order: 5 !important;
       margin-bottom: 16px !important;
+    }
+    .mobile-booking-preview a:first-child {
+      border-radius: 0 !important;
+      border-left: none !important;
+      border-right: none !important;
+      display: block !important;
+    }
+    .mobile-booking-preview img {
+      width: 100% !important;
+      display: block !important;
+      border-radius: 0 !important;
     }
 
     /* 3 Kacheln: 1 Spalte → order 6 */
