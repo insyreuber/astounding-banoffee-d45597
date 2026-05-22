@@ -683,9 +683,9 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   </div>
   <div class="modal-body">
     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:12px;">
-      <div class="field"><label>Name *</label><input type="text" id="m-name" placeholder="z.B. Klassische Massage"></div>
+      <div class="field"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="m-name" placeholder="z.B. Klassische Massage"></div>
       <div style="display:flex;gap:10px;align-items:flex-end">
-        <div class="field" style="flex:1;margin:0"><label>Beschreibung</label><input type="text" id="m-desc" placeholder="z.B. Entspannung &amp; Verspannungen"></div>
+        <div class="field" style="flex:1;margin:0"><label>Beschreibung <span style="font-size:10px;color:var(--muted);font-weight:400">(optional)</span></label><input type="text" id="m-desc" placeholder="z.B. Entspannung &amp; Verspannungen"></div>
         <div style="padding-bottom:2px;display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0">
           <label class="toggle-sw" title="Im Widget aktiv"><input type="checkbox" id="m-aktiv" checked><span class="slider"></span></label>
           <span style="font-size:9px;color:var(--muted)">Aktiv</span>
@@ -1824,7 +1824,10 @@ function addModalVar(defaults){
         '<label class="toggle-sw" title="Puffer aktiv"><input type="checkbox" '+(d.puffer_aktiv?'checked':'')+' ><span class="slider"></span></label>'+
       '</div>'+
     '</div>'+
-    '<button type="button" onclick="this.closest(\'.mvar-row\').remove()" style="background:#c0392b;border:none;border-radius:5px;width:28px;height:28px;cursor:pointer;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;margin-bottom:1px">×</button>';
+    +(d._required
+      ?'<div style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-bottom:1px" title="Mindestens 1 Variante erforderlich"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg></div>'
+      :'<button type="button" onclick="this.closest(\'.mvar-row\').remove()" style="background:#c0392b;border:none;border-radius:5px;width:28px;height:28px;cursor:pointer;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;margin-bottom:1px">×</button>'
+    );
   document.getElementById('m-var-list').appendChild(row);
 }
 
@@ -1858,7 +1861,7 @@ function openSvcModal(){
   document.getElementById('m-name').value='';
   document.getElementById('m-desc').value='';
   document.getElementById('m-var-list').innerHTML='';
-  addModalVar();
+  addModalVar({_required:true});
   document.getElementById('svc-overlay').style.display='block';
   document.getElementById('svc-modal').classList.add('open');updateFabVisibility();
   setTimeout(function(){document.getElementById('m-name').focus();},80);
@@ -1868,7 +1871,7 @@ function closeSvcModal(){document.getElementById('svc-overlay').style.display='n
 async function saveNewService(){
   var name=document.getElementById('m-name').value.trim();
   if(!name){name=document.getElementById('s-display').value.trim();}
-  if(!name){toast('Anzeigename ist Pflichtfeld','error');return;}
+  if(!name){toast('Service-Name ist Pflichtfeld','error');document.getElementById('m-name').focus();return;}
   var vars=readModalVars();
   if(!vars.length){toast('Mindestens eine Variante mit Dauer erforderlich','error');return;}
   var btn=document.getElementById('btn-svc-save');btn.disabled=true;
