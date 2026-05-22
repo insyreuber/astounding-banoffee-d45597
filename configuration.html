@@ -624,8 +624,8 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 </div><!-- /main -->
 
 <!-- ── KALENDER PICKER MODAL ── -->
-<div class="modal-overlay" id="cal-picker-overlay" onclick="closeCalendarPicker()" style="display:none"></div>
-<div class="modal" id="cal-picker-modal" style="max-width:460px">
+<div class="modal-overlay" id="cal-picker-overlay" onclick="closeCalendarPicker()" style="display:none;z-index:540"></div>
+<div class="modal" id="cal-picker-modal" style="max-width:460px;z-index:550">
   <div class="modal-hdr">
     <div class="modal-title" id="cal-picker-title">Kalender wählen</div>
     <button class="modal-close" onclick="closeCalendarPicker()">✕</button>
@@ -720,7 +720,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   <div class="modal-body">
 
     <!-- Anzeigename & Rolle -->
-    <div class="frow frow-1" style="margin-bottom:12px">
+    <div class="frow frow-2" style="margin-bottom:12px">
       <div class="field"><label>Anzeigename (im Buchungswidget) *</label><input type="text" id="s-display" placeholder="z.B. Niran T." required></div>
       <div class="field"><label>Rolle / Berufsbezeichnung</label><input type="text" id="s-role" placeholder="z.B. Massagetherapeutin"></div>
     </div>
@@ -733,8 +733,14 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Google Kalender</div>
       <div id="s-gcal-connected" style="display:none;align-items:center;gap:8px;padding:8px 12px;background:#f0faf4;border:1.5px solid #a8e6bf;border-radius:8px;margin-bottom:6px">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-        <span id="s-gcal-id-label" style="font-size:11px;color:#1a6b3a;font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
-        <button type="button" onclick="openCalendarPicker(editingStaffId)" style="font-size:10px;color:var(--tpl);background:none;border:none;cursor:pointer;font-family:inherit;padding:0;white-space:nowrap">Ändern</button>
+        <div style="flex:1;min-width:0">
+          <div id="s-gcal-name-label" style="font-size:12px;color:#1a6b3a;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+          <details style="margin-top:2px">
+            <summary style="font-size:9px;color:#27ae60;opacity:.7;cursor:pointer;list-style:none;user-select:none">Kalender-ID anzeigen</summary>
+            <div id="s-gcal-id-label" style="font-size:9px;color:#1a6b3a;opacity:.6;word-break:break-all;margin-top:2px;font-family:'DM Mono',monospace"></div>
+          </details>
+        </div>
+        <button type="button" onclick="openCalendarPicker(editingStaffId)" style="font-size:10px;color:var(--tpl);background:none;border:none;cursor:pointer;font-family:inherit;padding:0;white-space:nowrap;flex-shrink:0">Ändern</button>
       </div>
       <button type="button" id="s-gcal-btn" onclick="openCalendarPicker(editingStaffId)"
         style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:9px 14px;border:1.5px solid var(--border);border-radius:8px;background:var(--white);font-size:12px;font-weight:500;color:var(--td);cursor:pointer;font-family:inherit;transition:border-color .15s;">
@@ -2289,13 +2295,7 @@ function renderStaffSidebar(){
         +'</div>'
       +'</div>'
       +'<div class="staff-card-actions">'
-        +'<button class="staff-action" onclick="editStaff(\''+m.id+'\')" title="Bearbeiten">✎</button>'
-        +'<button class="staff-action" onclick="openCalendarPicker(\''+m.id+'\')" style="display:flex;align-items:center;gap:4px;font-size:11px;color:'+(gcalConnected?'#27ae60':'var(--muted)')+'" title="Google Kalender verbinden">'
-          +(gcalConnected
-            ?'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Kalender verbunden'
-            :'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Google Kalender verbinden'
-          )
-        +'</button>'
+        +'<button class="staff-action" onclick="editStaff(\''+m.id+'\')" title="Bearbeiten">✎ Bearbeiten</button>'
       +'</div>'
     +'</div>';
   }).join('');
@@ -2358,10 +2358,13 @@ async function openCalendarPicker(mitarbeiterId){
       list.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Keine Subkalender gefunden.</div>';
       return;
     }
-    list.innerHTML=calendars.map(function(cal){
+    // Build name map for display after selection
+  window._calNameMap=window._calNameMap||{};
+  calendars.forEach(function(cal){window._calNameMap[cal.id]=cal.name;});
+  list.innerHTML=calendars.map(function(cal){
       var current=m&&m.mitarbeiter.google_calendar_id===cal.id;
       var isPrimary=cal.primary;
-      return'<div onclick="selectCalendar(\''+calPickerMitarbeiterId+'\',\''+cal.id+'\')" style="'
+      return'<div onclick="selectCalendar(\''+calPickerMitarbeiterId+'\',\''+cal.id+'\')" data-calname="'+esc(cal.name)+'" style="'
         +'display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;'
         +'background:'+(current?'var(--tpp)':'transparent')+';'
         +'border:1.5px solid '+(current?'var(--tpl)':'transparent')+';'
@@ -2401,6 +2404,11 @@ async function disconnectCalendar(mitarbeiterId){
 async function selectCalendar(mitarbeiterId, calendarId){
   var res=await sb.from('mitarbeiter').update({google_calendar_id:calendarId}).eq('id',mitarbeiterId);
   if(res.error){toast('Fehler: '+res.error.message,'error');return;}
+  // Store name for display
+  var resolvedName=(window._calNameMap&&_calNameMap[calendarId])||calendarId.split('@')[0];
+  staffData.forEach(function(item){
+    if(item.mitarbeiter.id===mitarbeiterId)item.mitarbeiter._calName=resolvedName;
+  });
   toast('Kalender gespeichert ✓','success');
   closeCalendarPicker();
   await loadStaff();
@@ -2498,10 +2506,14 @@ function openStaffModal(data){
   var gcalConnected=document.getElementById('s-gcal-connected');
   var gcalBtn=document.getElementById('s-gcal-btn');
   var gcalLbl=document.getElementById('s-gcal-id-label');
+  var gcalNameLbl=document.getElementById('s-gcal-name-label');
   if(m.google_calendar_id){
     if(gcalConnected){gcalConnected.style.display='flex';}
     if(gcalBtn){gcalBtn.style.display='none';}
     if(gcalLbl){gcalLbl.textContent=m.google_calendar_id;}
+    // Show calendar name if available, fallback to trimmed ID
+    var calName=m._calName||m.google_calendar_id.split('@')[0]||m.google_calendar_id;
+    if(gcalNameLbl){gcalNameLbl.textContent=calName;}
   } else {
     if(gcalConnected){gcalConnected.style.display='none';}
     if(gcalBtn){gcalBtn.style.display='flex';}
