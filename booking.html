@@ -85,7 +85,8 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .acc-arrow{font-size:16px;color:var(--tpl);transition:transform .2s;line-height:1}
 .acc-arrow.open{transform:rotate(180deg)}
 .acc-body{overflow:hidden;max-height:0;opacity:0;transition:max-height .3s ease,opacity .2s,margin .2s}
-.acc-body.open{max-height:600px;opacity:1;margin-top:10px}
+.acc-body.open{overflow:visible}
+.acc-body.open{max-height:2000px;opacity:1;margin-top:10px;overflow:visible}
 .staff-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
 .stf{border:1.5px solid #e8e0f0;border-radius:8px;padding:10px 11px;display:flex;align-items:center;gap:9px;cursor:pointer;background:#fff;position:relative;overflow:visible;box-shadow:0 1px 4px rgba(74,28,107,.05);transition:border-color .15s,box-shadow .15s,transform .15s;z-index:1}
 .stf:hover{z-index:3}
@@ -1026,7 +1027,7 @@ function render(){
 
   // ── Schritt 2: Mitarbeiter — gesperrt bis Service+Variante ──
   var lock2 = !staffChosen;
-  var card2 = '<div class="card" style="position:relative">'
+  var card2 = '<div class="card" style="position:relative;overflow:visible">'
     +'<div class="acc-hdr" onclick="toggleStaff()">'
       +'<div class="acc-hdr-left">'
         +'<span class="cnum">1</span>'
