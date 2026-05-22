@@ -690,7 +690,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
         <div style="flex:1;min-width:0">
           <div id="s-gcal-name-label" style="font-size:12px;color:#1a6b3a;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
           <details style="margin-top:2px">
-            <summary style="font-size:9px;color:#27ae60;opacity:.7;cursor:pointer;list-style:none;user-select:none">Kalender-ID anzeigen</summary>
+            <summary style="font-size:9px;color:#27ae60;opacity:.6;cursor:pointer;list-style:none;user-select:none;display:inline-flex;align-items:center;gap:3px">▸ Kalender-ID</summary>
             <div id="s-gcal-id-label" style="font-size:9px;color:#1a6b3a;opacity:.6;word-break:break-all;margin-top:2px;font-family:'DM Mono',monospace"></div>
           </details>
         </div>
@@ -1877,7 +1877,7 @@ function openSvcModal(){
   addModalVar({_required:true});
   document.getElementById('svc-overlay').style.display='block';
   document.getElementById('svc-modal').classList.add('open');updateFabVisibility();
-  setTimeout(function(){document.getElementById('m-name').focus();},80);
+
 }
 function closeSvcModal(){document.getElementById('svc-overlay').style.display='none';document.getElementById('svc-modal').classList.remove('open');updateFabVisibility();}
 
@@ -2272,7 +2272,7 @@ function renderStaffSidebar(){
           +'<div class="staff-name">'+esc(m.display_name||m.name)+'</div>'
           +'<div class="staff-role">'+esc(m.role||'—')+'</div>'
           +(gcalConnected
-            ?'<div style="display:flex;align-items:center;gap:4px;margin-top:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span style="font-size:9px;color:#27ae60;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px">'+esc(m.google_calendar_id)+'</span></div>'
+            ?'<div style="display:flex;align-items:center;gap:4px;margin-top:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span style="font-size:9px;color:#27ae60;font-weight:500;white-space:nowrap">Kalender Online</span></div>'
             :'<div style="font-size:9px;color:var(--muted);margin-top:3px">Kein Kalender</div>'
           )
         +'</div>'
@@ -2543,7 +2543,7 @@ function openStaffModal(data){
   buildStaffSvcList(data?data.varianteIds:[]);
   document.getElementById('staff-overlay').style.display='block';
   document.getElementById('staff-modal').classList.add('open');updateFabVisibility();
-  setTimeout(function(){document.getElementById('s-display').focus();},80);
+
 }
 function updateFabVisibility(){
   var fab=document.getElementById('nav-booking-link');
