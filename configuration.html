@@ -2439,23 +2439,43 @@ function buildStaffSvcList(selectedVarianteIds){
     return;
   }
   var html='';
-  servicesData.forEach(function(item){
+  servicesData.forEach(function(item,si){
     var s=item.service;
     var vars=item.varianten;
     if(!vars.length)return;
-    // Service-Gruppe Header
-    html+='<div style="font-size:11px;font-weight:600;color:var(--td);margin:10px 0 5px;padding-left:2px">'+esc(s.name)+'</div>';
+    var anyChecked=vars.some(function(v){return selectedVarianteIds.indexOf(v.id)>=0;});
+    var accId='svc-acc-'+s.id;
+    var open=anyChecked;
+    html+='<div style="border:1.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:6px">';
+    // Accordion header — service name
+    html+='<div onclick="toggleSvcAcc(\''+accId+'\')" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;cursor:pointer;background:'+(anyChecked?'var(--tpp)':'var(--bg)')+';">';
+    html+='<span style="font-size:12px;font-weight:600;color:'+(anyChecked?'var(--tpl)':'var(--td)')+'">'+esc(s.name)+'</span>';
+    html+='<svg id="chev-'+accId+'" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="'+(anyChecked?'var(--tpl)':'var(--muted)')+'" stroke-width="2.5" style="transition:transform .2s;'+(open?'transform:rotate(180deg)':'')+'"><polyline points="6 9 12 15 18 9"/></svg>';
+    html+='</div>';
+    // Accordion body
+    html+='<div id="'+accId+'" style="display:'+(open?'block':'none')+';padding:4px 8px 8px">';
     vars.forEach(function(v){
       var checked=selectedVarianteIds.indexOf(v.id)>=0;
-      var label=v.bezeichnung?v.bezeichnung:v.dauer_minuten+' Min';
+      var label=v.service_name||(v.dauer_minuten+'Min');
+      if(!label||label==='undefinedMin')label=v.dauer_minuten+' Min';
       var preis=v.preis?'· '+parseFloat(v.preis).toFixed(2)+' €':'';
-      html+='<div class="svc-check-item '+(checked?'checked':'')+'" id="sc-'+v.id+'" onclick="toggleVarCheck(\''+v.id+'\')">'
+      html+='<div class="svc-check-item '+(checked?'checked':'')+'" id="sc-'+v.id+'" onclick="toggleVarCheck(\''+v.id+'\')" style="margin-top:4px">'
         +'<div class="svc-check-box">'+(checked?'<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="10 3 5 9 2 6"/></svg>':'')+'</div>'
         +'<div><div class="svc-check-name">'+esc(label)+'<span style="font-weight:400;color:var(--muted);font-size:11px"> '+preis+'</span></div></div>'
         +'</div>';
     });
+    html+='</div></div>';
   });
   list.innerHTML=html||'<div style="font-size:12px;color:var(--muted)">Keine Varianten vorhanden</div>';
+}
+
+function toggleSvcAcc(id){
+  var body=document.getElementById(id);
+  var chev=document.getElementById('chev-'+id);
+  if(!body)return;
+  var open=body.style.display==='block';
+  body.style.display=open?'none':'block';
+  if(chev)chev.style.transform=open?'':'rotate(180deg)';
 }
 
 function toggleVarCheck(varId){
@@ -2504,8 +2524,14 @@ function openStaffModal(data){
     if(gcalConnected){gcalConnected.style.display='flex';}
     if(gcalBtn){gcalBtn.style.display='none';}
     if(gcalLbl){gcalLbl.textContent=m.google_calendar_id;}
-    // Show calendar name if available, fallback to trimmed ID
-    var calName=m._calName||m.google_calendar_id.split('@')[0]||m.google_calendar_id;
+    // Show calendar name: from map (after picker use), or _calName, or parse email/id
+    var calId=m.google_calendar_id;
+    var calName=(window._calNameMap&&_calNameMap[calId])||m._calName||'';
+    if(!calName){
+      // parse: email → username, uuid@group → 'Subkalender', else raw
+      if(calId.indexOf('@')>-1)calName=calId.split('@')[0];
+      else calName='Kalender verbunden';
+    }
     if(gcalNameLbl){gcalNameLbl.textContent=calName;}
   } else {
     if(gcalConnected){gcalConnected.style.display='none';}
