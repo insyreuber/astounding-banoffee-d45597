@@ -705,15 +705,10 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
     <hr class="div">
 
-    <!-- Services zuweisen — Akkordion -->
+    <!-- Services zuweisen -->
     <div style="margin-bottom:14px">
-      <div onclick="toggleStaffSvcAccordion()" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;padding:2px 0 8px">
-        <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600">Services zuweisen</div>
-        <svg id="s-svc-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2.5" style="transition:transform .2s;flex-shrink:0"><polyline points="6 9 12 15 18 9"/></svg>
-      </div>
-      <div id="s-svc-accordion" style="display:none">
-        <div class="svc-check-list" id="s-svc-list"></div>
-      </div>
+      <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;padding:2px 0 8px">Services zuweisen</div>
+      <div class="svc-check-list" id="s-svc-list"></div>
     </div>
 
     <hr class="div">
@@ -2415,14 +2410,6 @@ function closeCalendarPicker(){
 }
 
 // ── MITARBEITER MODAL ─────────────────────────────────────────
-function toggleStaffSvcAccordion(){
-  var body=document.getElementById('s-svc-accordion');
-  var chev=document.getElementById('s-svc-chevron');
-  if(!body)return;
-  var open=body.style.display==='block';
-  body.style.display=open?'none':'block';
-  if(chev)chev.style.transform=open?'':'rotate(180deg)';
-}
 
 function toggleCustomHours(){
   var on=document.getElementById('s-custom-hours').checked;
@@ -2539,16 +2526,7 @@ function openStaffModal(data){
   } else {
     renderStaffTempEntries();
   }
-  // Accordion: Services geschlossen wenn keine zugewiesen
-  var svcAccordion=document.getElementById('s-svc-accordion');
-  var svcChevron=document.getElementById('s-svc-chevron');
-  if(svcAccordion&&data&&data.varianteIds&&data.varianteIds.length){
-    svcAccordion.style.display='block';
-    if(svcChevron)svcChevron.style.transform='rotate(180deg)';
-  } else if(svcAccordion){
-    svcAccordion.style.display='none';
-    if(svcChevron)svcChevron.style.transform='';
-  }
+
   buildStaffSvcList(data?data.varianteIds:[]);
   document.getElementById('staff-overlay').style.display='block';
   document.getElementById('staff-modal').classList.add('open');updateFabVisibility();
