@@ -664,9 +664,9 @@
       order: 4;
     }
 
-    /* Buttons+QR Container → order 7 (nach Kacheln) + alle Kinder verstecken außer Google-Button */
-    section[style*="height:100vh"] > div[style*="top:130px"] {
-      order: 7 !important;
+    /* Buttons-Container → order 8 (nach den Kacheln) */
+    section[style*="height:100vh"] > div[style*="top:430px"] {
+      order: 8 !important;
       flex-direction: column !important;
       align-items: flex-start !important;
       gap: 0 !important;
@@ -675,22 +675,16 @@
       width: 100% !important;
     }
 
-    /* QR + Buchungsvorschau + Live-Button container ausblenden */
-    section[style*="height:100vh"] > div[style*="top:130px"] > a,
-    section[style*="height:100vh"] > div[style*="top:130px"] > div[style*="flex-direction:column"] {
+    /* QR + Buchungsvorschau container ausblenden */
+    section[style*="height:100vh"] > div[style*="top:130px"] {
       display: none !important;
     }
 
-    /* Nur Google-Button zeigen */
-    section[style*="height:100vh"] > div[style*="top:130px"] > div[style*="gap:16px"] {
+    /* Nur Google-Button + kostenlos-Text zeigen */
+    section[style*="height:100vh"] > div[style*="top:430px"] > div[style*="gap:16px"] {
       display: flex !important;
       flex-direction: column !important;
       width: 100% !important;
-    }
-
-    /* Live-Buchungsseite Link im Button-div ausblenden */
-    section[style*="height:100vh"] > div[style*="top:130px"] > div[style*="gap:16px"] > a:last-child {
-      display: none !important;
     }
 
     /* Mobile Buchungsseite Bild + Live-Button → order 5 */
