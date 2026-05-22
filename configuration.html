@@ -1798,36 +1798,36 @@ function addModalVar(defaults){
   var d=defaults||{};
   var row=document.createElement('div');row.className='mvar-row';row.id='mvar-'+idx;
   row.style.cssText='display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr 32px;gap:7px;align-items:end;margin-bottom:4px;';
+  var delBtn=d._required
+    ?'<div style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-bottom:1px;opacity:.3" title="Mindestens 1 Variante erforderlich">–</div>'
+    :'<button type="button" onclick="this.closest(\'.mvar-row\').remove()" style="background:#c0392b;border:none;border-radius:5px;width:28px;height:28px;cursor:pointer;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;margin-bottom:1px">×</button>';
   row.innerHTML=
     '<div style="display:flex;flex-direction:column;gap:3px">'+
-      '<label style="font-size:10px;color:var(--muted);font-weight:500">Name</label>'+
+      '<label style="font-size:10px;color:var(--muted);font-weight:500">Name <span style="font-weight:400;opacity:.7">(optional)</span></label>'+
       '<input type="text" placeholder="z.B. 60 Min" value="'+(d.name||'')+'" style="font-size:14px;padding:8px 10px;border:1.5px solid var(--border);border-radius:7px;width:100%;box-sizing:border-box;min-height:40px;color:var(--td);font-family:inherit;outline:none;">'+
     '</div>'+
     '<div style="display:flex;flex-direction:column;gap:3px">'+
-      '<label style="font-size:10px;color:var(--muted);font-weight:500">Dauer · anz.</label>'+
+      '<label style="font-size:10px;color:var(--muted);font-weight:500">Dauer Min <span style="color:var(--tg)">*</span></label>'+
       '<div class="var-group" style="min-height:40px">'+
         '<input type="number" min="1" placeholder="Min" value="'+(d.dauer_minuten||'')+'" style="text-align:center;font-size:14px">'+
         '<label class="toggle-sw" title="Dauer anzeigen"><input type="checkbox" '+(d.dauer_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'+
       '</div>'+
     '</div>'+
     '<div style="display:flex;flex-direction:column;gap:3px">'+
-      '<label style="font-size:10px;color:var(--muted);font-weight:500">Preis € · anz.</label>'+
+      '<label style="font-size:10px;color:var(--muted);font-weight:500">Preis €</label>'+
       '<div class="var-group" style="min-height:40px">'+
         '<input type="number" min="0" step="0.5" placeholder="€" value="'+(d.preis||'')+'" style="text-align:center;font-size:14px">'+
         '<label class="toggle-sw" title="Preis anzeigen"><input type="checkbox" '+(d.preis_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'+
       '</div>'+
     '</div>'+
     '<div style="display:flex;flex-direction:column;gap:3px">'+
-      '<label style="font-size:10px;color:var(--muted);font-weight:500">Puffer · aktiv</label>'+
+      '<label style="font-size:10px;color:var(--muted);font-weight:500">Puffer Min</label>'+
       '<div class="var-group" style="min-height:40px">'+
         '<input type="number" min="0" placeholder="Min" value="'+(d.puffer_minuten||'')+'" style="text-align:center;font-size:14px">'+
         '<label class="toggle-sw" title="Puffer aktiv"><input type="checkbox" '+(d.puffer_aktiv?'checked':'')+' ><span class="slider"></span></label>'+
       '</div>'+
     '</div>'+
-    +(d._required
-      ?'<div style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-bottom:1px" title="Mindestens 1 Variante erforderlich"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg></div>'
-      :'<button type="button" onclick="this.closest(\'.mvar-row\').remove()" style="background:#c0392b;border:none;border-radius:5px;width:28px;height:28px;cursor:pointer;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;margin-bottom:1px">×</button>'
-    );
+    delBtn;
   document.getElementById('m-var-list').appendChild(row);
 }
 
