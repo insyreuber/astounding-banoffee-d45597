@@ -624,56 +624,6 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 </div><!-- /main -->
 
 <!-- ── KALENDER PICKER MODAL ── -->
-<div class="modal-overlay" id="cal-picker-overlay" onclick="closeCalendarPicker()" style="display:none;z-index:540"></div>
-<div class="modal" id="cal-picker-modal" style="max-width:460px;z-index:550">
-  <div class="modal-hdr">
-    <div class="modal-title" id="cal-picker-title">Kalender wählen</div>
-    <button class="modal-close" onclick="closeCalendarPicker()">✕</button>
-  </div>
-  <div style="padding:16px">
-    <!-- Wenn noch kein Admin-Kalender verbunden -->
-    <div id="cal-picker-no-admin" style="display:none">
-      <div style="background:var(--bg);border-radius:10px;padding:14px;margin-bottom:14px;font-size:12px;color:var(--muted);line-height:1.6">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2" style="vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        Verbinde zuerst deinen Google Account als Hauptkalender — dann können alle Mitarbeiter daraus Subkalender auswählen.
-      </div>
-      <button class="btn btn-primary" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px" onclick="connectAdminGoogle()">
-        <svg width="16" height="16" viewBox="0 0 24 24"><path d="M21.05 11.1H12v2.8h5.15c-.22 1.17-.9 2.17-1.9 2.83v2.35h3.07c1.8-1.65 2.83-4.1 2.83-7z" fill="#4285F4"/><path d="M12 21c2.59 0 4.76-.86 6.35-2.32l-3.07-2.35c-.85.57-1.95.91-3.28.91-2.52 0-4.66-1.7-5.42-3.98H3.43v2.43C5.01 18.98 8.27 21 12 21z" fill="#34A853"/><path d="M6.58 13.26A5.98 5.98 0 016.2 12c0-.44.07-.87.18-1.28V8.3H3.43A9.97 9.97 0 002 12c0 1.61.39 3.13 1.07 4.46l3.08-2.43z" fill="#FBBC04"/><path d="M12 6.04c1.42 0 2.7.49 3.7 1.44l2.77-2.77C16.75 3.12 14.58 2 12 2 8.27 2 5.01 4.02 3.43 7.04L6.5 9.47c.76-2.28 2.9-3.43 5.5-3.43z" fill="#EA4335"/></svg>
-        Google Account verbinden
-      </button>
-    </div>
-
-    <!-- Kalender-Liste wenn Admin verbunden -->
-    <div id="cal-picker-content" style="display:none">
-      <!-- Tabs: Subkalender / Eigener Account -->
-      <div id="cal-picker-tabs" style="display:flex;gap:6px;margin-bottom:14px">
-        <button class="cal-tab active" id="cal-tab-sub" onclick="switchCalTab('sub')">
-          Subkalender (Admin-Account)
-        </button>
-        <button class="cal-tab" id="cal-tab-own" onclick="switchCalTab('own')">
-          Eigenen Account verbinden
-        </button>
-      </div>
-
-      <!-- Subkalender Liste -->
-      <div id="cal-tab-sub-content">
-        <div id="cal-picker-list"></div>
-      </div>
-
-      <!-- Eigenen Account verbinden -->
-      <div id="cal-tab-own-content" style="display:none">
-        <div style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6">
-          Der Mitarbeiter verbindet seinen eigenen Google Account. Termine werden direkt in seinen Kalender eingetragen.
-        </div>
-        <button class="btn btn-outline" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px" onclick="connectOwnAccount()">
-          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M21.05 11.1H12v2.8h5.15c-.22 1.17-.9 2.17-1.9 2.83v2.35h3.07c1.8-1.65 2.83-4.1 2.83-7z" fill="#4285F4"/><path d="M12 21c2.59 0 4.76-.86 6.35-2.32l-3.07-2.35c-.85.57-1.95.91-3.28.91-2.52 0-4.66-1.7-5.42-3.98H3.43v2.43C5.01 18.98 8.27 21 12 21z" fill="#34A853"/><path d="M6.58 13.26A5.98 5.98 0 016.2 12c0-.44.07-.87.18-1.28V8.3H3.43A9.97 9.97 0 002 12c0 1.61.39 3.13 1.07 4.46l3.08-2.43z" fill="#FBBC04"/><path d="M12 6.04c1.42 0 2.7.49 3.7 1.44l2.77-2.77C16.75 3.12 14.58 2 12 2 8.27 2 5.01 4.02 3.43 7.04L6.5 9.47c.76-2.28 2.9-3.43 5.5-3.43z" fill="#EA4335"/></svg>
-          Mit eigenem Google Account verbinden
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- ── MODAL SERVICE ── -->
 <div class="modal-overlay" id="svc-overlay" onclick="closeSvcModal()"></div>
 <div class="modal" id="svc-modal">
@@ -714,10 +664,14 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 <div class="modal-overlay" id="staff-overlay" onclick="closeStaffModal()"></div>
 <div class="modal" id="staff-modal">
   <div class="modal-hdr">
-    <div class="modal-title" id="staff-modal-title">Mitarbeiter hinzufügen</div>
+    <div style="display:flex;align-items:center;gap:8px;flex:1">
+      <button id="cal-back-btn" onclick="closeCalendarPicker()" style="display:none;background:none;border:none;cursor:pointer;padding:2px 6px 2px 0;color:var(--tpl);font-size:20px;line-height:1">‹</button>
+      <div class="modal-title" id="staff-modal-title">Mitarbeiter hinzufügen</div>
+    </div>
     <button class="modal-close" onclick="closeStaffModal()">×</button>
   </div>
-  <div class="modal-body">
+  <!-- Staff form view -->
+  <div class="modal-body" id="s-main-view">
 
     <!-- Anzeigename & Rolle -->
     <div class="frow frow-2" style="margin-bottom:12px">
@@ -816,7 +770,36 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       </button>
     </div>
 
+  </div><!-- /s-main-view -->
+
+  <!-- Calendar picker view (inline in staff modal) -->
+  <div id="s-cal-view" style="display:none;flex:1;overflow-y:auto;padding:20px 24px">
+    <div id="cal-picker-no-admin" style="display:none">
+      <div style="background:var(--bg);border-radius:10px;padding:14px;margin-bottom:14px;font-size:12px;color:var(--muted);line-height:1.6">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2" style="vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Verbinde zuerst deinen Google Account als Hauptkalender.
+      </div>
+      <button class="btn btn-primary" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px" onclick="connectAdminGoogle()">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path d="M21.05 11.1H12v2.8h5.15c-.22 1.17-.9 2.17-1.9 2.83v2.35h3.07c1.8-1.65 2.83-4.1 2.83-7z" fill="#4285F4"/><path d="M12 21c2.59 0 4.76-.86 6.35-2.32l-3.07-2.35c-.85.57-1.95.91-3.28.91-2.52 0-4.66-1.7-5.42-3.98H3.43v2.43C5.01 18.98 8.27 21 12 21z" fill="#34A853"/><path d="M6.58 13.26A5.98 5.98 0 016.2 12c0-.44.07-.87.18-1.28V8.3H3.43A9.97 9.97 0 002 12c0 1.61.39 3.13 1.07 4.46l3.08-2.43z" fill="#FBBC04"/><path d="M12 6.04c1.42 0 2.7.49 3.7 1.44l2.77-2.77C16.75 3.12 14.58 2 12 2 8.27 2 5.01 4.02 3.43 7.04L6.5 9.47c.76-2.28 2.9-3.43 5.5-3.43z" fill="#EA4335"/></svg>
+        Google Account verbinden
+      </button>
+    </div>
+    <div id="cal-picker-content" style="display:none">
+      <div id="cal-picker-tabs" style="display:flex;gap:6px;margin-bottom:14px">
+        <button class="cal-tab active" id="cal-tab-sub" onclick="switchCalTab('sub')">Subkalender (Admin-Account)</button>
+        <button class="cal-tab" id="cal-tab-own" onclick="switchCalTab('own')">Eigenen Account verbinden</button>
+      </div>
+      <div id="cal-tab-sub-content"><div id="cal-picker-list"></div></div>
+      <div id="cal-tab-own-content" style="display:none">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6">Der Mitarbeiter verbindet seinen eigenen Google Account.</div>
+        <button class="btn btn-outline" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px" onclick="connectOwnAccount()">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M21.05 11.1H12v2.8h5.15c-.22 1.17-.9 2.17-1.9 2.83v2.35h3.07c1.8-1.65 2.83-4.1 2.83-7z" fill="#4285F4"/><path d="M12 21c2.59 0 4.76-.86 6.35-2.32l-3.07-2.35c-.85.57-1.95.91-3.28.91-2.52 0-4.66-1.7-5.42-3.98H3.43v2.43C5.01 18.98 8.27 21 12 21z" fill="#34A853"/><path d="M6.58 13.26A5.98 5.98 0 016.2 12c0-.44.07-.87.18-1.28V8.3H3.43A9.97 9.97 0 002 12c0 1.61.39 3.13 1.07 4.46l3.08-2.43z" fill="#FBBC04"/><path d="M12 6.04c1.42 0 2.7.49 3.7 1.44l2.77-2.77C16.75 3.12 14.58 2 12 2 8.27 2 5.01 4.02 3.43 7.04L6.5 9.47c.76-2.28 2.9-3.43 5.5-3.43z" fill="#EA4335"/></svg>
+          Mit eigenem Google Account verbinden
+        </button>
+      </div>
+    </div>
   </div>
+
   <div class="modal-footer">
     <button class="btn btn-ghost" onclick="closeStaffModal()">Abbrechen</button>
     <button class="btn btn-primary" onclick="saveStaff()" id="btn-staff-save">
@@ -2327,67 +2310,68 @@ async function openCalendarPicker(mitarbeiterId){
   calPickerMitarbeiterId=mitarbeiterId;
   var m=staffData.filter(function(i){return i.mitarbeiter.id===mitarbeiterId;})[0];
   var name=m?esc(m.mitarbeiter.display_name||m.mitarbeiter.name):'Mitarbeiter';
-  document.getElementById('cal-picker-title').textContent='Kalender wählen — '+name;
-
-  var overlay=document.getElementById('cal-picker-overlay');
-  overlay.style.display='block';
-  document.getElementById('cal-picker-modal').classList.add('open');updateFabVisibility();
-
-  // Prüfen ob Admin-Kalender verbunden
+  document.getElementById('staff-modal-title').textContent='Kalender wählen — '+name;
+  document.getElementById('cal-back-btn').style.display='block';
+  document.getElementById('s-main-view').style.display='none';
+  document.getElementById('s-cal-view').style.cssText='display:flex;flex-direction:column;flex:1;overflow-y:auto;padding:20px 24px';
+  var footer=document.querySelector('#staff-modal .modal-footer');
+  if(footer)footer.style.display='none';
   var profRes=await sb.from('kunden_profile').select('google_refresh_token_encrypted,google_connected').eq('id',SALON_ID).single();
   var adminConnected=profRes.data&&profRes.data.google_connected&&profRes.data.google_refresh_token_encrypted;
-
   if(!adminConnected){
     document.getElementById('cal-picker-no-admin').style.display='block';
     document.getElementById('cal-picker-content').style.display='none';
     return;
   }
-
   document.getElementById('cal-picker-no-admin').style.display='none';
   document.getElementById('cal-picker-content').style.display='block';
   switchCalTab('sub');
-
   var list=document.getElementById('cal-picker-list');
   list.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Kalender werden geladen…</div>';
-
   try{
     var res=await fetch('https://insy-n8n-u71054.vm.elestio.app/webhook/get-calendar-list?salon_id='+SALON_ID);
     var data=await res.json();
     var calendars=data.calendars||[];
-    if(!calendars.length){
-      list.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Keine Subkalender gefunden.</div>';
-      return;
-    }
-    // Build name map for display after selection
-  window._calNameMap=window._calNameMap||{};
-  calendars.forEach(function(cal){window._calNameMap[cal.id]=cal.name;});
-  list.innerHTML=calendars.map(function(cal){
+    window._calNameMap=window._calNameMap||{};
+    calendars.forEach(function(cal){window._calNameMap[cal.id]=cal.name;});
+    if(!calendars.length){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Keine Subkalender gefunden.</div>';return;}
+    list.innerHTML='';
+    calendars.forEach(function(cal){
       var current=m&&m.mitarbeiter.google_calendar_id===cal.id;
       var isPrimary=cal.primary;
-      return'<div onclick="selectCalendar(\''+calPickerMitarbeiterId+'\',\''+cal.id+'\')" data-calname="'+esc(cal.name)+'" style="'
-        +'display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;'
-        +'background:'+(current?'var(--tpp)':'transparent')+';'
-        +'border:1.5px solid '+(current?'var(--tpl)':'transparent')+';'
-        +'transition:all .15s;margin-bottom:4px"'
-        +' onmouseover="this.style.background=\'var(--tpp)\';this.style.borderColor=\'var(--border)\'" onmouseout="this.style.background=\''+(current?'var(--tpp)':'transparent')+'\';this.style.borderColor=\''+(current?'var(--tpl)':'transparent')+'\'">'
-        +'<div style="width:12px;height:12px;border-radius:50%;background:'+(cal.color||'#4a1c6b')+';flex-shrink:0"></div>'
-        +'<div style="flex:1;min-width:0">'
-          +'<div style="font-size:13px;font-weight:'+(current?'600':'400')+';color:var(--td);display:flex;align-items:center;gap:6px">'
-            +esc(cal.name)
-            +(isPrimary?'<span style="font-size:9px;background:var(--tgp);color:var(--tg);border-radius:4px;padding:1px 5px;font-weight:600">Hauptkalender</span>':'')
-          +'</div>'
-          +'<div style="font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(cal.id)+'</div>'
-        +'</div>'
-        +(current
-        ?'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">'
-          +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>'
-          +'<button onclick="event.stopPropagation();disconnectCalendar(\''+calPickerMitarbeiterId+'\')" style="font-size:9px;color:var(--danger);background:none;border:none;cursor:pointer;font-family:inherit;padding:0">Trennen</button>'
-        +'</div>'
-        :''
-      )
-      +'</div>';
-    }).join('');
-  } catch(e){
+      var div=document.createElement('div');
+      div.style.cssText='display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;background:'+(current?'var(--tpp)':'transparent')+';border:1.5px solid '+(current?'var(--tpl)':'transparent')+';transition:all .15s;margin-bottom:4px';
+      div.dataset.calId=cal.id;
+      div.dataset.mitId=calPickerMitarbeiterId;
+      div.addEventListener('click',function(){selectCalendar(this.dataset.mitId,this.dataset.calId);});
+      var dotDiv=document.createElement('div');
+      dotDiv.style.cssText='width:12px;height:12px;border-radius:50%;background:'+(cal.color||'#4a1c6b')+';flex-shrink:0';
+      var infoDiv=document.createElement('div');
+      infoDiv.style.cssText='flex:1;min-width:0';
+      var nameDiv=document.createElement('div');
+      nameDiv.style.cssText='font-size:13px;font-weight:'+(current?'600':'400')+';color:var(--td)';
+      nameDiv.textContent=cal.name;
+      if(isPrimary){var badge=document.createElement('span');badge.style.cssText='font-size:9px;background:var(--tgp);color:var(--tg);border-radius:4px;padding:1px 5px;font-weight:600;margin-left:5px';badge.textContent='Hauptkalender';nameDiv.appendChild(badge);}
+      var idDiv=document.createElement('div');
+      idDiv.style.cssText='font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis';
+      idDiv.textContent=cal.id;
+      infoDiv.appendChild(nameDiv);infoDiv.appendChild(idDiv);
+      div.appendChild(dotDiv);div.appendChild(infoDiv);
+      if(current){
+        var checkDiv=document.createElement('div');
+        checkDiv.style.cssText='display:flex;flex-direction:column;align-items:flex-end;gap:4px';
+        checkDiv.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+        var disconnBtn=document.createElement('button');
+        disconnBtn.style.cssText='font-size:9px;color:var(--danger);background:none;border:none;cursor:pointer;font-family:inherit;padding:0';
+        disconnBtn.textContent='Trennen';
+        var mid=calPickerMitarbeiterId;
+        disconnBtn.addEventListener('click',function(e){e.stopPropagation();disconnectCalendar(mid);});
+        checkDiv.appendChild(disconnBtn);
+        div.appendChild(checkDiv);
+      }
+      list.appendChild(div);
+    });
+  }catch(e){
     list.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);font-size:13px">Fehler beim Laden</div>';
   }
 }
@@ -2415,8 +2399,17 @@ async function selectCalendar(mitarbeiterId, calendarId){
 }
 
 function closeCalendarPicker(){
-  document.getElementById('cal-picker-overlay').style.display='none';
-  document.getElementById('cal-picker-modal').classList.remove('open');
+  // Switch back to staff form view
+  var titleEl=document.getElementById('staff-modal-title');
+  if(titleEl)titleEl.textContent=editingStaffId?'Mitarbeiter bearbeiten':'Mitarbeiter hinzufügen';
+  var backBtn=document.getElementById('cal-back-btn');
+  if(backBtn)backBtn.style.display='none';
+  var mainView=document.getElementById('s-main-view');
+  if(mainView)mainView.style.display='block';
+  var calView=document.getElementById('s-cal-view');
+  if(calView)calView.style.display='none';
+  var footer=document.querySelector('#staff-modal .modal-footer');
+  if(footer)footer.style.display='flex';
   calPickerMitarbeiterId=null;
   updateFabVisibility();
 }
