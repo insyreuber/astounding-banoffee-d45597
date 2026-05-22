@@ -1637,7 +1637,7 @@ function mkVarRow(v,svcId,idx){
     +'</div>'
     // Gruppe 1: Dauer + Toggle "Dauer anzeigen"
     +'<div class="var-group">'
-      +'<input data-field="dauer_minuten" type="number" min="0" placeholder="Min" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value)">'
+      +'<input data-field="dauer_minuten" type="number" min="5" step="5" placeholder="Min" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value)">'
       +'<label class="toggle-sw" title="Dauer anzeigen"><input data-field="dauer_anzeigen" type="checkbox" '+(v.dauer_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'
     +'</div>'
     // Gruppe 2: Preis + Toggle "Preis anzeigen"
@@ -1808,7 +1808,7 @@ function addModalVar(defaults){
     '<div style="display:flex;flex-direction:column;gap:3px">'+
       '<label style="font-size:10px;color:var(--muted);font-weight:500">Dauer Min <span style="color:var(--tg)">*</span></label>'+
       '<div class="var-group" style="min-height:40px">'+
-        '<input type="number" min="1" placeholder="Min" value="'+(d.dauer_minuten||'')+'" style="text-align:center;font-size:14px">'+
+        '<input type="number" min="5" step="5" placeholder="Min" value="'+(d.dauer_minuten||'')+'" style="text-align:center;font-size:14px">'+
         '<label class="toggle-sw" title="Dauer anzeigen"><input type="checkbox" '+(d.dauer_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'+
       '</div>'+
     '</div>'+
