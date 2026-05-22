@@ -664,14 +664,27 @@
       order: 4;
     }
 
-    /* Buttons-Container → order 8 (nach den Kacheln) */
+    /* Buttons-Container → order 8 (nach den Kacheln), zentriert */
     section[style*="height:100vh"] > div[style*="top:430px"] {
       order: 8 !important;
       flex-direction: column !important;
-      align-items: flex-start !important;
+      align-items: center !important;
       gap: 0 !important;
       padding-right: 0 !important;
-      justify-content: flex-start !important;
+      justify-content: center !important;
+      width: 100% !important;
+      margin-top: 8px !important;
+    }
+    section[style*="height:100vh"] > div[style*="top:430px"] > div[style*="gap:16px"] {
+      align-items: center !important;
+      width: 100% !important;
+    }
+    section[style*="height:100vh"] > div[style*="top:430px"] > div[style*="gap:16px"] > a {
+      width: 100% !important;
+      justify-content: center !important;
+    }
+    section[style*="height:100vh"] > div[style*="top:430px"] > div[style*="gap:16px"] > div {
+      text-align: center !important;
       width: 100% !important;
     }
 
@@ -954,9 +967,11 @@
     .cta-title { font-size: clamp(1.6rem, 6vw, 2.2rem); }
     .cta-actions { flex-direction: column; align-items: center; gap: 0.8rem; }
     .cta-actions a { width: 100%; text-align: center; }
-    footer { padding: 2.5rem 1.5rem 1.5rem; }
+    footer { padding: 2.5rem 1.2rem 1.5rem !important; overflow: visible !important; word-break: break-word !important; }
     .footer-grid { grid-template-columns: 1fr !important; gap: 2rem; }
-    .footer-bottom { flex-direction: column; gap: 0.8rem; text-align: center; }
+    .footer-bottom { flex-direction: column !important; gap: 0.8rem; text-align: center !important; padding: 1.2rem !important; overflow: visible !important; }
+    .footer-bottom p { word-break: break-word !important; white-space: normal !important; }
+    footer * { word-break: break-word !important; }
   }
 @keyframes floatCard{0%,100%{transform:translateY(0px);}50%{transform:translateY(-5px);}}
 /* ── FLIP KACHELN ── */
@@ -1267,6 +1282,21 @@
     document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('open'));
     if (!isOpen) item.classList.add('open');
   }
+
+  // Flip-Kacheln: Touch-Unterstützung auf Mobile
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.innerWidth <= 768) {
+      document.querySelectorAll('.flip-card').forEach(function(card) {
+        card.addEventListener('click', function() {
+          var inner = card.querySelector('.flip-card-inner');
+          if (inner) {
+            var flipped = inner.style.transform === 'rotateY(180deg)';
+            inner.style.transform = flipped ? '' : 'rotateY(180deg)';
+          }
+        });
+      });
+    }
+  });
 
   window.addEventListener('scroll', () => {
     const nav = document.querySelector('nav');
