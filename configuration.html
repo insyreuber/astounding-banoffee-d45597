@@ -1610,7 +1610,7 @@ function renderSvcBody(s,vars){
     +'<span></span>'
   +'</div>'
   +'<div class="var-list" id="varlist-'+s.id+'">'
-    +(vars.map(function(v){return mkVarRow(v,s.id);}).join('')||'<div style="font-size:12px;color:var(--muted);padding:6px 0">Noch keine Varianten</div>')
+    +(vars.map(function(v,i){return mkVarRow(v,s.id,i);}).join('')||'<div style="font-size:12px;color:var(--muted);padding:6px 0">Noch keine Varianten</div>')
   +'</div>'
   +'<div style="display:flex;gap:8px;align-items:center">'
     +'<button class="btn btn-sm btn-ghost" onclick="addVariante(\''+s.id+'\')">'
@@ -1631,9 +1631,10 @@ function toggleDispOpt(svcId, key){
   if(cb)cb.checked=!on;
 }
 
-function mkVarRow(v,svcId){
+function mkVarRow(v,svcId,idx){
   var durVal=(v.dauer_minuten&&v.dauer_minuten<9000)?v.dauer_minuten:'';
   var preisVal=(v.preis!=null&&v.preis>0)?v.preis:'';
+  var isFirst=(idx===0);
   return'<div class="var-row" id="var-'+v.id+'">'
     // Name der Variante
     +'<div class="var-group">'
@@ -1654,7 +1655,10 @@ function mkVarRow(v,svcId){
       +'<input data-field="puffer_minuten" type="number" min="0" placeholder="Puffer" value="'+(v.puffer_minuten||0)+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'puffer_minuten\',this.value)">'
       +'<label class="toggle-sw" title="Puffer aktiv"><input data-field="puffer_aktiv" type="checkbox" '+(v.puffer_aktiv?'checked':'')+' ><span class="slider"></span></label>'
     +'</div>'
-    +'<button class="var-del" onclick="deleteVar(\''+v.id+'\',\''+svcId+'\')">✕</button>'
+    +(isFirst
+      ?'<div style="width:28px;height:28px;flex-shrink:0"></div>'
+      :'<button class="var-del" onclick="deleteVar(\''+v.id+'\',\''+svcId+'\')">✕</button>'
+    )
   +'</div>';
 }
 
@@ -1759,7 +1763,7 @@ async function addVariante(svcId){
   v._tempMin=true;
   if(item)item.varianten.push(v);
   var vl=document.getElementById('varlist-'+svcId);
-  if(vl){var old=vl.querySelector('[style*="color:var(--muted)"]');if(old)old.remove();vl.insertAdjacentHTML('beforeend',mkVarRow(v,svcId));}
+  if(vl){var old=vl.querySelector('[style*="color:var(--muted)"]');if(old)old.remove();vl.insertAdjacentHTML('beforeend',mkVarRow(v,svcId,item?item.varianten.length-1:1));}
   toast('Variante hinzugefügt — bitte Felder ausfüllen und speichern','success');
 }
 
