@@ -371,10 +371,11 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   .modal .var-group input[type="number"],.modal .var-group input[type="text"]{font-size:16px !important;padding:10px 8px !important;min-height:44px !important}
   .modal .mvar-row{grid-template-columns:1fr !important;gap:8px !important}
   .modal .mvar-header{display:none !important}
-  /* Name + Beschreibung Felder im Service Modal untereinander */
+  /* Service Modal: Name+Desc+Toggle untereinander, links-bündig */
   .modal #m-name,.modal #m-desc{font-size:16px !important;width:100% !important}
-  /* Erste Zeile Name+Desc+Toggle auf Mobile untereinander */
-  .modal > .modal-body > div[style*="display:flex;gap:10px"]{flex-direction:column !important}
+  #svc-modal .modal-body > div:first-child{flex-direction:column !important;align-items:stretch !important}
+  #svc-modal .modal-body > div:first-child .field{flex:unset !important;width:100% !important}
+  #svc-modal .modal-body > div:first-child > div:last-child{flex-direction:row !important;align-items:center !important;gap:8px !important;padding:4px 0 !important}
 
   /* Rechnungen */
   #bills-list .card{flex-direction:column;align-items:flex-start !important;gap:8px;}
@@ -388,6 +389,8 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   .frow-2{grid-template-columns:1fr 1fr !important}
   /* iOS Zoom Prevention */
   .field input,.field textarea,.field select{font-size:16px !important;min-height:44px !important}
+  /* Mitarbeiter Modal: Anzeigename + Rolle untereinander */
+  #staff-modal .frow-2{grid-template-columns:1fr !important}
   .hours-col select,.hours-col-sm select{font-size:14px !important;min-height:36px !important}
 
   /* Timeline mobile */
@@ -679,12 +682,14 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
     <button class="modal-close" onclick="closeSvcModal()">×</button>
   </div>
   <div class="modal-body">
-    <div style="display:flex;gap:10px;margin-bottom:12px;align-items:flex-end">
-      <div class="field" style="flex:1"><label>Name *</label><input type="text" id="m-name" placeholder="z.B. Klassische Massage"></div>
-      <div class="field" style="flex:2"><label>Beschreibung</label><input type="text" id="m-desc" placeholder="z.B. Entspannung & Verspannungen"></div>
-      <div style="padding-bottom:2px;display:flex;flex-direction:column;align-items:center;gap:3px">
-        <label class="toggle-sw" title="Im Widget aktiv"><input type="checkbox" id="m-aktiv" checked><span class="slider"></span></label>
-        <span style="font-size:9px;color:var(--muted)">Aktiv</span>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:12px;">
+      <div class="field"><label>Name *</label><input type="text" id="m-name" placeholder="z.B. Klassische Massage"></div>
+      <div style="display:flex;gap:10px;align-items:flex-end">
+        <div class="field" style="flex:1;margin:0"><label>Beschreibung</label><input type="text" id="m-desc" placeholder="z.B. Entspannung &amp; Verspannungen"></div>
+        <div style="padding-bottom:2px;display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0">
+          <label class="toggle-sw" title="Im Widget aktiv"><input type="checkbox" id="m-aktiv" checked><span class="slider"></span></label>
+          <span style="font-size:9px;color:var(--muted)">Aktiv</span>
+        </div>
       </div>
     </div>
     <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Varianten (Dauer & Preis)</div>
@@ -720,7 +725,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   <div class="modal-body">
 
     <!-- Anzeigename & Rolle -->
-    <div class="frow frow-2" style="margin-bottom:12px">
+    <div class="frow frow-1" style="margin-bottom:12px">
       <div class="field"><label>Anzeigename (im Buchungswidget) *</label><input type="text" id="s-display" placeholder="z.B. Niran T." required></div>
       <div class="field"><label>Rolle / Berufsbezeichnung</label><input type="text" id="s-role" placeholder="z.B. Massagetherapeutin"></div>
     </div>
@@ -1792,22 +1797,34 @@ function addModalVar(defaults){
   var idx=++mVarCount;
   var d=defaults||{};
   var row=document.createElement('div');row.className='mvar-row';row.id='mvar-'+idx;
-  row.style.cssText='display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr 32px;gap:7px;align-items:center;margin-bottom:4px;';
+  row.style.cssText='display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr 32px;gap:7px;align-items:end;margin-bottom:4px;';
   row.innerHTML=
-    '<input type="text" placeholder="z.B. 60 Min" value="'+(d.name||'')+'" style="font-size:12px;padding:5px 8px;border:1.5px solid var(--border);border-radius:7px;width:100%;box-sizing:border-box;">'+
-    '<div class="var-group">'+
-      '<input type="number" min="1" placeholder="Min" value="'+(d.dauer_minuten||'')+'" style="text-align:center">'+
-      '<label class="toggle-sw" title="Dauer anzeigen"><input type="checkbox" '+(d.dauer_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'+
+    '<div style="display:flex;flex-direction:column;gap:3px">'+
+      '<label style="font-size:10px;color:var(--muted);font-weight:500">Name</label>'+
+      '<input type="text" placeholder="z.B. 60 Min" value="'+(d.name||'')+'" style="font-size:14px;padding:8px 10px;border:1.5px solid var(--border);border-radius:7px;width:100%;box-sizing:border-box;min-height:40px;color:var(--td);font-family:inherit;outline:none;">'+
     '</div>'+
-    '<div class="var-group">'+
-      '<input type="number" min="0" step="0.5" placeholder="€" value="'+(d.preis||'')+'" style="text-align:center">'+
-      '<label class="toggle-sw" title="Preis anzeigen"><input type="checkbox" '+(d.preis_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'+
+    '<div style="display:flex;flex-direction:column;gap:3px">'+
+      '<label style="font-size:10px;color:var(--muted);font-weight:500">Dauer · anz.</label>'+
+      '<div class="var-group" style="min-height:40px">'+
+        '<input type="number" min="1" placeholder="Min" value="'+(d.dauer_minuten||'')+'" style="text-align:center;font-size:14px">'+
+        '<label class="toggle-sw" title="Dauer anzeigen"><input type="checkbox" '+(d.dauer_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'+
+      '</div>'+
     '</div>'+
-    '<div class="var-group">'+
-      '<input type="number" min="0" placeholder="Min" value="'+(d.puffer_minuten||'')+'" style="text-align:center">'+
-      '<label class="toggle-sw" title="Puffer aktiv"><input type="checkbox" '+(d.puffer_aktiv?'checked':'')+' ><span class="slider"></span></label>'+
+    '<div style="display:flex;flex-direction:column;gap:3px">'+
+      '<label style="font-size:10px;color:var(--muted);font-weight:500">Preis € · anz.</label>'+
+      '<div class="var-group" style="min-height:40px">'+
+        '<input type="number" min="0" step="0.5" placeholder="€" value="'+(d.preis||'')+'" style="text-align:center;font-size:14px">'+
+        '<label class="toggle-sw" title="Preis anzeigen"><input type="checkbox" '+(d.preis_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'+
+      '</div>'+
     '</div>'+
-    '<button type="button" onclick="this.closest(\'.mvar-row\').remove()" style="background:none;border:none;cursor:pointer;font-size:16px;color:#ccc;line-height:1">×</button>';
+    '<div style="display:flex;flex-direction:column;gap:3px">'+
+      '<label style="font-size:10px;color:var(--muted);font-weight:500">Puffer · aktiv</label>'+
+      '<div class="var-group" style="min-height:40px">'+
+        '<input type="number" min="0" placeholder="Min" value="'+(d.puffer_minuten||'')+'" style="text-align:center;font-size:14px">'+
+        '<label class="toggle-sw" title="Puffer aktiv"><input type="checkbox" '+(d.puffer_aktiv?'checked':'')+' ><span class="slider"></span></label>'+
+      '</div>'+
+    '</div>'+
+    '<button type="button" onclick="this.closest(\'.mvar-row\').remove()" style="background:#c0392b;border:none;border-radius:5px;width:28px;height:28px;cursor:pointer;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;margin-bottom:1px">×</button>';
   document.getElementById('m-var-list').appendChild(row);
 }
 
