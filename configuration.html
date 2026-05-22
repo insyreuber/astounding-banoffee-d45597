@@ -726,7 +726,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       <label class="toggle-sw"><input type="checkbox" id="s-custom-hours" onchange="toggleCustomHours()"><span class="slider"></span></label>
       <span style="font-size:12px;color:var(--td)">Eigene Stammzeiten (abweichend vom Salon)</span>
     </div>
-    <div id="s-hours-wrap" style="opacity:.4;pointer-events:none;margin-bottom:14px">
+    <div id="s-hours-wrap" style="display:none;margin-bottom:14px">
       <div class="hours-cols-sm" id="s-hours-cols"></div>
     </div>
 
@@ -2427,7 +2427,8 @@ function toggleStaffSvcAccordion(){
 function toggleCustomHours(){
   var on=document.getElementById('s-custom-hours').checked;
   var wrap=document.getElementById('s-hours-wrap');
-  wrap.style.opacity=on?'1':'0.4';wrap.style.pointerEvents=on?'auto':'none';
+  wrap.style.display=on?'block':'none';
+  if(on&&!document.getElementById('s-hours-cols').innerHTML)buildHoursCols(null,'s-hours-cols','s-',true);
 }
 
 // Service-Varianten Checkliste aufbauen
@@ -2445,12 +2446,13 @@ function buildStaffSvcList(selectedVarianteIds){
     if(!vars.length)return;
     var anyChecked=vars.some(function(v){return selectedVarianteIds.indexOf(v.id)>=0;});
     var accId='svc-acc-'+s.id;
-    var open=anyChecked;
-    html+='<div style="border:1.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:6px">';
+    var open=false;
+    html+='<div style="border:1.5px solid '+(anyChecked?'#a8e6bf':'var(--border)')+';border-radius:8px;overflow:hidden;margin-bottom:6px">';
     // Accordion header — service name
-    html+='<div onclick="toggleSvcAcc(\''+accId+'\')" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;cursor:pointer;background:'+(anyChecked?'var(--tpp)':'var(--bg)')+';">';
-    html+='<span style="font-size:12px;font-weight:600;color:'+(anyChecked?'var(--tpl)':'var(--td)')+'">'+esc(s.name)+'</span>';
-    html+='<svg id="chev-'+accId+'" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="'+(anyChecked?'var(--tpl)':'var(--muted)')+'" stroke-width="2.5" style="transition:transform .2s;'+(open?'transform:rotate(180deg)':'')+'"><polyline points="6 9 12 15 18 9"/></svg>';
+    var hdrBg=anyChecked?'#f0faf4':'var(--bg)';var hdrClr=anyChecked?'#1e7a3c':'var(--td)';var hdrStr=anyChecked?'#1e7a3c':'var(--muted)';
+    html+='<div onclick="toggleSvcAcc(\''+accId+'\')" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;cursor:pointer;background:'+hdrBg+';">';
+    html+='<div style="display:flex;align-items:center;gap:5px">'+(anyChecked?'<svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#1e7a3c" stroke-width="2.5" stroke-linecap="round"><polyline points="10 3 5 9 2 6"/></svg>':'')+'<span style="font-size:12px;font-weight:600;color:'+hdrClr+'">'+esc(s.name)+'</span></div>';
+    html+='<svg id="chev-'+accId+'" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="'+hdrStr+'" stroke-width="2.5" style="transition:transform .2s;"><polyline points="6 9 12 15 18 9"/></svg>';
     html+='</div>';
     // Accordion body
     html+='<div id="'+accId+'" style="display:'+(open?'block':'none')+';padding:4px 8px 8px">';
@@ -2524,15 +2526,7 @@ function openStaffModal(data){
     if(gcalConnected){gcalConnected.style.display='flex';}
     if(gcalBtn){gcalBtn.style.display='none';}
     if(gcalLbl){gcalLbl.textContent=m.google_calendar_id;}
-    // Show calendar name: from map (after picker use), or _calName, or parse email/id
-    var calId=m.google_calendar_id;
-    var calName=(window._calNameMap&&_calNameMap[calId])||m._calName||'';
-    if(!calName){
-      // parse: email → username, uuid@group → 'Subkalender', else raw
-      if(calId.indexOf('@')>-1)calName=calId.split('@')[0];
-      else calName='Kalender verbunden';
-    }
-    if(gcalNameLbl){gcalNameLbl.textContent=calName;}
+    if(gcalNameLbl){gcalNameLbl.textContent='Kalender verbunden';}
   } else {
     if(gcalConnected){gcalConnected.style.display='none';}
     if(gcalBtn){gcalBtn.style.display='flex';}
@@ -2545,9 +2539,8 @@ function openStaffModal(data){
   var hasCustom=!!(data&&m.arbeitszeiten);
   document.getElementById('s-custom-hours').checked=hasCustom;
   var wrap=document.getElementById('s-hours-wrap');
-  wrap.style.opacity=hasCustom?'1':'0.4';
-  wrap.style.pointerEvents=hasCustom?'auto':'none';
-  buildHoursCols(hasCustom?m.arbeitszeiten:null,'s-hours-cols','s-',true);
+  wrap.style.display=hasCustom?'block':'none';
+  if(hasCustom)buildHoursCols(m.arbeitszeiten||null,'s-hours-cols','s-',true);
   // Staff temp entries
   staffTempEntries=[];staffTempIdCounter=0;staffTempCalOffset={};
   var tempKws=m.temp_arbeitszeiten;
