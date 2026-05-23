@@ -73,6 +73,7 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .toggle-sw .slider{position:absolute;inset:0;background:#ddd;border-radius:99px;cursor:pointer;transition:.2s}
 .toggle-sw .slider:before{content:'';position:absolute;width:12px;height:12px;border-radius:50%;background:#fff;left:3px;top:3px;transition:.2s}
 .toggle-sw input:checked+.slider{background:var(--tp)}
+#dash-booking-active:checked+.slider{background:var(--tg) !important}
 .toggle-sw input:checked+.slider:before{transform:translateX(16px)}
 
 /* ── ÖFFNUNGSZEITEN – SPALTEN ── */
@@ -285,7 +286,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   .sec-hdr{flex-direction:column;align-items:flex-start;gap:8px}
 
   /* Profil Toggles: wrappen sauber */
-  #profil-toggles{padding:10px 12px !important;gap:6px !important;margin-bottom:8px !important;}
+  #profil-toggles{padding:10px 12px !important;gap:6px !important;margin-bottom:0 !important;}
   #profil-toggles button{font-size:11px !important;padding:6px 12px !important;}
 
   /* Adresse & Kontakt — alle Felder untereinander */
@@ -488,18 +489,21 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   <!-- ════ DASHBOARD ════ -->
   <div class="tab-panel active" id="panel-profil">
     <div id="profil-loader" style="position:relative;padding:60px 20px;display:flex;">
-      <div class="profil-loader-bar"><div class="profil-loader-bar-inner"></div></div>
       <div class="profil-loader-txt">Daten werden geladen…</div>
     </div>
     <div id="profil-toggles" style="display:none;gap:8px;flex-wrap:wrap;margin-bottom:0;padding:12px 16px;background:var(--tp);border:none;border-radius:12px 12px 0 0;min-height:44px;"></div>
     <!-- Buchungsseite Online/Offline -->
     <div id="booking-status-bar" style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px 12px;background:var(--tp);border-radius:0 0 12px 12px;margin-bottom:8px;border-top:1px solid rgba(255,255,255,0.12);">
-      <div style="display:flex;flex-direction:column;gap:6px;">
+      <div style="display:flex;flex-direction:column;gap:6px;width:100%;">
         <div style="display:flex;align-items:center;gap:8px;">
           <div id="booking-status-dot" style="width:8px;height:8px;border-radius:50%;background:#27ae60;flex-shrink:0;"></div>
           <span id="booking-status-label" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.85);">Buchungsseite Online</span>
         </div>
         <label class="toggle-sw" style="margin-left:16px;"><input type="checkbox" id="dash-booking-active" onchange="toggleBookingActive()"><span class="slider"></span></label>
+        <!-- Fortschrittsbalken -->
+        <div style="margin-top:6px;width:100%;height:4px;background:rgba(255,255,255,0.15);border-radius:99px;overflow:hidden;">
+          <div id="profil-progress-bar" style="height:100%;border-radius:99px;background:linear-gradient(90deg,#c0392b,#d4a000,#1e7a3c);width:0%;transition:width 0.6s ease;"></div>
+        </div>
       </div>
     </div>
 
@@ -3460,6 +3464,25 @@ function updateProfilStatus(){
   el.innerHTML='<span style="color:#1e7a3c">✓ Alles bereit — dein Salon ist vollständig eingerichtet und buchbar.</span>';
 }
 
+
+function updateProgressBar(){
+  var total=PTABS.length;
+  var green=0;
+  PTABS.forEach(function(t){
+    var col=_ptColor(t);
+    if(col==='green')green++;
+    else if(col==='yellow')green+=0.5;
+  });
+  var pct=Math.round((green/total)*100);
+  var bar=document.getElementById('profil-progress-bar');
+  if(!bar)return;
+  bar.style.width=pct+'%';
+  // Color: red=0-40, yellow=40-80, green=80-100
+  if(pct>=80)bar.style.background='linear-gradient(90deg,#27ae60,#1e7a3c)';
+  else if(pct>=40)bar.style.background='linear-gradient(90deg,#d4a000,#27ae60)';
+  else bar.style.background='linear-gradient(90deg,#c0392b,#d4a000)';
+}
+
 function initBookingStatus(){
   var d=window._pData||{};
   var active=d.booking_active!==false;
@@ -3487,6 +3510,7 @@ function buildProfilToggles(){
   renderProfilContent(_pActive);
   setTimeout(updateProfilStatus, 100);
   initBookingStatus();
+  updateProgressBar();
 }
 
 function _ptActivate(id){
