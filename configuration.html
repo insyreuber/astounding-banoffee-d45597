@@ -270,7 +270,6 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   .nav-brand{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.1);width:100%;border-right:none;margin-right:0;}
   .nav-brand::after{content:'☰';font-size:20px;color:rgba(255,255,255,.7);}
   .nav-logo{font-size:10px;letter-spacing:.2em}
-  .nav-brand > div{font-size:20px !important}
 
   .nav-tabs{display:none;flex-direction:column;gap:0;border-bottom:1.5px solid rgba(255,255,255,.1);width:100%;}
   .nav-tabs.open{display:flex}
@@ -278,7 +277,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   .nav-tab svg{display:inline-block;margin-right:8px}
   .nav-tab.active{border-left:3px solid var(--tg);background:rgba(255,255,255,.07)}
   .nav-right{display:none}
-  .fab-booking{display:flex} .modal.open ~ .fab-booking, body:has(.modal.open) .fab-booking{display:none !important;}
+  .fab-booking{display:none !important} .modal.open ~ .fab-booking, body:has(.modal.open) .fab-booking{display:none !important;}
 
   /* Layout */
   body{overflow-x:hidden;scrollbar-gutter:auto}
@@ -451,9 +450,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
 <nav class="nav">
   <div class="nav-brand" onclick="if(window.innerWidth<=768)document.querySelector('.nav-tabs').classList.toggle('open')">
-    <div style="line-height:1.1">
-      <div style="font-size:18px;font-weight:700;letter-spacing:.02em;color:#fff;font-family:'DM Sans',sans-serif">Insy <span style="color:var(--tg)">Reception</span></div>
-    </div>
+    <div class="nav-logo">Insy <span style="color:var(--tg)">Reception</span></div>
   </div>
   <div class="nav-tabs">
     <div class="nav-tab active" onclick="switchTab('profil')" id="tab-profil">
