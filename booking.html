@@ -769,14 +769,15 @@ function mkSvcCards(){
     var hasAllowed=svcHasAllowedVariant(s.id);
     var minPreis=vars.length?Math.min.apply(null,vars.map(function(v){return v.preis;})):null;
     var varHtml='';
-    if(isSelected&&vars.length){
+    if(vars.length){
       varHtml='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid rgba(74,28,107,0.12)">';
       vars.forEach(function(v){
-        var isSel=entry.varId===v.id;
+        var isSel=entry&&entry.varId===v.id;
         var allowed=isVarAllowed(v.id);
-        varHtml+='<div onclick="'+(allowed?'event.stopPropagation();pickVar(\''+s.id+'\',\''+v.id+'\')':'event.stopPropagation()')+'" style="'
+        var clickable=allowed&&isSelected;
+        varHtml+='<div onclick="'+(clickable?'event.stopPropagation();pickVar(\''+s.id+'\',\''+v.id+'\')':'event.stopPropagation()')+'" style="'
           +'padding:5px 10px;border-radius:6px;font-size:11px;'
-          +'cursor:'+(allowed?'pointer':'not-allowed')+';transition:all .15s;'
+          +'cursor:'+(clickable?'pointer':'default')+';transition:all .15s;'
           +'border:1.5px solid '+(isSel?'var(--tp)':allowed?'#e8e0f0':'#ece8f0')+';'
           +'background:'+(isSel?'var(--tp)':allowed?'#fff':'#f5f3f8')+';'
           +'color:'+(isSel?'#fff':allowed?'var(--td)':'#c0b8cc')+';'
