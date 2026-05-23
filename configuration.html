@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Insy · Einstellungen</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --tp:#4a1c6b;--tpl:#6b3fa0;--tpp:#f0eaf7;--tg:#c9a84c;--tgl:#e8d08a;--tgp:#fdf8ec;--td:#1a0a2e;
@@ -17,7 +17,8 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 /* ── NAV ── */
 .nav{background:var(--tp);padding:0 24px;display:flex;align-items:center;border-bottom:1px solid rgba(255,255,255,.08)}
 .nav-brand{padding:14px 20px 14px 0;border-right:1px solid rgba(255,255,255,.1);margin-right:4px;flex-shrink:0}
-.nav-logo{font-size:9px;letter-spacing:.2em;color:var(--tg);font-weight:600;text-transform:uppercase}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:600;color:#fff;letter-spacing:.01em;text-transform:none;line-height:1}
+.nav-logo span{color:#C9A84C}
 .nav-title{font-size:13px;font-weight:500;color:rgba(255,255,255,.9)}
 .nav-tabs{display:flex}
 .nav-tab{padding:16px 18px;font-size:12px;font-weight:500;color:rgba(255,255,255,.45);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:6px}
@@ -269,7 +270,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   .nav{flex-direction:column;padding:0;gap:0;width:100%;}
   .nav-brand{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.1);width:100%;border-right:none;margin-right:0;}
   .nav-brand::after{content:'☰';font-size:20px;color:rgba(255,255,255,.7);}
-  .nav-logo{font-size:10px;letter-spacing:.2em}
+  .nav-logo{font-size:1.2rem !important;letter-spacing:.01em !important;text-transform:none !important}
 
   .nav-tabs{display:none;flex-direction:column;gap:0;border-bottom:1.5px solid rgba(255,255,255,.1);width:100%;}
   .nav-tabs.open{display:flex}
