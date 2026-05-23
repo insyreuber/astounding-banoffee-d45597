@@ -3396,51 +3396,50 @@ function resetProfil(){
   toast('Zurückgesetzt','success');
 }
 
+function getToggleColor(id){
+  var btn=document.getElementById('ptgl-'+id);
+  if(!btn)return'gray';
+  // _ptColor is the source of truth — call it directly
+  var t=PTABS.find(function(x){return x.id===id;});
+  if(!t)return'gray';
+  return _ptColor(t);
+}
+
 function updateProfilStatus(){
   var el=document.getElementById('profil-status-msg');
   if(!el)return;
-  var d=window._pData||{};
 
   var redMsgs=[];
   var yellowMsgs=[];
 
-  var hasServices=typeof servicesData!=='undefined'&&servicesData.length>0;
+  // RED — read directly from toggle colors
+  ['adresse','zeiten','service','team'].forEach(function(id){
+    if(getToggleColor(id)==='red'){
+      var labels={adresse:'Adresse & Kontakt',zeiten:'Öffnungszeiten',service:'Service',team:'Team'};
+      redMsgs.push(labels[id]);
+    }
+  });
+
+  // YELLOW — read directly from toggle colors
+  if(getToggleColor('whatsapp')==='yellow')
+    yellowMsgs.push('💬 Aktiviere <strong>WhatsApp Automatic</strong> für automatische Bestätigungen & Erinnerungen.');
+  if(getToggleColor('sonstiges')==='yellow')
+    yellowMsgs.push('✦ Ergänze <strong>Links & Notizen</strong> für deinen Salon-Auftritt.');
+
+  // Extra yellow checks from live data
+  var d=window._pData||{};
   var hasStaff=typeof staffData!=='undefined'&&staffData.length>0;
   var gcalConnected=!!(d.google_connected&&d.google_calendar_id);
   var anyStaffOnline=hasStaff&&staffData.some(function(i){return i.mitarbeiter.aktiv!==false;});
   var anyStaffWithCal=hasStaff&&staffData.some(function(i){return !!(i.mitarbeiter.google_calendar_id);});
-  var waOnToggle=document.getElementById('feat-whatsapp-on');
-  var waOn=waOnToggle?waOnToggle.checked:!!(d.feature_settings&&d.feature_settings.whatsapp_on);
-  // Check toggle color: if yellow → whatsapp not activated
-  var waColor=_ptColor({id:'whatsapp',req:false,wa:true});
-  var waActive=waColor==='green'||(d.feature_settings&&d.feature_settings.whatsapp_on);
-  var hasSonstiges=!!(d.note||(d.custom_links&&d.custom_links.length));
 
-  // ── RED (Pflicht) ──
-  PTABS.forEach(function(t){
-    if(_ptColor(t)==='red'){
-      if(t.id==='adresse')  redMsgs.push('Adresse & Kontakt');
-      if(t.id==='zeiten')   redMsgs.push('Öffnungszeiten');
-      if(t.id==='service')  redMsgs.push('mindestens einen Service');
-      if(t.id==='team')     redMsgs.push('mindestens ein Teammitglied');
-    }
-  });
-  if(!hasServices&&redMsgs.indexOf('mindestens einen Service')<0)
-    redMsgs.push('ersten Service hinzufügen');
-
-  // ── YELLOW (Empfehlungen, in Priorität) ──
   if(!gcalConnected)
-    yellowMsgs.push('📅 Verbinde deinen <strong>Google Kalender</strong> damit Termine synchronisiert werden.');
+    yellowMsgs.unshift('📅 Verbinde deinen <strong>Google Kalender</strong> damit Termine synchronisiert werden.');
   if(hasStaff&&!anyStaffWithCal)
-    yellowMsgs.push('🗓 Weise deinen Teammitgliedern einen <strong>Kalender</strong> zu.');
+    yellowMsgs.unshift('🗓 Weise deinen Teammitgliedern einen <strong>Kalender</strong> zu.');
   if(hasStaff&&!anyStaffOnline)
-    yellowMsgs.push('👤 Stelle mindestens ein Teammitglied auf <strong>Online</strong>.');
-  if(!waActive)
-    yellowMsgs.push('💬 Aktiviere <strong>WhatsApp Automatic</strong> für automatische Bestätigungen & Erinnerungen.');
-  if(_ptColor({id:'sonstiges',req:false})==='yellow')
-    yellowMsgs.push('✦ Ergänze <strong>Links & Notizen</strong> für deinen Salon-Auftritt.');
+    yellowMsgs.unshift('👤 Stelle mindestens ein Teammitglied auf <strong>Online</strong>.');
 
-  // ── PRIORITY: rot → gelb → grün ──
   if(redMsgs.length>0){
     el.innerHTML='<span style="color:#c0392b">⚠ Bitte ergänze: <strong>'+redMsgs.join(', ')+'</strong> — erst dann ist dein Salon buchbar.</span>';
   } else if(yellowMsgs.length>0){
