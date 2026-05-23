@@ -700,7 +700,9 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
     <!-- Avatar (klickbar für Farbauswahl) -->
     <div style="display:flex;justify-content:center;margin-bottom:16px">
-      <div id="s-modal-avatar" onclick="toggleColorPicker()" style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;cursor:pointer;position:relative;box-shadow:0 2px 10px rgba(0,0,0,.15);transition:transform .15s" title="Farbe ändern">
+      <!-- Hidden file input -->
+      <input type="file" id="s-avatar-file" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
+      <div id="s-modal-avatar" onclick="toggleColorPicker()" style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;cursor:pointer;position:relative;box-shadow:0 2px 10px rgba(0,0,0,.15);transition:transform .15s;background-size:cover;background-position:center" title="Farbe oder Foto ändern">
         <span id="s-modal-avatar-ini">?</span>
         <div style="position:absolute;bottom:0;right:0;width:20px;height:20px;border-radius:50%;background:var(--bg);border:2px solid var(--border);display:flex;align-items:center;justify-content:center">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
@@ -709,7 +711,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
     </div>
     <!-- Color picker (hidden by default) -->
     <div id="s-color-picker-wrap" style="display:none;margin-bottom:16px;padding:12px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px">
-      <div style="font-size:10px;color:var(--muted);margin-bottom:8px;text-align:center">Farbe auswählen</div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:8px;text-align:center">Farbe oder Foto</div>
       <div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:center" id="color-picker">
         <div class="color-swatch" data-color="#e74c3c" style="background:#e74c3c" onclick="pickColor('#e74c3c')"></div>
         <div class="color-swatch" data-color="#e67e22" style="background:#e67e22" onclick="pickColor('#e67e22')"></div>
@@ -722,7 +724,13 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
         <div class="color-swatch" data-color="#607d8b" style="background:#607d8b" onclick="pickColor('#607d8b')"></div>
         <div class="color-swatch" data-color="#795548" style="background:#795548" onclick="pickColor('#795548')"></div>
       </div>
+      <button type="button" onclick="document.getElementById('s-avatar-file').click()" style="margin-top:10px;width:100%;padding:7px;border:1.5px dashed var(--border);border-radius:8px;background:none;color:var(--muted);font-size:11px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s" onmouseover="this.style.borderColor='var(--tpl)';this.style.color='var(--tpl)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Foto hochladen
+      </button>
+      <div id="s-avatar-remove" style="display:none;margin-top:6px;text-align:center"><button type="button" onclick="removeAvatarPhoto()" style="background:none;border:none;font-size:10px;color:var(--muted);cursor:pointer;font-family:inherit">× Foto entfernen</button></div>
       <input type="hidden" id="s-color" value="#3498db">
+      <input type="hidden" id="s-avatar-url" value="">
     </div>
 
     <!-- Anzeigename & Rolle -->
@@ -2656,6 +2664,33 @@ function getCheckedVarianten(){
   return ids;
 }
 
+
+async function handleAvatarUpload(event){
+  var file=event.target.files[0];
+  if(!file)return;
+  if(file.size>2*1024*1024){toast('Foto max. 2 MB','error');return;}
+  // Convert to base64 data URL for preview
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var dataUrl=e.target.result;
+    // Store as data URL for now — will upload to Supabase storage on save
+    document.getElementById('s-avatar-url').value=dataUrl;
+    document.getElementById('s-avatar-remove').style.display='block';
+    updateModalAvatar();
+    // Close picker
+    var w=document.getElementById('s-color-picker-wrap');
+    if(w)w.style.display='none';
+  };
+  reader.readAsDataURL(file);
+  event.target.value='';
+}
+
+function removeAvatarPhoto(){
+  document.getElementById('s-avatar-url').value='';
+  document.getElementById('s-avatar-remove').style.display='none';
+  updateModalAvatar();
+}
+
 function toggleColorPicker(){
   var w=document.getElementById('s-color-picker-wrap');
   if(w)w.style.display=w.style.display==='block'?'none':'block';
@@ -2665,11 +2700,20 @@ function updateModalAvatar(){
   var color=document.getElementById('s-color');
   var av=document.getElementById('s-modal-avatar');
   var ini=document.getElementById('s-modal-avatar-ini');
+  var urlEl=document.getElementById('s-avatar-url');
   if(!av||!color)return;
-  av.style.background=color.value||'#3498db';
-  var disp=(document.getElementById('s-display')||{}).value||(document.getElementById('s-name')||{}).value||'';
-  var letters=disp.trim().split(' ').filter(Boolean).map(function(w){return w[0].toUpperCase();}).join('').slice(0,2)||'?';
-  if(ini)ini.textContent=letters;
+  var photoUrl=urlEl?urlEl.value:'';
+  if(photoUrl&&photoUrl.length>4){
+    av.style.backgroundImage='url('+photoUrl+')';
+    av.style.backgroundSize='cover';
+    av.style.backgroundPosition='center';
+    av.style.background='';
+    if(ini)ini.style.display='none';
+  } else {
+    av.style.backgroundImage='none';
+    av.style.background=color.value||'#3498db';
+    if(ini){ini.style.display='';var disp=(document.getElementById('s-display')||{}).value||(document.getElementById('s-name')||{}).value||'';var letters=disp.trim().split(' ').filter(Boolean).map(function(w){return w[0].toUpperCase();}).join('').slice(0,2)||'?';ini.textContent=letters;}
+  }
   document.querySelectorAll('#color-picker .color-swatch').forEach(function(sw){
     sw.style.outline=sw.dataset.color===color.value?'3px solid rgba(0,0,0,.4)':'none';
     sw.style.outlineOffset='1px';
@@ -2720,6 +2764,10 @@ function openStaffModal(data){
   // Reset color picker visibility
   var cpWrap=document.getElementById('s-color-picker-wrap');
   if(cpWrap)cpWrap.style.display='none';
+  var avUrlEl=document.getElementById('s-avatar-url');
+  if(avUrlEl)avUrlEl.value=data&&m.avatar_url?m.avatar_url:'';
+  var avRem=document.getElementById('s-avatar-remove');
+  if(avRem)avRem.style.display=data&&m.avatar_url?'block':'none';
   setTimeout(updateModalAvatar,20);
   var hasCustom=!!(data&&m.arbeitszeiten);
   document.getElementById('s-custom-hours').checked=hasCustom;
@@ -2776,6 +2824,7 @@ async function saveStaff(silent){
     temp_arbeitszeiten:readStaffTempEntries().length?readStaffTempEntries():null,
     farbe:document.getElementById('s-color').value,
     aktiv:document.getElementById('s-online')?document.getElementById('s-online').checked:true,
+    avatar_url:(function(){var v=document.getElementById('s-avatar-url');return v?v.value||null:null;})(),
     sortierung:editingStaffId?undefined:nextSort
   };
   // sortierung nur beim Insert
