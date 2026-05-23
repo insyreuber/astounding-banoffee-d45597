@@ -999,13 +999,17 @@ function setSlotRaster(min){
     var btn=document.getElementById('slot-btn-'+v);
     if(!btn)return;
     if(v===min){
-      btn.style.background='var(--tp)';
-      btn.style.color='#fff';
-      btn.style.borderColor='var(--tp)';
+      btn.style.background='var(--tpp)';
+      btn.style.color='var(--tpl)';
+      btn.style.borderColor='var(--tpl)';
+      btn.style.borderWidth='2px';
+      btn.style.boxShadow='0 0 0 3px rgba(74,28,107,0.1)';
     } else {
       btn.style.background='';
       btn.style.color='';
       btn.style.borderColor='';
+      btn.style.borderWidth='';
+      btn.style.boxShadow='';
     }
   });
   // Save to feature_settings
@@ -3731,7 +3735,7 @@ function renderProfilContent(id){
         '<div style="height:1px;background:var(--border);margin:18px 0"></div>'+
         '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'+
           '<div class="card-title" style="margin-bottom:0">Temporäre Öffnungszeiten</div>'+
-          '<button class="btn btn-sm btn-outline" onclick="addTempEntry()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> KW hinzufügen</button>'+
+          '<button class="btn btn-sm btn-outline" onclick="addTempEntry()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Kalenderwoche hinzufügen</button>'+
         '</div>'+
         '<div id="temp-entries-list" style="display:flex;flex-direction:column;gap:14px"></div>'+
         '<div id="temp-empty" style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0">Noch keine temporären Zeiten</div>'+
