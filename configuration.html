@@ -884,86 +884,23 @@ function buildTimeOptions(selected){
   }).join('');
 }
 
-function buildHoursAccordion(az,containerId,prefix){
-  var container=document.getElementById(containerId);
-  if(!container)return;
-  var DAY_FULL={monday:'Montag',tuesday:'Dienstag',wednesday:'Mittwoch',thursday:'Donnerstag',friday:'Freitag',saturday:'Samstag',sunday:'Sonntag'};
-  container.innerHTML=DAYS.map(function(d){
-    var defaultAktiv=d.key!=='sunday';
-    var h=az&&az[d.key]?az[d.key]:{aktiv:defaultAktiv,slots:[{start:'09:00',end:'18:00'}]};
-    var aktiv=h.aktiv;
-    var slots=_slotsFor(h);
-    var accId='hacc-'+prefix+d.key;
-    var slotSummary=aktiv?slots.map(function(s){return s.start+'\u2013'+s.end;}).join(', '):'Geschlossen';
-    var hdrBg=aktiv?'var(--tpp)':'var(--bg)';
-    var hdrClr=aktiv?'var(--tpl)':'var(--muted)';
-    var borderClr=aktiv?'var(--tpl)':'var(--border)';
-    return'<div style="border:1.5px solid '+borderClr+';border-radius:10px;overflow:visible">'
-      +'<div onclick="toggleHoursAcc(\''+accId+'\')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:'+hdrBg+';cursor:pointer;">'
-        +'<div style="display:flex;align-items:center;gap:10px">'
-          +'<label class="toggle-sw" style="flex-shrink:0" onclick="event.stopPropagation()"><input type="checkbox" id="'+prefix+'aktiv-'+d.key+'" '+(aktiv?'checked':'')+' onchange="toggleHourColAcc(\''+d.key+'\',\''+prefix+'\',\''+accId+'\')"><span class="slider"></span></label>'
-          +'<div>'
-            +'<div style="font-size:13px;font-weight:600;color:'+hdrClr+'">'+DAY_FULL[d.key]+'</div>'
-            +'<div id="'+accId+'-summary" style="font-size:11px;color:'+(aktiv?'var(--tpl)':'var(--muted)')+'">'+slotSummary+'</div>'
-          +'</div>'
-        +'</div>'
-        +'<svg id="chev-'+accId+'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" style="transition:transform .2s;flex-shrink:0"><polyline points="6 9 12 15 18 9"/></svg>'
-      +'</div>'
-      +'<div id="'+accId+'" style="display:none;padding:12px 14px;">'
-        +'<div class="hours-slots-wrap" id="'+prefix+'times-'+d.key+'" style="display:flex;flex-direction:row;flex-wrap:wrap;flex:1;align-items:center;gap:4px;'+(aktiv?'':'opacity:.3;pointer-events:none')+'">'
-          +buildSlotHtml(prefix,d.key,slots,aktiv)
-        +'</div>'
-      +'</div>'
-    +'</div>';
-  }).join('');
-}
-
-function toggleHoursAcc(id){
-  var body=document.getElementById(id);
-  var chev=document.getElementById('chev-'+id);
-  if(!body)return;
-  var open=body.style.display==='block';
-  body.style.display=open?'none':'block';
-  if(chev)chev.style.transform=open?'':'rotate(180deg)';
-}
-
-function toggleHourColAcc(key,prefix,accId){
-  var aktiv=document.getElementById(prefix+'aktiv-'+key).checked;
-  var times=document.getElementById(prefix+'times-'+key);
-  var summary=document.getElementById(accId+'-summary');
-  var headerDiv=document.getElementById(accId).previousElementSibling;
-  if(times){times.style.opacity=aktiv?'1':'0.3';times.style.pointerEvents=aktiv?'auto':'none';}
-  if(summary)summary.textContent=aktiv?'Zeiten bearbeiten…':'Geschlossen';
-  // update header color
-  if(headerDiv){
-    headerDiv.style.background=aktiv?'var(--tpp)':'var(--bg)';
-    var nameEl=headerDiv.querySelector('div > div > div:first-child');
-    if(nameEl)nameEl.style.color=aktiv?'var(--tpl)':'var(--muted)';
-  }
-  // update border
-  var card=document.getElementById(accId).parentElement;
-  card.style.borderColor=aktiv?'var(--tpl)':'var(--border)';
-}
 
 
-function toggleAllHours(prefix, aktiv){
-  DAYS.forEach(function(d){
-    var cb=document.getElementById(prefix+'aktiv-'+d.key);
-    if(cb){
-      cb.checked=aktiv;
-      toggleHourCol(d.key,prefix);
-    }
-  });
-}
 
-function toggleAllHoursBtn(prefix, btnId){
-  // Check current state: if all active → close all, else open all
+
+
+
+
+function toggleAllHours(prefix){
   var allActive=DAYS.every(function(d){
     var cb=document.getElementById(prefix+'aktiv-'+d.key);
     return cb&&cb.checked;
   });
-  toggleAllHours(prefix,!allActive);
-  var btn=document.getElementById(btnId);
+  DAYS.forEach(function(d){
+    var cb=document.getElementById(prefix+'aktiv-'+d.key);
+    if(cb){cb.checked=!allActive;toggleHourCol(d.key,prefix);}
+  });
+  var btn=document.getElementById(prefix+'toggle-all-btn');
   if(btn)btn.textContent=allActive?'Alle öffnen':'Alle schließen';
 }
 
@@ -3412,8 +3349,9 @@ function renderProfilContent(id){
       '<div class="card">'+
         '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
         +'<div class="card-title" style="margin-bottom:0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Öffnungszeiten <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;margin-left:6px">mind. 1 Tag <span style="color:var(--tg)">*</span></span></div>'
+        +'<button class="btn btn-sm btn-ghost" id="h-toggle-all-btn" onclick="toggleAllHours(\'h-\')" style="flex-shrink:0">Alle schließen</button>'
       +'</div>'+
-        '<div id="hours-cols" style="display:flex;flex-direction:column;gap:8px;overflow:visible"></div>'+
+        '<div class="hours-cols" id="hours-cols"></div>'+
         '<div style="height:1px;background:var(--border);margin:18px 0"></div>'+
         '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'+
           '<div class="card-title" style="margin-bottom:0">Temporäre Öffnungszeiten</div>'+
@@ -3423,7 +3361,7 @@ function renderProfilContent(id){
         '<div id="temp-empty" style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0">Noch keine temporären Zeiten</div>'+
       '</div>'+
       '<div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
-    buildHoursAccordion(d.arbeitszeiten||null,'hours-cols','h-');
+    buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
     tempEntries=[];tempIdCounter=0;tempCalOffset={};
     if(d.temp_arbeitszeiten&&d.temp_arbeitszeiten.length){
       d.temp_arbeitszeiten.forEach(function(t){addTempEntry(t);});
