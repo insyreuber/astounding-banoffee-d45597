@@ -862,7 +862,9 @@ function mkStaffGrid(){
      var blocked=!canHandle&&!isSel;
      var avBg=p.color?hexToRgba(p.color,.15):'var(--tpp)';
      var avClr=p.color||'var(--tp)';
-     var avStyle=p.avatar_url?'background-image:url('+p.avatar_url+');background-size:cover;background-position:center;background-color:transparent':'background:'+avBg+';color:'+avClr;
+     var avStyle=p.avatar_url
+       ?'background-image:url('+p.avatar_url+');background-size:cover;background-position:center'
+       :'background:'+avBg+';color:'+avClr;
      var avClr=p.color||'var(--tp)';
      var html='<div class="stf '+(isSel?'sel1only':blocked?'stf-blocked':'')+'" '+(blocked?'':'onclick="pickStf(\''+p.id+'\')"')+' style="'+(blocked?'opacity:0.45;cursor:not-allowed':'cursor:pointer')+'">';
      html+='<div class="stf-inner">';
