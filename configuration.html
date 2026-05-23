@@ -492,7 +492,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       <div class="profil-loader-txt">Daten werden geladen…</div>
     </div>
     <div id="profil-toggles" style="display:none;gap:8px;flex-wrap:wrap;margin-bottom:8px;padding:12px 16px;background:var(--tp);border:none;border-radius:12px;min-height:44px;"></div>
-    <div id="profil-status-msg" style="font-size:12px;margin-bottom:20px;padding:0 2px;min-height:18px;"></div>
+
     <div id="profil-content"></div>
   </div>
 
@@ -3396,61 +3396,9 @@ function resetProfil(){
   toast('Zurückgesetzt','success');
 }
 
-function getToggleColor(id){
-  var btn=document.getElementById('ptgl-'+id);
-  if(!btn)return'gray';
-  // _ptColor is the source of truth — call it directly
-  var t=PTABS.find(function(x){return x.id===id;});
-  if(!t)return'gray';
-  return _ptColor(t);
-}
+function getToggleColor(id){return'';}
 
-function updateProfilStatus(){
-  var el=document.getElementById('profil-status-msg');
-  if(!el)return;
-
-  var redMsgs=[];
-  var yellowMsgs=[];
-
-  // RED — read directly from toggle colors
-  ['adresse','zeiten','service','team'].forEach(function(id){
-    if(getToggleColor(id)==='red'){
-      var labels={adresse:'Adresse & Kontakt',zeiten:'Öffnungszeiten',service:'Service',team:'Team'};
-      redMsgs.push(labels[id]);
-    }
-  });
-
-  // YELLOW — WhatsApp: check both toggle color AND feature_settings
-  var d=window._pData||{};
-  var waActivated=!!(d.feature_settings&&d.feature_settings.whatsapp_on);
-  var allRequired=_pSaved('adresse')&&_pSaved('zeiten')&&_pSaved('service')&&_pSaved('team');
-  if(allRequired&&!waActivated)
-    yellowMsgs.push('💬 Aktiviere <strong>WhatsApp Automatic</strong> für automatische Bestätigungen & Erinnerungen.');
-  if(getToggleColor('sonstiges')==='yellow')
-    yellowMsgs.push('✦ Ergänze <strong>Links & Notizen</strong> für deinen Salon-Auftritt.');
-
-  // Extra yellow checks from live data
-  var d=window._pData||{};
-  var hasStaff=typeof staffData!=='undefined'&&staffData.length>0;
-  var gcalConnected=!!(d.google_connected&&d.google_calendar_id);
-  var anyStaffOnline=hasStaff&&staffData.some(function(i){return i.mitarbeiter.aktiv!==false;});
-  var anyStaffWithCal=hasStaff&&staffData.some(function(i){return !!(i.mitarbeiter.google_calendar_id);});
-
-  if(!gcalConnected)
-    yellowMsgs.unshift('📅 Verbinde deinen <strong>Google Kalender</strong> damit Termine synchronisiert werden.');
-  if(hasStaff&&!anyStaffWithCal)
-    yellowMsgs.unshift('🗓 Weise deinen Teammitgliedern einen <strong>Kalender</strong> zu.');
-  if(hasStaff&&!anyStaffOnline)
-    yellowMsgs.unshift('👤 Stelle mindestens ein Teammitglied auf <strong>Online</strong>.');
-
-  if(redMsgs.length>0){
-    el.innerHTML='<span style="color:#c0392b">⚠ Bitte ergänze: <strong>'+redMsgs.join(', ')+'</strong> — erst dann ist dein Salon buchbar.</span>';
-  } else if(yellowMsgs.length>0){
-    el.innerHTML='<span style="color:#a07800">'+yellowMsgs[0]+'</span>';
-  } else {
-    el.innerHTML='<span style="color:#1e7a3c">✓ Alles im grünen Bereich — dein Salon ist vollständig eingerichtet.</span>';
-  }
-}
+function updateProfilStatus(){}
 
 function buildProfilToggles(){
   var wrap=document.getElementById('profil-toggles');
