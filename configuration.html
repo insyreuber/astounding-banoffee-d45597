@@ -489,7 +489,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   <div class="tab-panel active" id="panel-profil">
     <div class="sec-hdr" style="margin-bottom:16px;">
       <div class="sec-title">Profil</div>
-      <div class="sec-sub">Alle Einstellungen deines Salons</div>
+      <div id="profil-status-msg" class="sec-sub"></div>
     </div>
     <div id="profil-loader" style="position:relative;padding:60px 20px;display:flex;">
       <div class="profil-loader-bar"><div class="profil-loader-bar-inner"></div></div>
@@ -3386,6 +3386,45 @@ function _pSaved(id){
   return false;
 }
 
+
+function updateProfilStatus(){
+  var el=document.getElementById('profil-status-msg');
+  if(!el)return;
+  var d=window._pData||{};
+
+  // Collect state of each tab
+  var reds=[];
+  var yellows=[];
+
+  PTABS.forEach(function(t){
+    var col=_ptColor(t);
+    if(col==='red'){
+      if(t.id==='adresse')  reds.push('Adresse & Kontakt');
+      if(t.id==='zeiten')   reds.push('Öffnungszeiten');
+      if(t.id==='service')  reds.push('mindestens einen Service');
+      if(t.id==='team')     reds.push('mindestens ein Teammitglied');
+    }
+    if(col==='yellow'){
+      if(t.id==='sonstiges') yellows.push('sonstiges');
+      if(t.id==='whatsapp')  yellows.push('whatsapp');
+    }
+  });
+
+  var allGreen=reds.length===0&&yellows.length===0;
+  var waYellow=yellows.indexOf('whatsapp')>=0;
+
+  if(reds.length>0){
+    var missing=reds.join(', ');
+    el.innerHTML='<span style="color:#c0392b">⚠ Bitte ergänze: <strong>'+missing+'</strong> — erst dann ist dein Salon buchbar.</span>';
+  } else if(waYellow){
+    el.innerHTML='<span style="color:#a07800">💬 Tipp: Aktiviere <strong>WhatsApp Automatic</strong> für automatische Bestätigungen & Erinnerungen.</span>';
+  } else if(yellows.length>0){
+    el.innerHTML='<span style="color:#a07800">✦ Fast fertig — du kannst noch <strong>Links & Notizen</strong> ergänzen.</span>';
+  } else if(allGreen){
+    el.innerHTML='<span style="color:#1e7a3c">✓ Alles im grünen Bereich — dein Salon ist vollständig eingerichtet.</span>';
+  }
+}
+
 function buildProfilToggles(){
   var wrap=document.getElementById('profil-toggles');
   if(!wrap) return;
@@ -3400,6 +3439,7 @@ function buildProfilToggles(){
   }).join('');
   _ptActivate(_pActive);
   renderProfilContent(_pActive);
+  updateProfilStatus();
 }
 
 function _ptActivate(id){
