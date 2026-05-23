@@ -892,6 +892,47 @@ function buildTimeOptions(selected){
 
 
 
+
+
+function toggleTempAcc(id){
+  var body=document.getElementById('temp-body-'+id);
+  var chev=document.getElementById('temp-chev-'+id);
+  if(!body)return;
+  var open=body.style.display==='flex';
+  body.style.display=open?'none':'flex';
+  if(chev)chev.style.transform=open?'':'rotate(180deg)';
+  if(!open){
+    buildHoursCols(null,'temp-hcols-'+id,'te'+id+'-',false,true);
+    var entry=tempEntries.filter(function(e){return e.id===id;})[0];
+    if(entry&&entry.zeiten)buildHoursCols(entry.zeiten,'temp-hcols-'+id,'te'+id+'-',false,true);
+  }
+}
+
+function toggleStAcc(id){
+  var body=document.getElementById('st-body-'+id);
+  var chev=document.getElementById('st-chev-'+id);
+  if(!body)return;
+  var open=body.style.display==='flex';
+  body.style.display=open?'none':'flex';
+  if(chev)chev.style.transform=open?'':'rotate(180deg)';
+  if(!open){
+    var entry=staffTempEntries.filter(function(e){return e.id===id;})[0];
+    buildHoursCols(entry&&entry.zeiten?entry.zeiten:null,'st-hcols-'+id,'ste'+id+'-',true,true);
+  }
+}
+
+function azPreview(az){
+  if(!az)return'';
+  var active=DAYS.filter(function(d){return az[d.key]&&az[d.key].aktiv;});
+  if(!active.length)return'<span style="color:var(--muted);font-size:10px">Keine Zeiten</span>';
+  return active.map(function(d){
+    var h=az[d.key];
+    var slots=_slotsFor(h);
+    var timeStr=slots.map(function(s){return s.start+'–'+s.end;}).join(', ');
+    return'<span style="font-size:10px;color:var(--muted)"><span style="font-weight:600;color:var(--tpl)">'+d.label+'</span> '+timeStr+'</span>';
+  }).join('<span style="color:var(--border);margin:0 4px">·</span>');
+}
+
 function toggleAzAcc(){
   var body=document.getElementById('az-acc-body');
   var chev=document.getElementById('az-acc-chev');
@@ -1062,11 +1103,14 @@ function renderTempEntries(){
   empty.style.display='none';
   list.innerHTML=tempEntries.map(function(entry){
     return'<div id="temp-entry-'+entry.id+'" style="border:1.5px solid var(--border);border-radius:10px;overflow:hidden">'
-      +'<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#faf8fc;border-bottom:1px solid var(--border)">'
+      +'<div onclick="toggleTempAcc('+entry.id+')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#faf8fc;cursor:pointer;">'
         +'<div style="font-size:12px;font-weight:500;color:var(--tpl)" id="temp-label-'+entry.id+'">'+kwLabel(entry.kw,entry.year)+'</div>'
-        +'<button onclick="removeTempEntry('+entry.id+')" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--muted);padding:2px 6px" title="Entfernen">✕</button>'
+        +'<div style="display:flex;align-items:center;gap:6px">'
+          +'<svg id="temp-chev-'+entry.id+'" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" style="transition:transform .2s"><polyline points="6 9 12 15 18 9"/></svg>'
+          +'<button onclick="event.stopPropagation();removeTempEntry('+entry.id+')" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--muted);padding:2px 6px" title="Entfernen">✕</button>'
+        +'</div>'
       +'</div>'
-      +'<div style="padding:14px;display:flex;flex-direction:column;gap:14px">'
+      +'<div id="temp-body-'+entry.id+'" style="display:none;padding:14px;border-top:1px solid var(--border);display:none;flex-direction:column;gap:14px">'
         +'<div id="temp-cal-'+entry.id+'">'+buildKwCal(entry.id,entry.kw,entry.year)+'</div>'
         +'<div>'
           +'<div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px">Zeiten für diese Woche</div>'
@@ -1075,10 +1119,7 @@ function renderTempEntries(){
       +'</div>'
     +'</div>';
   }).join('');
-  // Stunden-Cols rendern
-  tempEntries.forEach(function(entry){
-    buildHoursCols(entry.zeiten||null,'temp-hcols-'+entry.id,'te'+entry.id+'-',false,true);
-  });
+  // Hours built lazily on accordion open
 }
 
 function buildKwCal(entryId,selKw,selYear){
@@ -1999,11 +2040,14 @@ function renderStaffTempEntries(){
   empty.style.display='none';
   list.innerHTML=staffTempEntries.map(function(entry){
     return'<div id="st-entry-'+entry.id+'" style="border:1.5px solid var(--border);border-radius:10px;overflow:hidden">'
-      +'<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#faf8fc;border-bottom:1px solid var(--border)">'
+      +'<div onclick="toggleStAcc('+entry.id+')" style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#faf8fc;cursor:pointer;">'
         +'<div style="font-size:11px;font-weight:500;color:var(--tpl)" id="st-label-'+entry.id+'">'+kwLabel(entry.kw,entry.year)+'</div>'
-        +'<button onclick="removeStaffTempEntry('+entry.id+')" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--muted)">✕</button>'
+        +'<div style="display:flex;align-items:center;gap:6px">'
+          +'<svg id="st-chev-'+entry.id+'" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" style="transition:transform .2s"><polyline points="6 9 12 15 18 9"/></svg>'
+          +'<button onclick="event.stopPropagation();removeStaffTempEntry('+entry.id+')" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--muted)">✕</button>'
+        +'</div>'
       +'</div>'
-      +'<div style="padding:12px;display:flex;flex-direction:column;gap:10px">'
+      +'<div id="st-body-'+entry.id+'" style="display:none;padding:12px;border-top:1px solid var(--border);flex-direction:column;gap:10px">'
         +'<div id="st-cal-'+entry.id+'">'+buildStaffKwCal(entry.id,entry.kw,entry.year)+'</div>'
         +'<div>'
           +'<div style="font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:6px">Zeiten für diese Woche</div>'
@@ -2012,9 +2056,7 @@ function renderStaffTempEntries(){
       +'</div>'
     +'</div>';
   }).join('');
-  staffTempEntries.forEach(function(entry){
-    buildHoursCols(entry.zeiten||null,'st-hcols-'+entry.id,'ste'+entry.id+'-',true,true);
-  });
+  // Staff hours built lazily on accordion open
 }
 
 function buildStaffKwCal(entryId,selKw,selYear){
@@ -3359,7 +3401,10 @@ function renderProfilContent(id){
       '<div class="card">'+
         '<div id="az-acc" style="border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:4px">'
         +'<div onclick="toggleAzAcc()" style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;cursor:pointer;background:var(--bg);">'
-          +'<div class="card-title" style="margin-bottom:0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Öffnungszeiten <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;margin-left:6px">mind. 1 Tag <span style="color:var(--tg)">*</span></span></div>'
+          +'<div>'
+            +'<div class="card-title" style="margin-bottom:2px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Öffnungszeiten <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;margin-left:6px">mind. 1 Tag <span style="color:var(--tg)">*</span></span></div>'
+            +'<div id="az-acc-preview" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px"></div>'
+          +'</div>'
           +'<svg id="az-acc-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" style="transition:transform .2s;flex-shrink:0"><polyline points="6 9 12 15 18 9"/></svg>'
         +'</div>'
         +'<div id="az-acc-body" style="display:none;padding:12px 14px;border-top:1px solid var(--border)">'
@@ -3376,6 +3421,8 @@ function renderProfilContent(id){
       '</div>'+
       '<div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
     buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
+    var azPrev=document.getElementById('az-acc-preview');
+    if(azPrev)azPrev.innerHTML=azPreview(d.arbeitszeiten||null);
     tempEntries=[];tempIdCounter=0;tempCalOffset={};
     if(d.temp_arbeitszeiten&&d.temp_arbeitszeiten.length){
       d.temp_arbeitszeiten.forEach(function(t){addTempEntry(t);});
