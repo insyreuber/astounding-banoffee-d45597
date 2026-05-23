@@ -3420,8 +3420,11 @@ function updateProfilStatus(){
     }
   });
 
-  // YELLOW — read directly from toggle colors
-  if(getToggleColor('whatsapp')==='yellow')
+  // YELLOW — WhatsApp: check both toggle color AND feature_settings
+  var d=window._pData||{};
+  var waActivated=!!(d.feature_settings&&d.feature_settings.whatsapp_on);
+  var allRequired=_pSaved('adresse')&&_pSaved('zeiten')&&_pSaved('service')&&_pSaved('team');
+  if(allRequired&&!waActivated)
     yellowMsgs.push('💬 Aktiviere <strong>WhatsApp Automatic</strong> für automatische Bestätigungen & Erinnerungen.');
   if(getToggleColor('sonstiges')==='yellow')
     yellowMsgs.push('✦ Ergänze <strong>Links & Notizen</strong> für deinen Salon-Auftritt.');
@@ -3463,7 +3466,7 @@ function buildProfilToggles(){
   }).join('');
   _ptActivate(_pActive);
   renderProfilContent(_pActive);
-  updateProfilStatus();
+  setTimeout(updateProfilStatus, 50);
 }
 
 function _ptActivate(id){
