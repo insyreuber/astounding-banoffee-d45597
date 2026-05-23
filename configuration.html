@@ -898,7 +898,7 @@ function buildHoursAccordion(az,containerId,prefix){
     var hdrBg=aktiv?'var(--tpp)':'var(--bg)';
     var hdrClr=aktiv?'var(--tpl)':'var(--muted)';
     var borderClr=aktiv?'var(--tpl)':'var(--border)';
-    return'<div style="border:1.5px solid '+borderClr+';border-radius:10px;overflow:hidden">'
+    return'<div style="border:1.5px solid '+borderClr+';border-radius:10px;overflow:visible">'
       +'<div onclick="toggleHoursAcc(\''+accId+'\')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:'+hdrBg+';cursor:pointer;">'
         +'<div style="display:flex;align-items:center;gap:10px">'
           +'<label class="toggle-sw" style="flex-shrink:0" onclick="event.stopPropagation()"><input type="checkbox" id="'+prefix+'aktiv-'+d.key+'" '+(aktiv?'checked':'')+' onchange="toggleHourColAcc(\''+d.key+'\',\''+prefix+'\',\''+accId+'\')"><span class="slider"></span></label>'
@@ -1122,10 +1122,7 @@ function renderTempEntries(){
       +'<div style="padding:14px;display:flex;flex-direction:column;gap:14px">'
         +'<div id="temp-cal-'+entry.id+'">'+buildKwCal(entry.id,entry.kw,entry.year)+'</div>'
         +'<div>'
-          +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'
-            +'<div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600">Zeiten für diese Woche</div>'
-            +'<button id="toggle-all-te'+entry.id+'" class="btn btn-sm btn-ghost" style="font-size:10px;padding:3px 10px" onclick="toggleAllHoursBtn(\'te'+entry.id+'-\',\'toggle-all-te'+entry.id+'\')" >Alle schließen</button>'
-          +'</div>'
+          +'<div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px">Zeiten für diese Woche</div>'
           +'<div class="hours-cols" id="temp-hcols-'+entry.id+'"></div>'
         +'</div>'
       +'</div>'
@@ -2062,10 +2059,7 @@ function renderStaffTempEntries(){
       +'<div style="padding:12px;display:flex;flex-direction:column;gap:10px">'
         +'<div id="st-cal-'+entry.id+'">'+buildStaffKwCal(entry.id,entry.kw,entry.year)+'</div>'
         +'<div>'
-          +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'
-            +'<div style="font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600">Zeiten für diese Woche</div>'
-            +'<button id="toggle-all-ste'+entry.id+'" class="btn btn-sm btn-ghost" style="font-size:10px;padding:3px 10px" onclick="toggleAllHoursBtn(\'ste'+entry.id+'-\',\'toggle-all-ste'+entry.id+'\')" >Alle schließen</button>'
-          +'</div>'
+          +'<div style="font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:6px">Zeiten für diese Woche</div>'
           +'<div class="hours-cols-sm" id="st-hcols-'+entry.id+'"></div>'
         +'</div>'
       +'</div>'
@@ -3418,9 +3412,8 @@ function renderProfilContent(id){
       '<div class="card">'+
         '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
         +'<div class="card-title" style="margin-bottom:0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Öffnungszeiten <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;margin-left:6px">mind. 1 Tag <span style="color:var(--tg)">*</span></span></div>'
-        +'<button id="toggle-all-h" class="btn btn-sm btn-ghost" onclick="toggleAllHoursBtn(\'h-\',\'toggle-all-h\')">Alle schließen</button>'
       +'</div>'+
-        '<div id="hours-cols" style="display:flex;flex-direction:column;gap:8px"></div>'+
+        '<div id="hours-cols" style="display:flex;flex-direction:column;gap:8px;overflow:visible"></div>'+
         '<div style="height:1px;background:var(--border);margin:18px 0"></div>'+
         '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'+
           '<div class="card-title" style="margin-bottom:0">Temporäre Öffnungszeiten</div>'+
