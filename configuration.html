@@ -2371,6 +2371,17 @@ async function loadStaff(){
   updateProfilStatus();
 }
 
+
+function renderAvatar(m, size){
+  size = size||34;
+  var color = getStaffColor(m);
+  var ini = (m.display_name||m.name||'?').split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
+  if(m.avatar_url){
+    return '<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;background-image:url('+m.avatar_url+');background-size:cover;background-position:center;flex-shrink:0"></div>';
+  }
+  return '<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;background:'+hexToRgba(color,.15)+';color:'+color+';display:flex;align-items:center;justify-content:center;font-size:'+(size*0.35)+'px;font-weight:600;flex-shrink:0">'+ini+'</div>';
+}
+
 function getStaffColor(m){
   // Eigene Farbe aus DB bevorzugen, sonst Fallback
   return m.farbe||'#3498db';
@@ -2397,7 +2408,7 @@ function renderStaffSidebar(){
     var ini=(m.display_name||m.name||'?').split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
     var gcalConnected=!!(m.google_calendar_id);
     var isOnline=m.aktiv!==false;
-    return'<div class="staff-card" id="staff-card-'+m.id+'" style="opacity:'+(isOnline?'1':'0.55')+'">'      +'<div style="height:3px;background:'+color+'"></div>'      +'<div class="staff-card-body">'        +'<div class="staff-avatar" style="background:'+hexToRgba(color,.15)+';color:'+color+'">'+ini+'</div>'        +'<div style="min-width:0;flex:1">'          +'<div class="staff-name">'+esc(m.display_name||m.name)+'</div>'          +'<div class="staff-role">'+esc(m.role||'—')+'</div>'        +'</div>'      +'</div>'      +'<div class="staff-card-actions">'        +'<button class="staff-action" onclick="toggleStaffOnline(\''+m.id+'\','+isOnline+')" style="color:'+(isOnline?'#1e7a3c':'#c0392b')+'" title="Online/Offline">'+(isOnline?'● Online':'○ Offline')+'</button>'        +'<button class="staff-action" onclick="editStaff(\''+m.id+'\')" title="Bearbeiten">✎ Bearbeiten</button>'      +'</div>'    +'</div>';
+    return'<div class="staff-card" id="staff-card-'+m.id+'" style="opacity:'+(isOnline?'1':'0.55')+'">'      +'<div style="height:3px;background:'+color+'"></div>'      +'<div class="staff-card-body">'        +renderAvatar(m,34)        +'<div style="min-width:0;flex:1">'          +'<div class="staff-name">'+esc(m.display_name||m.name)+'</div>'          +'<div class="staff-role">'+esc(m.role||'—')+'</div>'        +'</div>'      +'</div>'      +'<div class="staff-card-actions">'        +'<button class="staff-action" onclick="toggleStaffOnline(\''+m.id+'\','+isOnline+')" style="color:'+(isOnline?'#1e7a3c':'#c0392b')+'" title="Online/Offline">'+(isOnline?'● Online':'○ Offline')+'</button>'        +'<button class="staff-action" onclick="editStaff(\''+m.id+'\')" title="Bearbeiten">✎ Bearbeiten</button>'      +'</div>'    +'</div>';
   }).join('');
   sidebar.insertAdjacentHTML('beforeend','<button class="staff-add-btn" onclick="openStaffModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Hinzufügen</button>');
 }
