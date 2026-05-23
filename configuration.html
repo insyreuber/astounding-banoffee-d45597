@@ -992,6 +992,35 @@ function azPreview(az){
   }).join('<span style="color:var(--border);margin:0 4px">·</span>');
 }
 
+
+function setSlotRaster(min){
+  // Update button styles
+  [15,30,60].forEach(function(v){
+    var btn=document.getElementById('slot-btn-'+v);
+    if(!btn)return;
+    if(v===min){
+      btn.style.background='var(--tp)';
+      btn.style.color='#fff';
+      btn.style.borderColor='var(--tp)';
+    } else {
+      btn.style.background='';
+      btn.style.color='';
+      btn.style.borderColor='';
+    }
+  });
+  // Save to feature_settings
+  if(!window._pData)window._pData={};
+  if(!window._pData.feature_settings)window._pData.feature_settings={};
+  window._pData.feature_settings.slot_interval=min;
+  sb.from('kunden_profile').update({feature_settings:window._pData.feature_settings}).eq('id',SALON_ID)
+    .then(function(){toast('Slot-Raster gespeichert ✓','success');});
+}
+
+function initSlotRaster(){
+  var interval=(_pData&&_pData.feature_settings&&_pData.feature_settings.slot_interval)||15;
+  setSlotRaster(interval);
+}
+
 function toggleAzAcc(){
   var body=document.getElementById('az-acc-body');
   var chev=document.getElementById('az-acc-chev');
@@ -1678,6 +1707,7 @@ async function loadFeatureSettings(){
 
 async function saveFeatureSettings(){
   if(!SALON_ID)return;
+  var curFs=(_pData&&_pData.feature_settings)||{};
   var settings={
     whatsapp_on:document.getElementById('feat-whatsapp-on').checked,
     termine_on:document.getElementById('feat-termine-on')?document.getElementById('feat-termine-on').checked:true,
@@ -1685,6 +1715,7 @@ async function saveFeatureSettings(){
     reminder_aktiv:document.getElementById('reminder-aktiv').checked,
     followup_timing:document.getElementById('followup-timing').value,
     followup_aktiv:document.getElementById('followup-aktiv').checked,
+    slot_interval:curFs.slot_interval||15,
   };
   await sb.from('kunden_profile').update({feature_settings:settings}).eq('id',SALON_ID);
 }
@@ -3700,6 +3731,7 @@ function renderProfilContent(id){
     buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
     var azPrev=document.getElementById('az-acc-preview');
     if(azPrev)azPrev.innerHTML=azPreview(d.arbeitszeiten||null);
+    setTimeout(initSlotRaster,50);
     tempEntries=[];tempIdCounter=0;tempCalOffset={};
     if(d.temp_arbeitszeiten&&d.temp_arbeitszeiten.length){
       d.temp_arbeitszeiten.forEach(function(t){addTempEntry(t);});
