@@ -20,7 +20,8 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
   gap:12px;
   flex-wrap:wrap;       /* bricht um statt sich zu verzerren */
 }
-.hd-logo{font-size:9px;letter-spacing:.16em;color:var(--tg);font-weight:500;text-transform:uppercase;margin-bottom:1px}
+.hd-logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:600;color:#fff;letter-spacing:.01em;text-transform:none;line-height:1;margin-bottom:1px}
+.hd-logo span{color:#C9A84C}
 .hd-name{font-size:15px;font-weight:500;color:#fff;margin-bottom:3px}
 .hd-meta{display:flex;flex-direction:column;gap:5px}
 .hd-meta-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -364,7 +365,7 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 <div class="hd">
   <div class="hd-inner">
     <div>
-      <div class="hd-logo" id="brand-name">Insy Reception</div>
+      <div class="hd-logo" id="brand-name">Insy <span>Reception</span></div>
       <div class="hd-name" id="salon-name">Salonname</div>
       <div class="hd-meta">
         <!-- Reihe 1: Adresse + Telefon + Öffnungszeiten -->
@@ -1336,7 +1337,7 @@ async function loadSalonProfile(){
     var phoneEl=document.getElementById('salon-phone');
     var addressEl=document.getElementById('salon-address');
 
-    if(brandEl)brandEl.textContent='INSY RECEPTION';
+    if(brandEl)brandEl.innerHTML='Insy <span style="color:#C9A84C">Reception</span>';
     if(nameEl)nameEl.textContent=salonName;
 
     // Phone — hide if empty
