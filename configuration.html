@@ -491,14 +491,16 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       <div class="profil-loader-bar"><div class="profil-loader-bar-inner"></div></div>
       <div class="profil-loader-txt">Daten werden geladen…</div>
     </div>
-    <div id="profil-toggles" style="display:none;gap:8px;flex-wrap:wrap;margin-bottom:8px;padding:12px 16px;background:var(--tp);border:none;border-radius:12px;min-height:44px;"></div>
-    <!-- Buchungsseite Online/Offline — eigene Zeile unter den Toggles, im lila Bereich -->
-    <div id="booking-status-bar" style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:var(--tp);border-radius:0 0 12px 12px;margin-top:-8px;border-top:1px solid rgba(255,255,255,0.12);">
-      <div style="display:flex;align-items:center;gap:8px;">
-        <div id="booking-status-dot" style="width:8px;height:8px;border-radius:50%;background:#27ae60;flex-shrink:0;"></div>
-        <span id="booking-status-label" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.85);">Buchungsseite Online</span>
+    <div id="profil-toggles" style="display:none;gap:8px;flex-wrap:wrap;margin-bottom:0;padding:12px 16px;background:var(--tp);border:none;border-radius:12px 12px 0 0;min-height:44px;"></div>
+    <!-- Buchungsseite Online/Offline -->
+    <div id="booking-status-bar" style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px 12px;background:var(--tp);border-radius:0 0 12px 12px;margin-bottom:8px;border-top:1px solid rgba(255,255,255,0.12);">
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div id="booking-status-dot" style="width:8px;height:8px;border-radius:50%;background:#27ae60;flex-shrink:0;"></div>
+          <span id="booking-status-label" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.85);">Buchungsseite Online</span>
+        </div>
+        <label class="toggle-sw" style="margin-left:16px;"><input type="checkbox" id="dash-booking-active" onchange="toggleBookingActive()"><span class="slider"></span></label>
       </div>
-      <label class="toggle-sw toggle-sm"><input type="checkbox" id="dash-booking-active" onchange="toggleBookingActive()"><span class="slider"></span></label>
     </div>
 
     <div id="profil-status-msg" style="font-size:12px;margin-top:10px;margin-bottom:16px;padding:2px 0;min-height:18px;"></div>
