@@ -891,6 +891,16 @@ function buildTimeOptions(selected){
 
 
 
+
+function toggleAzAcc(){
+  var body=document.getElementById('az-acc-body');
+  var chev=document.getElementById('az-acc-chev');
+  if(!body)return;
+  var open=body.style.display==='block';
+  body.style.display=open?'none':'block';
+  if(chev)chev.style.transform=open?'':'rotate(180deg)';
+}
+
 function toggleAllHours(prefix){
   var allActive=DAYS.every(function(d){
     var cb=document.getElementById(prefix+'aktiv-'+d.key);
@@ -3347,11 +3357,15 @@ function renderProfilContent(id){
   else if(id==='zeiten'){
     wrap.innerHTML=
       '<div class="card">'+
-        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
-        +'<div class="card-title" style="margin-bottom:0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Öffnungszeiten <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;margin-left:6px">mind. 1 Tag <span style="color:var(--tg)">*</span></span></div>'
-        +'<button class="btn btn-sm btn-ghost" id="h-toggle-all-btn" onclick="toggleAllHours(\'h-\')" style="flex-shrink:0">Alle schließen</button>'
+        '<div id="az-acc" style="border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:4px">'
+        +'<div onclick="toggleAzAcc()" style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;cursor:pointer;background:var(--bg);">'
+          +'<div class="card-title" style="margin-bottom:0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Öffnungszeiten <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;margin-left:6px">mind. 1 Tag <span style="color:var(--tg)">*</span></span></div>'
+          +'<svg id="az-acc-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" style="transition:transform .2s;flex-shrink:0"><polyline points="6 9 12 15 18 9"/></svg>'
+        +'</div>'
+        +'<div id="az-acc-body" style="display:none;padding:12px 14px;border-top:1px solid var(--border)">'
+          +'<div class="hours-cols" id="hours-cols"></div>'
+        +'</div>'
       +'</div>'+
-        '<div class="hours-cols" id="hours-cols"></div>'+
         '<div style="height:1px;background:var(--border);margin:18px 0"></div>'+
         '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'+
           '<div class="card-title" style="margin-bottom:0">Temporäre Öffnungszeiten</div>'+
