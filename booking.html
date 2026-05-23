@@ -790,15 +790,18 @@ function mkSvcCards(){
     }
     // Service nicht klickbar wenn kein Mitarbeiter ihn kann
     var blocked=!hasAllowed&&!isSelected;
-    var html='<div class="svc '+(isSelected?'sel1only':blocked?'svc-blocked':'')+'" '+(blocked?'':'onclick="toggleSvc(\''+s.id+'\')"')+' style="'+(blocked?'opacity:0.45;cursor:not-allowed':'cursor:pointer')+'">';
+    var html='<div class="svc '+(isSelected?'sel1only':blocked?'svc-blocked':'')+'">'
     html+='<div class="svc-inner">';
+    // Header — klickbar zum auswählen
+    html+='<div style="cursor:'+(blocked?'not-allowed':'pointer')+';opacity:'+(blocked?'0.45':'1')+'" '+(blocked?'':'onclick="toggleSvc(\''+s.id+'\')"')+'>';
     html+='<div style="display:flex;align-items:center;justify-content:space-between">';
     html+='<div class="svc-n">'+s.name+'</div>';
     if(isSelected)html+='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tp)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
     if(blocked)html+='<span style="font-size:9px;color:#c0b8cc">nicht verfügbar</span>';
     html+='</div>';
-    if(s.desc)html+='<div class="svc-d">'+s.desc+'</div>';
-    if(minPreis!==null&&!isSelected)html+='<div class="svc-p">ab '+minPreis+' €</div>';
+    html+='<div class="svc-d" style="min-height:14px">'+(s.desc||'')+'</div>';
+    html+='<div class="svc-p" style="min-height:18px;visibility:'+(isSelected?'hidden':'visible')+'">'+(minPreis!==null?'ab '+minPreis+' €':'')+'</div>';
+    html+='</div>'; // end header
     html+=varHtml;
     html+='</div></div>';
     return html;
