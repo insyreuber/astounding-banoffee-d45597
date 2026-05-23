@@ -3719,6 +3719,15 @@ function renderProfilContent(id){
           +'<div class="hours-cols" id="hours-cols"></div>'
         +'</div>'
       +'</div>'+
+        '<div style="margin:18px 0 12px">'
+          +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Slot-Raster</div>'
+          +'<div style="font-size:11px;color:var(--muted);margin-bottom:10px">Wie fein sollen Termine im Buchungswidget angezeigt werden?</div>'
+          +'<div style="display:flex;gap:8px;flex-wrap:wrap">'
+            +'<button type="button" id="slot-btn-15" onclick="setSlotRaster(15)" class="btn" style="flex:1;min-width:80px;padding:8px 10px;font-size:12px;text-align:center">¼ Std<br><span style="font-size:10px;font-weight:400;opacity:.7">09:00, 09:15…</span></button>'
+            +'<button type="button" id="slot-btn-30" onclick="setSlotRaster(30)" class="btn" style="flex:1;min-width:80px;padding:8px 10px;font-size:12px;text-align:center">½ Std<br><span style="font-size:10px;font-weight:400;opacity:.7">09:00, 09:30…</span></button>'
+            +'<button type="button" id="slot-btn-60" onclick="setSlotRaster(60)" class="btn" style="flex:1;min-width:80px;padding:8px 10px;font-size:12px;text-align:center">1 Std<br><span style="font-size:10px;font-weight:400;opacity:.7">09:00, 10:00…</span></button>'
+          +'</div>'
+        +'</div>'+
         '<div style="height:1px;background:var(--border);margin:18px 0"></div>'+
         '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'+
           '<div class="card-title" style="margin-bottom:0">Temporäre Öffnungszeiten</div>'+
