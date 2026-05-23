@@ -948,6 +948,15 @@ function switchTab(n){
   document.getElementById('tab-'+n).classList.add('active');
   if(n==='qr')generateQR();
   if(n==='bills')loadBills();
+  if(n==='buchungsseite'){
+    var iframe=document.getElementById('booking-iframe');
+    var url='https://insy-reception.com/booking?salon_id='+SALON_ID;
+    if(iframe&&!iframe.src.includes('salon_id')){iframe.src=url;}
+    var urlBar=document.getElementById('booking-url-bar');
+    if(urlBar)urlBar.textContent=url;
+    var openLink=document.getElementById('booking-open-link');
+    if(openLink)openLink.href=url;
+  }
   if(n==='profil')buildProfilToggles();
 }
 
@@ -1326,6 +1335,10 @@ async function loadProfil(){
   if(bookingBtn)bookingBtn.href='https://insy-reception.com/booking?salon_id='+SALON_ID;
   var desktopBtn=document.getElementById('nav-booking-btn-desktop');
   if(desktopBtn)desktopBtn.href='https://insy-reception.com/booking?salon_id='+SALON_ID;
+  var openLink=document.getElementById('booking-open-link');
+  if(openLink)openLink.href='https://insy-reception.com/booking?salon_id='+SALON_ID;
+  var urlBar=document.getElementById('booking-url-bar');
+  if(urlBar)urlBar.textContent='https://insy-reception.com/booking?salon_id='+SALON_ID;
   var res=await sb.from('kunden_profile').select('*').eq('id',SALON_ID).single();
   if(res.error){toast('Profil nicht gefunden','error');return;}
   window._pData=res.data;
