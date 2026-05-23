@@ -510,12 +510,24 @@ window.toggleSvc=function(id){
   var idx=st.services.findIndex(function(s){return s.svcId===id;});
   if(idx>=0){
     st.services.splice(idx,1);
-  } else {
-    var vars=VARIANTEN[id]||[];
-    var allowedVars=vars.filter(function(v){return isVarAllowed(v.id);});
-    // Wenn nur eine Variante verfügbar — direkt auswählen
-    var autoVar=allowedVars.length===1?allowedVars[0].id:null;
-    st.services.push({svcId:id,varId:autoVar});
+    // If this was the only reason staff was selected, clear staff too
+    st.slot=null;
+    render();
+    return;
+  }
+  var vars=VARIANTEN[id]||[];
+  var varIds=vars.map(function(v){return v.id;});
+  // Find which staff can do this service
+  var capableStaff=STAFF.filter(function(s){
+    return s.allowedVarianten&&s.allowedVarianten.some(function(vid){
+      return varIds.indexOf(vid)>=0;
+    });
+  });
+  var autoVar=vars.length===1?vars[0].id:null;
+  st.services.push({svcId:id,varId:autoVar});
+  // Auto-select staff if only one capable
+  if(capableStaff.length===1&&!st.stf1){
+    st.stf1=capableStaff[0].id;
   }
   st.slot=null;
   render();
@@ -524,15 +536,22 @@ window.pickVar=function(svcId,varId){
   if(!isVarAllowed(varId))return;
   var entry=getSvcEntry(svcId);
   if(!entry){
-    // Service noch nicht ausgewählt — hinzufügen mit dieser Variante
     st.services.push({svcId:svcId,varId:varId});
   } else if(entry.varId===varId){
-    // Gleiche Variante nochmal → Service entfernen (toggle off)
     var idx=st.services.findIndex(function(s){return s.svcId===svcId;});
     if(idx>=0)st.services.splice(idx,1);
+    st.slot=null;
+    render();
+    return;
   } else {
-    // Andere Variante wählen
     entry.varId=varId;
+  }
+  // Auto-select staff if only one can do this variant
+  var capableStaff=STAFF.filter(function(s){
+    return s.allowedVarianten&&s.allowedVarianten.indexOf(varId)>=0;
+  });
+  if(capableStaff.length===1&&!st.stf1){
+    st.stf1=capableStaff[0].id;
   }
   st.slot=null;
   render();
