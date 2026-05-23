@@ -826,7 +826,7 @@ function mkSvcCards(){
           +'color:'+(isSel?'#fff':allowed?'var(--td)':'#c0b8cc')+';'
           +'font-weight:'+(isSel?'600':'400')+';">';
         varHtml+=(v.service_name?v.service_name+' · ':'')+v.min+' Min'+(v.preis?' · '+v.preis+' €':'');
-        if(!allowed)varHtml+=' · <span style="font-size:9px">nicht verfügbar</span>';
+        if(!allowed)varHtml+=' <span style="font-size:9px;opacity:0.5">·</span>';
         varHtml+='</div>';
       });
       varHtml+='</div>';
