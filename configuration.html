@@ -491,9 +491,9 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       <div class="profil-loader-bar"><div class="profil-loader-bar-inner"></div></div>
       <div class="profil-loader-txt">Daten werden geladen…</div>
     </div>
-    <div id="profil-status-msg" style="font-size:12px;margin-bottom:16px;padding:2px 0;min-height:18px;"></div>
     <div id="profil-toggles" style="display:none;gap:8px;flex-wrap:wrap;margin-bottom:8px;padding:12px 16px;background:var(--tp);border:none;border-radius:12px;min-height:44px;"></div>
 
+    <div id="profil-status-msg" style="font-size:12px;margin-top:10px;margin-bottom:16px;padding:2px 0;min-height:18px;"></div>
     <div id="profil-content"></div>
   </div>
 
@@ -3417,17 +3417,11 @@ function updateProfilStatus(){
     }
   };
 
-  // Read color from button style
+  // Read color directly from _ptColor — the authoritative source
   function btnColor(id){
-    var btn=document.getElementById('ptgl-'+id);
-    if(!btn)return null;
-    var bg=btn.style.background||'';
-    // PCOL colors: red bg starts with #c0, green with #1e, yellow with #d4, gray is rgba(100
-    if(bg.indexOf('#c0392b')>=0||bg.indexOf('rgba(160')>=0)return'red';
-    if(bg.indexOf('#1e7a3c')>=0||bg.indexOf('rgba(30')>=0)return'green';
-    if(bg.indexOf('#d4a000')>=0||bg.indexOf('rgba(200,150')>=0)return'yellow';
-    if(bg.indexOf('rgba(100,100')>=0)return'gray';
-    return null;
+    var t=PTABS.find(function(x){return x.id===id;});
+    if(!t)return null;
+    return _ptColor(t);
   }
 
   var order=['adresse','zeiten','service','team','whatsapp','sonstiges'];
@@ -3464,7 +3458,7 @@ function buildProfilToggles(){
   }).join('');
   _ptActivate(_pActive);
   renderProfilContent(_pActive);
-  setTimeout(updateProfilStatus, 50);
+  setTimeout(updateProfilStatus, 100);
 }
 
 function _ptActivate(id){
