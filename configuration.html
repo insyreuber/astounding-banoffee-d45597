@@ -491,6 +491,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       <div class="profil-loader-bar"><div class="profil-loader-bar-inner"></div></div>
       <div class="profil-loader-txt">Daten werden geladen…</div>
     </div>
+    <div id="profil-status-msg" style="font-size:12px;margin-bottom:16px;padding:2px 0;min-height:18px;"></div>
     <div id="profil-toggles" style="display:none;gap:8px;flex-wrap:wrap;margin-bottom:8px;padding:12px 16px;background:var(--tp);border:none;border-radius:12px;min-height:44px;"></div>
 
     <div id="profil-content"></div>
@@ -3396,9 +3397,58 @@ function resetProfil(){
   toast('Zurückgesetzt','success');
 }
 
-function getToggleColor(id){return'';}
 
-function updateProfilStatus(){}
+
+function updateProfilStatus(){
+  var el=document.getElementById('profil-status-msg');
+  if(!el)return;
+
+  // Read color directly from rendered button background color in DOM
+  var MSGS={
+    red:{
+      adresse:  '⚠ Fülle <strong>Adresse & Kontakt</strong> aus — dein Salon braucht einen Namen.',
+      zeiten:   '⚠ Hinterlege deine <strong>Öffnungszeiten</strong> — mind. 1 Tag muss aktiv sein.',
+      service:  '⚠ Füge mindestens einen <strong>Service</strong> mit Dauer hinzu.',
+      team:     '⚠ Füge mindestens ein <strong>Teammitglied</strong> hinzu.'
+    },
+    yellow:{
+      whatsapp: '💬 Tipp: Aktiviere <strong>WhatsApp Automatic</strong> für automatische Bestätigungen & Erinnerungen.',
+      sonstiges:'✦ Optional: Ergänze <strong>Links & eine Notiz</strong> für deinen Auftritt.'
+    }
+  };
+
+  // Read color from button style
+  function btnColor(id){
+    var btn=document.getElementById('ptgl-'+id);
+    if(!btn)return null;
+    var bg=btn.style.background||'';
+    // PCOL colors: red bg starts with #c0, green with #1e, yellow with #d4, gray is rgba(100
+    if(bg.indexOf('#c0392b')>=0||bg.indexOf('rgba(160')>=0)return'red';
+    if(bg.indexOf('#1e7a3c')>=0||bg.indexOf('rgba(30')>=0)return'green';
+    if(bg.indexOf('#d4a000')>=0||bg.indexOf('rgba(200,150')>=0)return'yellow';
+    if(bg.indexOf('rgba(100,100')>=0)return'gray';
+    return null;
+  }
+
+  var order=['adresse','zeiten','service','team','whatsapp','sonstiges'];
+  for(var i=0;i<order.length;i++){
+    var id=order[i];
+    var col=btnColor(id);
+    if(col==='red'&&MSGS.red[id]){
+      el.innerHTML='<span style="color:#c0392b">'+MSGS.red[id]+'</span>';
+      return;
+    }
+  }
+  for(var i=0;i<order.length;i++){
+    var id=order[i];
+    var col=btnColor(id);
+    if(col==='yellow'&&MSGS.yellow[id]){
+      el.innerHTML='<span style="color:#a07800">'+MSGS.yellow[id]+'</span>';
+      return;
+    }
+  }
+  el.innerHTML='<span style="color:#1e7a3c">✓ Alles bereit — dein Salon ist vollständig eingerichtet und buchbar.</span>';
+}
 
 function buildProfilToggles(){
   var wrap=document.getElementById('profil-toggles');
