@@ -265,6 +265,8 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
 /* ── MOBILE ── */
 @media (max-width: 768px) {
+  #slot-raster-btns { flex-direction: row !important; }
+  #slot-raster-btns button svg { width: 60px !important; height: 60px !important; }
 
   /* Nav: Akkordion auf Mobile */
   .nav{flex-direction:column;padding:0;gap:0;width:100%;}
@@ -795,9 +797,9 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       <div class="hours-cols-sm" id="s-hours-cols"></div>
     </div>
 
-    <!-- Temporäre Abweichungen pro KW -->
+    <!-- Temporäre Abweichungen pro Kalenderwoche -->
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-      <div style="font-size:11px;font-weight:600;color:var(--td)">Abweichende Zeiten pro KW</div>
+      <div style="font-size:11px;font-weight:600;color:var(--td)">Abweichende Zeiten pro Kalenderwoche</div>
       <button class="btn btn-sm btn-ghost" onclick="addStaffTempEntry()" type="button">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         KW hinzufügen
@@ -1168,7 +1170,7 @@ function kwLabel(kw,year){
   var mon=getMonday(year,kw);
   var sun=new Date(mon);sun.setDate(mon.getDate()+6);
   var f=function(d){return('0'+d.getDate()).slice(-2)+'.'+('0'+(d.getMonth()+1)).slice(-2)+'.';};
-  return'KW '+kw+' · '+f(mon)+' – '+f(sun)+year;
+  return'Kalenderwoche '+kw+' · '+f(mon)+' – '+f(sun)+year;
 }
 
 function addTempEntry(data){
@@ -2104,7 +2106,7 @@ function updateWeekPlanLabel(){
   var kw=getISOWeek(ws);
   var year=getYearOfISOWeek(ws);
   var el=document.getElementById('week-plan-label');
-  if(el)el.textContent='KW '+kw+' · '+year;
+  if(el)el.textContent='Kalenderwoche '+kw+' · '+year;
 }
 
 function weekPlanNav(dir){
