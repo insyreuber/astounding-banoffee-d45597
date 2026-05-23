@@ -945,6 +945,28 @@ function toggleHourColAcc(key,prefix,accId){
   card.style.borderColor=aktiv?'var(--tpl)':'var(--border)';
 }
 
+
+function toggleAllHours(prefix, aktiv){
+  DAYS.forEach(function(d){
+    var cb=document.getElementById(prefix+'aktiv-'+d.key);
+    if(cb){
+      cb.checked=aktiv;
+      toggleHourCol(d.key,prefix);
+    }
+  });
+}
+
+function toggleAllHoursBtn(prefix, btnId){
+  // Check current state: if all active → close all, else open all
+  var allActive=DAYS.every(function(d){
+    var cb=document.getElementById(prefix+'aktiv-'+d.key);
+    return cb&&cb.checked;
+  });
+  toggleAllHours(prefix,!allActive);
+  var btn=document.getElementById(btnId);
+  if(btn)btn.textContent=allActive?'Alle öffnen':'Alle schließen';
+}
+
 function _slotsFor(h){
   // Normalize legacy {start,end} or new {slots:[...]}
   if(h.slots&&h.slots.length) return h.slots;
@@ -1100,7 +1122,10 @@ function renderTempEntries(){
       +'<div style="padding:14px;display:flex;flex-direction:column;gap:14px">'
         +'<div id="temp-cal-'+entry.id+'">'+buildKwCal(entry.id,entry.kw,entry.year)+'</div>'
         +'<div>'
-          +'<div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px">Zeiten für diese Woche</div>'
+          +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'
+            +'<div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600">Zeiten für diese Woche</div>'
+            +'<button id="toggle-all-te'+entry.id+'" class="btn btn-sm btn-ghost" style="font-size:10px;padding:3px 10px" onclick="toggleAllHoursBtn(\'te'+entry.id+'-\',\'toggle-all-te'+entry.id+'\')" >Alle schließen</button>'
+          +'</div>'
           +'<div class="hours-cols" id="temp-hcols-'+entry.id+'"></div>'
         +'</div>'
       +'</div>'
@@ -2037,7 +2062,10 @@ function renderStaffTempEntries(){
       +'<div style="padding:12px;display:flex;flex-direction:column;gap:10px">'
         +'<div id="st-cal-'+entry.id+'">'+buildStaffKwCal(entry.id,entry.kw,entry.year)+'</div>'
         +'<div>'
-          +'<div style="font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:6px">Zeiten für diese Woche</div>'
+          +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'
+            +'<div style="font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600">Zeiten für diese Woche</div>'
+            +'<button id="toggle-all-ste'+entry.id+'" class="btn btn-sm btn-ghost" style="font-size:10px;padding:3px 10px" onclick="toggleAllHoursBtn(\'ste'+entry.id+'-\',\'toggle-all-ste'+entry.id+'\')" >Alle schließen</button>'
+          +'</div>'
           +'<div class="hours-cols-sm" id="st-hcols-'+entry.id+'"></div>'
         +'</div>'
       +'</div>'
@@ -3368,7 +3396,7 @@ function renderProfilContent(id){
       '<div class="card">'+
         '<div class="card-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Adresse &amp; Kontakt</div>'+
         '<div style="display:grid;grid-template-columns:2fr 0.6fr 1fr;gap:12px;margin-bottom:12px">'+
-          '<div class="field" style="margin-bottom:0"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="f-brand" placeholder="z.B. Wellness Store" value="'+(d.brand_name||d.name||'')+'" oninput="buildProfilToggles()"></div>'+
+          '<div class="field" style="margin-bottom:0"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="f-brand" placeholder="z.B. Wellness Store" value="'+(d.brand_name||d.name||'')+'"></div>'+
           '<div class="field" style="margin-bottom:0"><label>PLZ</label><input type="text" id="f-plz" placeholder="51674" value="'+(d.postal_code||'')+'"></div>'+
           '<div class="field" style="margin-bottom:0"><label>Stadt</label><input type="text" id="f-city" placeholder="Wiehl" value="'+(d.city||'')+'"></div>'+
         '</div>'+
@@ -3388,7 +3416,10 @@ function renderProfilContent(id){
   else if(id==='zeiten'){
     wrap.innerHTML=
       '<div class="card">'+
-        '<div class="card-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Öffnungszeiten <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;margin-left:6px">mind. 1 Tag <span style="color:var(--tg)">*</span></span></div>'+
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
+        +'<div class="card-title" style="margin-bottom:0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Öffnungszeiten <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;margin-left:6px">mind. 1 Tag <span style="color:var(--tg)">*</span></span></div>'
+        +'<button id="toggle-all-h" class="btn btn-sm btn-ghost" onclick="toggleAllHoursBtn(\'h-\',\'toggle-all-h\')">Alle schließen</button>'
+      +'</div>'+
         '<div id="hours-cols" style="display:flex;flex-direction:column;gap:8px"></div>'+
         '<div style="height:1px;background:var(--border);margin:18px 0"></div>'+
         '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'+
