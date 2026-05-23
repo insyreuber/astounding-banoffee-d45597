@@ -1609,6 +1609,7 @@ async function loadFeatureSettings(){
   if(!window._pData)window._pData={};
   window._pData.feature_settings=res.data.feature_settings;
   var f=res.data.feature_settings;
+  updateProfilStatus();
   // WhatsApp Benachrichtigungen
   var _waOn=document.getElementById('feat-whatsapp-on');
   var _waS=document.getElementById('whatsapp-setup');
@@ -2315,6 +2316,7 @@ async function loadStaff(){
   cachedSalonAz=pRes.error?null:pRes.data.arbeitszeiten;
   updateWeekPlanLabel();
   renderWeekPlan(cachedSalonAz);
+  updateProfilStatus();
 }
 
 function getStaffColor(m){
