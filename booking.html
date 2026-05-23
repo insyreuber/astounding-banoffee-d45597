@@ -747,6 +747,19 @@ function selClass(val1,val2,id,isDual){
 }
 
 function getSelectedStaff(){return STAFF.filter(function(s){return s.id===st.stf1;})[0]||null;}
+
+// Prüft ob irgendein Mitarbeiter diesen Service hat (unabhängig von Auswahl)
+function svcHasAnyStaff(svcId){
+  var vars=VARIANTEN[svcId]||[];
+  if(!vars.length)return false;
+  var varIds=vars.map(function(v){return v.id;});
+  return STAFF.some(function(s){
+    return s.allowedVarianten&&s.allowedVarianten.some(function(vid){
+      return varIds.indexOf(vid)>=0;
+    });
+  });
+}
+
 function isVarAllowed(varId){
   var staff=getSelectedStaff();
   if(!staff||staff.id==='any'||!staff.allowedVarianten)return true;
@@ -772,10 +785,9 @@ function staffCanHandleSelectedServices(staffMember){
 
 function mkSvcCards(){
   if(!SVCS.length)return'<div style="font-size:12px;color:#7a6a8a;padding:8px">Services werden geladen…</div>';
-  // Only show services that have at least one allowed variant (online staff available)
-  var visibleSvcs=SVCS.filter(function(s){return svcHasAllowedVariant(s.id);});
-  if(!visibleSvcs.length)return'<div style="font-size:12px;color:#7a6a8a;padding:8px">Keine Services verfügbar</div>';
-  return visibleSvcs.map(function(s){
+  var displaySvcs=SVCS.filter(function(s){return svcHasAnyStaff(s.id);});
+  if(!displaySvcs.length)return'<div style="font-size:12px;color:#7a6a8a;padding:8px">Keine Services verfügbar</div>';
+  return displaySvcs.map(function(s){
     var entry=getSvcEntry(s.id);
     var isSelected=!!entry;
     var vars=VARIANTEN[s.id]||[];
@@ -786,7 +798,7 @@ function mkSvcCards(){
       vars.forEach(function(v){
         var isSel=entry&&entry.varId===v.id;
         var allowed=isVarAllowed(v.id);
-        var clickable=allowed;
+        var clickable=allowed&&!blocked;
         varHtml+='<div onclick="event.stopPropagation();'+(clickable?'pickVar(\''+s.id+'\',\''+v.id+'\')':'')+'" style="'
           +'padding:8px 12px;border-radius:8px;font-size:12px;min-height:36px;display:inline-flex;align-items:center;'
           +'cursor:'+(clickable?'pointer':'default')+';transition:all .15s;'
@@ -800,11 +812,15 @@ function mkSvcCards(){
       });
       varHtml+='</div>';
     }
-    var html='<div class="svc '+(isSelected?'sel1only':'')+'">';
+    var hasAllowed=svcHasAllowedVariant(s.id);
+    var blocked=!hasAllowed&&!isSelected;
+    var html='<div class="svc '+(isSelected?'sel1only':blocked?'svc-blocked':'')+
+      '" style="opacity:'+(blocked?'0.45':'1')+'">';
     html+='<div class="svc-inner">';
     html+='<div style="display:flex;align-items:center;justify-content:space-between">';
     html+='<div class="svc-n">'+s.name+'</div>';
     if(isSelected)html+='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tp)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+    if(blocked)html+='<span style="font-size:9px;color:#c0b8cc">nicht verfügbar</span>';
     html+='</div>';
     html+='<div class="svc-d" style="min-height:14px">'+(s.desc||'')+'</div>';
     html+='<div class="svc-p" style="min-height:18px;visibility:'+(isSelected?'hidden':'visible')+'">'+(minPreis!==null?'ab '+minPreis+' €':'')+'</div>';
