@@ -3384,26 +3384,31 @@ function _pSaved(id){
 }
 
 
+
+function resetProfil(){
+  renderProfilContent(_pActive);
+  toast('Zurückgesetzt','success');
+}
+
 function updateProfilStatus(){
   var el=document.getElementById('profil-status-msg');
   if(!el)return;
   var d=window._pData||{};
 
-  // Collect state of each tab
-  var reds=[];
-  var tips=[];
+  var redMsgs=[];
+  var yellowMsgs=[];
 
+  // RED: pflichtfelder offen
   PTABS.forEach(function(t){
     var col=_ptColor(t);
     if(col==='red'){
-      if(t.id==='adresse')  reds.push('Adresse & Kontakt');
-      if(t.id==='zeiten')   reds.push('Öffnungszeiten');
-      if(t.id==='service')  reds.push('mindestens einen Service');
-      if(t.id==='team')     reds.push('mindestens ein Teammitglied');
+      if(t.id==='adresse')  redMsgs.push('Adresse & Kontakt');
+      if(t.id==='zeiten')   redMsgs.push('Öffnungszeiten');
+      if(t.id==='service')  redMsgs.push('mindestens einen Service');
+      if(t.id==='team')     redMsgs.push('mindestens ein Teammitglied');
     }
   });
 
-  // Extra tips — check specific conditions
   var hasServices=typeof servicesData!=='undefined'&&servicesData.length>0;
   var hasStaff=typeof staffData!=='undefined'&&staffData.length>0;
   var gcalConnected=!!(d.google_connected&&d.google_calendar_id);
@@ -3411,21 +3416,24 @@ function updateProfilStatus(){
   var anyStaffWithCal=hasStaff&&staffData.some(function(i){return !!(i.mitarbeiter.google_calendar_id);});
   var waOn=!!(d.feature_settings&&d.feature_settings.whatsapp_on);
 
-  if(!hasServices&&reds.indexOf('mindestens einen Service')<0)
-    tips.push('➕ Füge deinen ersten <strong>Service</strong> hinzu damit Kunden buchen können.');
-  if(!gcalConnected)
-    tips.push('📅 Verbinde deinen <strong>Google Kalender</strong> damit Termine synchronisiert werden.');
-  if(hasStaff&&!anyStaffWithCal)
-    tips.push('🗓 Weise deinen Teammitgliedern einen <strong>Kalender</strong> zu.');
-  if(hasStaff&&!anyStaffOnline)
-    tips.push('👤 Stelle mindestens ein Teammitglied auf <strong>Online</strong> damit Kunden buchen können.');
-  if(!waOn)
-    tips.push('💬 Aktiviere <strong>WhatsApp Automatic</strong> für automatische Bestätigungen & Erinnerungen.');
+  // RED: fehlende Services (auch wenn toggle noch nicht rot weil neu)
+  if(!hasServices&&redMsgs.indexOf('mindestens einen Service')<0)
+    redMsgs.push('ersten Service hinzufügen');
 
-  if(reds.length>0){
-    el.innerHTML='<span style="color:#c0392b">⚠ Bitte ergänze: <strong>'+reds.join(', ')+'</strong> — erst dann ist dein Salon buchbar.</span>';
-  } else if(tips.length>0){
-    el.innerHTML='<span style="color:#a07800">'+tips[0]+'</span>';
+  // YELLOW: verbesserungen
+  if(!gcalConnected)
+    yellowMsgs.push('📅 Verbinde deinen <strong>Google Kalender</strong> damit Termine synchronisiert werden.');
+  if(hasStaff&&!anyStaffWithCal)
+    yellowMsgs.push('🗓 Weise deinen Teammitgliedern einen <strong>Kalender</strong> zu.');
+  if(hasStaff&&!anyStaffOnline)
+    yellowMsgs.push('👤 Stelle mindestens ein Teammitglied auf <strong>Online</strong>.');
+  if(!waOn)
+    yellowMsgs.push('💬 Aktiviere <strong>WhatsApp Automatic</strong> für automatische Bestätigungen & Erinnerungen.');
+
+  if(redMsgs.length>0){
+    el.innerHTML='<span style="color:#c0392b">⚠ Bitte ergänze: <strong>'+redMsgs.join(', ')+'</strong> — erst dann ist dein Salon buchbar.</span>';
+  } else if(yellowMsgs.length>0){
+    el.innerHTML='<span style="color:#a07800">'+yellowMsgs[0]+'</span>';
   } else {
     el.innerHTML='<span style="color:#1e7a3c">✓ Alles im grünen Bereich — dein Salon ist vollständig eingerichtet.</span>';
   }
@@ -3491,7 +3499,7 @@ function renderProfilContent(id){
           '<div class="field" style="margin-bottom:0"><label>Handy</label><input type="text" id="f-mobile" placeholder="+49 151 …" value="'+(d.mobile_url||'')+'"></div>'+
         '</div>'+
       '</div>'+
-      '<div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
+      '<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
   }
 
   else if(id==='zeiten'){
@@ -3517,7 +3525,7 @@ function renderProfilContent(id){
         '<div id="temp-entries-list" style="display:flex;flex-direction:column;gap:14px"></div>'+
         '<div id="temp-empty" style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0">Noch keine temporären Zeiten</div>'+
       '</div>'+
-      '<div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
+      '<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
     buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
     var azPrev=document.getElementById('az-acc-preview');
     if(azPrev)azPrev.innerHTML=azPreview(d.arbeitszeiten||null);
@@ -3542,7 +3550,7 @@ function renderProfilContent(id){
         '<div id="custom-links-list" style="display:flex;flex-direction:column;gap:7px"></div>'+
         '<div id="custom-links-empty" style="font-size:11px;color:var(--muted);padding:8px 0 4px;text-align:center">Noch keine Links — klicke Hinzufügen</div>'+
       '</div>'+
-      '<div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
+      '<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
     customLinks=Array.isArray(d.custom_links)?d.custom_links:[];
     renderCustomLinks();
   }
