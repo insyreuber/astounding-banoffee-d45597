@@ -3409,7 +3409,11 @@ function updateProfilStatus(){
   var gcalConnected=!!(d.google_connected&&d.google_calendar_id);
   var anyStaffOnline=hasStaff&&staffData.some(function(i){return i.mitarbeiter.aktiv!==false;});
   var anyStaffWithCal=hasStaff&&staffData.some(function(i){return !!(i.mitarbeiter.google_calendar_id);});
-  var waOn=!!(d.feature_settings&&d.feature_settings.whatsapp_on);
+  var waOnToggle=document.getElementById('feat-whatsapp-on');
+  var waOn=waOnToggle?waOnToggle.checked:!!(d.feature_settings&&d.feature_settings.whatsapp_on);
+  // Check toggle color: if yellow → whatsapp not activated
+  var waColor=_ptColor({id:'whatsapp',req:false,wa:true});
+  var waActive=waColor==='green'||(d.feature_settings&&d.feature_settings.whatsapp_on);
   var hasSonstiges=!!(d.note||(d.custom_links&&d.custom_links.length));
 
   // ── RED (Pflicht) ──
@@ -3431,9 +3435,9 @@ function updateProfilStatus(){
     yellowMsgs.push('🗓 Weise deinen Teammitgliedern einen <strong>Kalender</strong> zu.');
   if(hasStaff&&!anyStaffOnline)
     yellowMsgs.push('👤 Stelle mindestens ein Teammitglied auf <strong>Online</strong>.');
-  if(!waOn)
+  if(!waActive)
     yellowMsgs.push('💬 Aktiviere <strong>WhatsApp Automatic</strong> für automatische Bestätigungen & Erinnerungen.');
-  if(!hasSonstiges)
+  if(_ptColor({id:'sonstiges',req:false})==='yellow')
     yellowMsgs.push('✦ Ergänze <strong>Links & Notizen</strong> für deinen Salon-Auftritt.');
 
   // ── PRIORITY: rot → gelb → grün ──
