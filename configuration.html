@@ -3401,28 +3401,27 @@ function updateProfilStatus(){
   var redMsgs=[];
   var yellowMsgs=[];
 
-  // RED: pflichtfelder offen
-  PTABS.forEach(function(t){
-    var col=_ptColor(t);
-    if(col==='red'){
-      if(t.id==='adresse')  redMsgs.push('Adresse & Kontakt');
-      if(t.id==='zeiten')   redMsgs.push('Öffnungszeiten');
-      if(t.id==='service')  redMsgs.push('mindestens einen Service');
-      if(t.id==='team')     redMsgs.push('mindestens ein Teammitglied');
-    }
-  });
-
   var hasServices=typeof servicesData!=='undefined'&&servicesData.length>0;
   var hasStaff=typeof staffData!=='undefined'&&staffData.length>0;
   var gcalConnected=!!(d.google_connected&&d.google_calendar_id);
   var anyStaffOnline=hasStaff&&staffData.some(function(i){return i.mitarbeiter.aktiv!==false;});
   var anyStaffWithCal=hasStaff&&staffData.some(function(i){return !!(i.mitarbeiter.google_calendar_id);});
   var waOn=!!(d.feature_settings&&d.feature_settings.whatsapp_on);
+  var hasSonstiges=!!(d.note||(d.custom_links&&d.custom_links.length));
 
+  // ── RED (Pflicht) ──
+  PTABS.forEach(function(t){
+    if(_ptColor(t)==='red'){
+      if(t.id==='adresse')  redMsgs.push('Adresse & Kontakt');
+      if(t.id==='zeiten')   redMsgs.push('Öffnungszeiten');
+      if(t.id==='service')  redMsgs.push('mindestens einen Service');
+      if(t.id==='team')     redMsgs.push('mindestens ein Teammitglied');
+    }
+  });
   if(!hasServices&&redMsgs.indexOf('mindestens einen Service')<0)
     redMsgs.push('ersten Service hinzufügen');
 
-  // YELLOW: only real issues, in priority order
+  // ── YELLOW (Empfehlungen, in Priorität) ──
   if(!gcalConnected)
     yellowMsgs.push('📅 Verbinde deinen <strong>Google Kalender</strong> damit Termine synchronisiert werden.');
   if(hasStaff&&!anyStaffWithCal)
@@ -3431,8 +3430,10 @@ function updateProfilStatus(){
     yellowMsgs.push('👤 Stelle mindestens ein Teammitglied auf <strong>Online</strong>.');
   if(!waOn)
     yellowMsgs.push('💬 Aktiviere <strong>WhatsApp Automatic</strong> für automatische Bestätigungen & Erinnerungen.');
+  if(!hasSonstiges)
+    yellowMsgs.push('✦ Ergänze <strong>Links & Notizen</strong> für deinen Salon-Auftritt.');
 
-  // Priority: red → yellow → green
+  // ── PRIORITY: rot → gelb → grün ──
   if(redMsgs.length>0){
     el.innerHTML='<span style="color:#c0392b">⚠ Bitte ergänze: <strong>'+redMsgs.join(', ')+'</strong> — erst dann ist dein Salon buchbar.</span>';
   } else if(yellowMsgs.length>0){
