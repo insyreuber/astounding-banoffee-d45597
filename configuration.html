@@ -1605,6 +1605,9 @@ async function loadFeatureSettings(){
   if(!SALON_ID)return;
   var res=await sb.from('kunden_profile').select('feature_settings').eq('id',SALON_ID).single();
   if(res.error||!res.data.feature_settings)return;
+  // Merge into _pData so updateProfilStatus can read it
+  if(!window._pData)window._pData={};
+  window._pData.feature_settings=res.data.feature_settings;
   var f=res.data.feature_settings;
   // WhatsApp Benachrichtigungen
   var _waOn=document.getElementById('feat-whatsapp-on');
@@ -3416,11 +3419,10 @@ function updateProfilStatus(){
   var anyStaffWithCal=hasStaff&&staffData.some(function(i){return !!(i.mitarbeiter.google_calendar_id);});
   var waOn=!!(d.feature_settings&&d.feature_settings.whatsapp_on);
 
-  // RED: fehlende Services (auch wenn toggle noch nicht rot weil neu)
   if(!hasServices&&redMsgs.indexOf('mindestens einen Service')<0)
     redMsgs.push('ersten Service hinzufügen');
 
-  // YELLOW: verbesserungen
+  // YELLOW: only real issues, in priority order
   if(!gcalConnected)
     yellowMsgs.push('📅 Verbinde deinen <strong>Google Kalender</strong> damit Termine synchronisiert werden.');
   if(hasStaff&&!anyStaffWithCal)
@@ -3430,6 +3432,7 @@ function updateProfilStatus(){
   if(!waOn)
     yellowMsgs.push('💬 Aktiviere <strong>WhatsApp Automatic</strong> für automatische Bestätigungen & Erinnerungen.');
 
+  // Priority: red → yellow → green
   if(redMsgs.length>0){
     el.innerHTML='<span style="color:#c0392b">⚠ Bitte ergänze: <strong>'+redMsgs.join(', ')+'</strong> — erst dann ist dein Salon buchbar.</span>';
   } else if(yellowMsgs.length>0){
