@@ -265,8 +265,9 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
 /* ── MOBILE ── */
 @media (max-width: 768px) {
-  #slot-raster-btns { flex-direction: row !important; }
-  #slot-raster-btns button svg { width: 60px !important; height: 60px !important; }
+  #slot-raster-btns { flex-direction: row !important; gap: 6px !important; }
+  #slot-raster-btns button { padding: 8px 4px !important; min-width: 0 !important; }
+  #slot-raster-btns button svg { width: 56px !important; height: 56px !important; }
 
   /* Nav: Akkordion auf Mobile */
   .nav{flex-direction:column;padding:0;gap:0;width:100%;}
@@ -275,6 +276,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   .nav-logo{font-size:1.2rem !important;letter-spacing:.01em !important;text-transform:none !important}
 
   .nav-tabs{display:none;flex-direction:column;gap:0;border-bottom:1.5px solid rgba(255,255,255,.1);width:100%;}
+  #verwaltung-sub{position:static !important;box-shadow:none !important;background:transparent !important;border-radius:0 !important;}
   .nav-tabs.open{display:flex}
   .nav-tab{padding:14px 20px;font-size:13px;border-radius:0;border-bottom:1px solid rgba(255,255,255,.07);border-bottom-width:1px !important;white-space:normal;}
   .nav-tab svg{display:inline-block;margin-right:8px}
@@ -465,20 +467,22 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       QR-Code
     </div>
     <!-- Verwaltung Akkordion -->
+    <div style="position:relative">
     <div class="nav-tab nav-tab-acc" id="tab-verwaltung" onclick="toggleVerwaltungAcc()">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
       Verwaltung
       <svg id="verwaltung-chev" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:auto;transition:transform .2s"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
-    <div id="verwaltung-sub" style="display:none">
-      <div class="nav-tab nav-tab-sub" onclick="switchTab('pakete')" id="tab-pakete" style="padding-left:32px">
+    <div id="verwaltung-sub" style="display:none;position:absolute;top:100%;left:0;min-width:160px;background:var(--nav-bg, #2d1254);border-radius:0 0 8px 8px;z-index:100;box-shadow:0 4px 12px rgba(0,0,0,0.3)">
+      <div class="nav-tab nav-tab-sub" onclick="switchTab('pakete')" id="tab-pakete" style="padding-left:24px;font-size:12px">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
         Pakete
       </div>
-      <div class="nav-tab nav-tab-sub" onclick="switchTab('bills')" id="tab-bills" style="padding-left:32px">
+      <div class="nav-tab nav-tab-sub" onclick="switchTab('bills')" id="tab-bills" style="padding-left:24px;font-size:12px">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
         Rechnungen
       </div>
+    </div>
     </div>
     <div class="nav-tab" id="tab-buchungsseite" onclick="window.open(document.getElementById('nav-booking-btn-desktop').href,'_blank')">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
@@ -3728,7 +3732,7 @@ function renderProfilContent(id){
         '<div style="margin:18px 0 12px">'
           +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Slot-Raster</div>'
           +'<div style="font-size:11px;color:var(--muted);margin-bottom:10px">Wie fein sollen Termine im Buchungswidget angezeigt werden?</div>'
-            +'<div style="display:flex;gap:12px;flex-wrap:wrap">'
+            +'<div id="slot-raster-btns" style="display:flex;gap:12px;flex-wrap:wrap">'
             +'<button type="button" id="slot-btn-15" onclick="setSlotRaster(15)" class="btn" style="flex:1;min-width:90px;padding:12px 8px;text-align:center;line-height:1.3"><svg width="80" height="80" viewBox="-50 -50 100 100" style="display:block;margin:0 auto 6px"><path d="M0,0 L0,-44 A44,44 0 0,1 44,0 Z" fill="#4a1c6b" opacity="0.85"/><path d="M0,0 L44,0 A44,44 0 0,1 0,44 Z" fill="#4a1c6b" opacity="0.6"/><path d="M0,0 L0,44 A44,44 0 0,1 -44,0 Z" fill="#4a1c6b" opacity="0.35"/><path d="M0,0 L-44,0 A44,44 0 0,1 0,-44 Z" fill="#4a1c6b" opacity="0.12"/><line x1="0" y1="-46" x2="0" y2="46" stroke="#fff" stroke-width="1"/><line x1="-46" y1="0" x2="46" y2="0" stroke="#fff" stroke-width="1"/><line x1="0.0" y1="-44.0" x2="0.0" y2="-36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="22.0" y1="-38.1" x2="19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="38.1" y1="-22.0" x2="33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="44.0" y1="0.0" x2="36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="38.1" y1="22.0" x2="33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="22.0" y1="38.1" x2="19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="0.0" y1="44.0" x2="0.0" y2="36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-22.0" y1="38.1" x2="-19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-38.1" y1="22.0" x2="-33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-44.0" y1="0.0" x2="-36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-38.1" y1="-22.0" x2="-33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-22.0" y1="-38.1" x2="-19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><circle r="44" fill="none" stroke="#4a1c6b" stroke-width="1.5" opacity="0.4"/><circle r="3" fill="#fff"/></svg><span style="font-size:11px;font-weight:600">¼ Stunde</span><br><span style="font-size:10px;opacity:.6">09:00, 09:15…</span></button>'
             +'<button type="button" id="slot-btn-30" onclick="setSlotRaster(30)" class="btn" style="flex:1;min-width:90px;padding:12px 8px;text-align:center;line-height:1.3"><svg width="80" height="80" viewBox="-50 -50 100 100" style="display:block;margin:0 auto 6px"><path d="M0,0 L0,-44 A44,44 0 0,1 0,44 Z" fill="#4a1c6b" opacity="0.8"/><path d="M0,0 L0,44 A44,44 0 0,1 0,-44 Z" fill="#4a1c6b" opacity="0.25"/><line x1="0" y1="-46" x2="0" y2="46" stroke="#fff" stroke-width="1"/><line x1="0.0" y1="-44.0" x2="0.0" y2="-36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="22.0" y1="-38.1" x2="19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="38.1" y1="-22.0" x2="33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="44.0" y1="0.0" x2="36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="38.1" y1="22.0" x2="33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="22.0" y1="38.1" x2="19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="0.0" y1="44.0" x2="0.0" y2="36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-22.0" y1="38.1" x2="-19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-38.1" y1="22.0" x2="-33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-44.0" y1="0.0" x2="-36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-38.1" y1="-22.0" x2="-33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-22.0" y1="-38.1" x2="-19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><circle r="44" fill="none" stroke="#4a1c6b" stroke-width="1.5" opacity="0.4"/><circle r="3" fill="#fff"/></svg><span style="font-size:11px;font-weight:600">½ Stunde</span><br><span style="font-size:10px;opacity:.6">09:00, 09:30…</span></button>'
             +'<button type="button" id="slot-btn-60" onclick="setSlotRaster(60)" class="btn" style="flex:1;min-width:90px;padding:12px 8px;text-align:center;line-height:1.3"><svg width="80" height="80" viewBox="-50 -50 100 100" style="display:block;margin:0 auto 6px"><circle r="44" fill="#4a1c6b" opacity="0.75"/><line x1="0.0" y1="-44.0" x2="0.0" y2="-36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="22.0" y1="-38.1" x2="19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="38.1" y1="-22.0" x2="33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="44.0" y1="0.0" x2="36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="38.1" y1="22.0" x2="33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="22.0" y1="38.1" x2="19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="0.0" y1="44.0" x2="0.0" y2="36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-22.0" y1="38.1" x2="-19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-38.1" y1="22.0" x2="-33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-44.0" y1="0.0" x2="-36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-38.1" y1="-22.0" x2="-33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-22.0" y1="-38.1" x2="-19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><circle r="44" fill="none" stroke="#4a1c6b" stroke-width="1.5" opacity="0.4"/><circle r="3" fill="#fff"/></svg><span style="font-size:11px;font-weight:600">1 Stunde</span><br><span style="font-size:10px;opacity:.6">09:00, 10:00…</span></button>'
