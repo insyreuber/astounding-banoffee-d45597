@@ -48,8 +48,8 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .tog-sub{font-size:11px;color:#7a6a8a}
 
 .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
-.svc{border:1.5px solid #e8e0f0;border-radius:8px;padding:10px 9px;cursor:pointer;position:relative;overflow:hidden;background:#fff;box-shadow:0 1px 4px rgba(74,28,107,.05);transition:border-color .15s,box-shadow .15s,transform .15s}
-.svc:hover{border-color:var(--tpl);box-shadow:0 4px 12px rgba(74,28,107,.12);transform:translateY(-1px)}
+.svc{border:1.5px solid #e8e0f0;border-radius:8px;padding:10px 9px;cursor:default;position:relative;overflow:visible;background:#fff;box-shadow:0 1px 4px rgba(74,28,107,.05)}
+
 .svc.sel1only{border-color:var(--tp);background:var(--tpp)}
 .svc.sel2only{border-color:var(--tg);background:var(--tgp)}
 .svc.selboth{border:none;background:#fff;outline:2px solid var(--tp)}
@@ -796,8 +796,8 @@ function mkSvcCards(){
     }
     // Service nicht klickbar wenn kein Mitarbeiter ihn kann
     var blocked=!hasAllowed&&!isSelected;
-    var html='<div class="svc '+(isSelected?'sel1only':blocked?'svc-blocked':'')+'" style="cursor:'+(blocked?'not-allowed':'pointer')+';opacity:'+(blocked?'0.45':'1')+'"'
-      +(blocked?'':'onclick="toggleSvc(\''+s.id+'\')"')+'>';
+    var html='<div class="svc '+(isSelected?'sel1only':blocked?'svc-blocked':'')+'" style="opacity:'+(blocked?'0.45':'1')+'"'
+    +'>';
     html+='<div class="svc-inner">';
     html+='<div style="display:flex;align-items:center;justify-content:space-between">';
     html+='<div class="svc-n">'+s.name+'</div>';
