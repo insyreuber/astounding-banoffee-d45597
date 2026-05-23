@@ -2656,11 +2656,32 @@ function getCheckedVarianten(){
   return ids;
 }
 
+function toggleColorPicker(){
+  var w=document.getElementById('s-color-picker-wrap');
+  if(w)w.style.display=w.style.display==='block'?'none':'block';
+}
+
+function updateModalAvatar(){
+  var color=document.getElementById('s-color');
+  var av=document.getElementById('s-modal-avatar');
+  var ini=document.getElementById('s-modal-avatar-ini');
+  if(!av||!color)return;
+  av.style.background=color.value||'#3498db';
+  var disp=(document.getElementById('s-display')||{}).value||(document.getElementById('s-name')||{}).value||'';
+  var letters=disp.trim().split(' ').filter(Boolean).map(function(w){return w[0].toUpperCase();}).join('').slice(0,2)||'?';
+  if(ini)ini.textContent=letters;
+  document.querySelectorAll('#color-picker .color-swatch').forEach(function(sw){
+    sw.style.outline=sw.dataset.color===color.value?'3px solid rgba(0,0,0,.4)':'none';
+    sw.style.outlineOffset='1px';
+  });
+}
+
 function pickColor(hex){
   document.getElementById('s-color').value=hex;
   document.querySelectorAll('.color-swatch').forEach(function(el){
     el.classList.toggle('selected',el.dataset.color===hex);
   });
+  updateModalAvatar();
 }
 
 function openStaffModal(data){
@@ -2696,6 +2717,10 @@ function openStaffModal(data){
   if(gcalSection)gcalSection.style.display=data?'block':'none';
   // Farbe setzen
   pickColor(m.farbe||'#3498db');
+  // Reset color picker visibility
+  var cpWrap=document.getElementById('s-color-picker-wrap');
+  if(cpWrap)cpWrap.style.display='none';
+  setTimeout(updateModalAvatar,20);
   var hasCustom=!!(data&&m.arbeitszeiten);
   document.getElementById('s-custom-hours').checked=hasCustom;
   var wrap=document.getElementById('s-hours-wrap');
