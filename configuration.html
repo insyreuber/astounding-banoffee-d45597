@@ -950,12 +950,13 @@ function switchTab(n){
   if(n==='bills')loadBills();
   if(n==='buchungsseite'){
     var iframe=document.getElementById('booking-iframe');
-    var url='https://insy-reception.com/booking?salon_id='+SALON_ID;
+    var url='/booking?salon_id='+SALON_ID;
+    var fullUrl='https://insy-reception.com/booking?salon_id='+SALON_ID;
     if(iframe&&!iframe.src.includes('salon_id')){iframe.src=url;}
     var urlBar=document.getElementById('booking-url-bar');
-    if(urlBar)urlBar.textContent=url;
+    if(urlBar)urlBar.textContent=fullUrl;
     var openLink=document.getElementById('booking-open-link');
-    if(openLink)openLink.href=url;
+    if(openLink)openLink.href=fullUrl;
   }
   if(n==='profil')buildProfilToggles();
 }
