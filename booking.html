@@ -1092,29 +1092,16 @@ function render(){
     +'</div>';
 
   // ── Schritt 3: Datum & Zeit — gesperrt bis Service gewählt ──
-  var lock3 = !step1done;
-  var card3 = '<div class="card'+(lock3?' step-locked':'')+'" style="position:relative">'
-    +'<div class="ctitle">'
-    +'<span class="cnum'+(step3done?' done':'')+'">3</span>'
-    +'Datum &amp; Uhrzeit</div>'
-    +'<div id="cal-inner">'
-      +(lock3
-        ?'<div><div class="cal-hdr"><button class="cal-nav">&lsaquo;</button><span class="cal-mo">Monat Jahr</span><button class="cal-nav">&rsaquo;</button></div>'
-          +'<div class="cal-grid">'
-          +'<div class="cdl">Mo</div><div class="cdl">Di</div><div class="cdl">Mi</div><div class="cdl">Do</div><div class="cdl">Fr</div><div class="cdl">Sa</div><div class="cdl">So</div>'
-          +'<div class="cd cp">1</div><div class="cd cp">2</div><div class="cd cp">3</div><div class="cd cp">4</div><div class="cd cp">5</div><div class="cd cp">6</div><div class="cd cp">7</div>'
-          +'<div class="cd cp">8</div><div class="cd cp">9</div><div class="cd cp">10</div><div class="cd cp">11</div><div class="cd cp">12</div><div class="cd cp">13</div><div class="cd cp">14</div>'
-          +'<div class="cd cp">15</div><div class="cd cp">16</div><div class="cd cp">17</div><div class="cd cp">18</div><div class="cd cp">19</div><div class="cd cp">20</div><div class="cd cp">21</div>'
-          +'</div>'
-          +'<div class="slot-lbl">Verfügbare Zeiten</div>'
-          +'<div class="slots">'
-          +'<div class="sl sb">09:00</div><div class="sl sb">09:30</div><div class="sl sb">10:00</div><div class="sl sb">10:30</div>'
-          +'<div class="sl sb">11:00</div><div class="sl sb">11:30</div><div class="sl sb">12:00</div><div class="sl sb">12:30</div>'
-          +'</div></div>'
-        :mkCal())
+   var lock3 = !step1done;
+   var card3 = '<div class="card'+(lock3?' step-locked':'')+'" style="position:relative">'
+     +'<div class="ctitle">'
+     +'<span class="cnum'+(step3done?' done':'')+'">3</span>'
+     +'Datum &amp; Uhrzeit</div>'
+     +'<div id="cal-inner">'
+      +(function(){try{return mkCal();}catch(e){return '<div style="height:280px"></div>';}})()
     +'</div>'
-    +(lock3?lockBadge('Zuerst Service &amp; Team wählen'):'')
-    +'</div>';
+     +(lock3?lockBadge('Zuerst Service &amp; Team wählen'):'')
+     +'</div>';
 
   // ── Schritt 4: Buchungsübersicht — gesperrt bis Datum+Slot ──
   var lock4 = !step3done;
