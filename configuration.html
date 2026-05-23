@@ -1604,12 +1604,13 @@ function verifyMissedCall(){
 async function loadFeatureSettings(){
   if(!SALON_ID)return;
   var res=await sb.from('kunden_profile').select('feature_settings').eq('id',SALON_ID).single();
-  if(res.error||!res.data.feature_settings)return;
-  // Merge into _pData so updateProfilStatus can read it
-  if(!window._pData)window._pData={};
-  window._pData.feature_settings=res.data.feature_settings;
-  var f=res.data.feature_settings;
+  if(!res.error&&res.data){
+    if(!window._pData)window._pData={};
+    window._pData.feature_settings=res.data.feature_settings||{};
+  }
   updateProfilStatus();
+  if(res.error||!res.data||!res.data.feature_settings)return;
+  var f=res.data.feature_settings;
   // WhatsApp Benachrichtigungen
   var _waOn=document.getElementById('feat-whatsapp-on');
   var _waS=document.getElementById('whatsapp-setup');
