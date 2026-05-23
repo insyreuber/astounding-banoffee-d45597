@@ -633,10 +633,13 @@
     }
 
     /* Powered by — weiter runter damit nicht im Header */
-    section[style*="height:100vh"] > div[style*="top:90px"] {
+    #powered-by {
+      position: relative !important;
+      top: auto !important;
+      left: auto !important;
       font-size: 10px !important;
       margin-bottom: 10px !important;
-      padding-top: 60px !important;
+      padding-top: 0 !important;
       order: 1;
     }
 
@@ -689,7 +692,7 @@
     }
 
     /* QR + Buchungsvorschau container ausblenden */
-    section[style*="height:100vh"] > div[style*="top:90px"] {
+    section[style*="height:100vh"] > div[style*="right:6vw"] {
       display: none !important;
     }
 
@@ -1012,7 +1015,7 @@
   <div style="position:absolute;top:0;right:0;width:45%;height:100%;background:radial-gradient(ellipse at 80% 40%, rgba(120,60,180,0.4) 0%, transparent 70%);pointer-events:none;"></div>
 
   <!-- POWERED BY — top anpassen -->
-  <div style="position:absolute;top:90px;left:5vw;display:flex;align-items:center;gap:10px;font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:2.5px;color:rgba(255,255,255,0.75);text-transform:uppercase;font-weight:600;">
+  <div id="powered-by" style="position:absolute;top:90px;left:5vw;display:flex;align-items:center;gap:10px;font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:2.5px;color:rgba(255,255,255,0.75);text-transform:uppercase;font-weight:600;">
     <img src="https://ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_16_2x.png" width="20" height="20" alt="Google Calendar" style="flex-shrink:0;border-radius:3px;"/>
     Powered by Google Kalender
   </div>
