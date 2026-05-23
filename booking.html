@@ -442,7 +442,13 @@ var COUNTRIES=[
   {code:'NL',flag:'🇳🇱',name:'Niederlande',dial:'+31',re:/^(\+31|0031|0)?6\d{8}$/},
 ];
 var BASE_SLOTS=[];
-(function(){for(var h=6;h<=23;h++){for(var m=0;m<60;m+=15){BASE_SLOTS.push(('0'+h).slice(-2)+':'+('0'+m).slice(-2));}}})();
+var SLOT_STEP=15;
+function buildBaseSlots(step){
+  SLOT_STEP=step||15;
+  BASE_SLOTS=[];
+  for(var h=6;h<=23;h++){for(var m=0;m<60;m+=SLOT_STEP){BASE_SLOTS.push(('0'+h).slice(-2)+':'+('0'+m).slice(-2));}}
+}
+buildBaseSlots(15);
 var BUSY={};
 var AVAIL_SLOTS={}; // { mitarbeiter_id: ['09:00','10:00',...] } — verfügbare Slots von n8n
 
