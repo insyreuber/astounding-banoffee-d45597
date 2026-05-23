@@ -2358,8 +2358,9 @@ function renderStaffSidebar(){
           )
         +'</div>'
       +'</div>'
-      +'<div class="staff-card-actions">'
+      +'<div class="staff-card-actions" style="display:flex">'
         +'<button class="staff-action" onclick="editStaff(\''+m.id+'\')" title="Bearbeiten">✎ Bearbeiten</button>'
+        +'<button class="staff-action" onclick="toggleStaffOnline(\''+m.id+'\','+isOnline+')" style="color:'+(isOnline?'#1e7a3c':'#c0392b')+'" title="Online/Offline">'+(isOnline?'● Online':'○ Offline')+'</button>'
       +'</div>'
     +'</div>';
   }).join('');
@@ -2496,6 +2497,18 @@ function closeCalendarPicker(){
 }
 
 // ── MITARBEITER MODAL ─────────────────────────────────────────
+
+async function toggleStaffOnline(id, currentOnline){
+  var newVal=!currentOnline;
+  var res=await sb.from('mitarbeiter').update({aktiv:newVal}).eq('id',id);
+  if(res.error){toast('Fehler: '+res.error.message,'error');return;}
+  // Update local staffData
+  staffData.forEach(function(item){
+    if(item.mitarbeiter.id===id)item.mitarbeiter.aktiv=newVal;
+  });
+  renderStaffSidebar();
+  toast((newVal?'Online':'Offline')+' gesetzt ✓','success');
+}
 
 function updateOnlineLabel(){
   var on=document.getElementById('s-online').checked;
