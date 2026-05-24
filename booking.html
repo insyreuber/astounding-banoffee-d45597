@@ -1348,12 +1348,15 @@ function renderWorkingHours(arbeitszeiten){
       var d=getEffectiveDayAz(k);
       var isToday=k===todayKey;
       var closed=!d||!d.aktiv;
-      var timeStr=closed?'Geschlossen':formatHours(d);
-      return'<div style="display:flex;justify-content:space-between;gap:12px;font-size:11px;'+(isToday?'font-weight:700;color:#fff':'color:rgba(255,255,255,.55)')+'">'
-        +'<span>'+DAY_LABELS[k]+'</span>'
-        +'<span style="'+(closed?'color:rgba(255,255,255,.3)':isToday?'color:#C9A84C':'')+'">'+timeStr+'</span>'
+      var timeStr=closed?'—':formatHours(d);
+      return'<div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 8px;border-radius:7px;'+(isToday?'background:rgba(255,255,255,.15)':'')+'">'
+        +'<span style="font-size:9px;font-weight:600;'+(isToday?'color:#C9A84C':'color:rgba(255,255,255,.45)')+';letter-spacing:.05em;text-transform:uppercase">'+DAY_LABELS[k].slice(0,2)+'</span>'
+        +'<span style="font-size:10px;white-space:nowrap;'+(closed?'color:rgba(255,255,255,.25)':isToday?'color:#fff;font-weight:600':'color:rgba(255,255,255,.65)')+'">'+timeStr+'</span>'
         +'</div>';
     }).join('');
+    rowsEl.style.flexDirection='row';
+    rowsEl.style.flexWrap='wrap';
+    rowsEl.style.gap='2px';
   }
   if(drop){
     drop.innerHTML=DAY_ORDER.map(function(k){
