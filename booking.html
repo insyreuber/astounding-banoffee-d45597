@@ -1358,6 +1358,30 @@ function renderWorkingHours(arbeitszeiten){
   }
 }
 
+function renderHdHoursRows(){
+  var rowsEl=document.getElementById('hd-hours-rows');
+  if(!rowsEl||!SALON_AZ)return;
+  var now=new Date();
+  var dayOfWeek=now.getDay()===0?6:now.getDay()-1;
+  var monday=new Date(now);
+  monday.setDate(now.getDate()-dayOfWeek+_hdWeekOffset*7);
+  rowsEl.innerHTML=DAY_ORDER.map(function(k,idx){
+    var dayDate=new Date(monday);
+    dayDate.setDate(monday.getDate()+idx);
+    var isoW=getISOWeek(dayDate);
+    var tempArr=SALON_AZ.temp_arbeitszeiten||[];
+    var tempEntry=tempArr.filter(function(t){return t.kw===isoW.kw&&t.year===isoW.year;})[0]||null;
+    var d=tempEntry&&tempEntry[k]?tempEntry[k]:(SALON_AZ[k]||null);
+    var isToday=_hdWeekOffset===0&&k===_hdTodayKey;
+    var closed=!d||!d.aktiv;
+    var timeStr=closed?'—':formatHours(d);
+    return'<div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 7px;border-radius:7px;'+(isToday?'background:rgba(255,255,255,.15)':'')+'">'
+      +'<span style="font-size:9px;font-weight:600;'+(isToday?'color:#C9A84C':'color:rgba(255,255,255,.45)')+';letter-spacing:.05em;text-transform:uppercase">'+DAY_LABELS[k].slice(0,2)+'</span>'
+      +'<span style="font-size:10px;white-space:nowrap;'+(closed?'color:rgba(255,255,255,.25)':isToday?'color:#fff;font-weight:600':'color:rgba(255,255,255,.65)')+'">'+timeStr+'</span>'
+      +'</div>';
+  }).join('');
+}
+
 async function loadSalonProfile(){
   try{
     var salonId=getSalonId();
