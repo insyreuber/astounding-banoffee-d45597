@@ -1044,7 +1044,7 @@
   <div style="position:absolute;top:90px;right:6vw;display:flex;align-items:flex-end;gap:60px;z-index:10;">
 
     <!-- QR Code -->
-    <a href="https://insy-reception.com/booking?salon_id=7ae1d846-097f-4cfd-bd4b-d2663551cb11" target="_blank" style="display:flex;flex-direction:column;align-items:center;gap:8px;text-decoration:none;flex-shrink:0;background:#fff;border-radius:16px;padding:16px 16px 12px;box-shadow:0 4px 20px rgba(0,0,0,0.25);transition:transform 0.2s ease,box-shadow 0.2s ease;" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 12px 36px rgba(0,0,0,0.35)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 20px rgba(0,0,0,0.25)'">
+    <a id="qr-code-wrap" href="https://insy-reception.com/booking?salon_id=7ae1d846-097f-4cfd-bd4b-d2663551cb11" target="_blank" style="display:flex;flex-direction:column;align-items:center;gap:8px;text-decoration:none;flex-shrink:0;background:#fff;border-radius:16px;padding:16px 16px 12px;box-shadow:0 4px 20px rgba(0,0,0,0.25);transition:transform 0.4s cubic-bezier(.4,0,.2,1),box-shadow 0.2s ease,margin 0.4s cubic-bezier(.4,0,.2,1);" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 12px 36px rgba(0,0,0,0.35)'" onmouseout="this.style.transform=_bookingExpanded?'translateX(-40px)':'translateY(0)';this.style.boxShadow='0 4px 20px rgba(0,0,0,0.25)'">
       <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https%3A%2F%2Finsy-reception.com%2Fbooking%3Fsalon_id%3D7ae1d846-097f-4cfd-bd4b-d2663551cb11&color=5a2d82&bgcolor=ffffff&qzone=1&format=png" width="150" height="150" alt="QR Code" style="display:block;border-radius:4px;"/>
       <div style="font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:#2a1a50;text-align:center;margin-top:4px;">Hier Termin buchen</div>
       <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:#888;text-align:center;">insy-reception.com</div>
@@ -1084,7 +1084,11 @@
         wrap.style.height = vh + 'px';
         iframe.style.width = Math.round(vw / zoom) + 'px';
         iframe.style.height = Math.round(vh / zoom) + 'px';
-        iframe.style.transform = 'scale(' + zoom + ')';
+        // Move QR left, keep its vertical position
+        var qr = document.getElementById('qr-code-wrap');
+        var container = document.getElementById('booking-preview-wrap').closest('div[style*="right:6vw"]');
+        if(qr){ qr.style.transform = 'translateX(-' + Math.round(vw - 720) + 'px)'; }
+        if(container){ container.style.alignItems = 'flex-start'; }
         icon.innerHTML = '<polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="21" y2="3"/><line x1="3" y1="21" x2="14" y2="10"/>';
         label.textContent = 'Verkleinern';
       } else {
@@ -1093,6 +1097,10 @@
         iframe.style.width = '1440px';
         iframe.style.height = '912px';
         iframe.style.transform = 'scale(0.5)';
+        var qr = document.getElementById('qr-code-wrap');
+        var container = document.getElementById('booking-preview-wrap').closest('div[style*="right:6vw"]');
+        if(qr){ qr.style.transform = ''; }
+        if(container){ container.style.alignItems = 'flex-end'; }
         icon.innerHTML = '<polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>';
         label.textContent = 'Vergrößern';
       }
