@@ -1073,10 +1073,9 @@
       var label = document.getElementById('booking-expand-label');
       var qr = document.getElementById('qr-code-wrap');
       if(_bookingExpanded){
-        var qrWrap = wrap.closest('div[style*="right:6vw"]');
-        var qrLeft = qrWrap ? qrWrap.getBoundingClientRect().left : window.innerWidth * 0.06;
-        var rightEdge = window.innerWidth * 0.06;
-        var vw = Math.round(window.innerWidth - qrLeft - rightEdge);
+        var rightPx = window.innerWidth * 0.06; // right:6vw
+        var qrWidth = qr ? qr.getBoundingClientRect().width + 60 : 260; // QR width + gap
+        var vw = Math.round(window.innerWidth - rightPx - qrWidth);
         var vh = Math.round(window.innerHeight * 0.90);
         wrap.style.width = vw + 'px';
         wrap.style.height = vh + 'px';
@@ -1084,8 +1083,7 @@
         iframe.style.width = Math.round(vw / zoom) + 'px';
         iframe.style.height = Math.round(vh / zoom) + 'px';
         iframe.style.transform = 'scale(' + zoom + ')';
-        // QR: only shift left by the amount preview grew, Y stays same
-        // QR: shift left only, Y stays — already absolute positioned
+        // QR shifts left: stays gap(60px) away from left edge of preview
         if(qr) qr.style.right = 'calc(6vw + ' + vw + 'px + 60px)';
         icon.innerHTML = '<polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="21" y2="3"/><line x1="3" y1="21" x2="14" y2="10"/>';
         label.textContent = 'Verkleinern';
