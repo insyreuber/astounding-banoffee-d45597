@@ -442,6 +442,9 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 .profil-loader-bar-inner{height:100%;background:linear-gradient(90deg,var(--tpl),var(--tg));border-radius:99px;animation:loadbar 1.2s ease-in-out infinite;}
 @keyframes loadbar{0%{width:0%;margin-left:0}50%{width:60%;margin-left:20%}100%{width:0%;margin-left:100%}}
 .profil-loader-txt{font-size:12px;color:var(--muted);}
+
+input[type=range]::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--tp);border:3px solid #fff;box-shadow:0 1px 6px rgba(74,28,107,.3);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--tp);border:3px solid #fff;box-shadow:0 1px 6px rgba(74,28,107,.3);cursor:pointer;border:3px solid white}
 </style>
 </head>
 <body>
@@ -1165,6 +1168,43 @@ function azPreview(az){
   }).join('<span style="color:var(--border);margin:0 4px">·</span>');
 }
 
+
+
+var VORLAUF_LABELS=['Sofort buchbar','Mindestens 1 Stunde vorher','Mindestens 2 Stunden vorher','Mindestens 4 Stunden vorher','Mindestens 8 Stunden vorher','Mindestens 12 Stunden vorher','Mindestens 1 Tag vorher','Mindestens 2 Tage vorher','Mindestens 3 Tage vorher'];
+var HORIZONT_LABELS=['Bis zu 1 Woche','Bis zu 2 Wochen','Bis zu 3 Wochen','Bis zu 4 Wochen','Bis zu 6 Wochen','Bis zu 8 Wochen','Bis zu 12 Wochen'];
+var HORIZONT_VALS=[1,2,3,4,6,8,12];
+
+function updateTimelines(){
+  var vEl=document.getElementById('booking-vorlauf');
+  var hEl=document.getElementById('booking-horizont');
+  var vLbl=document.getElementById('vorlauf-label');
+  var hLbl=document.getElementById('horizont-label');
+  if(vEl&&vLbl)vLbl.textContent=VORLAUF_LABELS[parseInt(vEl.value)]||'';
+  if(hEl&&hLbl)hLbl.textContent=HORIZONT_LABELS[parseInt(hEl.value)-1]||'';
+  saveBookingTimelines();
+}
+
+function saveBookingTimelines(){
+  if(!window._pData)return;
+  if(!window._pData.feature_settings)window._pData.feature_settings={};
+  var vEl=document.getElementById('booking-vorlauf');
+  var hEl=document.getElementById('booking-horizont');
+  if(vEl)window._pData.feature_settings.booking_vorlauf=parseInt(vEl.value);
+  if(hEl)window._pData.feature_settings.booking_horizont=HORIZONT_VALS[parseInt(hEl.value)-1];
+  sb.from('kunden_profile').update({feature_settings:window._pData.feature_settings}).eq('id',SALON_ID);
+}
+
+function initTimelines(){
+  var fs=(_pData&&_pData.feature_settings)||{};
+  var vEl=document.getElementById('booking-vorlauf');
+  var hEl=document.getElementById('booking-horizont');
+  if(vEl&&fs.booking_vorlauf!=null)vEl.value=fs.booking_vorlauf;
+  if(hEl&&fs.booking_horizont!=null){
+    var idx=HORIZONT_VALS.indexOf(fs.booking_horizont);
+    if(idx>=0)hEl.value=idx+1;
+  }
+  updateTimelines();
+}
 
 function highlightSlotRaster(min){
   [15,30,60].forEach(function(v){
@@ -3943,7 +3983,7 @@ function renderProfilContent(id){
     buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
     var azPrev=document.getElementById('az-acc-preview');
     if(azPrev)azPrev.innerHTML=azPreview(d.arbeitszeiten||null);
-    setTimeout(initSlotRaster,50);
+    setTimeout(function(){initSlotRaster();initTimelines();},50);
     tempEntries=[];tempIdCounter=0;tempCalOffset={};
     if(d.temp_arbeitszeiten&&d.temp_arbeitszeiten.length){
       d.temp_arbeitszeiten.forEach(function(t){addTempEntry(t);});
