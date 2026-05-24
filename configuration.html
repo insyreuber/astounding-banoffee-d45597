@@ -679,17 +679,19 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
       </a>
     </div>
     <div style="background:#fff;box-shadow:0 2px 12px rgba(74,28,107,.08)">
-      <div style="background:var(--tp);padding:8px 32px;display:flex;align-items:center;gap:8px">
+      <div style="background:var(--tp);padding:8px 32px;display:flex;align-items:center;gap:8px;position:relative">
         <div style="display:flex;gap:5px">
           <div style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.25)"></div>
           <div style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.25)"></div>
           <div style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.25)"></div>
         </div>
         <div id="booking-url-bar" style="flex:1;background:rgba(255,255,255,.15);border-radius:6px;padding:4px 10px;font-size:10px;color:rgba(255,255,255,.7);font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+        <button onclick="toggleTickerSize()" id="ticker-toggle-btn" title="Ticker mehr/weniger Platz" style="background:rgba(255,255,255,.15);border:none;border-radius:6px;color:#fff;cursor:pointer;padding:4px 10px;font-size:10px;font-family:inherit;display:flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0">
+          <svg id="ticker-toggle-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          Mehr Platz
+        </button>
       </div>
-      <div id="iframe-resize-handle" onclick="toggleBuchungsHeader()" style="width:100%;height:8px;cursor:pointer;background:var(--tp);display:flex;align-items:center;justify-content:center;user-select:none" title="Header ein-/ausklappen">
-        <div style="width:40px;height:3px;border-radius:99px;background:rgba(255,255,255,0.4)"></div>
-      </div>
+
       <iframe id="booking-iframe" src="" style="width:100%;height:84vh;border:none;display:block" scrolling="yes"></iframe>
     </div>
   </div>
@@ -921,6 +923,27 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
 // Iframe resize by dragging handle
 var _resizeStartY=0,_resizeStartH=0,_resizingIframe=null;
+var _tickerExpanded=false;
+function toggleTickerSize(){
+  _tickerExpanded=!_tickerExpanded;
+  var hdr=document.getElementById('buchungsseite-header');
+  var iframe=document.getElementById('booking-iframe');
+  var btn=document.getElementById('ticker-toggle-btn');
+  var icon=document.getElementById('ticker-toggle-icon');
+  if(_tickerExpanded){
+    // More space for ticker — iframe moves down (smaller)
+    if(hdr)hdr.style.minHeight='220px';
+    if(iframe)iframe.style.height='60vh';
+    if(btn)btn.querySelector('span')?btn.querySelector('span').textContent='Weniger Platz':btn.lastChild.textContent='Weniger Platz';
+    if(icon)icon.style.transform='rotate(180deg)';
+    if(btn)btn.innerHTML='<svg id="ticker-toggle-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transform:rotate(180deg)"><polyline points="6 9 12 15 18 9"/></svg> Weniger Platz';
+  } else {
+    if(hdr)hdr.style.minHeight='';
+    if(iframe)iframe.style.height='84vh';
+    if(btn)btn.innerHTML='<svg id="ticker-toggle-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg> Mehr Platz';
+  }
+}
+
 function toggleBuchungsHeader(){
   var hdr=document.getElementById('buchungsseite-header');
   var handle=document.getElementById('iframe-resize-handle');
