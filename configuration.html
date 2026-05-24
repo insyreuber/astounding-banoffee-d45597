@@ -952,7 +952,7 @@ function switchTab(n){
     var iframe=document.getElementById('booking-iframe');
     var url='/booking?salon_id='+SALON_ID;
     var fullUrl='https://insy-reception.com/booking?salon_id='+SALON_ID;
-    if(iframe&&iframe.getAttribute('src')===''){iframe.src=url;}
+    if(iframe){iframe.src='';setTimeout(function(){iframe.src=url;},50);}
     var urlBar=document.getElementById('booking-url-bar');
     if(urlBar)urlBar.textContent=fullUrl;
     var openLink=document.getElementById('booking-open-link');
