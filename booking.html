@@ -1358,6 +1358,10 @@ function renderWorkingHours(arbeitszeiten){
   }
 }
 
+var _hdWeekOffset=0;
+var SALON_AZ=null;
+var _hdTodayKey=null;
+
 function renderHdHoursRows(){
   var rowsEl=document.getElementById('hd-hours-rows');
   if(!rowsEl||!SALON_AZ)return;
