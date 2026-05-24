@@ -1073,20 +1073,15 @@
       var label = document.getElementById('booking-expand-label');
       var qr = document.getElementById('qr-code-wrap');
       if(_bookingExpanded){
-        var rightPx = window.innerWidth * 0.06; // right:6vw
-        var qrWidth = qr ? qr.getBoundingClientRect().width + 60 : 260; // QR width + gap
         var vw = Math.round(window.innerWidth * 0.62);
         var vh = Math.round(window.innerHeight * 0.90);
         wrap.style.width = vw + 'px';
         wrap.style.height = vh + 'px';
-        // Feste virtuelle Breite kleiner als Standard (900px statt vw*2)
-        // → Inhalt erscheint größer, Fenster bleibt gleich
-        var virtualW = 900;
-        var virtualH = Math.round(virtualW * vh / vw);
-        var scale = vw / virtualW;
-        iframe.style.width = virtualW + 'px';
-        iframe.style.height = virtualH + 'px';
-        iframe.style.transform = 'scale(' + scale + ')';
+        // Inhalt größer — scale erhöhen, iframe bleibt gleich, Rand wird abgeschnitten
+        iframe.style.width = '1440px';
+        iframe.style.height = '912px';
+        iframe.style.transform = 'scale(0.65)';
+        iframe.style.transformOrigin = 'top left';
         // QR shifts left: stays gap(60px) away from left edge of preview
         if(qr) qr.style.right = 'calc(6vw + ' + vw + 'px + 60px)';
         icon.innerHTML = '<polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="21" y2="3"/><line x1="3" y1="21" x2="14" y2="10"/>';
