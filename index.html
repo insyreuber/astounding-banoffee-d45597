@@ -1072,14 +1072,19 @@
       var label = document.getElementById('booking-expand-label');
       if(_bookingExpanded){
         // 82% of viewport width, 82% of viewport height
-        var vw = Math.round(window.innerWidth - window.innerWidth * 0.11); // left:5vw + right:6vw = 11vw margins
+        // Align left edge with QR code left edge
+        var qrWrap = document.getElementById('booking-preview-wrap').closest('div[style*="right:6vw"]');
+        var qrLeft = qrWrap ? qrWrap.getBoundingClientRect().left : window.innerWidth * 0.06;
+        var rightEdge = window.innerWidth * 0.06; // right:6vw
+        var vw = Math.round(window.innerWidth - qrLeft - rightEdge);
         var vh = Math.round(window.innerHeight * 0.90);
-        var scale = vw / (vw * 2);  // always 0.5 scale
+        // Zoom: use scale 0.65 instead of 0.5 so content appears larger
+        var zoom = 0.65;
         wrap.style.width = vw + 'px';
         wrap.style.height = vh + 'px';
-        iframe.style.width = (vw * 2) + 'px';
-        iframe.style.height = (vh * 2) + 'px';
-        iframe.style.transform = 'scale(0.5)';
+        iframe.style.width = Math.round(vw / zoom) + 'px';
+        iframe.style.height = Math.round(vh / zoom) + 'px';
+        iframe.style.transform = 'scale(' + zoom + ')';
         icon.innerHTML = '<polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="21" y2="3"/><line x1="3" y1="21" x2="14" y2="10"/>';
         label.textContent = 'Verkleinern';
       } else {
