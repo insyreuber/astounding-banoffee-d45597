@@ -643,6 +643,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   <!-- ════ BUCHUNGSSEITE ════ -->
   <div class="tab-panel" id="panel-buchungsseite" style="position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;width:100vw;padding:0">
     <!-- Header row -->
+    <div id="buchungsseite-sticky" style="position:sticky;top:48px;z-index:5;background:var(--bg)">
     <div id="buchungsseite-header" style="display:flex;align-items:stretch;gap:24px;padding:16px 28px 12px">
       <!-- Title left-aligned with nav branding -->
       <div style="flex-shrink:0">
@@ -687,6 +688,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
         </div>
         <div id="booking-url-bar" style="flex:1;background:rgba(255,255,255,.15);border-radius:6px;padding:4px 10px;font-size:10px;color:rgba(255,255,255,.7);font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
       </div>
+    </div><!-- /sticky -->
       <iframe id="booking-iframe" src="" style="width:100%;height:84vh;border:none;display:block" scrolling="yes"></iframe>
     </div>
   </div>
