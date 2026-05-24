@@ -1079,10 +1079,14 @@
         var vh = Math.round(window.innerHeight * 0.90);
         wrap.style.width = vw + 'px';
         wrap.style.height = vh + 'px';
-        var zoom = 0.65;
-        iframe.style.width = Math.round(vw / zoom) + 'px';
-        iframe.style.height = Math.round(vh / zoom) + 'px';
-        iframe.style.transform = 'scale(' + zoom + ')';
+        // Feste virtuelle Breite kleiner als Standard (900px statt vw*2)
+        // → Inhalt erscheint größer, Fenster bleibt gleich
+        var virtualW = 900;
+        var virtualH = Math.round(virtualW * vh / vw);
+        var scale = vw / virtualW;
+        iframe.style.width = virtualW + 'px';
+        iframe.style.height = virtualH + 'px';
+        iframe.style.transform = 'scale(' + scale + ')';
         // QR shifts left: stays gap(60px) away from left edge of preview
         if(qr) qr.style.right = 'calc(6vw + ' + vw + 'px + 60px)';
         icon.innerHTML = '<polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="21" y2="3"/><line x1="3" y1="21" x2="14" y2="10"/>';
