@@ -1324,7 +1324,19 @@ function renderWorkingHours(arbeitszeiten){
   var todayData=getEffectiveDayAz(todayKey);
   var lbl=document.getElementById('today-hours-label');
   var drop=document.getElementById('hours-drop');
-  if(lbl)lbl.textContent=formatHours(todayData)+' ▾';
+  var hoursText=formatHours(todayData);
+  var isOpen=todayData&&todayData.aktiv&&hoursText!=='Geschlossen';
+  var hst=document.getElementById('hd-hours-status');
+  if(hst){
+    hst.textContent=isOpen?'Geöffnet':'Geschlossen';
+    hst.style.color=isOpen?'#4ade80':'rgba(255,255,255,.5)';
+  }
+  if(lbl){
+    // Strip the span/drop child nodes, only update text
+    var textNode=lbl.firstChild;
+    if(textNode&&textNode.nodeType===3){textNode.textContent=hoursText+' ▾';}
+    else{lbl.insertBefore(document.createTextNode(hoursText+' ▾'),lbl.firstChild);}
+  }
   if(drop){
     drop.innerHTML=DAY_ORDER.map(function(k){
       var d=getEffectiveDayAz(k),isToday=k===todayKey,isClosed=!d||!d.aktiv;
