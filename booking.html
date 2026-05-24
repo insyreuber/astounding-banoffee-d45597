@@ -408,8 +408,14 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
     </div>
     <!-- Öffnungszeiten alle Tage rechts -->
     <div id="hd-hours-all" style="flex-shrink:0;background:rgba(255,255,255,.08);border-radius:10px;padding:10px 14px;min-width:180px">
-      <div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:8px;font-weight:600">Öffnungszeiten</div>
-      <div id="hd-hours-rows" style="display:flex;flex-direction:column;gap:3px"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:600" id="hd-hours-week-label">Diese Woche</div>
+        <div style="display:flex;gap:4px">
+          <button onclick="hdHoursWeek(-1)" style="background:rgba(255,255,255,.1);border:none;border-radius:5px;color:#fff;font-size:11px;width:20px;height:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">‹</button>
+          <button onclick="hdHoursWeek(1)" style="background:rgba(255,255,255,.1);border:none;border-radius:5px;color:#fff;font-size:11px;width:20px;height:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">›</button>
+        </div>
+      </div>
+      <div id="hd-hours-rows" style="display:flex;flex-wrap:wrap;gap:2px"></div>
     </div>
   </div>
 </div>
@@ -1341,23 +1347,7 @@ function renderWorkingHours(arbeitszeiten){
     if(textNode&&textNode.nodeType===3){textNode.textContent=hoursText+' ▾';}
     else{lbl.insertBefore(document.createTextNode(hoursText+' ▾'),lbl.firstChild);}
   }
-  // Render all days into hd-hours-rows
-  var rowsEl=document.getElementById('hd-hours-rows');
-  if(rowsEl){
-    rowsEl.innerHTML=DAY_ORDER.map(function(k){
-      var d=getEffectiveDayAz(k);
-      var isToday=k===todayKey;
-      var closed=!d||!d.aktiv;
-      var timeStr=closed?'—':formatHours(d);
-      return'<div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 8px;border-radius:7px;'+(isToday?'background:rgba(255,255,255,.15)':'')+'">'
-        +'<span style="font-size:9px;font-weight:600;'+(isToday?'color:#C9A84C':'color:rgba(255,255,255,.45)')+';letter-spacing:.05em;text-transform:uppercase">'+DAY_LABELS[k].slice(0,2)+'</span>'
-        +'<span style="font-size:10px;white-space:nowrap;'+(closed?'color:rgba(255,255,255,.25)':isToday?'color:#fff;font-weight:600':'color:rgba(255,255,255,.65)')+'">'+timeStr+'</span>'
-        +'</div>';
-    }).join('');
-    rowsEl.style.flexDirection='row';
-    rowsEl.style.flexWrap='wrap';
-    rowsEl.style.gap='2px';
-  }
+  renderHdHoursRows();
   if(drop){
     drop.innerHTML=DAY_ORDER.map(function(k){
       var d=getEffectiveDayAz(k),isToday=k===todayKey,isClosed=!d||!d.aktiv;
