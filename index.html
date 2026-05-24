@@ -1070,25 +1070,20 @@
       var iframe = document.getElementById('booking-preview-iframe');
       var icon = document.getElementById('booking-expand-icon');
       var label = document.getElementById('booking-expand-label');
+      var qr = document.getElementById('qr-code-wrap');
       if(_bookingExpanded){
-        // 82% of viewport width, 82% of viewport height
-        // Align left edge with QR code left edge
-        var qrWrap = document.getElementById('booking-preview-wrap').closest('div[style*="right:6vw"]');
+        var qrWrap = wrap.closest('div[style*="right:6vw"]');
         var qrLeft = qrWrap ? qrWrap.getBoundingClientRect().left : window.innerWidth * 0.06;
-        var rightEdge = window.innerWidth * 0.06; // right:6vw
+        var rightEdge = window.innerWidth * 0.06;
         var vw = Math.round(window.innerWidth - qrLeft - rightEdge);
         var vh = Math.round(window.innerHeight * 0.90);
-        // Zoom: use scale 0.65 instead of 0.5 so content appears larger
-        var zoom = 0.65;
         wrap.style.width = vw + 'px';
         wrap.style.height = vh + 'px';
-        iframe.style.width = Math.round(vw / zoom) + 'px';
-        iframe.style.height = Math.round(vh / zoom) + 'px';
-        // Move QR left, keep its vertical position
-        var qr = document.getElementById('qr-code-wrap');
-        var container = document.getElementById('booking-preview-wrap').closest('div[style*="right:6vw"]');
-        if(qr){ qr.style.transform = 'translateX(-' + Math.round(vw - 720) + 'px)'; }
-        if(container){ container.style.alignItems = 'flex-start'; }
+        iframe.style.width = (vw * 2) + 'px';
+        iframe.style.height = (vh * 2) + 'px';
+        iframe.style.transform = 'scale(0.5)';
+        // QR: only shift left by the amount preview grew, Y stays same
+        if(qr) qr.style.transform = 'translateX(-' + (vw - 720) + 'px)';
         icon.innerHTML = '<polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="21" y2="3"/><line x1="3" y1="21" x2="14" y2="10"/>';
         label.textContent = 'Verkleinern';
       } else {
@@ -1097,10 +1092,7 @@
         iframe.style.width = '1440px';
         iframe.style.height = '912px';
         iframe.style.transform = 'scale(0.5)';
-        var qr = document.getElementById('qr-code-wrap');
-        var container = document.getElementById('booking-preview-wrap').closest('div[style*="right:6vw"]');
-        if(qr){ qr.style.transform = ''; }
-        if(container){ container.style.alignItems = 'flex-end'; }
+        if(qr) qr.style.transform = '';
         icon.innerHTML = '<polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>';
         label.textContent = 'Vergrößern';
       }
