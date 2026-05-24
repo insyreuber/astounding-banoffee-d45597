@@ -920,50 +920,30 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
 // Iframe resize by dragging handle
-(function(){
-  var handle=null,iframe=null,startY=0,startH=0;
-  document.addEventListener('DOMContentLoaded',function(){
-    handle=document.getElementById('iframe-resize-handle');
-    iframe=document.getElementById('booking-iframe');
-    if(!handle||!iframe)return;
-    handle.addEventListener('mousedown',function(e){
-      startY=e.clientY;
-      startH=iframe.offsetHeight;
-      iframe.style.pointerEvents='none';
-      document.body.style.userSelect='none';
-      document.addEventListener('mousemove',onMove);
-      document.addEventListener('mouseup',onUp);
-      e.preventDefault();
-    });
-    handle.addEventListener('touchstart',function(e){
-      startY=e.touches[0].clientY;
-      startH=iframe.offsetHeight;
-      iframe.style.pointerEvents='none';
-      document.addEventListener('touchmove',onTouchMove,{passive:false});
-      document.addEventListener('touchend',onUp);
-      e.preventDefault();
-    },{passive:false});
-  });
-  function onMove(e){
-    var diff=e.clientY-startY;
-    var newH=Math.max(200,startH+diff);
-    if(iframe)iframe.style.height=newH+'px';
-  }
-  function onTouchMove(e){
-    var diff=e.touches[0].clientY-startY;
-    var newH=Math.max(200,startH+diff);
-    if(iframe)iframe.style.height=newH+'px';
+var _resizeStartY=0,_resizeStartH=0,_resizingIframe=null;
+function initIframeResize(){
+  var handle=document.getElementById('iframe-resize-handle');
+  var iframe=document.getElementById('booking-iframe');
+  if(!handle||!iframe)return;
+  _resizingIframe=iframe;
+  handle.onmousedown=function(e){
+    _resizeStartY=e.clientY;
+    _resizeStartH=iframe.offsetHeight;
+    iframe.style.pointerEvents='none';
+    document.body.style.userSelect='none';
+    document.onmousemove=function(e2){
+      var newH=Math.max(200,_resizeStartH+(e2.clientY-_resizeStartY));
+      iframe.style.height=newH+'px';
+    };
+    document.onmouseup=function(){
+      iframe.style.pointerEvents='';
+      document.body.style.userSelect='';
+      document.onmousemove=null;
+      document.onmouseup=null;
+    };
     e.preventDefault();
-  }
-  function onUp(){
-    if(iframe)iframe.style.pointerEvents='';
-    document.body.style.userSelect='';
-    document.removeEventListener('mousemove',onMove);
-    document.removeEventListener('mouseup',onUp);
-    document.removeEventListener('touchmove',onTouchMove);
-    document.removeEventListener('touchend',onUp);
-  }
-})();
+  };
+}
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
@@ -1102,6 +1082,7 @@ function switchTab(n){
     var openLink=document.getElementById('booking-open-link');
     if(openLink)openLink.href=fullUrl;
     loadLiveTicker();
+    setTimeout(initIframeResize,100);
   }
   if(n==='profil')buildProfilToggles();
 }
