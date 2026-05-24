@@ -406,6 +406,11 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
         <span id="hd-note-text" style="flex:1;min-width:0"></span>
       </div>
     </div>
+    <!-- Öffnungszeiten alle Tage rechts -->
+    <div id="hd-hours-all" style="flex-shrink:0;background:rgba(255,255,255,.08);border-radius:10px;padding:10px 14px;min-width:180px">
+      <div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:8px;font-weight:600">Öffnungszeiten</div>
+      <div id="hd-hours-rows" style="display:flex;flex-direction:column;gap:3px"></div>
+    </div>
   </div>
 </div>
 
@@ -1332,10 +1337,23 @@ function renderWorkingHours(arbeitszeiten){
     hst.style.color=isOpen?'#4ade80':'rgba(255,255,255,.5)';
   }
   if(lbl){
-    // Strip the span/drop child nodes, only update text
     var textNode=lbl.firstChild;
     if(textNode&&textNode.nodeType===3){textNode.textContent=hoursText+' ▾';}
     else{lbl.insertBefore(document.createTextNode(hoursText+' ▾'),lbl.firstChild);}
+  }
+  // Render all days into hd-hours-rows
+  var rowsEl=document.getElementById('hd-hours-rows');
+  if(rowsEl){
+    rowsEl.innerHTML=DAY_ORDER.map(function(k){
+      var d=getEffectiveDayAz(k);
+      var isToday=k===todayKey;
+      var closed=!d||!d.aktiv;
+      var timeStr=closed?'Geschlossen':formatHours(d);
+      return'<div style="display:flex;justify-content:space-between;gap:12px;font-size:11px;'+(isToday?'font-weight:700;color:#fff':'color:rgba(255,255,255,.55)')+'">'
+        +'<span>'+DAY_LABELS[k]+'</span>'
+        +'<span style="'+(closed?'color:rgba(255,255,255,.3)':isToday?'color:#C9A84C':'')+'">'+timeStr+'</span>'
+        +'</div>';
+    }).join('');
   }
   if(drop){
     drop.innerHTML=DAY_ORDER.map(function(k){
