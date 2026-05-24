@@ -1362,6 +1362,18 @@ var _hdWeekOffset=0;
 var SALON_AZ=null;
 var _hdTodayKey=null;
 
+function hdHoursWeek(dir){
+  _hdWeekOffset+=dir;
+  var lbl=document.getElementById('hd-hours-week-label');
+  if(lbl){
+    if(_hdWeekOffset===0)lbl.textContent='Diese Woche';
+    else if(_hdWeekOffset===1)lbl.textContent='Nächste Woche';
+    else if(_hdWeekOffset===-1)lbl.textContent='Letzte Woche';
+    else lbl.textContent=(_hdWeekOffset>0?'+':'')+_hdWeekOffset+' Wochen';
+  }
+  renderHdHoursRows();
+}
+
 function renderHdHoursRows(){
   var rowsEl=document.getElementById('hd-hours-rows');
   if(!rowsEl||!SALON_AZ)return;
