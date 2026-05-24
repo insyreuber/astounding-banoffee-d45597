@@ -642,12 +642,38 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
   <!-- ════ BUCHUNGSSEITE ════ -->
   <div class="tab-panel" id="panel-buchungsseite" style="position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;width:100vw;padding:0">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 32px 12px;max-width:1400px;margin:0 auto">
-      <div>
+    <!-- Header row -->
+    <div style="display:flex;align-items:flex-start;gap:24px;padding:16px 28px 12px">
+      <!-- Title left-aligned with nav branding -->
+      <div style="flex-shrink:0">
         <div class="sec-title">Live-Buchungsseite</div>
         <div class="sec-sub">So sehen deine Kunden die Buchungsseite</div>
       </div>
-      <a id="booking-open-link" href="#" target="_blank" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-size:12px">
+      <!-- Live Ticker -->
+      <div style="flex:1;display:flex;gap:16px;min-width:0">
+        <!-- Letzte Buchungen -->
+        <div style="flex:1;min-width:0;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px">
+          <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px">
+            <span style="width:6px;height:6px;border-radius:50%;background:#27ae60;display:inline-block;animation:pulse 2s infinite"></span>
+            Letzte Buchungen
+          </div>
+          <div id="ticker-recent" style="display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--td)">
+            <div style="color:var(--muted)">Wird geladen…</div>
+          </div>
+        </div>
+        <!-- Nächste Termine pro Mitarbeiter -->
+        <div style="flex:1;min-width:0;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px">
+          <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Nächste Termine
+          </div>
+          <div id="ticker-upcoming" style="display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--td)">
+            <div style="color:var(--muted)">Wird geladen…</div>
+          </div>
+        </div>
+      </div>
+      <!-- Button -->
+      <a id="booking-open-link" href="#" target="_blank" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-size:12px;flex-shrink:0;align-self:flex-start">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         In neuem Tab öffnen
       </a>
@@ -925,6 +951,75 @@ function toggleVerwaltungAcc(){
   if(chev)chev.style.transform=open?'':'rotate(180deg)';
 }
 
+async function loadLiveTicker(){
+  var recentEl=document.getElementById('ticker-recent');
+  var upcomingEl=document.getElementById('ticker-upcoming');
+  if(!recentEl||!upcomingEl)return;
+
+  try{
+    // Last 5 bookings
+    var res=await sb.from('bookings')
+      .select('*')
+      .eq('salon_id',SALON_ID)
+      .order('created_at',{ascending:false})
+      .limit(5);
+    if(res.data&&res.data.length){
+      recentEl.innerHTML=res.data.map(function(b){
+        var d=new Date(b.date||b.start_time||b.created_at);
+        var dateStr=d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'});
+        var timeStr=b.time||(d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}));
+        return'<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--border)">'
+          +'<div style="flex-shrink:0;font-size:10px;color:var(--muted);width:80px">'+dateStr+' '+timeStr+'</div>'
+          +'<div style="flex:1;min-width:0">'
+            +'<div style="font-weight:500;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(b.customer_name||b.name||'Kunde')+'</div>'
+            +'<div style="font-size:10px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(b.service_name||b.service||'–')+'</div>'
+          +'</div>'
+          +'<div style="font-size:10px;color:var(--tpl);flex-shrink:0">'+(b.mitarbeiter_name||b.staff_name||'')+'</div>'
+        +'</div>';
+      }).join('');
+    } else {
+      recentEl.innerHTML='<div style="color:var(--muted);font-size:11px">Noch keine Buchungen</div>';
+    }
+  }catch(e){recentEl.innerHTML='<div style="color:var(--muted)">–</div>';}
+
+  try{
+    // Upcoming appointments grouped by staff
+    var now=new Date().toISOString();
+    var res2=await sb.from('bookings')
+      .select('*')
+      .eq('salon_id',SALON_ID)
+      .gte('date',now.slice(0,10))
+      .order('date',{ascending:true})
+      .order('time',{ascending:true})
+      .limit(20);
+    if(res2.data&&res2.data.length){
+      // Group by staff
+      var byStaff={};
+      res2.data.forEach(function(b){
+        var staff=b.mitarbeiter_name||b.staff_name||'Unbekannt';
+        if(!byStaff[staff])byStaff[staff]=[];
+        if(byStaff[staff].length<2)byStaff[staff].push(b);
+      });
+      upcomingEl.innerHTML=Object.keys(byStaff).map(function(staff){
+        var html='<div style="margin-bottom:6px">'
+          +'<div style="font-size:10px;font-weight:600;color:var(--tpl);margin-bottom:3px">'+staff+'</div>';
+        byStaff[staff].forEach(function(b){
+          var d=new Date((b.date||'')+'T'+(b.time||'00:00'));
+          var dateStr=d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'});
+          var timeStr=b.time||'–';
+          html+='<div style="display:flex;gap:8px;font-size:10px;color:var(--td);padding:2px 0">'
+            +'<span style="color:var(--muted);flex-shrink:0">'+dateStr+' '+timeStr+'</span>'
+            +'<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(b.customer_name||b.name||'Kunde')+' · '+(b.service_name||b.service||'–')+'</span>'
+          +'</div>';
+        });
+        return html+'</div>';
+      }).join('');
+    } else {
+      upcomingEl.innerHTML='<div style="color:var(--muted);font-size:11px">Keine bevorstehenden Termine</div>';
+    }
+  }catch(e){upcomingEl.innerHTML='<div style="color:var(--muted)">–</div>';}
+}
+
 function switchTab(n){
   // Auto-save nur wenn Änderungen gemacht wurden
   if(_currentTab!==n&&_dirty){
@@ -957,6 +1052,7 @@ function switchTab(n){
     if(urlBar)urlBar.textContent=fullUrl;
     var openLink=document.getElementById('booking-open-link');
     if(openLink)openLink.href=fullUrl;
+    loadLiveTicker();
   }
   if(n==='profil')buildProfilToggles();
 }
