@@ -1332,6 +1332,7 @@ function renderWorkingHours(arbeitszeiten){
     return arbeitszeiten[dayKey];
   }
 
+  _hdTodayKey=todayKey;
   var todayData=getEffectiveDayAz(todayKey);
   var lbl=document.getElementById('today-hours-label');
   var drop=document.getElementById('hours-drop');
@@ -1471,7 +1472,8 @@ async function loadSalonProfile(){
       if(noteEl){noteEl.style.display='flex';}
       if(noteTxt){noteTxt.textContent=data.note.trim();}
     }
-    window.SALON_AZ=data.arbeitszeiten||null;
+    SALON_AZ=data.arbeitszeiten||null;
+    window.SALON_AZ=SALON_AZ;
     renderHdHoursRows();
     // Store salon WhatsApp feature settings
     var f=data.feature_settings||{};
