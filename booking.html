@@ -10,22 +10,28 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 /* ── HEADER – stabil, kein Layout-Einfluss auf den Rest ── */
 .hd{
   background:var(--tp);
-  padding:10px 16px;
+  padding:14px 20px;
   width:100%;
-  position:relative; /* Stacking-Context für das Hours-Dropdown */
+  position:relative;
 }
 .hd-inner{
   display:flex;
   align-items:flex-start;
-  gap:12px;
-  flex-wrap:wrap;       /* bricht um statt sich zu verzerren */
+  justify-content:space-between;
+  gap:16px;
 }
-.hd-logo{font-family:'Playfair Display',serif;font-size:0.6rem;font-weight:600;color:#fff;letter-spacing:.16em;text-transform:uppercase;line-height:1;margin-bottom:1px}
+.hd-left{flex:1;min-width:0}
+.hd-right{flex-shrink:0;text-align:right}
+.hd-logo{font-family:'Playfair Display',serif;font-size:0.65rem;font-weight:600;color:#fff;letter-spacing:.16em;text-transform:uppercase;line-height:1;margin-bottom:3px}
 .hd-logo span{color:#C9A84C}
-.hd-name{font-size:15px;font-weight:500;color:#fff;margin-bottom:3px}
+.hd-name{font-size:18px;font-weight:600;color:#fff;margin-bottom:5px;line-height:1.2}
 .hd-meta{display:flex;flex-direction:column;gap:5px}
-.hd-meta-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.hd-chip{font-size:11px;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:4px}
+.hd-meta-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.hd-chip{font-size:12px;color:rgba(255,255,255,.65);display:flex;align-items:center;gap:5px}
+.hd-hours-box{background:rgba(255,255,255,.1);border-radius:8px;padding:8px 12px;min-width:160px}
+.hd-hours-box-label{font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.hd-hours-box-today{font-size:13px;font-weight:600;color:#fff;display:flex;align-items:center;gap:6px;cursor:pointer}
+.hd-hours-box-status{font-size:11px;font-weight:500;margin-bottom:2px}
 
 /* ── Haupt-Layout – volle Breite ── */
 .wrap{
@@ -364,26 +370,18 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 <!-- ── HEADER ─────────────────────────────────────────── -->
 <div class="hd">
   <div class="hd-inner">
-    <div>
+    <div class="hd-left">
       <div class="hd-logo" id="brand-name">Insy <span>Reception</span></div>
       <div class="hd-name" id="salon-name">Salonname</div>
       <div class="hd-meta">
-        <!-- Reihe 1: Adresse + Telefon + Öffnungszeiten -->
+        <!-- Reihe 1: Adresse + Telefon -->
         <div class="hd-meta-row">
-          <a class="hd-chip" id="salon-address" href="#" style="display:none;text-decoration:none;color:rgba(255,255,255,.55);cursor:default"></a>
+          <a class="hd-chip" id="salon-address" href="#" style="display:none;text-decoration:none;color:rgba(255,255,255,.65);cursor:default"></a>
           <div class="hd-chip" id="salon-phone" style="display:none"></div>
-          <a class="hd-chip" id="salon-mobile-link" href="#" style="display:none;text-decoration:none;color:rgba(255,255,255,.55)">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          <a class="hd-chip" id="salon-mobile-link" href="#" style="display:none;text-decoration:none;color:rgba(255,255,255,.65)">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
             <span id="salon-mobile-label">Mobil</span>
           </a>
-          <div class="hd-chip hd-hours-inline" id="hours-pill" onclick="toggleHours()">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-            <span id="today-hours-label">09:00 – 17:00 ▾</span>
-            <div class="hd-hours-drop" id="hours-drop"></div>
-          </div>
         </div>
         <!-- Reihe 2: Links -->
         <div class="hd-meta-row" id="hd-links-row" style="display:none">
