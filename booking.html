@@ -1472,6 +1472,7 @@ async function loadSalonProfile(){
       if(noteTxt){noteTxt.textContent=data.note.trim();}
     }
     window.SALON_AZ=data.arbeitszeiten||null;
+    renderHdHoursRows();
     // Store salon WhatsApp feature settings
     var f=data.feature_settings||{};
     window.SALON_WA={
