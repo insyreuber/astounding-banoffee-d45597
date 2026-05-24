@@ -641,7 +641,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
 
   <!-- ════ BUCHUNGSSEITE ════ -->
-  <div class="tab-panel" id="panel-buchungsseite" style="position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;width:100vw;padding:0">
+  <div class="tab-panel" id="panel-buchungsseite" style="left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;width:100vw;padding:0;position:static">
     <!-- Header row -->
     <div id="buchungsseite-header" style="display:flex;align-items:stretch;gap:24px;padding:16px 28px 12px">
       <!-- Title left-aligned with nav branding -->
@@ -929,18 +929,14 @@ function toggleTickerSize(){
   var hdr=document.getElementById('buchungsseite-header');
   var iframe=document.getElementById('booking-iframe');
   var btn=document.getElementById('ticker-toggle-btn');
-  var icon=document.getElementById('ticker-toggle-icon');
   if(_tickerExpanded){
-    // More space for ticker — iframe moves down (smaller)
-    if(hdr)hdr.style.minHeight='220px';
-    if(iframe)iframe.style.height='60vh';
-    if(btn)btn.querySelector('span')?btn.querySelector('span').textContent='Weniger Platz':btn.lastChild.textContent='Weniger Platz';
-    if(icon)icon.style.transform='rotate(180deg)';
-    if(btn)btn.innerHTML='<svg id="ticker-toggle-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transform:rotate(180deg)"><polyline points="6 9 12 15 18 9"/></svg> Weniger Platz';
+    if(hdr){hdr.style.minHeight='220px';hdr.style.alignItems='stretch';}
+    if(iframe)iframe.style.height=Math.round(window.innerHeight*0.55)+'px';
+    if(btn)btn.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transform:rotate(180deg)"><polyline points="6 9 12 15 18 9"/></svg> Weniger Platz';
   } else {
-    if(hdr)hdr.style.minHeight='';
-    if(iframe)iframe.style.height='84vh';
-    if(btn)btn.innerHTML='<svg id="ticker-toggle-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg> Mehr Platz';
+    if(hdr){hdr.style.minHeight='';hdr.style.alignItems='flex-start';}
+    if(iframe)iframe.style.height=Math.round(window.innerHeight*0.84)+'px';
+    if(btn)btn.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg> Mehr Platz';
   }
 }
 
