@@ -1085,6 +1085,8 @@
         iframe.style.transform = 'scale(' + scale + ')';
         // QR shifts left: stays gap(60px) away from left edge of preview
         if(qr) qr.style.right = 'calc(6vw + ' + vw + 'px + 60px)';
+        var h1 = document.querySelector('section h1');
+        if(h1) h1.style.fontSize = 'clamp(1.6rem,2.8vw,2.6rem)';
         icon.innerHTML = '<polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="21" y2="3"/><line x1="3" y1="21" x2="14" y2="10"/>';
         label.textContent = 'Verkleinern';
       } else {
@@ -1097,6 +1099,8 @@
         iframe.style.transform = 'scale(0.5)';
 
         if(qr) qr.style.right = 'calc(6vw + 720px + 60px)';
+        var h1 = document.querySelector('section h1');
+        if(h1) h1.style.fontSize = '';
         icon.innerHTML = '<polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>';
         label.textContent = 'Vergrößern';
       }
