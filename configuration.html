@@ -687,7 +687,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
         </div>
         <div id="booking-url-bar" style="flex:1;background:rgba(255,255,255,.15);border-radius:6px;padding:4px 10px;font-size:10px;color:rgba(255,255,255,.7);font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
       </div>
-      <div id="iframe-resize-handle" style="width:100%;height:8px;cursor:ns-resize;background:var(--tp);display:flex;align-items:center;justify-content:center;user-select:none" title="Ziehen zum Vergrößern/Verkleinern">
+      <div id="iframe-resize-handle" onclick="toggleBuchungsHeader()" style="width:100%;height:8px;cursor:pointer;background:var(--tp);display:flex;align-items:center;justify-content:center;user-select:none" title="Header ein-/ausklappen">
         <div style="width:40px;height:3px;border-radius:99px;background:rgba(255,255,255,0.4)"></div>
       </div>
       <iframe id="booking-iframe" src="" style="width:100%;height:84vh;border:none;display:block" scrolling="yes"></iframe>
@@ -921,6 +921,20 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
 // Iframe resize by dragging handle
 var _resizeStartY=0,_resizeStartH=0,_resizingIframe=null;
+function toggleBuchungsHeader(){
+  var hdr=document.getElementById('buchungsseite-header');
+  var handle=document.getElementById('iframe-resize-handle');
+  var iframe=document.getElementById('booking-iframe');
+  if(!hdr)return;
+  var hidden=hdr.style.display==='none';
+  hdr.style.display=hidden?'flex':'none';
+  if(iframe)iframe.style.height=hidden?'84vh':'calc(100vh - 120px)';
+  if(handle){
+    var dot=handle.querySelector('div');
+    if(dot)dot.style.transform=hidden?'':'rotate(180deg)';
+  }
+}
+
 function initIframeResize(){
   var handle=document.getElementById('iframe-resize-handle');
   var iframe=document.getElementById('booking-iframe');
