@@ -642,16 +642,23 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
   <!-- ════ BUCHUNGSSEITE ════ -->
   <div class="tab-panel" id="panel-buchungsseite" style="padding:0;position:relative;width:calc(100vw - 48px);margin-left:calc(-50vw + 50% + 24px);margin-top:-28px">
-    <!-- Title + Button row — card style -->
     <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px 12px;background:var(--white);border:1.5px solid var(--border);border-radius:12px;margin:0 0 12px;box-shadow:0 2px 8px rgba(74,28,107,.05)">
       <div>
         <div class="sec-title">Live-Buchungsseite</div>
         <div class="sec-sub">So sehen deine Kunden die Buchungsseite</div>
       </div>
-      <a id="booking-open-link" href="#" target="_blank" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-size:12px;flex-shrink:0">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        In neuem Tab öffnen
-      </a>
+      <div style="display:flex;align-items:center;gap:12px">
+        <!-- Booking online/offline toggle -->
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px">
+          <div id="bs-panel-dot" style="width:8px;height:8px;border-radius:50%;background:#27ae60;flex-shrink:0"></div>
+          <span id="bs-panel-label" style="font-size:12px;font-weight:500;color:var(--td)">Online</span>
+          <label class="toggle-sw toggle-sm" style="margin-left:4px"><input type="checkbox" id="bs-panel-toggle" onchange="bsPanelToggle()"><span class="slider"></span></label>
+        </div>
+        <!-- Open in new tab icon -->
+        <a id="booking-open-link" href="#" target="_blank" title="In neuem Tab öffnen" style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;background:var(--bg);border:1.5px solid var(--border);color:var(--tpl);flex-shrink:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+      </div>
     </div>
     <!-- Live Ticker — volle Breite -->
     <div style="display:flex;gap:16px;margin-bottom:12px">
@@ -3804,6 +3811,25 @@ function updateProgressBar(){
   else bar.style.background='linear-gradient(90deg,#c0392b,#d4a000)';
 }
 
+function bsPanelToggle(){
+  var tog=document.getElementById('bs-panel-toggle');
+  var active=tog?tog.checked:true;
+  // Sync with main toggle
+  var main=document.getElementById('dash-booking-active');
+  if(main)main.checked=active;
+  toggleBookingActive();
+  updateBsPanelStatus(active);
+}
+
+function updateBsPanelStatus(active){
+  var dot=document.getElementById('bs-panel-dot');
+  var lbl=document.getElementById('bs-panel-label');
+  var tog=document.getElementById('bs-panel-toggle');
+  if(dot)dot.style.background=active?'#27ae60':'#c0392b';
+  if(lbl)lbl.textContent=active?'Online':'Offline';
+  if(tog)tog.checked=active;
+}
+
 function initBookingStatus(){
   var d=window._pData||{};
   var active=d.booking_active!==false;
@@ -3813,6 +3839,7 @@ function initBookingStatus(){
   if(tog)tog.checked=active;
   if(dot)dot.style.background=active?'#27ae60':'#c0392b';
   if(lbl)lbl.textContent=active?'Buchungsseite Online':'Buchungsseite Offline';
+  updateBsPanelStatus(active);
 }
 
 function buildProfilToggles(){
