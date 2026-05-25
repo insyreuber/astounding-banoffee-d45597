@@ -174,15 +174,8 @@ async function loadAll(){
     .limit(10);
   renderTicker(tickerRes.data||[]);
 
-  // Nächste Termine
-  var upRes=await sb.from('bookings')
-    .select('*')
-    .eq('salon_id',SALON_ID)
-    .gte('date',todayStr)
-    .order('date',{ascending:true})
-    .order('time',{ascending:true})
-    .limit(10);
-  renderUpcoming(upRes.data||[]);
+  // Nächste Termine — via n8n get_availability für alle Online-Mitarbeiter
+  loadUpcomingFromCalendars(todayStr);
 
   // Terminerinnerungen: morgen + übermorgen
   var tomorrow=new Date(now);tomorrow.setDate(now.getDate()+1);
@@ -205,6 +198,94 @@ async function loadAll(){
     .order('date',{ascending:true})
     .order('time',{ascending:true});
   renderConfirm(confirmRes.data||[]);
+}
+
+async function loadUpcomingFromCalendars(todayStr){
+  var el=document.getElementById('upcoming-list');
+  el.innerHTML='<div class="loading">Kalender werden geladen…</div>';
+
+  try{
+    // 1. Load all online staff with google calendar
+    var staffRes=await sb.from('mitarbeiter')
+      .select('id,display_name,name,google_calendar_id,farbe')
+      .eq('salon_id',SALON_ID)
+      .eq('aktiv',true)
+      .not('google_calendar_id','is',null);
+
+    if(staffRes.error||!staffRes.data||!staffRes.data.length){
+      el.innerHTML='<div class="loading">Keine Mitarbeiter mit Kalender gefunden</div>';
+      return;
+    }
+
+    var staff=staffRes.data;
+
+    // 2. Fetch next 7 days from n8n for each staff member in parallel
+    var days=[];
+    for(var i=0;i<7;i++){
+      var d=new Date(todayStr);
+      d.setDate(d.getDate()+i);
+      days.push(d.toISOString().slice(0,10));
+    }
+
+    var allEvents=[];
+    await Promise.all(staff.map(async function(m){
+      await Promise.all(days.slice(0,3).map(async function(dateStr){
+        try{
+          var url='https://insy-n8n-u71054.vm.elestio.app/webhook/get-availability'
+            +'?salon_id='+SALON_ID
+            +'&mitarbeiter_id='+m.id
+            +'&date='+dateStr;
+          var res=await fetch(url);
+          if(!res.ok)return;
+          var data=await res.json();
+          // n8n returns busy slots — collect them
+          var busy=data.busy||data.events||data.slots||[];
+          busy.forEach(function(ev){
+            allEvents.push({
+              date:dateStr,
+              time:ev.start||ev.time||ev.startTime||'',
+              end:ev.end||ev.endTime||'',
+              title:ev.summary||ev.title||'Termin',
+              staff:m.display_name||m.name,
+              staffColor:m.farbe||'#5a2d82',
+              staffId:m.id
+            });
+          });
+        }catch(e){}
+      }));
+    }));
+
+    // Sort by date+time
+    allEvents.sort(function(a,b){
+      return (a.date+a.time)<(b.date+b.time)?-1:1;
+    });
+
+    renderUpcomingCalendar(allEvents);
+
+  }catch(e){
+    el.innerHTML='<div class="loading">Fehler beim Laden der Kalender</div>';
+    console.error(e);
+  }
+}
+
+function renderUpcomingCalendar(events){
+  var el=document.getElementById('upcoming-list');
+  if(!events.length){
+    el.innerHTML='<div class="loading">Keine Termine in den nächsten 3 Tagen</div>';
+    return;
+  }
+  el.innerHTML=events.map(function(ev){
+    var d=new Date(ev.date+'T'+(ev.time||'00:00'));
+    var dateStr=d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+(ev.time||'');
+    return'<div class="upcoming-row">'+
+      '<div class="upcoming-date">'+esc(dateStr)+'</div>'+
+      '<div class="upcoming-info">'+
+        '<div class="upcoming-name">'+esc(ev.title)+'</div>'+
+        (ev.end?'<div class="upcoming-service">bis '+esc(ev.end)+'</div>':'')+ 
+      '</div>'+
+      '<div class="upcoming-staff" style="color:'+esc(ev.staffColor)+'">'+esc(ev.staff)+'</div>'+
+    '</div>';
+  }).join('');
 }
 
 // ── RENDER ─────────────────────────────────────────────────
