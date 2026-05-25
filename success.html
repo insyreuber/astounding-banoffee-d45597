@@ -135,7 +135,51 @@ var SURL='https://uzemgxfjgjwqfgfwbboi.supabase.co';
 var SKEY='sb_publishable__XubcF5yPDyIMpfE7kO9Rg_Xp7kj0hL';
 
 async function init(){
-  // Buchungsdetails aus URL setzen
+  // Buchungsdetails — erst aus URL, dann aus Supabase nachladen
+  var needsLoad = (!svcNames || svcNames==='—') && bookingId;
+
+  if(needsLoad){
+    try{
+      var bRes=await fetch(SURL+'/rest/v1/bookings?id=eq.'+bookingId+'&select=*',{
+        headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}
+      });
+      var bData=await bRes.json();
+      if(bData&&bData[0]){
+        var b=bData[0];
+        // termin_start → date + time
+        if(b.termin_start){
+          var d=new Date(b.termin_start);
+          date=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'});
+          time=d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+        }
+        // service_variante_id → service name
+        if(b.service_variante_id){
+          var svRes=await fetch(SURL+'/rest/v1/service_varianten?id=eq.'+b.service_variante_id+'&select=service_name,preis,dauer_minuten',{
+            headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}
+          });
+          var svData=await svRes.json();
+          if(svData&&svData[0]){
+            svcNames=svData[0].service_name||'—';
+            if(svData[0].preis)price=svData[0].preis;
+          }
+        }
+        // mitarbeiter_id → staff name
+        if(b.mitarbeiter_id){
+          var stRes=await fetch(SURL+'/rest/v1/mitarbeiter?id=eq.'+b.mitarbeiter_id+'&select=display_name,name',{
+            headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}
+          });
+          var stData=await stRes.json();
+          if(stData&&stData[0]){
+            staffName=stData[0].display_name||stData[0].name||'—';
+          }
+        }
+        // google_event_id
+        if(b.google_event_id&&!googleEventId)googleEventId=b.google_event_id;
+      }
+    }catch(e){console.error('Booking load error:',e);}
+  }
+
+  // Buchungsdetails setzen
   document.getElementById('d-service').textContent=decodeURIComponent(svcNames);
   document.getElementById('d-date').textContent=decodeURIComponent(date);
   document.getElementById('d-time').textContent=time?time+' Uhr':'—';
