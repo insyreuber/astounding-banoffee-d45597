@@ -382,7 +382,9 @@ function renderReminders(rows){
   el.innerHTML=rows.map(function(b){
     var d=new Date(b.termin_start||b.created_at||new Date());
     var dateStr=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'});
-    var msg='Hallo '+( b.customer_name||b.name||'')+'! 👋\nNur eine kurze Erinnerung: Dein Termin ist am '+dateStr+' um '+(b.time||'')+ ' Uhr'+'. Wir freuen uns auf dich! 😊';
+    var msg='Hallo '+( b.customer_name||b.name||'')+'! 👋\nNur eine kurze Erinnerung: Dein Termin ist am '+dateStr+' um '+(b.time||'')+ ' Uhr'+'. Wir freuen uns auf dich! 😊
+
+powered by insy-reception';
     var phone=b.customer_phone||b.phone||'';
     return'<div class="wa-row">'+
       '<div class="wa-info">'+
@@ -407,7 +409,9 @@ function renderConfirm(rows){
       var d=new Date(b.termin_start||b.created_at||new Date());
       var dateStr=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'});
       var svcName2='';
-      var msg='Hallo '+(b.customer_name||'')+'! ✅\nDein Termin am '+dateStr+' um '+(b.time||'')+' Uhr'+' ist bestätigt. Bis dann! 👋';
+      var msg='Hallo '+(b.customer_name||'')+'! ✅\nDein Termin am '+dateStr+' um '+(b.time||'')+' Uhr'+' ist bestätigt. Bis dann! 👋
+
+powered by insy-reception';
       var phone=b.customer_phone||b.phone||'';
       return'<div style="background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:12px">'+
         '<div style="font-size:12px;font-weight:500;margin-bottom:3px">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
