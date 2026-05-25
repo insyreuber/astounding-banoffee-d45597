@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Buchung bestätigt · Insy Reception</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',system-ui,sans-serif;background:#f3f0f7;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
@@ -28,7 +28,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#f3f0f7;min-height:10
   border-bottom:1px solid rgba(255,255,255,0.12);
   text-align:left;
 }
-.salon-brand{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#c9a84c;margin-bottom:4px;font-weight:600}
+.salon-brand{font-family:'Playfair Display',serif;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:none;margin-bottom:4px;line-height:1}.salon-brand .insy{color:#fff}.salon-brand .reception{color:#C9A84C}
 .salon-name{font-size:16px;font-weight:600;color:#fff;margin-bottom:8px}
 .salon-chips{display:flex;flex-wrap:wrap;gap:6px}
 .salon-chip{display:flex;align-items:center;gap:4px;font-size:11px;color:rgba(255,255,255,.55)}
@@ -53,6 +53,9 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#f3f0f7;min-height:10
 .detail-label{color:rgba(255,255,255,.45)}
 .detail-value{color:#fff;font-weight:500;text-align:right}
 
+
+.cal-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(201,168,76,.15);border:1.5px solid rgba(201,168,76,.35);border-radius:10px;padding:10px 20px;font-size:13px;color:#e8d08a;cursor:pointer;font-family:inherit;transition:all .2s;text-decoration:none;margin-top:12px}
+.cal-btn:hover{background:rgba(201,168,76,.25);border-color:rgba(201,168,76,.6)}
 /* Cancel Button */
 .cancel-btn{
   display:inline-flex;align-items:center;gap:6px;
@@ -85,7 +88,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#f3f0f7;min-height:10
   </a>
   <!-- Salon Info wird dynamisch geladen -->
   <div class="salon-info" id="salon-info">
-    <div class="salon-brand">INSY RECEPTION</div>
+    <div class="salon-brand"><span class="insy">Insy</span> <span class="reception">Reception</span></div>
     <div class="salon-name" id="salon-name">—</div>
     <div class="salon-chips" id="salon-chips"></div>
   </div>
@@ -110,6 +113,18 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#f3f0f7;min-height:10
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     Termin stornieren
   </button>
+
+  <!-- Kalender Button -->
+  <div id="cal-btns" style="display:none;margin-top:12px;display:flex;flex-direction:column;align-items:center;gap:8px">
+    <a id="cal-google" class="cal-btn" href="#" target="_blank">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      In Google Kalender speichern
+    </a>
+    <a id="cal-ics" class="cal-btn" href="#" download="termin.ics">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      In Kalender speichern (.ics)
+    </a>
+  </div>
 
   <!-- Neuen Termin buchen — nur nach Stornierung sichtbar -->
   <a class="new-link" id="new-booking-link" href="#" style="display:none">+ Neuen Termin buchen</a>
@@ -183,6 +198,30 @@ async function init(){
   document.getElementById('d-service').textContent=decodeURIComponent(svcNames);
   document.getElementById('d-date').textContent=decodeURIComponent(date);
   document.getElementById('d-time').textContent=time?time+' Uhr':'—';
+  // Kalender-Links aufbauen
+  var calStart='', calEnd='';
+  try{
+    if(b && b.termin_start){
+      // already loaded from Supabase
+      var ds=new Date(b.termin_start);
+      var de=b.termin_ende?new Date(b.termin_ende):new Date(ds.getTime()+60*60*1000);
+      calStart=ds.toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
+      calEnd=de.toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
+    }
+  }catch(e){}
+  if(calStart){
+    var calTitle=encodeURIComponent((document.getElementById('d-service').textContent||'Termin')+' — '+(document.getElementById('salon-name').textContent||'Salon'));
+    var calDesc=encodeURIComponent('Gebucht über insy-reception.com');
+    // Google Calendar link
+    var gLink='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+calTitle+'&dates='+calStart+'/'+calEnd+'&details='+calDesc;
+    document.getElementById('cal-google').href=gLink;
+    // ICS file
+    var ics='BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:'+calStart+'\nDTEND:'+calEnd+'\nSUMMARY:'+decodeURIComponent(calTitle)+'\nDESCRIPTION:'+decodeURIComponent(calDesc)+'\nEND:VEVENT\nEND:VCALENDAR';
+    var icsBlob=new Blob([ics],{type:'text/calendar'});
+    document.getElementById('cal-ics').href=URL.createObjectURL(icsBlob);
+    document.getElementById('cal-btns').style.display='flex';
+  }
+
   if(price&&price!=='null'){
     document.getElementById('d-price').textContent=price+' €';
   } else {
