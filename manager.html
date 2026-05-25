@@ -196,8 +196,17 @@ async function loadAll(){
 
   renderTicker(tickerRes.data||[],varianteMap,staffMap);
 
-  // Nächste Termine — via n8n get_availability für alle Online-Mitarbeiter
-  loadUpcomingFromCalendars(todayStr);
+  // Nächste Termine — direkt aus bookings, termin_start >= jetzt
+  var nowIso=new Date().toISOString();
+  var upRes=await sb.from('bookings')
+    .select('id,customer_name,customer_phone,termin_start,termin_ende,status,mitarbeiter_id,service_variante_id,kunde_id')
+    .eq('kunde_id',SALON_ID)
+    .neq('status','cancelled')
+    .gte('termin_start',nowIso)
+    .order('termin_start',{ascending:true})
+    .limit(15);
+  if(upRes.error)console.error('Upcoming error:',JSON.stringify(upRes.error));
+  renderUpcomingCalendar(upRes.data||[],varianteMap,staffMap);
 
   // Terminerinnerungen: morgen + übermorgen
   var tomorrow=new Date(now);tomorrow.setDate(now.getDate()+1);
@@ -290,22 +299,28 @@ async function loadUpcomingFromCalendars(todayStr){
   }
 }
 
-function renderUpcomingCalendar(events){
+function renderUpcomingCalendar(events,varianteMap,staffMap){
+  varianteMap=varianteMap||{};
+  staffMap=staffMap||{};
   var el=document.getElementById('upcoming-list');
   if(!events.length){
-    el.innerHTML='<div class="loading">Keine Termine in den nächsten 3 Tagen</div>';
+    el.innerHTML='<div class="loading">Keine bevorstehenden Termine</div>';
     return;
   }
-  el.innerHTML=events.map(function(ev){
-    var d=new Date(ev.date+'T'+(ev.time||'00:00'));
-    var dateStr=d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+(ev.time||'');
+  el.innerHTML=events.map(function(b){
+    var d=new Date(b.termin_start);
+    var dateStr=d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+
+                d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+    var variante=varianteMap[b.service_variante_id];
+    var svcName=variante?variante.service_name||'–':'–';
+    var staffName=staffMap[b.mitarbeiter_id]||'–';
     return'<div class="upcoming-row">'+
       '<div class="upcoming-date">'+esc(dateStr)+'</div>'+
       '<div class="upcoming-info">'+
-        '<div class="upcoming-name">'+esc(ev.title)+'</div>'+
-        (ev.end?'<div class="upcoming-service">bis '+esc(ev.end)+'</div>':'')+ 
+        '<div class="upcoming-name">'+esc(b.customer_name||'Kunde')+'</div>'+
+        '<div class="upcoming-service">'+esc(svcName)+'</div>'+
       '</div>'+
-      '<div class="upcoming-staff" style="color:'+esc(ev.staffColor)+'">'+esc(ev.staff)+'</div>'+
+      '<div class="upcoming-staff" style="color:var(--tg)">'+esc(staffName)+'</div>'+
     '</div>';
   }).join('');
 }
