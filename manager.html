@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manager — Insy Reception</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --tp:#5a2d82;--tpl:#5a2d82;--tg:#c9a84c;--tgg:#b8912e;
+  --bg:#f4f0fa;--white:#fff;--border:#e2d8f0;--muted:#7a6a8a;--td:#1a0a2e;
+  --tpp:#ece4f5;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-height:100vh}
+
+/* ── NAV ── */
+.nav{background:var(--tp);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:600;color:#fff;letter-spacing:.01em}
+.nav-logo span{color:#C9A84C}
+.nav-meta{font-size:11px;color:rgba(255,255,255,.5)}
+.nav-salon{font-size:13px;font-weight:600;color:rgba(255,255,255,.9)}
+
+/* ── LAYOUT ── */
+.main{max-width:1200px;margin:0 auto;padding:24px 20px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto;gap:16px}
+@media(max-width:768px){.main{grid-template-columns:1fr;padding:12px}}
+
+/* ── CARD ── */
+.card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:18px;box-shadow:0 2px 8px rgba(74,28,107,.05)}
+.card-title{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.card-title svg{flex-shrink:0}
+
+/* ── TICKER ── */
+.ticker-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.ticker-row:last-child{border-bottom:none}
+.ticker-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.ticker-dot.in{background:#27ae60}
+.ticker-dot.cancel{background:#e74c3c}
+.ticker-dot.move{background:#f39c12}
+.ticker-info{flex:1;min-width:0}
+.ticker-name{font-size:12px;font-weight:500;color:var(--td)}
+.ticker-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.ticker-time{font-size:10px;color:var(--muted);flex-shrink:0}
+
+/* ── UPCOMING ── */
+.upcoming-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
+.upcoming-row:last-child{border-bottom:none}
+.upcoming-date{font-size:11px;font-weight:600;color:var(--tpl);width:90px;flex-shrink:0}
+.upcoming-info{flex:1;min-width:0}
+.upcoming-name{font-size:12px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.upcoming-service{font-size:10px;color:var(--muted)}
+.upcoming-staff{font-size:10px;color:var(--tg);font-weight:500;flex-shrink:0}
+
+/* ── WA CARD ── */
+.wa-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.wa-row:last-child{border-bottom:none}
+.wa-info{flex:1;min-width:0}
+.wa-name{font-size:12px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wa-detail{font-size:10px;color:var(--muted);margin-top:1px}
+.wa-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;background:#25D366;color:#fff;border:none;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;text-decoration:none;flex-shrink:0;white-space:nowrap}
+.wa-btn:hover{background:#20bc59}
+.wa-btn svg{flex-shrink:0}
+
+/* ── BADGE ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:500}
+.badge.in{background:#e8f8ee;color:#1e7a3c}
+.badge.cancel{background:#fef2f2;color:#c0392b}
+.badge.move{background:#fff8e8;color:#a07800}
+
+/* ── SPAN FULL ── */
+.span-full{grid-column:1/-1}
+
+/* ── LOADING ── */
+.loading{color:var(--muted);font-size:12px;padding:16px 0;text-align:center}
+
+/* ── PULSE ── */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#27ae60;display:inline-block;animation:pulse 2s infinite;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">Insy <span>Reception</span></div>
+  <div style="text-align:right">
+    <div class="nav-salon" id="nav-salon-name">Manager</div>
+    <div class="nav-meta">Dashboard</div>
+  </div>
+</nav>
+
+<div class="main">
+
+  <!-- ① Live-Ticker — volle Breite -->
+  <div class="card span-full">
+    <div class="card-title">
+      <span class="live-dot"></span>
+      Live-Aktivitäten
+      <span id="ticker-count" style="margin-left:auto;font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0"></span>
+    </div>
+    <div id="ticker-list"><div class="loading">Wird geladen…</div></div>
+  </div>
+
+  <!-- ② Nächste Termine -->
+  <div class="card">
+    <div class="card-title">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Nächste Termine
+    </div>
+    <div id="upcoming-list"><div class="loading">Wird geladen…</div></div>
+  </div>
+
+  <!-- ③ Terminerinnerungen -->
+  <div class="card">
+    <div class="card-title">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+      Terminerinnerung senden
+      <span style="margin-left:auto;font-size:9px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">WhatsApp Deeplink</span>
+    </div>
+    <div id="reminder-list"><div class="loading">Wird geladen…</div></div>
+  </div>
+
+  <!-- ④ Terminbestätigungen -->
+  <div class="card span-full">
+    <div class="card-title">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      Terminbestätigung senden
+      <span style="margin-left:auto;font-size:9px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">WhatsApp Deeplink</span>
+    </div>
+    <div id="confirm-list"><div class="loading">Wird geladen…</div></div>
+  </div>
+
+</div>
+
+<script>
+const SUPABASE_URL='https://uzemgxfjgjwqfgfwbboi.supabase.co';
+const SUPABASE_KEY='sb_publishable__XubcF5yPDyIMpfE7kO9Rg_Xp7kj0hL';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+function getSalonId(){
+  return new URLSearchParams(window.location.search).get('salon_id')||'7ae1d846-097f-4cfd-bd4b-d2663551cb11';
+}
+const SALON_ID=getSalonId();
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function fmt(dt){
+  var d=new Date(dt);
+  return d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+
+         d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+}
+function waLink(phone,msg){
+  var clean=(phone||'').replace(/\D/g,'');
+  if(clean.startsWith('0'))clean='49'+clean.slice(1);
+  return'https://wa.me/'+clean+'?text='+encodeURIComponent(msg);
+}
+
+// ── LOAD DATA ──────────────────────────────────────────────
+
+async function loadAll(){
+  var salonRes=await sb.from('kunden_profile').select('brand_name,name').eq('id',SALON_ID).single();
+  if(salonRes.data){
+    var n=salonRes.data.brand_name||salonRes.data.name||'Salon';
+    document.getElementById('nav-salon-name').textContent=n;
+  }
+
+  var now=new Date();
+  var todayStr=now.toISOString().slice(0,10);
+
+  // Letzte Buchungen (ticker)
+  var tickerRes=await sb.from('bookings')
+    .select('*')
+    .eq('salon_id',SALON_ID)
+    .order('created_at',{ascending:false})
+    .limit(10);
+  renderTicker(tickerRes.data||[]);
+
+  // Nächste Termine
+  var upRes=await sb.from('bookings')
+    .select('*')
+    .eq('salon_id',SALON_ID)
+    .gte('date',todayStr)
+    .order('date',{ascending:true})
+    .order('time',{ascending:true})
+    .limit(10);
+  renderUpcoming(upRes.data||[]);
+
+  // Terminerinnerungen: morgen + übermorgen
+  var tomorrow=new Date(now);tomorrow.setDate(now.getDate()+1);
+  var dayAfter=new Date(now);dayAfter.setDate(now.getDate()+2);
+  var reminderRes=await sb.from('bookings')
+    .select('*')
+    .eq('salon_id',SALON_ID)
+    .gte('date',tomorrow.toISOString().slice(0,10))
+    .lte('date',dayAfter.toISOString().slice(0,10))
+    .order('date',{ascending:true})
+    .order('time',{ascending:true});
+  renderReminders(reminderRes.data||[]);
+
+  // Bestätigungen: heute + morgen
+  var confirmRes=await sb.from('bookings')
+    .select('*')
+    .eq('salon_id',SALON_ID)
+    .gte('date',todayStr)
+    .lte('date',tomorrow.toISOString().slice(0,10))
+    .order('date',{ascending:true})
+    .order('time',{ascending:true});
+  renderConfirm(confirmRes.data||[]);
+}
+
+// ── RENDER ─────────────────────────────────────────────────
+
+function renderTicker(rows){
+  var el=document.getElementById('ticker-list');
+  var cnt=document.getElementById('ticker-count');
+  if(cnt)cnt.textContent=rows.length+' Einträge';
+  if(!rows.length){el.innerHTML='<div class="loading">Noch keine Aktivitäten</div>';return;}
+  el.innerHTML=rows.map(function(b){
+    var type=b.status==='cancelled'?'cancel':b.status==='rescheduled'?'move':'in';
+    var typeLabel=type==='cancel'?'Storno':type==='move'?'Verschoben':'Eingang';
+    return'<div class="ticker-row">'+
+      '<div class="ticker-dot '+type+'"></div>'+
+      '<div class="ticker-info">'+
+        '<div class="ticker-name">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
+        '<div class="ticker-sub">'+esc(b.service_name||b.service||'–')+
+          (b.mitarbeiter_name?' · '+esc(b.mitarbeiter_name):'')+
+        '</div>'+
+      '</div>'+
+      '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">'+
+        '<span class="badge '+type+'">'+typeLabel+'</span>'+
+        '<span class="ticker-time">'+fmt(b.created_at)+'</span>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+function renderUpcoming(rows){
+  var el=document.getElementById('upcoming-list');
+  if(!rows.length){el.innerHTML='<div class="loading">Keine bevorstehenden Termine</div>';return;}
+  el.innerHTML=rows.map(function(b){
+    var d=new Date((b.date||'')+'T'+(b.time||'09:00'));
+    var dateStr=d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+
+                (b.time||'');
+    return'<div class="upcoming-row">'+
+      '<div class="upcoming-date">'+esc(dateStr)+'</div>'+
+      '<div class="upcoming-info">'+
+        '<div class="upcoming-name">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
+        '<div class="upcoming-service">'+esc(b.service_name||b.service||'–')+'</div>'+
+      '</div>'+
+      '<div class="upcoming-staff">'+esc(b.mitarbeiter_name||b.staff_name||'')+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+function renderReminders(rows){
+  var el=document.getElementById('reminder-list');
+  if(!rows.length){el.innerHTML='<div class="loading">Keine Termine in den nächsten 2 Tagen</div>';return;}
+  el.innerHTML=rows.map(function(b){
+    var d=new Date((b.date||'')+'T'+(b.time||'09:00'));
+    var dateStr=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'});
+    var msg='Hallo '+( b.customer_name||b.name||'')+'! 👋\nNur eine kurze Erinnerung: Dein Termin ist am '+dateStr+' um '+(b.time||'')+ ' Uhr'+(b.service_name?' ('+b.service_name+')':'')+'. Wir freuen uns auf dich! 😊';
+    var phone=b.customer_phone||b.phone||'';
+    return'<div class="wa-row">'+
+      '<div class="wa-info">'+
+        '<div class="wa-name">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
+        '<div class="wa-detail">'+esc(dateStr)+' · '+esc(b.time||'')+(b.service_name?' · '+esc(b.service_name):'')+'</div>'+
+      '</div>'+
+      (phone
+        ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank">'+
+           '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg>'+
+           ' Erinnerung senden</a>'
+        :'<span style="font-size:10px;color:var(--muted)">Keine Nummer</span>')+
+    '</div>';
+  }).join('');
+}
+
+function renderConfirm(rows){
+  var el=document.getElementById('confirm-list');
+  if(!rows.length){el.innerHTML='<div class="loading">Keine Termine heute / morgen</div>';return;}
+  el.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">'+
+    rows.map(function(b){
+      var d=new Date((b.date||'')+'T'+(b.time||'09:00'));
+      var dateStr=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'});
+      var msg='Hallo '+(b.customer_name||b.name||'')+'! ✅\nDein Termin am '+dateStr+' um '+(b.time||'')+' Uhr'+(b.service_name?' für '+b.service_name:'')+' ist bestätigt. Bis dann! 👋';
+      var phone=b.customer_phone||b.phone||'';
+      return'<div style="background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:12px">'+
+        '<div style="font-size:12px;font-weight:500;margin-bottom:3px">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
+        '<div style="font-size:10px;color:var(--muted);margin-bottom:10px">'+esc(dateStr)+' '+esc(b.time||'')+(b.service_name?' · '+esc(b.service_name):'')+'</div>'+
+        (phone
+          ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:100%;justify-content:center">'+
+             '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg>'+
+             ' Bestätigung senden</a>'
+          :'<span style="font-size:10px;color:var(--muted)">Keine Telefonnummer hinterlegt</span>')+
+      '</div>';
+    }).join('')+
+  '</div>';
+}
+
+loadAll();
+</script>
+</body>
+</html>
