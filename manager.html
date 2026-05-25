@@ -120,6 +120,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
     <div id="reminder-list"><div class="loading">Wird geladen…</div></div>
   </div>
 
+  <!-- ⑤ Stornos -->
+  <div class="card span-full" id="storno-section">
+    <div class="card-title">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+      <span style="color:#e74c3c">Stornos</span>
+      <span style="margin-left:auto;font-size:9px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">Letzte 7 Tage · WhatsApp Deeplink</span>
+    </div>
+    <div id="storno-list"><div class="loading">Wird geladen…</div></div>
+  </div>
+
   <!-- ④ Terminbestätigungen -->
   <div class="card span-full">
     <div class="card-title">
@@ -214,6 +224,7 @@ async function loadAll(){
   var reminderRes=await sb.from('bookings')
     .select('id,created_at,customer_name,customer_phone,termin_start,termin_ende,status,mitarbeiter_id,service_variante_id,kunde_id')
     .eq('kunde_id',SALON_ID)
+    .neq('status','cancelled')
     .gte('termin_start',tomorrow.toISOString().slice(0,10))
     .lte('termin_start',dayAfter.toISOString().slice(0,11)+'23:59:59')
     .order('termin_start',{ascending:true});
@@ -224,11 +235,24 @@ async function loadAll(){
   var confirmRes=await sb.from('bookings')
     .select('id,created_at,customer_name,customer_phone,termin_start,termin_ende,status,mitarbeiter_id,service_variante_id,kunde_id')
     .eq('kunde_id',SALON_ID)
+    .neq('status','cancelled')
     .gte('termin_start',todayStr)
     .lte('termin_start',tomorrow.toISOString().slice(0,11)+'23:59:59')
     .order('termin_start',{ascending:true});
   if(confirmRes.error)console.error('Confirm error:',confirmRes.error);
   renderConfirm(confirmRes.data||[]);
+
+  // Storno — letzte 7 Tage
+  var sevenDaysAgo=new Date(now);sevenDaysAgo.setDate(now.getDate()-7);
+  var stornoRes=await sb.from('bookings')
+    .select('id,created_at,cancelled_at,customer_name,customer_phone,termin_start,mitarbeiter_id,service_variante_id,kunde_id')
+    .eq('kunde_id',SALON_ID)
+    .eq('status','cancelled')
+    .gte('cancelled_at',sevenDaysAgo.toISOString())
+    .order('cancelled_at',{ascending:false})
+    .limit(10);
+  if(stornoRes.error)console.error('Storno error:',JSON.stringify(stornoRes.error));
+  renderStorno(stornoRes.data||[],varianteMap,staffMap);
 }
 
 async function loadUpcomingFromCalendars(todayStr){
@@ -389,6 +413,42 @@ function renderUpcoming(rows){
       '<div class="upcoming-staff">'+esc(b.mitarbeiter_name||b.staff_name||'')+'</div>'+
     '</div>';
   }).join('');
+}
+
+
+function renderStorno(rows,varianteMap,staffMap){
+  varianteMap=varianteMap||{};
+  staffMap=staffMap||{};
+  var el=document.getElementById('storno-list');
+  if(!rows.length){el.innerHTML='<div class="loading">Keine Stornos in den letzten 7 Tagen</div>';return;}
+  el.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px">'+
+    rows.map(function(b){
+      var d=new Date(b.termin_start);
+      var dateStr=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'})+' um '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr';
+      var cancelStr=b.cancelled_at?new Date(b.cancelled_at).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+' '+new Date(b.cancelled_at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}):'';
+      var variante=varianteMap[b.service_variante_id];
+      var svcName=variante?variante.service_name||'–':'–';
+      var staffName=staffMap[b.mitarbeiter_id]||'';
+      var bookingLink='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
+      var msg='Hallo '+(b.customer_name||'')+'!\nWir haben deine Stornierung für den '+dateStr+' erhalten und bestätigen diese hiermit.\n\nFalls du einen neuen Termin buchen möchtest:\n'+bookingLink+'\npowered by insy-reception';
+      var phone=b.customer_phone||'';
+      return'<div style="background:var(--bg);border:1.5px solid #fce8e8;border-radius:10px;padding:12px">'+
+        '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">'+
+          '<div class="ticker-dot cancel"></div>'+
+          '<span style="font-size:12px;font-weight:500">'+esc(b.customer_name||'Kunde')+'</span>'+
+          (b.customer_phone?'<span style="font-size:10px;color:var(--muted);margin-left:4px">'+esc(b.customer_phone)+'</span>':'')+
+        '</div>'+
+        '<div style="font-size:11px;color:var(--muted);margin-bottom:2px">'+esc(dateStr)+'</div>'+
+        '<div style="font-size:11px;color:var(--muted);margin-bottom:2px">'+esc(svcName)+(staffName?' · '+esc(staffName):'')+'</div>'+
+        (cancelStr?'<div style="font-size:10px;color:#e74c3c;margin-bottom:8px">Storniert: '+cancelStr+'</div>':'')+
+        (phone
+          ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:100%;justify-content:center;background:#e74c3c">'+
+             '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg>'+
+             ' Storno bestätigen</a>'
+          :'<span style="font-size:10px;color:var(--muted)">Keine Nummer</span>')+
+      '</div>';
+    }).join('')+
+  '</div>';
 }
 
 function renderReminders(rows){
