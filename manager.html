@@ -250,17 +250,35 @@ async function loadAll(){
   if(confirmRes.error)console.error('Confirm error:',confirmRes.error);
   renderConfirm(confirmRes.data||[]);
 
-  // Storno — letzte 7 Tage
+  // Storno — letzte 7 Tage, fallback auf updated_at wenn cancelled_at null
   var sevenDaysAgo=new Date(now);sevenDaysAgo.setDate(now.getDate()-7);
   var stornoRes=await sb.from('bookings')
-    .select('id,created_at,cancelled_at,customer_name,customer_phone,termin_start,mitarbeiter_id,service_variante_id,kunde_id')
+    .select('id,created_at,cancelled_at,updated_at,customer_name,customer_phone,termin_start,mitarbeiter_id,service_variante_id,kunde_id')
     .eq('kunde_id',SALON_ID)
     .eq('status','cancelled')
-    .gte('cancelled_at',sevenDaysAgo.toISOString())
-    .order('cancelled_at',{ascending:false})
+    .gte('updated_at',sevenDaysAgo.toISOString())
+    .order('updated_at',{ascending:false})
     .limit(10);
   if(stornoRes.error)console.error('Storno error:',JSON.stringify(stornoRes.error));
-  renderStorno(stornoRes.data||[],varianteMap,staffMap);
+
+  // Load variante + staff maps for storno if not already loaded
+  var stornoVarianteMap=varianteMap||{};
+  var stornoStaffMap=staffMap||{};
+  var stornoServiceMap=serviceMap||{};
+  var stornoRows=stornoRes.data||[];
+  if(stornoRows.length){
+    var sVarIds=stornoRows.map(function(b){return b.service_variante_id;}).filter(function(id){return id&&!stornoVarianteMap[id];});
+    if(sVarIds.length){
+      var svR=await sb.from('service_varianten').select('id,service_name,dauer_minuten,preis,service_id').in('id',sVarIds);
+      if(svR.data)svR.data.forEach(function(v){stornoVarianteMap[v.id]=v;});
+    }
+    var sStaffIds=stornoRows.map(function(b){return b.mitarbeiter_id;}).filter(function(id){return id&&!stornoStaffMap[id];});
+    if(sStaffIds.length){
+      var ssR=await sb.from('mitarbeiter').select('id,display_name,name').in('id',sStaffIds);
+      if(ssR.data)ssR.data.forEach(function(s){stornoStaffMap[s.id]=s.display_name||s.name;});
+    }
+  }
+  renderStorno(stornoRows,stornoVarianteMap,stornoStaffMap,stornoServiceMap);
 }
 
 async function loadUpcomingFromCalendars(todayStr){
@@ -426,9 +444,10 @@ function renderUpcoming(rows){
 }
 
 
-function renderStorno(rows,varianteMap,staffMap){
+function renderStorno(rows,varianteMap,staffMap,serviceMap){
   varianteMap=varianteMap||{};
   staffMap=staffMap||{};
+  serviceMap=serviceMap||{};
   var el=document.getElementById('storno-list');
   if(!rows.length){el.innerHTML='<div class="loading">Keine Stornos in den letzten 7 Tagen</div>';return;}
   el.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px">'+
