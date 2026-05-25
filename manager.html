@@ -382,7 +382,13 @@ function renderReminders(rows){
   el.innerHTML=rows.map(function(b){
     var d=new Date(b.termin_start||b.created_at||new Date());
     var dateStr=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'});
-    var msg='Hallo '+( b.customer_name||b.name||'')+'! 👋\nNur eine kurze Erinnerung: Dein Termin ist am '+dateStr+' um '+(b.time||'')+ ' Uhr'+'. Wir freuen uns auf dich! 😊\n\npowered by insy-reception';
+    var timeStr=new Date(b.termin_start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+    var timeStr=new Date(b.termin_start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+    var bookingLink='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
+    var msg='Hallo '+(b.customer_name||'')+'!\n'
+      +'Erinnerung: Dein Termin ist am '+dateStr+' um '+timeStr+' Uhr. Wir freuen uns auf dich!\n\n'
+      +'Dein Link zur Buchung: '+bookingLink+'\n'
+      +'powered by insy-reception';
     var phone=b.customer_phone||b.phone||'';
     return'<div class="wa-row">'+
       '<div class="wa-info">'+
@@ -407,7 +413,13 @@ function renderConfirm(rows){
       var d=new Date(b.termin_start||b.created_at||new Date());
       var dateStr=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'});
       var svcName2='';
-      var msg='Hallo '+(b.customer_name||'')+'! ✅\nDein Termin am '+dateStr+' um '+(b.time||'')+' Uhr'+' ist bestätigt. Bis dann! 👋\n\npowered by insy-reception';
+      var timeStr2=new Date(b.termin_start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+      var timeStr2=new Date(b.termin_start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+      var bookingLink2='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
+      var msg='Hallo '+(b.customer_name||'')+'!\n'
+        +'Dein Termin am '+dateStr+' um '+timeStr2+' Uhr ist bestätigt. Bis dann!\n\n'
+        +'Dein Link zur Buchung: '+bookingLink2+'\n'
+        +'powered by insy-reception';
       var phone=b.customer_phone||b.phone||'';
       return'<div style="background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:12px">'+
         '<div style="font-size:12px;font-weight:500;margin-bottom:3px">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
