@@ -191,8 +191,16 @@ async function loadAll(){
   var varIds=(tickerRes.data||[]).map(function(b){return b.service_variante_id;}).filter(Boolean);
   if(varIds.length){
     var varRes=await sb.from('service_varianten')
-      .select('id,service_name,dauer_minuten,preis')
+      .select('id,service_name,dauer_minuten,preis,service_id')
       .in('id',varIds);
+    var serviceMap={};
+    if(varRes.data){
+      var svcIds=[...new Set(varRes.data.map(function(v){return v.service_id;}).filter(Boolean))];
+      if(svcIds.length){
+        var sRes=await sb.from('services').select('id,name').in('id',svcIds);
+        if(sRes.data)sRes.data.forEach(function(s){serviceMap[s.id]=s.name;});
+      }
+    }
     if(varRes.data)varRes.data.forEach(function(v){varianteMap[v.id]=v;});
   }
 
@@ -216,7 +224,7 @@ async function loadAll(){
     .order('termin_start',{ascending:true})
     .limit(15);
   if(upRes.error)console.error('Upcoming error:',JSON.stringify(upRes.error));
-  renderUpcomingCalendar(upRes.data||[],varianteMap,staffMap);
+  renderUpcomingCalendar(upRes.data||[],varianteMap,staffMap,serviceMap);
 
   // Terminerinnerungen: morgen + übermorgen
   var tomorrow=new Date(now);tomorrow.setDate(now.getDate()+1);
@@ -323,7 +331,8 @@ async function loadUpcomingFromCalendars(todayStr){
   }
 }
 
-function renderUpcomingCalendar(events,varianteMap,staffMap){
+function renderUpcomingCalendar(events,varianteMap,staffMap,serviceMap){
+  serviceMap=serviceMap||{};
   varianteMap=varianteMap||{};
   staffMap=staffMap||{};
   var el=document.getElementById('upcoming-list');
@@ -336,7 +345,8 @@ function renderUpcomingCalendar(events,varianteMap,staffMap){
     var dateStr=d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+
                 d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
     var variante=varianteMap[b.service_variante_id];
-    var svcName=variante?variante.service_name||'–':'–';
+    var svcParent2=variante&&variante.service_id?serviceMap[variante.service_id]||'':'';
+    var svcName=variante?[svcParent2,variante.service_name].filter(Boolean).join(' · ') ||'–':'–';
     var staffName=staffMap[b.mitarbeiter_id]||'–';
     return'<div class="upcoming-row">'+
       '<div class="upcoming-date">'+esc(dateStr)+'</div>'+
@@ -427,7 +437,8 @@ function renderStorno(rows,varianteMap,staffMap){
       var dateStr=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'})+' um '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr';
       var cancelStr=b.cancelled_at?new Date(b.cancelled_at).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+' '+new Date(b.cancelled_at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}):'';
       var variante=varianteMap[b.service_variante_id];
-      var svcName=variante?variante.service_name||'–':'–';
+      var svcParent2=variante&&variante.service_id?serviceMap[variante.service_id]||'':'';
+    var svcName=variante?[svcParent2,variante.service_name].filter(Boolean).join(' · ') ||'–':'–';
       var staffName=staffMap[b.mitarbeiter_id]||'';
       var bookingLink='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
       var msg='Hallo '+(b.customer_name||'')+'!\nWir haben deine Stornierung für den '+dateStr+' erhalten und bestätigen diese hiermit.\n\nFalls du einen neuen Termin buchen möchtest:\n'+bookingLink+'\npowered by insy-reception';
