@@ -17,7 +17,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
 
 /* ── NAV ── */
 .nav{background:var(--tp);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2)}
-.nav-logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:600;color:#fff;letter-spacing:.01em}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:600;color:#fff;letter-spacing:.01em}
 .nav-logo span{color:#C9A84C}
 .nav-meta{font-size:11px;color:rgba(255,255,255,.5)}
 .nav-salon{font-size:13px;font-weight:600;color:rgba(255,255,255,.9)}
@@ -32,7 +32,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
 .card-title svg{flex-shrink:0}
 
 /* ── TICKER ── */
-.ticker-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.ticker-row{display:grid;grid-template-columns:auto 140px 130px 1fr 100px auto;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)}
 .ticker-row:last-child{border-bottom:none}
 .ticker-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
 .ticker-dot.in{background:#27ae60}
@@ -327,17 +327,15 @@ function renderTicker(rows,varianteMap,staffMap){
     var variante=varianteMap[b.service_variante_id];
     var varInfo=variante?(variante.service_name||'')+(variante.dauer_minuten?' · '+variante.dauer_minuten+' Min':'')+(variante.preis?' · '+variante.preis+' €':''):'–';
     var staffName=staffMap[b.mitarbeiter_id]||'';
-    return'<div class="ticker-row">'
-      +'<div class="ticker-dot '+type+'"></div>'
-      +'<div class="ticker-info">'
-        +'<div class="ticker-name">'+esc(b.customer_name||'Kunde')
-          +(b.customer_phone?'<span style="margin-left:8px;font-size:10px;color:var(--muted)">📱 '+esc(b.customer_phone)+'</span>':'')
-        +'</div>'
-        +'<div class="ticker-sub">'+esc(varInfo)+(staffName?' · <span style="color:var(--tg)">'+esc(staffName)+'</span>':'')+' · '+esc(dateStr)+'</div>'
-      +'</div>'
-      +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">'
+    return'<div class="ticker-row" style="display:grid;grid-template-columns:auto 1fr auto 1fr auto auto;align-items:center;gap:12px">'
+      +'<div class="ticker-dot '+type+'" style="margin-top:0"></div>'
+      +'<div style="font-size:12px;font-weight:600;color:var(--td)">'+esc(b.customer_name||'Kunde')+'</div>'
+      +'<div style="font-size:11px;color:var(--muted)">📱 '+esc(b.customer_phone||'–')+'</div>'
+      +'<div style="font-size:11px;color:var(--td)">'+esc(varInfo)+'</div>'
+      +'<div style="font-size:11px;color:var(--tg);font-weight:500">'+esc(staffName)+'</div>'
+      +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0">'
         +'<span class="badge '+type+'">'+typeLabel+'</span>'
-        +'<span class="ticker-time">'+new Date(b.created_at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+'</span>'
+        +'<span style="font-size:10px;color:var(--muted)">'+esc(dateStr)+'</span>'
       +'</div>'
     +'</div>';
   }).join('');
