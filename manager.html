@@ -135,7 +135,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
 <script>
 const SUPABASE_URL='https://uzemgxfjgjwqfgfwbboi.supabase.co';
 const SUPABASE_KEY='sb_publishable__XubcF5yPDyIMpfE7kO9Rg_Xp7kj0hL';
-const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{
+  global:{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}}
+});
 
 function getSalonId(){
   return new URLSearchParams(window.location.search).get('salon_id')||'7ae1d846-097f-4cfd-bd4b-d2663551cb11';
@@ -168,10 +170,11 @@ async function loadAll(){
 
   // Letzte Buchungen (ticker)
   var tickerRes=await sb.from('bookings')
-    .select('*')
+    .select('id,created_at,customer_name,customer_phone,date,time,services,mitarbeiter_id,status,salon_id')
     .eq('salon_id',SALON_ID)
     .order('created_at',{ascending:false})
     .limit(10);
+  if(tickerRes.error)console.error('Ticker error:',tickerRes.error);
   renderTicker(tickerRes.data||[]);
 
   // Nächste Termine — via n8n get_availability für alle Online-Mitarbeiter
@@ -181,22 +184,22 @@ async function loadAll(){
   var tomorrow=new Date(now);tomorrow.setDate(now.getDate()+1);
   var dayAfter=new Date(now);dayAfter.setDate(now.getDate()+2);
   var reminderRes=await sb.from('bookings')
-    .select('*')
+    .select('id,created_at,customer_name,customer_phone,date,time,services,mitarbeiter_id,status,salon_id')
     .eq('salon_id',SALON_ID)
     .gte('date',tomorrow.toISOString().slice(0,10))
     .lte('date',dayAfter.toISOString().slice(0,10))
-    .order('date',{ascending:true})
-    .order('time',{ascending:true});
+    .order('date',{ascending:true});
+  if(reminderRes.error)console.error('Reminder error:',reminderRes.error);
   renderReminders(reminderRes.data||[]);
 
   // Bestätigungen: heute + morgen
   var confirmRes=await sb.from('bookings')
-    .select('*')
+    .select('id,created_at,customer_name,customer_phone,date,time,services,mitarbeiter_id,status,salon_id')
     .eq('salon_id',SALON_ID)
     .gte('date',todayStr)
     .lte('date',tomorrow.toISOString().slice(0,10))
-    .order('date',{ascending:true})
-    .order('time',{ascending:true});
+    .order('date',{ascending:true});
+  if(confirmRes.error)console.error('Confirm error:',confirmRes.error);
   renderConfirm(confirmRes.data||[]);
 }
 
@@ -302,7 +305,7 @@ function renderTicker(rows){
       '<div class="ticker-dot '+type+'"></div>'+
       '<div class="ticker-info">'+
         '<div class="ticker-name">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
-        '<div class="ticker-sub">'+esc(b.service_name||b.service||'–')+
+        '<div class="ticker-sub">'+(b.services&&b.services.length?esc(b.services.map(function(s){return s.service_name||s.variante_name||'';}).join(', ')):'–')+
           (b.mitarbeiter_name?' · '+esc(b.mitarbeiter_name):'')+
         '</div>'+
       '</div>'+
@@ -338,12 +341,13 @@ function renderReminders(rows){
   el.innerHTML=rows.map(function(b){
     var d=new Date((b.date||'')+'T'+(b.time||'09:00'));
     var dateStr=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'});
-    var msg='Hallo '+( b.customer_name||b.name||'')+'! 👋\nNur eine kurze Erinnerung: Dein Termin ist am '+dateStr+' um '+(b.time||'')+ ' Uhr'+(b.service_name?' ('+b.service_name+')':'')+'. Wir freuen uns auf dich! 😊';
+    var msg='Hallo '+( b.customer_name||b.name||'')+'! 👋\nNur eine kurze Erinnerung: Dein Termin ist am '+dateStr+' um '+(b.time||'')+ ' Uhr'+(svcName?' ('+svcName+')':'')+'. Wir freuen uns auf dich! 😊';
     var phone=b.customer_phone||b.phone||'';
     return'<div class="wa-row">'+
       '<div class="wa-info">'+
         '<div class="wa-name">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
-        '<div class="wa-detail">'+esc(dateStr)+' · '+esc(b.time||'')+(b.service_name?' · '+esc(b.service_name):'')+'</div>'+
+        '<div class="wa-detail">'+esc(dateStr)+' · '+esc(b.time||'')+(svcName?' · '+esc(svcName):'')+
+        '</div>'+
       '</div>'+
       (phone
         ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank">'+
@@ -361,11 +365,12 @@ function renderConfirm(rows){
     rows.map(function(b){
       var d=new Date((b.date||'')+'T'+(b.time||'09:00'));
       var dateStr=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'});
-      var msg='Hallo '+(b.customer_name||b.name||'')+'! ✅\nDein Termin am '+dateStr+' um '+(b.time||'')+' Uhr'+(b.service_name?' für '+b.service_name:'')+' ist bestätigt. Bis dann! 👋';
+      var svcName2=b.services&&b.services.length?b.services.map(function(s){return s.service_name||'';}).join(', '):'Termin';
+      var msg='Hallo '+(b.customer_name||'')+'! ✅\nDein Termin am '+dateStr+' um '+(b.time||'')+' Uhr'+(svcName2?' für '+svcName2:'')+' ist bestätigt. Bis dann! 👋';
       var phone=b.customer_phone||b.phone||'';
       return'<div style="background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:12px">'+
         '<div style="font-size:12px;font-weight:500;margin-bottom:3px">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
-        '<div style="font-size:10px;color:var(--muted);margin-bottom:10px">'+esc(dateStr)+' '+esc(b.time||'')+(b.service_name?' · '+esc(b.service_name):'')+'</div>'+
+        '<div style="font-size:10px;color:var(--muted);margin-bottom:10px">'+esc(dateStr)+' '+esc(b.time||'')+(svcName2?' · '+esc(svcName2):'')+'</div>'+
         (phone
           ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:100%;justify-content:center">'+
              '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg>'+
