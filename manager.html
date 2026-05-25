@@ -175,7 +175,26 @@ async function loadAll(){
     .order('created_at',{ascending:false})
     .limit(10);
   if(tickerRes.error)console.error('Ticker error:', JSON.stringify(tickerRes.error));
-  renderTicker(tickerRes.data||[]);
+
+  // Load service variant names
+  var varianteMap={};
+  var varIds=(tickerRes.data||[]).map(function(b){return b.service_variante_id;}).filter(Boolean);
+  if(varIds.length){
+    var varRes=await sb.from('service_varianten')
+      .select('id,service_name,dauer_minuten,preis')
+      .in('id',varIds);
+    if(varRes.data)varRes.data.forEach(function(v){varianteMap[v.id]=v;});
+  }
+
+  // Load staff names
+  var staffMap={};
+  var staffIds=(tickerRes.data||[]).map(function(b){return b.mitarbeiter_id;}).filter(Boolean);
+  if(staffIds.length){
+    var stRes=await sb.from('mitarbeiter').select('id,display_name,name').in('id',staffIds);
+    if(stRes.data)stRes.data.forEach(function(s){staffMap[s.id]=s.display_name||s.name;});
+  }
+
+  renderTicker(tickerRes.data||[],varianteMap,staffMap);
 
   // Nächste Termine — via n8n get_availability für alle Online-Mitarbeiter
   loadUpcomingFromCalendars(todayStr);
@@ -293,7 +312,9 @@ function renderUpcomingCalendar(events){
 
 // ── RENDER ─────────────────────────────────────────────────
 
-function renderTicker(rows){
+function renderTicker(rows,varianteMap,staffMap){
+  varianteMap=varianteMap||{};
+  staffMap=staffMap||{};
   var el=document.getElementById('ticker-list');
   var cnt=document.getElementById('ticker-count');
   if(cnt)cnt.textContent=rows.length+' Einträge';
@@ -301,19 +322,24 @@ function renderTicker(rows){
   el.innerHTML=rows.map(function(b){
     var type=b.status==='cancelled'?'cancel':b.status==='rescheduled'?'move':'in';
     var typeLabel=type==='cancel'?'Storno':type==='move'?'Verschoben':'Eingang';
-    return'<div class="ticker-row">'+
-      '<div class="ticker-dot '+type+'"></div>'+
-      '<div class="ticker-info">'+
-        '<div class="ticker-name">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
-        '<div class="ticker-sub">'+esc(b.status||'–')+
-          (b.mitarbeiter_name?' · '+esc(b.mitarbeiter_name):'')+
-        '</div>'+
-      '</div>'+
-      '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">'+
-        '<span class="badge '+type+'">'+typeLabel+'</span>'+
-        '<span class="ticker-time">'+fmt(b.created_at)+'</span>'+
-      '</div>'+
-    '</div>';
+    var d=new Date(b.termin_start||b.created_at||new Date());
+    var dateStr=d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+    var variante=varianteMap[b.service_variante_id];
+    var varInfo=variante?(variante.service_name||'')+(variante.dauer_minuten?' · '+variante.dauer_minuten+' Min':'')+(variante.preis?' · '+variante.preis+' €':''):'–';
+    var staffName=staffMap[b.mitarbeiter_id]||'';
+    return'<div class="ticker-row">'
+      +'<div class="ticker-dot '+type+'"></div>'
+      +'<div class="ticker-info">'
+        +'<div class="ticker-name">'+esc(b.customer_name||'Kunde')
+          +(b.customer_phone?'<span style="margin-left:8px;font-size:10px;color:var(--muted)">📱 '+esc(b.customer_phone)+'</span>':'')
+        +'</div>'
+        +'<div class="ticker-sub">'+esc(varInfo)+(staffName?' · <span style="color:var(--tg)">'+esc(staffName)+'</span>':'')+' · '+esc(dateStr)+'</div>'
+      +'</div>'
+      +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">'
+        +'<span class="badge '+type+'">'+typeLabel+'</span>'
+        +'<span class="ticker-time">'+new Date(b.created_at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+'</span>'
+      +'</div>'
+    +'</div>';
   }).join('');
 }
 
