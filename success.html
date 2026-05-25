@@ -77,6 +77,12 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#f3f0f7;min-height:10
 <body>
 
 <div class="card" id="conf-card">
+
+  <!-- Zurück zur Buchungsseite -->
+  <a id="back-to-booking" href="#" title="Neuen Termin buchen" style="position:absolute;top:14px;right:14px;display:inline-flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,.35);text-decoration:none;padding:5px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.12);transition:all .2s;z-index:10" onmouseover="this.style.color='rgba(255,255,255,.7)';this.style.borderColor='rgba(255,255,255,.3)'" onmouseout="this.style.color='rgba(255,255,255,.35)';this.style.borderColor='rgba(255,255,255,.12)'">
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    Neuer Termin
+  </a>
   <!-- Salon Info wird dynamisch geladen -->
   <div class="salon-info" id="salon-info">
     <div class="salon-brand">INSY RECEPTION</div>
@@ -141,7 +147,11 @@ async function init(){
 
   // Buchungslink zurück
   var link=document.getElementById('new-booking-link');
-  if(salonId)link.href='https://insy-reception.com/booking?salon_id='+salonId;
+  var backBtn=document.getElementById('back-to-booking');
+  if(salonId){
+    if(link)link.href='https://insy-reception.com/booking?salon_id='+salonId;
+    if(backBtn)backBtn.href='https://insy-reception.com/booking?salon_id='+salonId;
+  }
 
   // Salon Info + Mitarbeiter laden
   if(salonId){
