@@ -667,27 +667,6 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
         </a>
       </div>
     </div>
-    <!-- Live Ticker — volle Breite -->
-    <div style="display:flex;gap:16px;margin-bottom:12px">
-      <div style="flex:1;background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:12px 16px;box-shadow:0 2px 8px rgba(74,28,107,.05)">
-        <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px">
-          <span style="width:6px;height:6px;border-radius:50%;background:#27ae60;flex-shrink:0;animation:pulse 2s infinite;display:inline-block"></span>
-          Letzte Buchungen
-        </div>
-        <div id="ticker-recent" style="display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--td);max-height:140px;overflow-y:auto">
-          <div style="color:var(--muted)">Wird geladen…</div>
-        </div>
-      </div>
-      <div style="flex:1;background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:12px 16px;box-shadow:0 2px 8px rgba(74,28,107,.05)">
-        <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          Nächste Termine
-        </div>
-        <div id="ticker-upcoming" style="display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--td);max-height:140px;overflow-y:auto">
-          <div style="color:var(--muted)">Wird geladen…</div>
-        </div>
-      </div>
-    </div>
     <!-- iframe -->
     <iframe id="booking-iframe" src="" style="width:100%;height:80vh;border:1.5px solid var(--border);border-radius:12px;display:block" scrolling="yes"></iframe>
   </div>
