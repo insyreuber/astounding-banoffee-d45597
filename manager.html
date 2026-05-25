@@ -175,99 +175,66 @@ function waLink(phone,msg){
 async function loadAll(){
   var salonRes=await sb.from('kunden_profile').select('brand_name,name').eq('id',SALON_ID).single();
   if(salonRes.data){
-    var n=salonRes.data.brand_name||salonRes.data.name||'Salon';
-    document.getElementById('nav-salon-name').textContent=n;
+    document.getElementById('nav-salon-name').textContent=salonRes.data.brand_name||salonRes.data.name||'Salon';
   }
 
   var now=new Date();
-  var todayStr=now.toISOString().slice(0,10);
-
-  // Letzte Buchungen (ticker)
-  var tickerRes=await sb.from('bookings')
-    .select('id,created_at,customer_name,customer_phone,termin_start,termin_ende,status,mitarbeiter_id,service_variante_id,kunde_id')
-    .eq('kunde_id',SALON_ID)
-    .order('created_at',{ascending:false})
-    .limit(10);
-  if(tickerRes.error)console.error('Ticker error:', JSON.stringify(tickerRes.error));
-
-  // Load service variant names
-  varianteMap={};
-  var varIds=(tickerRes.data||[]).map(function(b){return b.service_variante_id;}).filter(Boolean);
-  if(varIds.length){
-    var varRes=await sb.from('service_varianten')
-      .select('id,service_name,dauer_minuten,preis,service_id')
-      .in('id',varIds);
-    serviceMap={};
-    if(varRes.data){
-      var svcIds=[...new Set(varRes.data.map(function(v){return v.service_id;}).filter(Boolean))];
-      if(svcIds.length){
-        var sRes=await sb.from('services').select('id,name').in('id',svcIds);
-        if(sRes.data)sRes.data.forEach(function(s){serviceMap[s.id]=s.name;});
-      }
-    }
-    if(varRes.data)varRes.data.forEach(function(v){varianteMap[v.id]=v;});
-  }
-
-  // Load staff names
-  staffMap={};
-  var staffIds=(tickerRes.data||[]).map(function(b){return b.mitarbeiter_id;}).filter(Boolean);
-  if(staffIds.length){
-    var stRes=await sb.from('mitarbeiter').select('id,display_name,name').in('id',staffIds);
-    if(stRes.data)stRes.data.forEach(function(s){staffMap[s.id]=s.display_name||s.name;});
-  }
-
-  renderTicker(tickerRes.data||[],varianteMap,staffMap);
-
-  // Nächste Termine — direkt aus bookings, termin_start >= jetzt
-  var nowIso=new Date().toISOString();
-  var upRes=await sb.from('bookings')
-    .select('id,customer_name,customer_phone,termin_start,termin_ende,status,mitarbeiter_id,service_variante_id,kunde_id')
-    .eq('kunde_id',SALON_ID)
-    .neq('status','cancelled')
-    .gte('termin_start',nowIso)
-    .order('termin_start',{ascending:true})
-    .limit(15);
-  if(upRes.error)console.error('Upcoming error:',JSON.stringify(upRes.error));
-  renderUpcomingCalendar(upRes.data||[],varianteMap,staffMap,serviceMap);
-
-  // Terminerinnerungen: morgen + übermorgen
+  var nowIso=now.toISOString();
+  var todayStr=nowIso.slice(0,10);
   var tomorrow=new Date(now);tomorrow.setDate(now.getDate()+1);
   var dayAfter=new Date(now);dayAfter.setDate(now.getDate()+2);
-  var reminderRes=await sb.from('bookings')
-    .select('id,created_at,customer_name,customer_phone,termin_start,termin_ende,status,mitarbeiter_id,service_variante_id,kunde_id')
-    .eq('kunde_id',SALON_ID)
-    .neq('status','cancelled')
-    .gte('termin_start',tomorrow.toISOString().slice(0,10))
-    .lte('termin_start',dayAfter.toISOString().slice(0,11)+'23:59:59')
-    .order('termin_start',{ascending:true});
-  if(reminderRes.error)console.error('Reminder error:',reminderRes.error);
-  renderReminders(reminderRes.data||[]);
-
-  // Bestätigungen: heute + morgen
-  var confirmRes=await sb.from('bookings')
-    .select('id,created_at,customer_name,customer_phone,termin_start,termin_ende,status,mitarbeiter_id,service_variante_id,kunde_id')
-    .eq('kunde_id',SALON_ID)
-    .neq('status','cancelled')
-    .gte('termin_start',todayStr)
-    .lte('termin_start',tomorrow.toISOString().slice(0,11)+'23:59:59')
-    .order('termin_start',{ascending:true});
-  if(confirmRes.error)console.error('Confirm error:',confirmRes.error);
-  renderConfirm(confirmRes.data||[]);
-
-  // Storno — letzte 7 Tage, fallback auf updated_at wenn cancelled_at null
   var sevenDaysAgo=new Date(now);sevenDaysAgo.setDate(now.getDate()-7);
-  var stornoRes=await sb.from('bookings')
-    .select('id,created_at,cancelled_at,updated_at,customer_name,customer_phone,termin_start,mitarbeiter_id,service_variante_id,kunde_id')
-    .eq('kunde_id',SALON_ID)
-    .eq('status','cancelled')
-    .gte('updated_at',sevenDaysAgo.toISOString())
-    .order('updated_at',{ascending:false})
-    .limit(10);
-  if(stornoRes.error)console.error('Storno error:',JSON.stringify(stornoRes.error));
 
-  // Load variante + staff maps for storno if not already loaded
-  var stornoRows=stornoRes.data||[];
-  renderStorno(stornoRows,varianteMap,staffMap,serviceMap);
+  // ── Einmal alles laden ──
+  var allRes=await sb.from('bookings')
+    .select('id,created_at,updated_at,cancelled_at,customer_name,customer_phone,termin_start,termin_ende,status,mitarbeiter_id,service_variante_id,kunde_id')
+    .eq('kunde_id',SALON_ID)
+    .order('created_at',{ascending:false})
+    .limit(100);
+
+  if(allRes.error){console.error('Bookings error:',JSON.stringify(allRes.error));return;}
+  var all=allRes.data||[];
+
+  // ── Maps laden ──
+  varianteMap={};staffMap={};serviceMap={};
+  var varIds=[...new Set(all.map(function(b){return b.service_variante_id;}).filter(Boolean))];
+  var staffIds=[...new Set(all.map(function(b){return b.mitarbeiter_id;}).filter(Boolean))];
+
+  await Promise.all([
+    varIds.length?sb.from('service_varianten').select('id,service_name,dauer_minuten,preis,service_id').in('id',varIds).then(function(r){
+      if(r.data){
+        r.data.forEach(function(v){varianteMap[v.id]=v;});
+        var svcIds=[...new Set(r.data.map(function(v){return v.service_id;}).filter(Boolean))];
+        if(svcIds.length)return sb.from('services').select('id,name').in('id',svcIds).then(function(sr){
+          if(sr.data)sr.data.forEach(function(s){serviceMap[s.id]=s.name;});
+        });
+      }
+    }):Promise.resolve(),
+    staffIds.length?sb.from('mitarbeiter').select('id,display_name,name').in('id',staffIds).then(function(r){
+      if(r.data)r.data.forEach(function(s){staffMap[s.id]=s.display_name||s.name;});
+    }):Promise.resolve()
+  ]);
+
+  // ── Lokal filtern ──
+  var ticker=all.slice(0,10);
+  var upcoming=all.filter(function(b){return b.status!=='cancelled'&&new Date(b.termin_start)>now;}).slice(0,15);
+  var reminders=all.filter(function(b){
+    var d=b.termin_start?b.termin_start.slice(0,10):'';
+    return b.status!=='cancelled'&&d>=tomorrow.toISOString().slice(0,10)&&d<=dayAfter.toISOString().slice(0,10);
+  });
+  var confirms=all.filter(function(b){
+    var d=b.termin_start?b.termin_start.slice(0,10):'';
+    return b.status!=='cancelled'&&d>=todayStr&&d<=tomorrow.toISOString().slice(0,10);
+  });
+  var stornos=all.filter(function(b){
+    return b.status==='cancelled'&&new Date(b.updated_at||b.created_at)>=sevenDaysAgo;
+  }).slice(0,10);
+
+  renderTicker(ticker,varianteMap,staffMap);
+  renderUpcomingCalendar(upcoming,varianteMap,staffMap,serviceMap);
+  renderReminders(reminders);
+  renderConfirm(confirms);
+  renderStorno(stornos,varianteMap,staffMap,serviceMap);
 }
 
 async function loadUpcomingFromCalendars(todayStr){
