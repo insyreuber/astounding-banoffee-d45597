@@ -23,7 +23,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
 .nav-salon{font-size:13px;font-weight:600;color:rgba(255,255,255,.9)}
 
 /* ── LAYOUT ── */
-.main{max-width:100%;margin:0 auto;padding:24px 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.main{max-width:100%;margin:0 auto;padding:24px 0 24px 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:768px){.main{grid-template-columns:1fr;padding:12px}}
 
 /* ── CARD ── */
@@ -94,7 +94,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
 <div class="main" style="position:relative">
 
   <!-- ① Live-Ticker — volle Breite, mit Freiraum links -->
-  <div class="card span-full" style="margin-left:33%">
+  <div class="card span-full" style="margin-left:40%;margin-right:0;border-radius:12px 0 0 12px">
     <div class="card-title">
       <span class="live-dot"></span>
       Live-Aktivitäten
@@ -104,7 +104,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
   </div>
 
   <!-- ② Nächste Termine — absolut im Freiraum links -->
-  <div class="card span-full" style="position:absolute;top:24px;left:20px;width:calc(33% - 36px)">
+  <div class="card span-full" style="position:absolute;top:24px;left:20px;width:calc(40% - 36px)">
     <div class="card-title">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       Nächste Termine
@@ -476,7 +476,7 @@ function renderTicker(rows,varianteMap,staffMap){
       +'<td style="font-size:13px">'+aktionen+'</td>'
     +'</tr>';
   }).join('');
-  el.innerHTML='<div style="overflow-x:auto"><table class="ticker-table">'+thead+'<tbody>'+tbody+'</tbody></table></div>';
+  el.innerHTML='<table class="ticker-table" style="table-layout:fixed;width:100%">'+thead+'<tbody>'+tbody+'</tbody></table>';
 }
 
 function tickerErledigt(id){
