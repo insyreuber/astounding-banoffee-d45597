@@ -147,7 +147,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
         <select id="kurzfristig-setting" onchange="saveKurzfristigSetting(this.value)"
           style="font-size:9px;border:1px solid var(--border);border-radius:4px;padding:2px 5px;background:var(--bg);color:var(--text);cursor:pointer;font-weight:500">
           <option value="keine">Nicht anzeigen</option>
-          <option value="bestaetigung">In Bestätigung anzeigen</option>
+          <option value="anzeigen">Anzeigen</option>
         </select>
       </span>
     </div>
@@ -240,13 +240,9 @@ async function loadAll(){
   var kurzfristigReminderSetting=localStorage.getItem('kurzfristig_reminder_setting')||'keine';
   if(kurzfristigReminderSetting==='keine'){
     reminders=reminders.filter(function(b){
-      // Kurzfristig = heute oder morgen gebucht UND im Erinnerungsfenster
       var bookedDay=b.created_at?b.created_at.slice(0,10):'';
-      var now2=new Date();
-      var todayStr2=now2.toISOString().slice(0,10);
-      var tomorrowStr2=new Date(now2.getFullYear(),now2.getMonth(),now2.getDate()+1).toISOString().slice(0,10);
-      var isKurzfristigBuchung=bookedDay>=todayStr2;
-      return!isKurzfristigBuchung;
+      var todayStr2=new Date().toISOString().slice(0,10);
+      return bookedDay<todayStr2;
     });
   }
   var kurzfristigSetting=localStorage.getItem('kurzfristig_setting')||'keine';
@@ -254,23 +250,14 @@ async function loadAll(){
     var d=b.termin_start?b.termin_start.slice(0,10):'';
     if(b.status==='cancelled')return false;
     if(d<todayStr||d>tomorrow.toISOString().slice(0,10))return false;
-    // Kurzfristig = fällt ins Erinnerungsfenster
     if(reminderIds.indexOf(b.id)>=0)return false;
+    // Kurzfristig = heute gebucht
+    if(kurzfristigSetting==='keine'){
+      var bookedDay=b.created_at?b.created_at.slice(0,10):'';
+      if(bookedDay>=todayStr)return false;
+    }
     return true;
   });
-  // Kurzfristige Termine (im Erinnerungsfenster aber gerade neu gebucht)
-  var kurzfristig=all.filter(function(b){
-    var d=b.termin_start?b.termin_start.slice(0,10):'';
-    return b.status!=='cancelled'&&reminderIds.indexOf(b.id)>=0&&d>=todayStr&&d<=tomorrow.toISOString().slice(0,10);
-  });
-  if(kurzfristigSetting==='bestaetigung'){
-    confirms=confirms.concat(kurzfristig);
-  }
-  // wenn 'keine' → kurzfristige weder in confirms noch in reminders anzeigen
-  if(kurzfristigSetting==='keine'){
-    var kurzfristigIds=kurzfristig.map(function(b){return b.id;});
-    reminders=reminders.filter(function(b){return kurzfristigIds.indexOf(b.id)<0;});
-  }
   var stornos=all.filter(function(b){
     return b.status==='cancelled'&&new Date(b.updated_at||b.created_at)>=sevenDaysAgo;
   }).slice(0,10);
@@ -435,10 +422,9 @@ function renderTicker(rows,varianteMap,staffMap){
     isKurzfristig=(terminDay===tomorrowStr||terminDay===dayAfterStr);
     var kurzfristigSetting2=localStorage.getItem('kurzfristig_setting')||'keine';
     var kurzfristigReminderSetting2=localStorage.getItem('kurzfristig_reminder_setting')||'keine';
-    var kurzfristigGesperrt=isKurzfristig&&kurzfristigSetting2==='keine';
-    var kurzfristigReminderGesperrt=isKurzfristig&&kurzfristigReminderSetting2==='keine';
-    var canBestaetigen=type!=='cancel'&&!!phone&&(terminDay===todayStr2||terminDay===tomorrowStr)&&!kurzfristigGesperrt;
-    var canErinnern=type!=='cancel'&&!!phone&&(terminDay===tomorrowStr||terminDay===dayAfterStr)&&!kurzfristigReminderGesperrt;
+    var bookedToday=b.created_at&&b.created_at.slice(0,10)>=todayStr2;
+    var canBestaetigen=type!=='cancel'&&!!phone&&(terminDay===todayStr2||terminDay===tomorrowStr)&&!(bookedToday&&kurzfristigSetting2==='keine');
+    var canErinnern=type!=='cancel'&&!!phone&&(terminDay===tomorrowStr||terminDay===dayAfterStr)&&!(bookedToday&&kurzfristigReminderSetting2==='keine');
     var canStorno=type==='cancel'&&!!phone;
 
     function btn(label,href,active,color,highlight){
