@@ -14,36 +14,21 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-height:100vh}
-
-/* ── NAV ── */
 .nav{background:var(--tp);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2)}
 .nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:600;color:#fff;letter-spacing:.01em}
 .nav-logo span{color:#C9A84C}
 .nav-meta{font-size:11px;color:rgba(255,255,255,.5)}
 .nav-salon{font-size:13px;font-weight:600;color:rgba(255,255,255,.9)}
-
-/* ── LAYOUT ── */
 .main{max-width:100%;margin:0 auto;padding:24px 0 24px 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:768px){.main{grid-template-columns:1fr;padding:12px}}
-
-/* ── CARD ── */
 .card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:18px;box-shadow:0 2px 8px rgba(74,28,107,.05)}
 .card-title{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:7px}
 .card-title svg{flex-shrink:0}
-
-/* ── TICKER ── */
 .ticker-table{width:100%;border-collapse:collapse;font-size:13px}.ticker-table th{background:var(--tpp);color:var(--tpl);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:2px solid var(--border);white-space:nowrap}.ticker-table td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle}.ticker-table tr:last-child td{border-bottom:none}.ticker-table tr:hover td{background:var(--bg)}
-.ticker-row:last-child{border-bottom:none}
 .ticker-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
 .ticker-dot.in{background:#27ae60}
 .ticker-dot.cancel{background:#e74c3c}
 .ticker-dot.move{background:#f39c12}
-
-
-
-
-
-/* ── UPCOMING ── */
 .upcoming-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
 .upcoming-row:last-child{border-bottom:none}
 .upcoming-date{font-size:12px;font-weight:600;color:var(--tpl);width:90px;flex-shrink:0}
@@ -51,8 +36,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
 .upcoming-name{font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .upcoming-service{font-size:11px;color:var(--muted)}
 .upcoming-staff{font-size:11px;color:var(--tg);font-weight:500;flex-shrink:0}
-
-/* ── WA CARD ── */
 .wa-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
 .wa-row:last-child{border-bottom:none}
 .wa-info{flex:1;min-width:0}
@@ -61,20 +44,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
 .wa-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;background:#25D366;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;flex-shrink:0;white-space:nowrap}
 .wa-btn:hover{background:#20bc59}
 .wa-btn svg{flex-shrink:0}
-
-/* ── BADGE ── */
 .badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:500}
 .badge.in{background:#e8f8ee;color:#1e7a3c}
 .badge.cancel{background:#fef2f2;color:#c0392b}
 .badge.move{background:#fff8e8;color:#a07800}
-
-/* ── SPAN FULL ── */
 .span-full{grid-column:1/-1}
-
-/* ── LOADING ── */
 .loading{color:var(--muted);font-size:13px;padding:16px 0;text-align:center}
-
-/* ── PULSE ── */
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .live-dot{width:7px;height:7px;border-radius:50%;background:#27ae60;display:inline-block;animation:pulse 2s infinite;flex-shrink:0}
 </style>
@@ -91,25 +66,28 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
 
 <div class="main">
 
-<div class="main" style="position:relative">
+  <!-- Zeile 1: Nächste Termine links (40%) + Live-Aktivitäten rechts (60%) — gleiche Höhe -->
+  <div style="grid-column:1/-1;display:flex;gap:16px;align-items:flex-start">
 
-  <!-- ① Live-Ticker — volle Breite, mit Freiraum links -->
-  <div class="card span-full" style="margin-left:40%;margin-right:0;border-radius:12px 0 0 12px">
-    <div class="card-title">
-      <span class="live-dot"></span>
-      Live-Aktivitäten
-      <span id="ticker-count" style="margin-left:auto;font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0"></span>
+    <!-- Nächste Termine — 40% links -->
+    <div class="card" style="width:40%;flex-shrink:0">
+      <div class="card-title">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Nächste Termine
+      </div>
+      <div id="upcoming-list"><div class="loading">Wird geladen…</div></div>
     </div>
-    <div id="ticker-list"><div class="loading">Wird geladen…</div></div>
-  </div>
 
-  <!-- ② Nächste Termine — absolut im Freiraum links -->
-  <div class="card span-full" style="position:absolute;top:24px;left:20px;width:calc(40% - 36px)">
-    <div class="card-title">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      Nächste Termine
+    <!-- Live-Aktivitäten — Rest rechts, bis zum Rand -->
+    <div class="card" style="flex:1;border-radius:12px 0 0 12px;margin-right:0">
+      <div class="card-title">
+        <span class="live-dot"></span>
+        Live-Aktivitäten
+        <span id="ticker-count" style="margin-left:auto;font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0"></span>
+      </div>
+      <div id="ticker-list"><div class="loading">Wird geladen…</div></div>
     </div>
-    <div id="upcoming-list"><div class="loading">Wird geladen…</div></div>
+
   </div>
 
   <!-- ③ Terminerinnerungen -->
@@ -175,24 +153,12 @@ function getSalonId(){
 const SALON_ID=getSalonId();
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function fmt(dt){
-  var d=new Date(dt);
-  return d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+
-         d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
-}
-function waLink(phone,msg){
-  var clean=(phone||'').replace(/\D/g,'');
-  if(clean.startsWith('0'))clean='49'+clean.slice(1);
-  return'https://wa.me/'+clean+'?text='+encodeURIComponent(msg);
-}
-
-// ── LOAD DATA ──────────────────────────────────────────────
+function fmt(dt){var d=new Date(dt);return d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});}
+function waLink(phone,msg){var clean=(phone||'').replace(/\D/g,'');if(clean.startsWith('0'))clean='49'+clean.slice(1);return'https://wa.me/'+clean+'?text='+encodeURIComponent(msg);}
 
 async function loadAll(){
   var salonRes=await sb.from('kunden_profile').select('brand_name,name').eq('id',SALON_ID).single();
-  if(salonRes.data){
-    document.getElementById('nav-salon-name').textContent=salonRes.data.brand_name||salonRes.data.name||'Salon';
-  }
+  if(salonRes.data){document.getElementById('nav-salon-name').textContent=salonRes.data.brand_name||salonRes.data.name||'Salon';}
 
   var now=new Date();
   var nowIso=now.toISOString();
@@ -201,7 +167,6 @@ async function loadAll(){
   var dayAfter=new Date(now);dayAfter.setDate(now.getDate()+2);
   var sevenDaysAgo=new Date(now);sevenDaysAgo.setDate(now.getDate()-7);
 
-  // ── Einmal alles laden ──
   var allRes=await sb.from('bookings')
     .select('id,created_at,updated_at,cancelled_at,customer_name,customer_phone,termin_start,termin_ende,status,mitarbeiter_id,service_variante_id,kunde_id')
     .eq('kunde_id',SALON_ID)
@@ -211,7 +176,6 @@ async function loadAll(){
   if(allRes.error){console.error('Bookings error:',JSON.stringify(allRes.error));return;}
   var all=allRes.data||[];
 
-  // ── Maps laden ──
   varianteMap={};staffMap={};serviceMap={};
   var varIds=[...new Set(all.map(function(b){return b.service_variante_id;}).filter(Boolean))];
   var staffIds=[...new Set(all.map(function(b){return b.mitarbeiter_id;}).filter(Boolean))];
@@ -231,7 +195,6 @@ async function loadAll(){
     }):Promise.resolve()
   ]);
 
-  // ── Lokal filtern ──
   var ticker=all.slice(0,10);
   var upcoming=all.filter(function(b){return b.status!=='cancelled'&&new Date(b.termin_start)>now;}).slice(0,15);
   var reminders=all.filter(function(b){
@@ -252,10 +215,7 @@ async function loadAll(){
     var d=b.termin_start?b.termin_start.slice(0,10):'';
     if(b.status==='cancelled')return false;
     if(d<todayStr||d>tomorrow.toISOString().slice(0,10))return false;
-    if(kurzfristigSetting==='keine'){
-      var bookedDay=b.created_at?b.created_at.slice(0,10):'';
-      if(bookedDay>=todayStr)return false;
-    }
+    if(kurzfristigSetting==='keine'){var bookedDay=b.created_at?b.created_at.slice(0,10):'';if(bookedDay>=todayStr)return false;}
     return true;
   });
   var stornos=all.filter(function(b){
@@ -272,114 +232,32 @@ async function loadAll(){
   window._lastStornoData={rows:stornos,varianteMap:varianteMap,staffMap:staffMap,serviceMap:serviceMap};
 }
 
-async function loadUpcomingFromCalendars(todayStr){
-  var el=document.getElementById('upcoming-list');
-  el.innerHTML='<div class="loading">Kalender werden geladen…</div>';
-
-  try{
-    // 1. Load all online staff with google calendar
-    var staffRes=await sb.from('mitarbeiter')
-      .select('id,display_name,name,google_calendar_id,farbe')
-      .eq('salon_id',SALON_ID)
-      .eq('aktiv',true)
-      .not('google_calendar_id','is',null);
-
-    if(staffRes.error||!staffRes.data||!staffRes.data.length){
-      el.innerHTML='<div class="loading">Keine Mitarbeiter mit Kalender gefunden</div>';
-      return;
-    }
-
-    var staff=staffRes.data;
-
-    // 2. Fetch next 7 days from n8n for each staff member in parallel
-    var days=[];
-    for(var i=0;i<7;i++){
-      var d=new Date(todayStr);
-      d.setDate(d.getDate()+i);
-      days.push(d.toISOString().slice(0,10));
-    }
-
-    var allEvents=[];
-    await Promise.all(staff.map(async function(m){
-      await Promise.all(days.slice(0,3).map(async function(dateStr){
-        try{
-          var url='https://insy-n8n-u71054.vm.elestio.app/webhook/get-availability'
-            +'?salon_id='+SALON_ID
-            +'&mitarbeiter_id='+m.id
-            +'&date='+dateStr;
-          var res=await fetch(url);
-          if(!res.ok)return;
-          var data=await res.json();
-          // n8n returns busy slots — collect them
-          var busy=data.busy||data.events||data.slots||[];
-          busy.forEach(function(ev){
-            allEvents.push({
-              date:dateStr,
-              time:ev.start||ev.time||ev.startTime||'',
-              end:ev.end||ev.endTime||'',
-              title:ev.summary||ev.title||'Termin',
-              staff:m.display_name||m.name,
-              staffColor:m.farbe||'#5a2d82',
-              staffId:m.id
-            });
-          });
-        }catch(e){}
-      }));
-    }));
-
-    // Sort by date+time
-    allEvents.sort(function(a,b){
-      return (a.date+a.time)<(b.date+b.time)?-1:1;
-    });
-
-    renderUpcomingCalendar(allEvents);
-
-  }catch(e){
-    el.innerHTML='<div class="loading">Fehler beim Laden der Kalender</div>';
-    console.error(e);
-  }
-}
-
 function renderUpcomingCalendar(events,varianteMap,staffMap,serviceMap){
-  serviceMap=serviceMap||{};
-  varianteMap=varianteMap||{};
-  staffMap=staffMap||{};
+  serviceMap=serviceMap||{};varianteMap=varianteMap||{};staffMap=staffMap||{};
   var el=document.getElementById('upcoming-list');
-  if(!events.length){
-    el.innerHTML='<div class="loading">Keine bevorstehenden Termine</div>';
-    return;
-  }
+  if(!events.length){el.innerHTML='<div class="loading">Keine bevorstehenden Termine</div>';return;}
   el.innerHTML=events.map(function(b){
     var d=new Date(b.termin_start);
-    var dateStr=d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+
-                d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+    var dateStr=d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
     var variante=varianteMap[b.service_variante_id];
     var svcParent2=variante&&variante.service_id?serviceMap[variante.service_id]||'':'';
-    var svcName=variante?[svcParent2,variante.service_name].filter(Boolean).join(' · ') ||'–':'–';
+    var svcName=variante?[svcParent2,variante.service_name].filter(Boolean).join(' · ')||'–':'–';
     var staffName=staffMap[b.mitarbeiter_id]||'–';
     return'<div class="upcoming-row">'+
       '<div class="upcoming-date">'+esc(dateStr)+'</div>'+
-      '<div class="upcoming-info">'+
-        '<div class="upcoming-name">'+esc(b.customer_name||'Kunde')+'</div>'+
-        '<div class="upcoming-service">'+esc(svcName)+'</div>'+
-      '</div>'+
+      '<div class="upcoming-info"><div class="upcoming-name">'+esc(b.customer_name||'Kunde')+'</div><div class="upcoming-service">'+esc(svcName)+'</div></div>'+
       '<div class="upcoming-staff" style="color:var(--tg)">'+esc(staffName)+'</div>'+
     '</div>';
   }).join('');
 }
 
-// ── RENDER ─────────────────────────────────────────────────
-
 function renderTicker(rows,varianteMap,staffMap){
-  varianteMap=varianteMap||{};
-  staffMap=staffMap||{};
+  varianteMap=varianteMap||{};staffMap=staffMap||{};
   var el=document.getElementById('ticker-list');
   var cnt=document.getElementById('ticker-count');
   if(cnt)cnt.textContent=rows.length+' Einträge';
   if(!rows.length){el.innerHTML='<div class="loading">Noch keine Aktivitäten</div>';return;}
-  window._tickerRows=rows;
-  window._tickerVarianteMap=varianteMap;
-  window._tickerStaffMap=staffMap;
+  window._tickerRows=rows;window._tickerVarianteMap=varianteMap;window._tickerStaffMap=staffMap;
   var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var thead='<thead><tr>'
     +'<th style="width:14px"></th>'
@@ -417,51 +295,36 @@ function renderTicker(rows,varianteMap,staffMap){
     var tomorrowStr=new Date(now2.getFullYear(),now2.getMonth(),now2.getDate()+1).toISOString().slice(0,10);
     var dayAfterStr=new Date(now2.getFullYear(),now2.getMonth(),now2.getDate()+2).toISOString().slice(0,10);
     var terminDay=b.termin_start?b.termin_start.slice(0,10):'';
-    var isKurzfristig=(terminDay===tomorrowStr||terminDay===dayAfterStr)&&(terminDay===todayStr2||terminDay===tomorrowStr);
-    // Kurzfristig = Termin liegt im Erinnerungsfenster (morgen/übermorgen)
-    isKurzfristig=(terminDay===tomorrowStr||terminDay===dayAfterStr);
-    var kurzfristigSetting2=localStorage.getItem('kurzfristig_setting')||'keine';
-    var kurzfristigReminderSetting2=localStorage.getItem('kurzfristig_reminder_setting')||'keine';
+    var kurzfristigSetting2=localStorage.getItem('kurzfristig_setting')||'anzeigen';
+    var kurzfristigReminderSetting2=localStorage.getItem('kurzfristig_reminder_setting')||'anzeigen';
     var bookedToday=b.created_at&&b.created_at.slice(0,10)>=todayStr2;
     var canBestaetigen=type!=='cancel'&&!!phone&&(terminDay===todayStr2||terminDay===tomorrowStr)&&!(bookedToday&&kurzfristigSetting2==='keine');
     var canErinnern=type!=='cancel'&&!!phone&&(terminDay===tomorrowStr||terminDay===dayAfterStr)&&!(bookedToday&&kurzfristigReminderSetting2==='keine');
     var canStorno=type==='cancel'&&!!phone;
 
     function btn(label,href,active,color,highlight){
-      var style,el;
-      if(isErledigt||!active){
-        // Grau wenn erledigt oder nicht anwendbar
-        style='background:#f0f0f0;border:1px solid #e0e0e0;color:#c0c0c0;cursor:default;pointer-events:none;font-weight:500;border-radius:6px;padding:4px 9px;font-size:10px;white-space:nowrap;display:inline-block;letter-spacing:0.02em;';
-        return'<span style="'+style+'">'+label+'</span>';
-      }
-      if(highlight){
-        // Starker Glow — Aktion dringend nötig
-        style='background:'+color+';border:1px solid '+color+';color:#fff;cursor:pointer;font-weight:700;box-shadow:0 0 10px '+color+',0 0 20px '+color+'66;border-radius:6px;padding:4px 9px;font-size:10px;white-space:nowrap;display:inline-block;letter-spacing:0.02em;text-decoration:none;';
-      } else {
-        // Aktiv — voller Hintergrund + starker Glow
-        style='background:'+color+';border:1px solid '+color+';color:#fff;cursor:pointer;font-weight:700;box-shadow:0 0 10px '+color+',0 0 20px '+color+'66;border-radius:6px;padding:4px 9px;font-size:10px;white-space:nowrap;display:inline-block;letter-spacing:0.02em;text-decoration:none;';
-      }
+      if(isErledigt||!active){return'<span style="background:#f0f0f0;border:1px solid #e0e0e0;color:#c0c0c0;cursor:default;pointer-events:none;font-weight:500;border-radius:6px;padding:4px 9px;font-size:10px;white-space:nowrap;display:inline-block;">'+label+'</span>';}
+      var style='background:'+color+';border:1px solid '+color+';color:#fff;cursor:pointer;font-weight:700;box-shadow:0 0 10px '+color+',0 0 20px '+color+'66;border-radius:6px;padding:4px 9px;font-size:10px;white-space:nowrap;display:inline-block;text-decoration:none;';
       return'<a href="'+href+'" target="_blank" style="'+style+'">'+label+'</a>';
     }
+
+    var stornoOffen=type==='cancel'&&JSON.parse(localStorage.getItem('erledigt_ids')||'[]').indexOf(b.id)<0;
+    var successUrl='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
+    var kachelErledigtIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');
+    var isKachelErledigt=kachelErledigtIds.indexOf(b.id)>=0;
 
     var aktionen='<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;min-width:200px">';
     aktionen+=btn('Bestätigung',waLink(phone,msgBestaetigung),canBestaetigen,'#2980b9');
     aktionen+=btn('Erinnerung',waLink(phone,msgErinnerung),canErinnern,'#e67e22');
-    var stornoOffen=type==='cancel'&&JSON.parse(localStorage.getItem('erledigt_ids')||'[]').indexOf(b.id)<0;
     aktionen+=btn('Storno',waLink(phone,msgStorno),canStorno,'#e74c3c',stornoOffen);
-    // Success-Seite Button
-    var successUrl='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
-    aktionen+='<a href="'+successUrl+'" target="_blank" style="background:#5a2d82;border:1px solid #5a2d82;color:#fff;font-weight:700;box-shadow:0 0 10px #5a2d8299,0 0 20px #5a2d8244;border-radius:6px;padding:4px 9px;font-size:11px;white-space:nowrap;display:inline-block;letter-spacing:0.02em;text-decoration:none;">↗ Buchung</a>';
-    // Erledigt Haken
-    var kachelErledigtIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');
-    var isKachelErledigt=kachelErledigtIds.indexOf(b.id)>=0;
-    // Haken: grün+deaktiviert wenn von Kachel erledigt, grün+aktiv wenn von Ticker, grau wenn offen
+    aktionen+='<a href="'+successUrl+'" target="_blank" style="background:#5a2d82;border:1px solid #5a2d82;color:#fff;font-weight:700;box-shadow:0 0 10px #5a2d8299,0 0 20px #5a2d8244;border-radius:6px;padding:4px 9px;font-size:11px;white-space:nowrap;display:inline-block;text-decoration:none;">↗ Buchung</a>';
     if(isKachelErledigt){
-      aktionen+='<span style="font-size:18px;color:#16a34a;padding:0 2px;filter:drop-shadow(0 0 4px #16a34a88);cursor:default;opacity:0.5" title="In Kachel erledigt markiert">✓</span>';
-    } else {
-      aktionen+='<button onclick="tickerErledigt(\''+b.id+'\')" style="background:none;border:none;cursor:pointer;font-size:18px;color:'+(isErledigt?'#16a34a':'#d0d0d0')+';padding:0 2px;line-height:1;'+(isErledigt?'filter:drop-shadow(0 0 4px #16a34a88)':'')+'" title="'+(isErledigt?'Als offen markieren':'Als erledigt markieren')+'">✓</button>';
+      aktionen+='<span style="font-size:18px;color:#16a34a;padding:0 2px;filter:drop-shadow(0 0 4px #16a34a88);cursor:default;opacity:0.5">✓</span>';
+    }else{
+      aktionen+='<button onclick="tickerErledigt(\''+b.id+'\')" style="background:none;border:none;cursor:pointer;font-size:18px;color:'+(isErledigt?'#16a34a':'#d0d0d0')+';padding:0 2px;line-height:1;'+(isErledigt?'filter:drop-shadow(0 0 4px #16a34a88)':'')+'">'+'✓</button>';
     }
     aktionen+='</div>';
+
     return'<tr style="'+(isErledigt?'opacity:0.55':'')+'">'
       +'<td><span class="ticker-dot '+type+'" style="display:block;margin:0 auto"></span></td>'
       +'<td style="font-weight:500">'+esc(b.customer_name||'–')+'</td>'
@@ -487,38 +350,14 @@ function tickerErledigt(id){
   renderAll();
 }
 
-function renderUpcoming(rows){
-  var el=document.getElementById('upcoming-list');
-  if(!rows.length){el.innerHTML='<div class="loading">Keine bevorstehenden Termine</div>';return;}
-  el.innerHTML=rows.map(function(b){
-    var d=new Date(b.termin_start||b.created_at||new Date());
-    var dateStr=d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+
-                (b.time||'');
-    return'<div class="upcoming-row">'+
-      '<div class="upcoming-date">'+esc(dateStr)+'</div>'+
-      '<div class="upcoming-info">'+
-        '<div class="upcoming-name">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
-        '<div class="upcoming-service">'+esc(b.service_name||b.service||'–')+'</div>'+
-      '</div>'+
-      '<div class="upcoming-staff">'+esc(b.mitarbeiter_name||b.staff_name||'')+'</div>'+
-    '</div>';
-  }).join('');
-}
-
-
 function renderStorno(rows,varianteMap,staffMap,serviceMap){
-  varianteMap=varianteMap||{};
-  staffMap=staffMap||{};
-  serviceMap=serviceMap||{};
+  varianteMap=varianteMap||{};staffMap=staffMap||{};serviceMap=serviceMap||{};
   var el=document.getElementById('storno-list');
   if(!rows.length){el.innerHTML='<div class="loading">Keine Stornos in den letzten 7 Tagen</div>';return;}
-
-  // Split into offen and erledigt (stored in localStorage)
   var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
   var erledigt=rows.filter(function(b){return erledigtIds.indexOf(b.id)>=0;});
-
-  function buildCard(b, isErledigt){
+  function buildCard(b,isErledigt){
     var d=new Date(b.termin_start);
     var dateStr=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'})+' um '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr';
     var cancelStr=b.cancelled_at?new Date(b.cancelled_at).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+' '+new Date(b.cancelled_at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}):'';
@@ -529,188 +368,93 @@ function renderStorno(rows,varianteMap,staffMap,serviceMap){
     var bookingLink='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
     var msg='Hallo '+(b.customer_name||'')+'!\nWir haben deine Stornierung für den '+dateStr+' erhalten und bestätigen diese hiermit.\n\nFalls du einen neuen Termin buchen möchtest:\n'+bookingLink+'\npowered by insy-reception';
     var phone=b.customer_phone||'';
-    return '<div style="background:var(--bg);border:1.5px solid '+(isErledigt?'#d1fae5':'#fce8e8')+';border-radius:10px;padding:12px;position:relative;opacity:'+(isErledigt?'0.6':'1')+'">'+
-      // ✓ Erledigt Button oben rechts
-      (!isErledigt
-        ? '<button onclick="stornoErledigt(\''+b.id+'\')" title="Als erledigt markieren" style="position:absolute;top:8px;right:8px;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;cursor:pointer;font-size:12px;color:#16a34a;font-weight:600">✓</button>'
-        : '<span style="position:absolute;top:8px;right:8px;font-size:11px;color:#16a34a;font-weight:600">✓ Erledigt</span>'
-      )+
-      '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;padding-right:50px">'+
-        '<div class="ticker-dot cancel"></div>'+
-        '<span style="font-size:12px;font-weight:500">'+esc(b.customer_name||'Kunde')+'</span>'+
-        (b.customer_phone?'<span style="font-size:10px;color:var(--muted);margin-left:4px">'+esc(b.customer_phone)+'</span>':'')+
-      '</div>'+
+    return'<div style="background:var(--bg);border:1.5px solid '+(isErledigt?'#d1fae5':'#fce8e8')+';border-radius:10px;padding:12px;position:relative;opacity:'+(isErledigt?'0.6':'1')+'">'+
+      (!isErledigt?'<button onclick="stornoErledigt(\''+b.id+'\')" style="position:absolute;top:8px;right:8px;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;cursor:pointer;font-size:12px;color:#16a34a;font-weight:600">✓</button>':'<span style="position:absolute;top:8px;right:8px;font-size:11px;color:#16a34a;font-weight:600">✓ Erledigt</span>')+
+      '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;padding-right:50px"><div class="ticker-dot cancel"></div><span style="font-size:12px;font-weight:500">'+esc(b.customer_name||'Kunde')+'</span>'+(b.customer_phone?'<span style="font-size:10px;color:var(--muted);margin-left:4px">'+esc(b.customer_phone)+'</span>':'')+'</div>'+
       '<div style="font-size:11px;color:var(--muted);margin-bottom:2px">'+esc(dateStr)+'</div>'+
       '<div style="font-size:11px;color:var(--muted);margin-bottom:2px">'+esc(svcName)+(staffName?' · '+esc(staffName):'')+'</div>'+
       (cancelStr?'<div style="font-size:10px;color:#e74c3c;margin-bottom:8px">Storniert: '+cancelStr+'</div>':'')+
-      (phone&&!isErledigt
-        ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:100%;justify-content:center;background:#e74c3c">'+
-           '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg>'+
-           ' Storno bestätigen</a>'
-        :(phone&&isErledigt?'<span style="font-size:10px;color:var(--muted)">'+esc(phone)+'</span>':'<span style="font-size:10px;color:var(--muted)">Keine Nummer</span>'))+
+      (phone&&!isErledigt?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:100%;justify-content:center;background:#e74c3c"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg> Storno bestätigen</a>':(phone&&isErledigt?'<span style="font-size:10px;color:var(--muted)">'+esc(phone)+'</span>':'<span style="font-size:10px;color:var(--muted)">Keine Nummer</span>'))+
     '</div>';
   }
-
-  var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px">'+
-    (offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Stornos erledigt</div>')+
-  '</div>';
-
-  // Ausklappbarer Erledigt-Bereich
-  if(erledigt.length){
-    html+='<div style="margin-top:14px">'+
-      '<button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" '+
-      'style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500">'+
-      '<span>▶</span> Erledigt ('+erledigt.length+')</button>'+
-      '<div style="display:none;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-top:8px">'+
-        erledigt.map(function(b){return buildCard(b,true);}).join('')+
-      '</div>'+
-    '</div>';
-  }
-
+  var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Stornos erledigt</div>')+'</div>';
+  if(erledigt.length){html+='<div style="margin-top:14px"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500"><span>▶</span> Erledigt ('+erledigt.length+')</button><div style="display:none;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-top:8px">'+erledigt.map(function(b){return buildCard(b,true);}).join('')+'</div></div>';}
   el.innerHTML=html;
 }
 
 function stornoErledigt(id){
-  var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
-  if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(ids));}
-  var kIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');
-  if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem('kachel_erledigt_ids',JSON.stringify(kIds));}
+  var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(ids));}
+  var kIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem('kachel_erledigt_ids',JSON.stringify(kIds));}
   renderAll();
 }
-
 function reminderErledigt(id){
-  var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
-  if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(ids));}
-  var kIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');
-  if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem('kachel_erledigt_ids',JSON.stringify(kIds));}
+  var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(ids));}
+  var kIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem('kachel_erledigt_ids',JSON.stringify(kIds));}
   renderAll();
 }
-
 function confirmErledigt(id){
-  var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
-  if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(ids));}
-  var kIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');
-  if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem('kachel_erledigt_ids',JSON.stringify(kIds));}
+  var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(ids));}
+  var kIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem('kachel_erledigt_ids',JSON.stringify(kIds));}
   renderAll();
-}
-
-function saveKurzfristigReminderSetting(val){
-  localStorage.setItem('kurzfristig_reminder_setting',val);
-  renderAll();
-}
-
-function saveKurzfristigSetting(val){
-  localStorage.setItem('kurzfristig_setting',val);
-  renderAll();
-}
-
-function initKurzfristigSetting(){
-  var sel=document.getElementById('kurzfristig-setting');
-  if(sel)sel.value=localStorage.getItem('kurzfristig_setting')||'anzeigen';
-  var sel2=document.getElementById('kurzfristig-reminder-setting');
-  if(sel2)sel2.value=localStorage.getItem('kurzfristig_reminder_setting')||'anzeigen';
-}
-
-function renderAll(){
-  loadAll();
 }
 
 function renderReminders(rows){
   var el=document.getElementById('reminder-list');
   if(!rows.length){el.innerHTML='<div class="loading">Keine Termine in den nächsten 2 Tagen</div>';return;}
-
   var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
   var erledigt=rows.filter(function(b){return erledigtIds.indexOf(b.id)>=0;});
-
   function buildCard(b,isErledigt){
     var d=new Date(b.termin_start||b.created_at||new Date());
     var dateStr=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'});
     var timeStr=new Date(b.termin_start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
     var bookingLink='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
-    var msg='Hallo '+(b.customer_name||'')+'!\n'
-      +'Erinnerung: Dein Termin ist am '+dateStr+' um '+timeStr+' Uhr. Wir freuen uns auf dich!\n\n'
-      +'Dein Link zur Buchung: '+bookingLink+'\n'
-      +'powered by insy-reception';
+    var msg='Hallo '+(b.customer_name||'')+'!\nErinnerung: Dein Termin ist am '+dateStr+' um '+timeStr+' Uhr. Wir freuen uns auf dich!\n\nDein Link zur Buchung: '+bookingLink+'\npowered by insy-reception';
     var phone=b.customer_phone||b.phone||'';
     return'<div style="background:var(--bg);border:1.5px solid '+(isErledigt?'#d1fae5':'var(--border)')+';border-radius:10px;padding:12px;position:relative;opacity:'+(isErledigt?'0.6':'1')+'">'+
-      (!isErledigt
-        ?'<button onclick="reminderErledigt(\''+b.id+'\')" title="Als erledigt markieren" style="position:absolute;top:8px;right:8px;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;cursor:pointer;font-size:12px;color:#16a34a;font-weight:600">✓</button>'
-        :'<span style="position:absolute;top:8px;right:8px;font-size:11px;color:#16a34a;font-weight:600">✓ Erledigt</span>')+
+      (!isErledigt?'<button onclick="reminderErledigt(\''+b.id+'\')" style="position:absolute;top:8px;right:8px;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;cursor:pointer;font-size:12px;color:#16a34a;font-weight:600">✓</button>':'<span style="position:absolute;top:8px;right:8px;font-size:11px;color:#16a34a;font-weight:600">✓ Erledigt</span>')+
       '<div style="font-size:12px;font-weight:500;margin-bottom:3px;padding-right:55px">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
       '<div style="font-size:10px;color:var(--muted);margin-bottom:10px">'+esc(dateStr)+' '+timeStr+'</div>'+
-      (phone&&!isErledigt
-        ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:100%;justify-content:center">'+
-           '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg>'+
-           ' Erinnerung senden</a>'
-        :'<span style="font-size:10px;color:var(--muted)">'+(phone?esc(phone):'Keine Nummer')+'</span>')+
+      (phone&&!isErledigt?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:100%;justify-content:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg> Erinnerung senden</a>':'<span style="font-size:10px;color:var(--muted)">'+(phone?esc(phone):'Keine Nummer')+'</span>')+
     '</div>';
   }
-
-  var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">'+
-    (offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Erinnerungen erledigt</div>')+
-  '</div>';
-  if(erledigt.length){
-    html+='<div style="margin-top:14px">'+
-      '<button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" '+
-      'style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500">'+
-      '<span>▶</span> Erledigt ('+erledigt.length+')</button>'+
-      '<div style="display:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:8px">'+
-        erledigt.map(function(b){return buildCard(b,true);}).join('')+
-      '</div></div>';
-  }
+  var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Erinnerungen erledigt</div>')+'</div>';
+  if(erledigt.length){html+='<div style="margin-top:14px"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500"><span>▶</span> Erledigt ('+erledigt.length+')</button><div style="display:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:8px">'+erledigt.map(function(b){return buildCard(b,true);}).join('')+'</div></div>';}
   el.innerHTML=html;
 }
-
 
 function renderConfirm(rows){
   var el=document.getElementById('confirm-list');
   if(!rows.length){el.innerHTML='<div class="loading">Keine Termine heute / morgen</div>';return;}
-
   var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
   var erledigt=rows.filter(function(b){return erledigtIds.indexOf(b.id)>=0;});
-
   function buildCard(b,isErledigt){
     var d=new Date(b.termin_start||b.created_at||new Date());
     var dateStr=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'});
     var timeStr2=new Date(b.termin_start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
     var bookingLink2='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
-    var msg='Hallo '+(b.customer_name||'')+'!\n'
-      +'Dein Termin am '+dateStr+' um '+timeStr2+' Uhr ist bestätigt. Bis dann!\n\n'
-      +'Dein Link zur Buchung: '+bookingLink2+'\n'
-      +'powered by insy-reception';
+    var msg='Hallo '+(b.customer_name||'')+'!\nDein Termin am '+dateStr+' um '+timeStr2+' Uhr ist bestätigt. Bis dann!\n\nDein Link zur Buchung: '+bookingLink2+'\npowered by insy-reception';
     var phone=b.customer_phone||b.phone||'';
     return'<div style="background:var(--bg);border:1.5px solid '+(isErledigt?'#d1fae5':'var(--border)')+';border-radius:10px;padding:12px;position:relative;opacity:'+(isErledigt?'0.6':'1')+'">'+
-      (!isErledigt
-        ?'<button onclick="confirmErledigt(\''+b.id+'\')" title="Als erledigt markieren" style="position:absolute;top:8px;right:8px;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;cursor:pointer;font-size:12px;color:#16a34a;font-weight:600">✓</button>'
-        :'<span style="position:absolute;top:8px;right:8px;font-size:11px;color:#16a34a;font-weight:600">✓ Erledigt</span>')+
+      (!isErledigt?'<button onclick="confirmErledigt(\''+b.id+'\')" style="position:absolute;top:8px;right:8px;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;cursor:pointer;font-size:12px;color:#16a34a;font-weight:600">✓</button>':'<span style="position:absolute;top:8px;right:8px;font-size:11px;color:#16a34a;font-weight:600">✓ Erledigt</span>')+
       '<div style="font-size:12px;font-weight:500;margin-bottom:3px;padding-right:55px">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
       '<div style="font-size:10px;color:var(--muted);margin-bottom:10px">'+esc(dateStr)+' '+timeStr2+'</div>'+
-      (phone&&!isErledigt
-        ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:100%;justify-content:center">'+
-           '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg>'+
-           ' Bestätigung senden</a>'
-        :'<span style="font-size:10px;color:var(--muted)">'+(phone?esc(phone):'Keine Telefonnummer hinterlegt')+'</span>')+
+      (phone&&!isErledigt?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:100%;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg> Bestätigung senden</a>':'<span style="font-size:10px;color:var(--muted)">'+(phone?esc(phone):'Keine Telefonnummer hinterlegt')+'</span>')+
     '</div>';
   }
-
-  var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">'+
-    (offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Bestätigungen erledigt</div>')+
-  '</div>';
-  if(erledigt.length){
-    html+='<div style="margin-top:14px">'+
-      '<button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" '+
-      'style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500">'+
-      '<span>▶</span> Erledigt ('+erledigt.length+')</button>'+
-      '<div style="display:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:8px">'+
-        erledigt.map(function(b){return buildCard(b,true);}).join('')+
-      '</div></div>';
-  }
+  var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Bestätigungen erledigt</div>')+'</div>';
+  if(erledigt.length){html+='<div style="margin-top:14px"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500"><span>▶</span> Erledigt ('+erledigt.length+')</button><div style="display:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:8px">'+erledigt.map(function(b){return buildCard(b,true);}).join('')+'</div></div>';}
   el.innerHTML=html;
 }
 
-
+function saveKurzfristigReminderSetting(val){localStorage.setItem('kurzfristig_reminder_setting',val);renderAll();}
+function saveKurzfristigSetting(val){localStorage.setItem('kurzfristig_setting',val);renderAll();}
+function initKurzfristigSetting(){
+  var sel=document.getElementById('kurzfristig-setting');if(sel)sel.value=localStorage.getItem('kurzfristig_setting')||'anzeigen';
+  var sel2=document.getElementById('kurzfristig-reminder-setting');if(sel2)sel2.value=localStorage.getItem('kurzfristig_reminder_setting')||'anzeigen';
+}
+function renderAll(){loadAll();}
 
 loadAll();
 initKurzfristigSetting();
