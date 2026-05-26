@@ -914,7 +914,7 @@ function mkCal(){
     // Heutigen Tag sperren wenn keine Slots mehr
     var todayNoSlots=false;
     if(isToday&&effAz&&effAz.aktiv){
-      var _first=_azFirst(az[dayKey]);var endMin=parseInt((_first.end||'23:59').split(':')[0])*60+parseInt((_first.end||'23:59').split(':')[1]);
+      var _eff=_azFirst(effAz);var endMin=parseInt((_eff.end||'23:59').split(':')[0])*60+parseInt((_eff.end||'23:59').split(':')[1]);
       var nowMin=cd.now.getHours()*60+cd.now.getMinutes();
       todayNoSlots=nowMin>=endMin;
     }
@@ -1532,9 +1532,10 @@ async function loadSalonProfile(){
     };
     // Buchungsvorlauf: Index 0-8 → Minuten (0=Sofort,1=1h,2=2h,3=4h,4=8h,5=12h,6=1Tag,7=2Tage,8=3Tage)
     var VORLAUF_MIN_MAP=[0,60,120,240,480,720,1440,2880,4320];
-    window.SALON_VORLAUF_MIN=VORLAUF_MIN_MAP[parseInt(f.booking_vorlauf)||0]||0;
-    // Buchungshorizont: Wochen → Tage (z.B. 4 Wochen = 28 Tage)
-    window.SALON_HORIZONT_TAGE=(parseInt(f.booking_horizont)||4)*7;
+    var vIdx=f.booking_vorlauf!=null?parseInt(f.booking_vorlauf):0;
+    window.SALON_VORLAUF_MIN=VORLAUF_MIN_MAP[vIdx]!=null?VORLAUF_MIN_MAP[vIdx]:0;
+    // Buchungshorizont: direkt Wochen in DB gespeichert → in Tage umrechnen
+    window.SALON_HORIZONT_TAGE=f.booking_horizont!=null?parseInt(f.booking_horizont)*7:28;
     window.SALON_TEMP_AZ=data.temp_arbeitszeiten||null;
     renderWorkingHours(data.arbeitszeiten);
     await loadServices(salonId);
