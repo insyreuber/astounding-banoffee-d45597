@@ -1167,7 +1167,7 @@ function updateTimelines(){
   saveBookingTimelines();
 }
 
-function saveBookingTimelines(){
+async function saveBookingTimelines(){
   if(!window._pData)return;
   if(!window._pData.feature_settings)window._pData.feature_settings={};
   var vEl=document.getElementById('booking-vorlauf');
@@ -1175,7 +1175,8 @@ function saveBookingTimelines(){
   if(vEl)window._pData.feature_settings.booking_vorlauf=parseInt(vEl.value);
   if(hEl)window._pData.feature_settings.booking_horizont=HORIZONT_VALS[parseInt(hEl.value)-1];
   var fsSnapshot=JSON.parse(JSON.stringify(window._pData.feature_settings));
-  sb.from('kunden_profile').update({feature_settings:fsSnapshot}).eq('id',SALON_ID);
+  var res=await sb.from('kunden_profile').update({feature_settings:fsSnapshot}).eq('id',SALON_ID);
+  if(res.error){toast('Fehler beim Speichern','error');}
 }
 
 function initTimelines(){
