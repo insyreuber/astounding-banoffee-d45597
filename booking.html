@@ -1409,6 +1409,10 @@ async function loadSalonProfile(){
     // Slot-Raster aus feature_settings laden
     var fs=data.feature_settings||{};
     if(fs.slot_interval){buildBaseSlots(parseInt(fs.slot_interval)||15);}
+    // Buchungsvorlauf: Index→Minuten | Buchungshorizont: Wochen→Tage
+    var _vm=[0,60,120,240,480,720,1440,2880,4320];
+    window.SALON_VORLAUF_MIN = fs.booking_vorlauf!=null ? (_vm[fs.booking_vorlauf]||0) : 0;
+    window.SALON_HORIZONT_TAGE = fs.booking_horizont!=null ? fs.booking_horizont*7 : 9999;
 
     var salonName=data.brand_name||data.name||'Salonname';
     var phoneRaw=[data.area_code,data.phone_number].filter(Boolean).join(' ')||data.phone||'';
@@ -1524,10 +1528,6 @@ async function loadSalonProfile(){
       followup: f.followup_on!==false||f.followup_aktiv!==false
     };
     window.SALON_TEMP_AZ=data.temp_arbeitszeiten||null;
-    var _vMap=[0,60,120,240,480,720,1440,2880,4320];
-    var _vIdx=f.booking_vorlauf!=null?f.booking_vorlauf:0;
-    window.SALON_VORLAUF_MIN=_vMap[_vIdx]!=null?_vMap[_vIdx]:0;
-    window.SALON_HORIZONT_TAGE=f.booking_horizont!=null?f.booking_horizont*7:9999;
     renderWorkingHours(data.arbeitszeiten);
     await loadServices(salonId);
     await loadMitarbeiter(salonId);
