@@ -1413,6 +1413,8 @@ async function loadSalonProfile(){
     var _vm=[0,60,120,240,480,720,1440,2880,4320];
     window.SALON_VORLAUF_MIN = fs.booking_vorlauf!=null ? (_vm[fs.booking_vorlauf]||0) : 0;
     window.SALON_HORIZONT_TAGE = fs.booking_horizont!=null ? fs.booking_horizont*7 : 9999;
+    console.log('[INSY] feature_settings:', JSON.stringify(fs));
+    console.log('[INSY] SALON_VORLAUF_MIN:', window.SALON_VORLAUF_MIN, '| SALON_HORIZONT_TAGE:', window.SALON_HORIZONT_TAGE);
 
     var salonName=data.brand_name||data.name||'Salonname';
     var phoneRaw=[data.area_code,data.phone_number].filter(Boolean).join(' ')||data.phone||'';
