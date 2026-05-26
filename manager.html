@@ -115,7 +115,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
     <div class="card-title">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
       Terminerinnerung senden
-      <span style="margin-left:auto;font-size:9px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">WhatsApp Deeplink</span>
+      <span style="margin-left:auto;display:flex;align-items:center;gap:8px">
+        <span style="font-size:9px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">Kurzfristige Buchungen:</span>
+        <select id="kurzfristig-reminder-setting" onchange="saveKurzfristigReminderSetting(this.value)"
+          style="font-size:9px;border:1px solid var(--border);border-radius:4px;padding:2px 5px;background:var(--bg);color:var(--text);cursor:pointer;font-weight:500">
+          <option value="keine">Nicht anzeigen</option>
+          <option value="anzeigen">Anzeigen</option>
+        </select>
+      </span>
     </div>
     <div id="reminder-list"><div class="loading">Wird geladen…</div></div>
   </div>
@@ -230,6 +237,18 @@ async function loadAll(){
     return b.status!=='cancelled'&&d>=tomorrow.toISOString().slice(0,10)&&d<=dayAfter.toISOString().slice(0,10);
   });
   var reminderIds=reminders.map(function(b){return b.id;});
+  var kurzfristigReminderSetting=localStorage.getItem('kurzfristig_reminder_setting')||'keine';
+  if(kurzfristigReminderSetting==='keine'){
+    reminders=reminders.filter(function(b){
+      // Kurzfristig = heute oder morgen gebucht UND im Erinnerungsfenster
+      var bookedDay=b.created_at?b.created_at.slice(0,10):'';
+      var now2=new Date();
+      var todayStr2=now2.toISOString().slice(0,10);
+      var tomorrowStr2=new Date(now2.getFullYear(),now2.getMonth(),now2.getDate()+1).toISOString().slice(0,10);
+      var isKurzfristigBuchung=bookedDay>=todayStr2;
+      return!isKurzfristigBuchung;
+    });
+  }
   var kurzfristigSetting=localStorage.getItem('kurzfristig_setting')||'keine';
   var confirms=all.filter(function(b){
     var d=b.termin_start?b.termin_start.slice(0,10):'';
@@ -415,9 +434,11 @@ function renderTicker(rows,varianteMap,staffMap){
     // Kurzfristig = Termin liegt im Erinnerungsfenster (morgen/übermorgen)
     isKurzfristig=(terminDay===tomorrowStr||terminDay===dayAfterStr);
     var kurzfristigSetting2=localStorage.getItem('kurzfristig_setting')||'keine';
+    var kurzfristigReminderSetting2=localStorage.getItem('kurzfristig_reminder_setting')||'keine';
     var kurzfristigGesperrt=isKurzfristig&&kurzfristigSetting2==='keine';
+    var kurzfristigReminderGesperrt=isKurzfristig&&kurzfristigReminderSetting2==='keine';
     var canBestaetigen=type!=='cancel'&&!!phone&&(terminDay===todayStr2||terminDay===tomorrowStr)&&!kurzfristigGesperrt;
-    var canErinnern=type!=='cancel'&&!!phone&&(terminDay===tomorrowStr||terminDay===dayAfterStr)&&!kurzfristigGesperrt;
+    var canErinnern=type!=='cancel'&&!!phone&&(terminDay===tomorrowStr||terminDay===dayAfterStr)&&!kurzfristigReminderGesperrt;
     var canStorno=type==='cancel'&&!!phone;
 
     function btn(label,href,active,color,highlight){
@@ -571,6 +592,11 @@ function confirmErledigt(id){
   renderAll();
 }
 
+function saveKurzfristigReminderSetting(val){
+  localStorage.setItem('kurzfristig_reminder_setting',val);
+  renderAll();
+}
+
 function saveKurzfristigSetting(val){
   localStorage.setItem('kurzfristig_setting',val);
   renderAll();
@@ -579,6 +605,8 @@ function saveKurzfristigSetting(val){
 function initKurzfristigSetting(){
   var sel=document.getElementById('kurzfristig-setting');
   if(sel)sel.value=localStorage.getItem('kurzfristig_setting')||'keine';
+  var sel2=document.getElementById('kurzfristig-reminder-setting');
+  if(sel2)sel2.value=localStorage.getItem('kurzfristig_reminder_setting')||'keine';
 }
 
 function renderAll(){
