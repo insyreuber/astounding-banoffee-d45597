@@ -23,7 +23,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
 .nav-salon{font-size:13px;font-weight:600;color:rgba(255,255,255,.9)}
 
 /* ── LAYOUT ── */
-.main{max-width:100%;margin:0 auto;padding:24px 20px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto;gap:16px}
+.main{max-width:100%;margin:0;padding:24px 20px 24px 80px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto;gap:16px}
 @media(max-width:768px){.main{grid-template-columns:1fr;padding:12px}}
 
 /* ── CARD ── */
@@ -382,15 +382,15 @@ function renderTicker(rows,varianteMap,staffMap){
   var thead='<thead><tr>'
     +'<th style="width:14px"></th>'
     +'<th>Name</th>'
-    +'<th>Telefon</th>'
+    +'<th style="font-size:12px">Telefon</th>'
     +'<th>Service</th>'
-    +'<th>Dauer</th>'
-    +'<th>Preis</th>'
+    +'<th style="width:60px">Dauer</th>'
+    +'<th style="width:60px">Preis</th>'
     +'<th>Mitarbeiter</th>'
     +'<th>Termin</th>'
-    +'<th>Buchung</th>'
-    +'<th>Status</th>'
-    +'<th>Aktionen</th>'
+    +'<th style="font-size:12px">Buchung</th>'
+    +'<th style="font-size:12px">Status</th>'
+    +'<th style="font-size:12px">Aktionen</th>'
   +'</tr></thead>';
   var tbody=rows.map(function(b){
     var type=b.status==='cancelled'?'cancel':b.status==='rescheduled'?'move':'in';
@@ -463,15 +463,15 @@ function renderTicker(rows,varianteMap,staffMap){
     return'<tr style="'+(isErledigt?'opacity:0.55':'')+'">'
       +'<td><span class="ticker-dot '+type+'" style="display:block;margin:0 auto"></span></td>'
       +'<td style="font-weight:500">'+esc(b.customer_name||'–')+'</td>'
-      +'<td style="color:var(--muted);font-family:monospace;font-size:11px">'+esc(b.customer_phone||'–')+'</td>'
+      +'<td style="color:var(--muted);font-family:monospace;font-size:13px">'+esc(b.customer_phone||'–')+'</td>'
       +'<td>'+svcName+'</td>'
-      +'<td style="color:var(--muted)">'+dur+'</td>'
-      +'<td style="font-weight:500;color:var(--tpl)">'+price+'</td>'
+      +'<td style="color:var(--muted);width:60px">'+dur+'</td>'
+      +'<td style="font-weight:500;color:var(--tpl);width:60px">'+price+'</td>'
       +'<td style="color:var(--tg);font-weight:500">'+staffName+'</td>'
       +'<td style="white-space:nowrap">'+esc(dateStr)+'</td>'
-      +'<td style="color:var(--muted);font-size:10px;white-space:nowrap">'+esc(bookStr)+'</td>'
-      +'<td><span class="badge '+type+'">'+typeLabel+'</span></td>'
-      +'<td>'+aktionen+'</td>'
+      +'<td style="color:var(--muted);font-size:13px;white-space:nowrap">'+esc(bookStr)+'</td>'
+      +'<td style="font-size:13px"><span class="badge '+type+'">'+typeLabel+'</span></td>'
+      +'<td style="font-size:13px">'+aktionen+'</td>'
     +'</tr>';
   }).join('');
   el.innerHTML='<div style="overflow-x:auto"><table class="ticker-table">'+thead+'<tbody>'+tbody+'</tbody></table></div>';
