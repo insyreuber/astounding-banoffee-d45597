@@ -222,9 +222,10 @@ async function loadAll(){
     var d=b.termin_start?b.termin_start.slice(0,10):'';
     return b.status!=='cancelled'&&d>=tomorrow.toISOString().slice(0,10)&&d<=dayAfter.toISOString().slice(0,10);
   });
+  var reminderIds=reminders.map(function(b){return b.id;});
   var confirms=all.filter(function(b){
     var d=b.termin_start?b.termin_start.slice(0,10):'';
-    return b.status!=='cancelled'&&d>=todayStr&&d<=tomorrow.toISOString().slice(0,10);
+    return b.status!=='cancelled'&&d>=todayStr&&d<=tomorrow.toISOString().slice(0,10)&&reminderIds.indexOf(b.id)<0;
   });
   var stornos=all.filter(function(b){
     return b.status==='cancelled'&&new Date(b.updated_at||b.created_at)>=sevenDaysAgo;
@@ -345,6 +346,10 @@ function renderTicker(rows,varianteMap,staffMap){
   var cnt=document.getElementById('ticker-count');
   if(cnt)cnt.textContent=rows.length+' Einträge';
   if(!rows.length){el.innerHTML='<div class="loading">Noch keine Aktivitäten</div>';return;}
+  window._tickerRows=rows;
+  window._tickerVarianteMap=varianteMap;
+  window._tickerStaffMap=staffMap;
+  var erledigtIds=JSON.parse(localStorage.getItem('ticker_erledigt')||'[]');
   var thead='<thead><tr>'
     +'<th style="width:14px"></th>'
     +'<th>Name</th>'
@@ -356,6 +361,7 @@ function renderTicker(rows,varianteMap,staffMap){
     +'<th>Termin</th>'
     +'<th>Buchung</th>'
     +'<th>Status</th>'
+    +'<th>Aktionen</th>'
   +'</tr></thead>';
   var tbody=rows.map(function(b){
     var type=b.status==='cancelled'?'cancel':b.status==='rescheduled'?'move':'in';
@@ -368,7 +374,34 @@ function renderTicker(rows,varianteMap,staffMap){
     var dur=variante&&variante.dauer_minuten?variante.dauer_minuten+' Min':'–';
     var price=variante&&variante.preis?variante.preis+' €':'–';
     var staffName=esc(staffMap[b.mitarbeiter_id]||'–');
-    return'<tr>'
+    var phone=b.customer_phone||'';
+    var bookingLink='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
+    var termin=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'})+' um '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr';
+    var msgBestaetigung='Hallo '+(b.customer_name||'')+'!\nDein Termin am '+termin+' ist bestätigt. Bis dann!\n\nDein Link zur Buchung: '+bookingLink+'\npowered by insy-reception';
+    var msgErinnerung='Hallo '+(b.customer_name||'')+'!\nErinnerung: Dein Termin ist am '+termin+'. Wir freuen uns auf dich!\n\nDein Link zur Buchung: '+bookingLink+'\npowered by insy-reception';
+    var msgStorno='Hallo '+(b.customer_name||'')+'!\nWir haben deine Stornierung für den '+termin+' erhalten und bestätigen diese hiermit.\n\nFalls du einen neuen Termin buchen möchtest:\n'+bookingLink+'\npowered by insy-reception';
+    var isErledigt=erledigtIds.indexOf(b.id)>=0;
+    var aktionen='<div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;min-width:160px">';
+    // Bestätigen (nur wenn nicht storniert)
+    if(type!=='cancel'&&phone){
+      aktionen+='<a href="'+waLink(phone,msgBestaetigung)+'" target="_blank" title="Bestätigung senden" style="background:#e8f4fd;border:1px solid #3498db;border-radius:5px;padding:3px 7px;font-size:10px;color:#2980b9;text-decoration:none;white-space:nowrap">✉ Best.</a>';
+    }
+    // Erinnern (nur wenn nicht storniert)
+    if(type!=='cancel'&&phone){
+      aktionen+='<a href="'+waLink(phone,msgErinnerung)+'" target="_blank" title="Erinnerung senden" style="background:#fef9e7;border:1px solid #f39c12;border-radius:5px;padding:3px 7px;font-size:10px;color:#e67e22;text-decoration:none;white-space:nowrap">⏰ Erin.</a>';
+    }
+    // Storno WA (nur wenn nicht bereits storniert)
+    if(type!=='cancel'&&phone){
+      aktionen+='<a href="'+waLink(phone,msgStorno)+'" target="_blank" title="Storno bestätigen" style="background:#fce8e8;border:1px solid #e74c3c;border-radius:5px;padding:3px 7px;font-size:10px;color:#c0392b;text-decoration:none;white-space:nowrap">✕ Storno</a>';
+    }
+    // Erledigt Toggle
+    if(isErledigt){
+      aktionen+='<button onclick="tickerErledigt(\''+b.id+'\')" title="Als offen markieren" style="background:#e8f5e9;border:1px solid #4ade80;border-radius:5px;padding:3px 7px;font-size:10px;color:#16a34a;cursor:pointer;font-weight:600;white-space:nowrap">✓ Erledigt</button>';
+    }else{
+      aktionen+='<button onclick="tickerErledigt(\''+b.id+'\')" title="Als erledigt markieren" style="background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:3px 7px;font-size:10px;color:var(--muted);cursor:pointer;white-space:nowrap">✓</button>';
+    }
+    aktionen+='</div>';
+    return'<tr style="'+(isErledigt?'opacity:0.55':'')+'">'
       +'<td><span class="ticker-dot '+type+'" style="display:block;margin:0 auto"></span></td>'
       +'<td style="font-weight:500">'+esc(b.customer_name||'–')+'</td>'
       +'<td style="color:var(--muted);font-family:monospace;font-size:11px">'+esc(b.customer_phone||'–')+'</td>'
@@ -379,9 +412,38 @@ function renderTicker(rows,varianteMap,staffMap){
       +'<td style="white-space:nowrap">'+esc(dateStr)+'</td>'
       +'<td style="color:var(--muted);font-size:10px;white-space:nowrap">'+esc(bookStr)+'</td>'
       +'<td><span class="badge '+type+'">'+typeLabel+'</span></td>'
+      +'<td>'+aktionen+'</td>'
     +'</tr>';
   }).join('');
   el.innerHTML='<div style="overflow-x:auto"><table class="ticker-table">'+thead+'<tbody>'+tbody+'</tbody></table></div>';
+}
+
+function tickerErledigt(id){
+  var ids=JSON.parse(localStorage.getItem('ticker_erledigt')||'[]');
+  var idx=ids.indexOf(id);
+  if(idx<0){
+    // Als erledigt markieren → auch in anderen Kacheln erledigt setzen
+    ids.push(id);
+    localStorage.setItem('ticker_erledigt',JSON.stringify(ids));
+    ['storno_erledigt','reminder_erledigt','confirm_erledigt'].forEach(function(key){
+      var kIds=JSON.parse(localStorage.getItem(key)||'[]');
+      if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem(key,JSON.stringify(kIds));}
+    });
+  } else {
+    // Wieder auf offen setzen → auch in anderen Kacheln entfernen
+    ids.splice(idx,1);
+    localStorage.setItem('ticker_erledigt',JSON.stringify(ids));
+    ['storno_erledigt','reminder_erledigt','confirm_erledigt'].forEach(function(key){
+      var kIds=JSON.parse(localStorage.getItem(key)||'[]');
+      var ki=kIds.indexOf(id);
+      if(ki>=0){kIds.splice(ki,1);localStorage.setItem(key,JSON.stringify(kIds));}
+    });
+  }
+  // Alle betroffenen Bereiche neu rendern
+  if(window._tickerRows)renderTicker(window._tickerRows,window._tickerVarianteMap,window._tickerStaffMap);
+  if(window._lastStornoData)renderStorno(window._lastStornoData.rows,window._lastStornoData.varianteMap,window._lastStornoData.staffMap,window._lastStornoData.serviceMap);
+  if(window._lastReminderData)renderReminders(window._lastReminderData);
+  if(window._lastConfirmData)renderConfirm(window._lastConfirmData);
 }
 
 function renderUpcoming(rows){
