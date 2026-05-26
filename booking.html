@@ -680,14 +680,12 @@ function availSlots(){
 
   return openSlots.map(function(s){
     var slotMin=parseInt(s.split(':')[0])*60+parseInt(s.split(':')[1]);
-    // Vergangene Slots + Buchungsvorlauf prüfen
-    // SALON_VORLAUF_MIN: wie viele Minuten ab jetzt muss ein Slot mindestens in der Zukunft liegen
+    // Vergangene Slots prüfen
     var isPast=false;
     if(st.day){
       var parts=st.day.split('-');
       var slotDate=new Date(+parts[0],+parts[1]-1,+parts[2],Math.floor(slotMin/60),slotMin%60);
-      var vorlaufCutoff=new Date(new Date().getTime()+(window.SALON_VORLAUF_MIN||0)*60000);
-      if(slotDate<vorlaufCutoff)isPast=true;
+      if(slotDate<new Date(Date.now()+(window.SALON_VORLAUF_MIN||0)*60000))isPast=true;
     }
     if(isPast)return{time:s,busy:false,closed:true,past:true};
     // Zu nah an Schließzeit — Termin würde nicht reinpassen (multi-slot aware)
@@ -899,11 +897,6 @@ function mkCal(){
     var isPast=calOff<0||(calOff===0&&d<cd.now.getDate());
     var isToday=calOff===0&&d===cd.now.getDate();
     var key=cd.base.getFullYear()+'-'+(cd.base.getMonth()+1)+'-'+d;
-    // Buchungshorizont: Tage weiter als SALON_HORIZONT_TAGE sperren — gleiches Prinzip wie isPast
-    var horizTage=window.SALON_HORIZONT_TAGE||28;
-    var horizCutoff=new Date(cd.now.getFullYear(),cd.now.getMonth(),cd.now.getDate()+horizTage);
-    var thisDay=new Date(cd.base.getFullYear(),cd.base.getMonth(),d);
-    var isBeyondHorizont=thisDay>horizCutoff;
     var isSel=st.day===key;
     var DAY_KEYS=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
     var dateObj=new Date(cd.base.getFullYear(),cd.base.getMonth(),d);
@@ -914,13 +907,13 @@ function mkCal(){
     // Heutigen Tag sperren wenn keine Slots mehr
     var todayNoSlots=false;
     if(isToday&&effAz&&effAz.aktiv){
-      var _eff=_azFirst(effAz);var endMin=parseInt((_eff.end||'23:59').split(':')[0])*60+parseInt((_eff.end||'23:59').split(':')[1]);
+      var _first=_azFirst(az[dayKey]);var endMin=parseInt((_first.end||'23:59').split(':')[0])*60+parseInt((_first.end||'23:59').split(':')[1]);
       var nowMin=cd.now.getHours()*60+cd.now.getMinutes();
       todayNoSlots=nowMin>=endMin;
     }
-    var isBlocked=isPast||isClosed||todayNoSlots||isBeyondHorizont;
+    var isBlocked=isPast||isClosed||todayNoSlots||(new Date(cd.base.getFullYear(),cd.base.getMonth(),d)>new Date(cd.now.getFullYear(),cd.now.getMonth(),cd.now.getDate()+(window.SALON_HORIZONT_TAGE||9999)));
     days+='<div class="cd '+(isBlocked?'cp':'')+' '+(isToday&&!isSel&&!isBlocked?'ct':'')+' '+(isSel?'cs':'')+'"'
-      +(isBlocked?'':' onclick="pickDay(\''+key+'\')"')+' style="'+(isClosed&&!isPast?'text-decoration:line-through;opacity:0.35':isBeyondHorizont?'opacity:0.25':'')+'">'+d+'</div>';
+      +(isBlocked?'':' onclick="pickDay(\''+key+'\')"')+' style="'+(isClosed&&!isPast?'text-decoration:line-through;opacity:0.35':'')+'">'+d+'</div>';
   }
   var slots=availSlots();
   var slotsHtml=st.day
@@ -1530,13 +1523,11 @@ async function loadSalonProfile(){
       erinnerung: f.erinnerung_on!==false||f.reminder_aktiv!==false,
       followup: f.followup_on!==false||f.followup_aktiv!==false
     };
-    // Buchungsvorlauf: Index 0-8 → Minuten (0=Sofort,1=1h,2=2h,3=4h,4=8h,5=12h,6=1Tag,7=2Tage,8=3Tage)
-    var VORLAUF_MIN_MAP=[0,60,120,240,480,720,1440,2880,4320];
-    var vIdx=f.booking_vorlauf!=null?parseInt(f.booking_vorlauf):0;
-    window.SALON_VORLAUF_MIN=VORLAUF_MIN_MAP[vIdx]!=null?VORLAUF_MIN_MAP[vIdx]:0;
-    // Buchungshorizont: direkt Wochen in DB gespeichert → in Tage umrechnen
-    window.SALON_HORIZONT_TAGE=f.booking_horizont!=null?parseInt(f.booking_horizont)*7:28;
     window.SALON_TEMP_AZ=data.temp_arbeitszeiten||null;
+    var _vMap=[0,60,120,240,480,720,1440,2880,4320];
+    var _vIdx=f.booking_vorlauf!=null?f.booking_vorlauf:0;
+    window.SALON_VORLAUF_MIN=_vMap[_vIdx]!=null?_vMap[_vIdx]:0;
+    window.SALON_HORIZONT_TAGE=f.booking_horizont!=null?f.booking_horizont*7:9999;
     renderWorkingHours(data.arbeitszeiten);
     await loadServices(salonId);
     await loadMitarbeiter(salonId);
