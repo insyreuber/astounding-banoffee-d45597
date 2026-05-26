@@ -448,7 +448,14 @@ function renderTicker(rows,varianteMap,staffMap){
     var stornoOffen=type==='cancel'&&JSON.parse(localStorage.getItem('erledigt_ids')||'[]').indexOf(b.id)<0;
     aktionen+=btn('Storno',waLink(phone,msgStorno),canStorno,'#e74c3c',stornoOffen);
     // Erledigt: grauer Haken → grüner Haken
-    aktionen+='<button onclick="tickerErledigt(\''+b.id+'\')" style="background:none;border:none;cursor:pointer;font-size:18px;color:'+(isErledigt?'#16a34a':'#d0d0d0')+';padding:0 2px;line-height:1;'+(isErledigt?'filter:drop-shadow(0 0 4px #16a34a88)':'')+'" title="'+(isErledigt?'Als offen markieren':'Als erledigt markieren')+'">✓</button>';
+    var kachelErledigtIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');
+    var isKachelErledigt=kachelErledigtIds.indexOf(b.id)>=0;
+    // Haken: grün+deaktiviert wenn von Kachel erledigt, grün+aktiv wenn von Ticker, grau wenn offen
+    if(isKachelErledigt){
+      aktionen+='<span style="font-size:18px;color:#16a34a;padding:0 2px;filter:drop-shadow(0 0 4px #16a34a88);cursor:default;opacity:0.5" title="In Kachel erledigt markiert">✓</span>';
+    } else {
+      aktionen+='<button onclick="tickerErledigt(\''+b.id+'\')" style="background:none;border:none;cursor:pointer;font-size:18px;color:'+(isErledigt?'#16a34a':'#d0d0d0')+';padding:0 2px;line-height:1;'+(isErledigt?'filter:drop-shadow(0 0 4px #16a34a88)':'')+'" title="'+(isErledigt?'Als offen markieren':'Als erledigt markieren')+'">✓</button>';
+    }
     aktionen+='</div>';
     return'<tr style="'+(isErledigt?'opacity:0.55':'')+'">'
       +'<td><span class="ticker-dot '+type+'" style="display:block;margin:0 auto"></span></td>'
@@ -561,18 +568,24 @@ function renderStorno(rows,varianteMap,staffMap,serviceMap){
 function stornoErledigt(id){
   var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(ids));}
+  var kIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');
+  if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem('kachel_erledigt_ids',JSON.stringify(kIds));}
   renderAll();
 }
 
 function reminderErledigt(id){
   var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(ids));}
+  var kIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');
+  if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem('kachel_erledigt_ids',JSON.stringify(kIds));}
   renderAll();
 }
 
 function confirmErledigt(id){
   var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(ids));}
+  var kIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');
+  if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem('kachel_erledigt_ids',JSON.stringify(kIds));}
   renderAll();
 }
 
