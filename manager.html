@@ -237,7 +237,7 @@ async function loadAll(){
     return b.status!=='cancelled'&&d>=tomorrow.toISOString().slice(0,10)&&d<=dayAfter.toISOString().slice(0,10);
   });
   var reminderIds=reminders.map(function(b){return b.id;});
-  var kurzfristigReminderSetting=localStorage.getItem('kurzfristig_reminder_setting')||'keine';
+  var kurzfristigReminderSetting=localStorage.getItem('kurzfristig_reminder_setting')||'anzeigen';
   if(kurzfristigReminderSetting==='keine'){
     reminders=reminders.filter(function(b){
       var bookedDay=b.created_at?b.created_at.slice(0,10):'';
@@ -245,7 +245,7 @@ async function loadAll(){
       return bookedDay<todayStr2;
     });
   }
-  var kurzfristigSetting=localStorage.getItem('kurzfristig_setting')||'keine';
+  var kurzfristigSetting=localStorage.getItem('kurzfristig_setting')||'anzeigen';
   var confirms=all.filter(function(b){
     var d=b.termin_start?b.termin_start.slice(0,10):'';
     if(b.status==='cancelled')return false;
@@ -590,9 +590,9 @@ function saveKurzfristigSetting(val){
 
 function initKurzfristigSetting(){
   var sel=document.getElementById('kurzfristig-setting');
-  if(sel)sel.value=localStorage.getItem('kurzfristig_setting')||'keine';
+  if(sel)sel.value=localStorage.getItem('kurzfristig_setting')||'anzeigen';
   var sel2=document.getElementById('kurzfristig-reminder-setting');
-  if(sel2)sel2.value=localStorage.getItem('kurzfristig_reminder_setting')||'keine';
+  if(sel2)sel2.value=localStorage.getItem('kurzfristig_reminder_setting')||'anzeigen';
 }
 
 function renderAll(){
