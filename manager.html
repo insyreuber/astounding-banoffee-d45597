@@ -349,7 +349,7 @@ function renderTicker(rows,varianteMap,staffMap){
   window._tickerRows=rows;
   window._tickerVarianteMap=varianteMap;
   window._tickerStaffMap=staffMap;
-  var erledigtIds=JSON.parse(localStorage.getItem('ticker_erledigt')||'[]');
+  var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var thead='<thead><tr>'
     +'<th style="width:14px"></th>'
     +'<th>Name</th>'
@@ -410,7 +410,7 @@ function renderTicker(rows,varianteMap,staffMap){
     var aktionen='<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;min-width:200px">';
     aktionen+=btn('Bestätigung',waLink(phone,msgBestaetigung),canBestaetigen,'#2980b9');
     aktionen+=btn('Erinnerung',waLink(phone,msgErinnerung),canErinnern,'#e67e22');
-    var stornoOffen=type==='cancel'&&JSON.parse(localStorage.getItem('storno_erledigt')||'[]').indexOf(b.id)<0;
+    var stornoOffen=type==='cancel'&&JSON.parse(localStorage.getItem('erledigt_ids')||'[]').indexOf(b.id)<0;
     aktionen+=btn('Storno',waLink(phone,msgStorno),canStorno,'#e74c3c',stornoOffen);
     // Erledigt: grauer Haken → grüner Haken
     aktionen+='<button onclick="tickerErledigt(\''+b.id+'\')" style="background:none;border:none;cursor:pointer;font-size:18px;color:'+(isErledigt?'#16a34a':'#d0d0d0')+';padding:0 2px;line-height:1;'+(isErledigt?'filter:drop-shadow(0 0 4px #16a34a88)':'')+'" title="'+(isErledigt?'Als offen markieren':'Als erledigt markieren')+'">✓</button>';
@@ -433,31 +433,11 @@ function renderTicker(rows,varianteMap,staffMap){
 }
 
 function tickerErledigt(id){
-  var ids=JSON.parse(localStorage.getItem('ticker_erledigt')||'[]');
+  var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var idx=ids.indexOf(id);
-  if(idx<0){
-    // Als erledigt markieren → auch in anderen Kacheln erledigt setzen
-    ids.push(id);
-    localStorage.setItem('ticker_erledigt',JSON.stringify(ids));
-    ['storno_erledigt','reminder_erledigt','confirm_erledigt'].forEach(function(key){
-      var kIds=JSON.parse(localStorage.getItem(key)||'[]');
-      if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem(key,JSON.stringify(kIds));}
-    });
-  } else {
-    // Wieder auf offen setzen → auch in anderen Kacheln entfernen
-    ids.splice(idx,1);
-    localStorage.setItem('ticker_erledigt',JSON.stringify(ids));
-    ['storno_erledigt','reminder_erledigt','confirm_erledigt'].forEach(function(key){
-      var kIds=JSON.parse(localStorage.getItem(key)||'[]');
-      var ki=kIds.indexOf(id);
-      if(ki>=0){kIds.splice(ki,1);localStorage.setItem(key,JSON.stringify(kIds));}
-    });
-  }
-  // Alle betroffenen Bereiche neu rendern
-  if(window._tickerRows)renderTicker(window._tickerRows,window._tickerVarianteMap,window._tickerStaffMap);
-  if(window._lastStornoData)renderStorno(window._lastStornoData.rows,window._lastStornoData.varianteMap,window._lastStornoData.staffMap,window._lastStornoData.serviceMap);
-  if(window._lastReminderData)renderReminders(window._lastReminderData);
-  if(window._lastConfirmData)renderConfirm(window._lastConfirmData);
+  if(idx<0){ids.push(id);}else{ids.splice(idx,1);}
+  localStorage.setItem('erledigt_ids',JSON.stringify(ids));
+  renderAll();
 }
 
 function renderUpcoming(rows){
@@ -487,7 +467,7 @@ function renderStorno(rows,varianteMap,staffMap,serviceMap){
   if(!rows.length){el.innerHTML='<div class="loading">Keine Stornos in den letzten 7 Tagen</div>';return;}
 
   // Split into offen and erledigt (stored in localStorage)
-  var erledigtIds=JSON.parse(localStorage.getItem('storno_erledigt')||'[]');
+  var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
   var erledigt=rows.filter(function(b){return erledigtIds.indexOf(b.id)>=0;});
 
@@ -544,18 +524,35 @@ function renderStorno(rows,varianteMap,staffMap,serviceMap){
 }
 
 function stornoErledigt(id){
-  var ids=JSON.parse(localStorage.getItem('storno_erledigt')||'[]');
-  if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('storno_erledigt',JSON.stringify(ids));}
-  // Re-render
-  var cached=window._lastStornoData;
-  if(cached)renderStorno(cached.rows,cached.varianteMap,cached.staffMap,cached.serviceMap);
+  var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
+  if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(ids));}
+  renderAll();
+}
+
+function reminderErledigt(id){
+  var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
+  if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(ids));}
+  renderAll();
+}
+
+function confirmErledigt(id){
+  var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
+  if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(ids));}
+  renderAll();
+}
+
+function renderAll(){
+  if(window._tickerRows)renderTicker(window._tickerRows,window._tickerVarianteMap,window._tickerStaffMap);
+  if(window._lastStornoData)renderStorno(window._lastStornoData.rows,window._lastStornoData.varianteMap,window._lastStornoData.staffMap,window._lastStornoData.serviceMap);
+  if(window._lastReminderData)renderReminders(window._lastReminderData);
+  if(window._lastConfirmData)renderConfirm(window._lastConfirmData);
 }
 
 function renderReminders(rows){
   var el=document.getElementById('reminder-list');
   if(!rows.length){el.innerHTML='<div class="loading">Keine Termine in den nächsten 2 Tagen</div>';return;}
 
-  var erledigtIds=JSON.parse(localStorage.getItem('reminder_erledigt')||'[]');
+  var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
   var erledigt=rows.filter(function(b){return erledigtIds.indexOf(b.id)>=0;});
 
@@ -598,17 +595,12 @@ function renderReminders(rows){
   el.innerHTML=html;
 }
 
-function reminderErledigt(id){
-  var ids=JSON.parse(localStorage.getItem('reminder_erledigt')||'[]');
-  if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('reminder_erledigt',JSON.stringify(ids));}
-  if(window._lastReminderData)renderReminders(window._lastReminderData);
-}
 
 function renderConfirm(rows){
   var el=document.getElementById('confirm-list');
   if(!rows.length){el.innerHTML='<div class="loading">Keine Termine heute / morgen</div>';return;}
 
-  var erledigtIds=JSON.parse(localStorage.getItem('confirm_erledigt')||'[]');
+  var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
   var erledigt=rows.filter(function(b){return erledigtIds.indexOf(b.id)>=0;});
 
@@ -651,11 +643,7 @@ function renderConfirm(rows){
   el.innerHTML=html;
 }
 
-function confirmErledigt(id){
-  var ids=JSON.parse(localStorage.getItem('confirm_erledigt')||'[]');
-  if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('confirm_erledigt',JSON.stringify(ids));}
-  if(window._lastConfirmData)renderConfirm(window._lastConfirmData);
-}
+
 
 loadAll();
 </script>
