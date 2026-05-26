@@ -608,23 +608,49 @@ function getEffectiveAz(dateStr){
   // Selected staff
   var staff=st.stf1?STAFF.filter(function(s){return s.id===st.stf1;})[0]:null;
 
-  // 1. Staff temporary KW
-  if(staff&&staff.tempAz&&Array.isArray(staff.tempAz)){
-    var match=staff.tempAz.filter(function(t){return t.kw===isoW.kw&&t.year===isoW.year;})[0];
-    if(match&&match.zeiten&&match.zeiten[dayKey])return match.zeiten[dayKey];
-  }
-
-  // 2. Staff personal AZ
-  if(staff&&staff.az&&staff.az[dayKey])return staff.az[dayKey];
-
-  // 3. Salon temporary KW
+  // 1. Salon temporäre Öffnungszeiten — schlägt ALLES
   if(window.SALON_TEMP_AZ&&Array.isArray(window.SALON_TEMP_AZ)){
     var sMatch=window.SALON_TEMP_AZ.filter(function(t){return t.kw===isoW.kw&&t.year===isoW.year;})[0];
-    if(sMatch&&sMatch.zeiten&&sMatch.zeiten[dayKey])return sMatch.zeiten[dayKey];
+    if(sMatch&&sMatch.zeiten&&sMatch.zeiten[dayKey]){
+      var salonTempAz=sMatch.zeiten[dayKey];
+      // Salon geschlossen → sofort zurück, kein Mitarbeiter kann arbeiten
+      if(salonTempAz.aktiv===false)return salonTempAz;
+      // Salon offen → Mitarbeiter-Zeiten innerhalb prüfen
+      if(staff){
+        if(staff.tempAz&&Array.isArray(staff.tempAz)){
+          var stMatch=staff.tempAz.filter(function(t){return t.kw===isoW.kw&&t.year===isoW.year;})[0];
+          if(stMatch&&stMatch.zeiten&&stMatch.zeiten[dayKey])return stMatch.zeiten[dayKey];
+        }
+        if(staff.az&&staff.az[dayKey])return staff.az[dayKey];
+      }
+      return salonTempAz;
+    }
   }
 
-  // 4. Salon standard AZ
-  if(window.SALON_AZ&&window.SALON_AZ[dayKey])return window.SALON_AZ[dayKey];
+  // 2. Salon Stamm-Öffnungszeiten — schlägt Mitarbeiter
+  if(window.SALON_AZ&&window.SALON_AZ[dayKey]){
+    var salonAz=window.SALON_AZ[dayKey];
+    // Salon geschlossen → sofort zurück
+    if(salonAz.aktiv===false)return salonAz;
+    // Salon offen → Mitarbeiter-Zeiten prüfen
+    if(staff){
+      if(staff.tempAz&&Array.isArray(staff.tempAz)){
+        var stMatch2=staff.tempAz.filter(function(t){return t.kw===isoW.kw&&t.year===isoW.year;})[0];
+        if(stMatch2&&stMatch2.zeiten&&stMatch2.zeiten[dayKey])return stMatch2.zeiten[dayKey];
+      }
+      if(staff.az&&staff.az[dayKey])return staff.az[dayKey];
+    }
+    return salonAz;
+  }
+
+  // 3. Kein Salon-Eintrag → Mitarbeiter-Zeiten als Fallback
+  if(staff){
+    if(staff.tempAz&&Array.isArray(staff.tempAz)){
+      var stMatch3=staff.tempAz.filter(function(t){return t.kw===isoW.kw&&t.year===isoW.year;})[0];
+      if(stMatch3&&stMatch3.zeiten&&stMatch3.zeiten[dayKey])return stMatch3.zeiten[dayKey];
+    }
+    if(staff.az&&staff.az[dayKey])return staff.az[dayKey];
+  }
 
   return null;
 }
