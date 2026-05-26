@@ -233,7 +233,9 @@ async function loadAll(){
   renderTicker(ticker,varianteMap,staffMap);
   renderUpcomingCalendar(upcoming,varianteMap,staffMap,serviceMap);
   renderReminders(reminders);
+  window._lastReminderData=reminders;
   renderConfirm(confirms);
+  window._lastConfirmData=confirms;
   renderStorno(stornos,varianteMap,staffMap,serviceMap);
   window._lastStornoData={rows:stornos,varianteMap:varianteMap,staffMap:staffMap,serviceMap:serviceMap};
 }
@@ -476,10 +478,14 @@ function stornoErledigt(id){
 function renderReminders(rows){
   var el=document.getElementById('reminder-list');
   if(!rows.length){el.innerHTML='<div class="loading">Keine Termine in den nächsten 2 Tagen</div>';return;}
-  el.innerHTML=rows.map(function(b){
+
+  var erledigtIds=JSON.parse(localStorage.getItem('reminder_erledigt')||'[]');
+  var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
+  var erledigt=rows.filter(function(b){return erledigtIds.indexOf(b.id)>=0;});
+
+  function buildCard(b,isErledigt){
     var d=new Date(b.termin_start||b.created_at||new Date());
     var dateStr=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'});
-    var timeStr=new Date(b.termin_start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
     var timeStr=new Date(b.termin_start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
     var bookingLink='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
     var msg='Hallo '+(b.customer_name||'')+'!\n'
@@ -487,48 +493,92 @@ function renderReminders(rows){
       +'Dein Link zur Buchung: '+bookingLink+'\n'
       +'powered by insy-reception';
     var phone=b.customer_phone||b.phone||'';
-    return'<div class="wa-row">'+
-      '<div class="wa-info">'+
-        '<div class="wa-name">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
-        '<div class="wa-detail">'+esc(dateStr)+' · '+(b.termin_start?new Date(b.termin_start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}):'')+
-        '</div>'+
-      '</div>'+
-      (phone
-        ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank">'+
+    return'<div style="background:var(--bg);border:1.5px solid '+(isErledigt?'#d1fae5':'var(--border)')+';border-radius:10px;padding:12px;position:relative;opacity:'+(isErledigt?'0.6':'1')+'">'+
+      (!isErledigt
+        ?'<button onclick="reminderErledigt(\''+b.id+'\')" title="Als erledigt markieren" style="position:absolute;top:8px;right:8px;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;cursor:pointer;font-size:12px;color:#16a34a;font-weight:600">✓</button>'
+        :'<span style="position:absolute;top:8px;right:8px;font-size:11px;color:#16a34a;font-weight:600">✓ Erledigt</span>')+
+      '<div style="font-size:12px;font-weight:500;margin-bottom:3px;padding-right:55px">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
+      '<div style="font-size:10px;color:var(--muted);margin-bottom:10px">'+esc(dateStr)+' '+timeStr+'</div>'+
+      (phone&&!isErledigt
+        ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:100%;justify-content:center">'+
            '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg>'+
            ' Erinnerung senden</a>'
-        :'<span style="font-size:10px;color:var(--muted)">Keine Nummer</span>')+
+        :'<span style="font-size:10px;color:var(--muted)">'+(phone?esc(phone):'Keine Nummer')+'</span>')+
     '</div>';
-  }).join('');
+  }
+
+  var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">'+
+    (offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Erinnerungen erledigt</div>')+
+  '</div>';
+  if(erledigt.length){
+    html+='<div style="margin-top:14px">'+
+      '<button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" '+
+      'style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500">'+
+      '<span>▶</span> Erledigt ('+erledigt.length+')</button>'+
+      '<div style="display:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:8px">'+
+        erledigt.map(function(b){return buildCard(b,true);}).join('')+
+      '</div></div>';
+  }
+  el.innerHTML=html;
+}
+
+function reminderErledigt(id){
+  var ids=JSON.parse(localStorage.getItem('reminder_erledigt')||'[]');
+  if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('reminder_erledigt',JSON.stringify(ids));}
+  if(window._lastReminderData)renderReminders(window._lastReminderData);
 }
 
 function renderConfirm(rows){
   var el=document.getElementById('confirm-list');
   if(!rows.length){el.innerHTML='<div class="loading">Keine Termine heute / morgen</div>';return;}
-  el.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">'+
-    rows.map(function(b){
-      var d=new Date(b.termin_start||b.created_at||new Date());
-      var dateStr=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'});
-      var svcName2='';
-      var timeStr2=new Date(b.termin_start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
-      var timeStr2=new Date(b.termin_start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
-      var bookingLink2='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
-      var msg='Hallo '+(b.customer_name||'')+'!\n'
-        +'Dein Termin am '+dateStr+' um '+timeStr2+' Uhr ist bestätigt. Bis dann!\n\n'
-        +'Dein Link zur Buchung: '+bookingLink2+'\n'
-        +'powered by insy-reception';
-      var phone=b.customer_phone||b.phone||'';
-      return'<div style="background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:12px">'+
-        '<div style="font-size:12px;font-weight:500;margin-bottom:3px">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
-        '<div style="font-size:10px;color:var(--muted);margin-bottom:10px">'+esc(dateStr)+' '+(b.termin_start?new Date(b.termin_start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}):'')+'</div>'+
-        (phone
-          ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:100%;justify-content:center">'+
-             '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg>'+
-             ' Bestätigung senden</a>'
-          :'<span style="font-size:10px;color:var(--muted)">Keine Telefonnummer hinterlegt</span>')+
-      '</div>';
-    }).join('')+
+
+  var erledigtIds=JSON.parse(localStorage.getItem('confirm_erledigt')||'[]');
+  var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
+  var erledigt=rows.filter(function(b){return erledigtIds.indexOf(b.id)>=0;});
+
+  function buildCard(b,isErledigt){
+    var d=new Date(b.termin_start||b.created_at||new Date());
+    var dateStr=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'});
+    var timeStr2=new Date(b.termin_start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+    var bookingLink2='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
+    var msg='Hallo '+(b.customer_name||'')+'!\n'
+      +'Dein Termin am '+dateStr+' um '+timeStr2+' Uhr ist bestätigt. Bis dann!\n\n'
+      +'Dein Link zur Buchung: '+bookingLink2+'\n'
+      +'powered by insy-reception';
+    var phone=b.customer_phone||b.phone||'';
+    return'<div style="background:var(--bg);border:1.5px solid '+(isErledigt?'#d1fae5':'var(--border)')+';border-radius:10px;padding:12px;position:relative;opacity:'+(isErledigt?'0.6':'1')+'">'+
+      (!isErledigt
+        ?'<button onclick="confirmErledigt(\''+b.id+'\')" title="Als erledigt markieren" style="position:absolute;top:8px;right:8px;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;cursor:pointer;font-size:12px;color:#16a34a;font-weight:600">✓</button>'
+        :'<span style="position:absolute;top:8px;right:8px;font-size:11px;color:#16a34a;font-weight:600">✓ Erledigt</span>')+
+      '<div style="font-size:12px;font-weight:500;margin-bottom:3px;padding-right:55px">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
+      '<div style="font-size:10px;color:var(--muted);margin-bottom:10px">'+esc(dateStr)+' '+timeStr2+'</div>'+
+      (phone&&!isErledigt
+        ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:100%;justify-content:center">'+
+           '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg>'+
+           ' Bestätigung senden</a>'
+        :'<span style="font-size:10px;color:var(--muted)">'+(phone?esc(phone):'Keine Telefonnummer hinterlegt')+'</span>')+
+    '</div>';
+  }
+
+  var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">'+
+    (offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Bestätigungen erledigt</div>')+
   '</div>';
+  if(erledigt.length){
+    html+='<div style="margin-top:14px">'+
+      '<button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" '+
+      'style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500">'+
+      '<span>▶</span> Erledigt ('+erledigt.length+')</button>'+
+      '<div style="display:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:8px">'+
+        erledigt.map(function(b){return buildCard(b,true);}).join('')+
+      '</div></div>';
+  }
+  el.innerHTML=html;
+}
+
+function confirmErledigt(id){
+  var ids=JSON.parse(localStorage.getItem('confirm_erledigt')||'[]');
+  if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('confirm_erledigt',JSON.stringify(ids));}
+  if(window._lastConfirmData)renderConfirm(window._lastConfirmData);
 }
 
 loadAll();
