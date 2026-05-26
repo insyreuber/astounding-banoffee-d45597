@@ -401,8 +401,8 @@ function renderTicker(rows,varianteMap,staffMap){
         // Starker Glow — Aktion dringend nötig
         style='background:'+color+';border:1px solid '+color+';color:#fff;cursor:pointer;font-weight:700;box-shadow:0 0 10px '+color+',0 0 20px '+color+'66;border-radius:6px;padding:4px 9px;font-size:10px;white-space:nowrap;display:inline-block;letter-spacing:0.02em;text-decoration:none;';
       } else {
-        // Aktiv aber kein Highlight
-        style='background:'+color+'22;border:1px solid '+color+'88;color:'+color+';cursor:pointer;font-weight:600;box-shadow:0 0 6px '+color+'44;border-radius:6px;padding:4px 9px;font-size:10px;white-space:nowrap;display:inline-block;letter-spacing:0.02em;text-decoration:none;';
+        // Aktiv — voller Hintergrund + starker Glow
+        style='background:'+color+';border:1px solid '+color+';color:#fff;cursor:pointer;font-weight:700;box-shadow:0 0 10px '+color+',0 0 20px '+color+'66;border-radius:6px;padding:4px 9px;font-size:10px;white-space:nowrap;display:inline-block;letter-spacing:0.02em;text-decoration:none;';
       }
       return'<a href="'+href+'" target="_blank" style="'+style+'">'+label+'</a>';
     }
