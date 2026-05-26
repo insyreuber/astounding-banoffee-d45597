@@ -1669,7 +1669,6 @@ async function saveProfil(silent){
     buildProfilToggles();
     if(st){st.className='save-status saved';st.textContent='✓ Gespeichert';}
     toast('Profil gespeichert ✓','success');
-    setTimeout(function(){ loadProfil().then(function(){ buildProfilToggles(); }); },300);
     setTimeout(function(){if(st){st.textContent='';st.className='save-status';}},2000);
   }
 }
