@@ -388,23 +388,26 @@ function renderTicker(rows,varianteMap,staffMap){
     var terminDay=b.termin_start?b.termin_start.slice(0,10):'';
     var canBestaetigen=type!=='cancel'&&!!phone&&(terminDay===todayStr2||terminDay===tomorrowStr);
     var canErinnern=type!=='cancel'&&!!phone&&(terminDay===tomorrowStr||terminDay===dayAfterStr);
-    var canStorno=type!=='cancel'&&!!phone;
+    var canStorno=type==='cancel'&&!!phone;
 
-    function btn(label,href,active,color){
-      var activeStyle='background:#fff;border:1px solid '+color+';color:'+color+';cursor:pointer;';
-      var inactiveStyle='background:#f5f5f5;border:1px solid #ddd;color:#bbb;cursor:default;pointer-events:none;';
-      var style='border-radius:5px;padding:3px 7px;font-size:10px;text-decoration:none;white-space:nowrap;display:inline-block;'+(active?activeStyle:inactiveStyle);
+    function btn(label,href,active,color,highlight){
+      var activeStyle=highlight
+        ?'background:'+color+';border:1px solid '+color+';color:#fff;cursor:pointer;box-shadow:0 0 8px '+color+'99;font-weight:600;'
+        :'background:'+color+'18;border:1px solid '+color+'66;color:'+color+';cursor:pointer;font-weight:600;';
+      var inactiveStyle='background:#f0f0f0;border:1px solid #e0e0e0;color:#c0c0c0;cursor:default;pointer-events:none;font-weight:500;';
+      var style='border-radius:6px;padding:4px 9px;font-size:10px;text-decoration:none;white-space:nowrap;display:inline-block;letter-spacing:0.02em;'+(active?activeStyle:inactiveStyle);
       return active
         ?'<a href="'+href+'" target="_blank" style="'+style+'">'+label+'</a>'
         :'<span style="'+style+'">'+label+'</span>';
     }
 
-    var aktionen='<div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;min-width:180px">';
-    aktionen+=btn('✉ Best.',waLink(phone,msgBestaetigung),canBestaetigen,'#2980b9');
-    aktionen+=btn('⏰ Erin.',waLink(phone,msgErinnerung),canErinnern,'#e67e22');
-    aktionen+=btn('✕ Storno',waLink(phone,msgStorno),canStorno,'#e74c3c');
+    var aktionen='<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;min-width:200px">';
+    aktionen+=btn('Bestätigung',waLink(phone,msgBestaetigung),canBestaetigen,'#2980b9');
+    aktionen+=btn('Erinnerung',waLink(phone,msgErinnerung),canErinnern,'#e67e22');
+    var stornoOffen=type==='cancel'&&JSON.parse(localStorage.getItem('storno_erledigt')||'[]').indexOf(b.id)<0;
+    aktionen+=btn('Storno',waLink(phone,msgStorno),canStorno,'#e74c3c',stornoOffen);
     // Erledigt: grauer Haken → grüner Haken
-    aktionen+='<button onclick="tickerErledigt(\''+b.id+'\')" style="background:none;border:none;cursor:pointer;font-size:16px;color:'+(isErledigt?'#16a34a':'#ccc')+';padding:0 4px;line-height:1" title="'+(isErledigt?'Als offen markieren':'Als erledigt markieren')+'">✓</button>';
+    aktionen+='<button onclick="tickerErledigt(\''+b.id+'\')" style="background:none;border:none;cursor:pointer;font-size:18px;color:'+(isErledigt?'#16a34a':'#d0d0d0')+';padding:0 2px;line-height:1;'+(isErledigt?'filter:drop-shadow(0 0 4px #16a34a88)':'')+'" title="'+(isErledigt?'Als offen markieren':'Als erledigt markieren')+'">✓</button>';
     aktionen+='</div>';
     return'<tr style="'+(isErledigt?'opacity:0.55':'')+'">'
       +'<td><span class="ticker-dot '+type+'" style="display:block;margin:0 auto"></span></td>'
