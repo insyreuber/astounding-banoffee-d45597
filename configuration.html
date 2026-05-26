@@ -1174,7 +1174,8 @@ function saveBookingTimelines(){
   var hEl=document.getElementById('booking-horizont');
   if(vEl)window._pData.feature_settings.booking_vorlauf=parseInt(vEl.value);
   if(hEl)window._pData.feature_settings.booking_horizont=HORIZONT_VALS[parseInt(hEl.value)-1];
-  sb.from('kunden_profile').update({feature_settings:window._pData.feature_settings}).eq('id',SALON_ID);
+  var fsSnapshot=JSON.parse(JSON.stringify(window._pData.feature_settings));
+  sb.from('kunden_profile').update({feature_settings:fsSnapshot}).eq('id',SALON_ID);
 }
 
 function initTimelines(){
@@ -1668,7 +1669,7 @@ async function saveProfil(silent){
     buildProfilToggles();
     if(st){st.className='save-status saved';st.textContent='✓ Gespeichert';}
     toast('Profil gespeichert ✓','success');
-    loadProfil().then(function(){ buildProfilToggles(); });
+    setTimeout(function(){ loadProfil().then(function(){ buildProfilToggles(); }); },300);
     setTimeout(function(){if(st){st.textContent='';st.className='save-status';}},2000);
   }
 }
