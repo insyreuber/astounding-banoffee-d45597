@@ -135,7 +135,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
     <div class="card-title">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
       Terminbestätigung senden
-      <span style="margin-left:auto;font-size:9px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">WhatsApp Deeplink</span>
+      <span style="margin-left:auto;display:flex;align-items:center;gap:8px">
+        <span style="font-size:9px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">Kurzfristige Buchungen:</span>
+        <select id="kurzfristig-setting" onchange="saveKurzfristigSetting(this.value)"
+          style="font-size:9px;border:1px solid var(--border);border-radius:4px;padding:2px 5px;background:var(--bg);color:var(--text);cursor:pointer;font-weight:500">
+          <option value="keine">Nicht anzeigen</option>
+          <option value="bestaetigung">In Bestätigung anzeigen</option>
+        </select>
+      </span>
     </div>
     <div id="confirm-list"><div class="loading">Wird geladen…</div></div>
   </div>
@@ -223,10 +230,28 @@ async function loadAll(){
     return b.status!=='cancelled'&&d>=tomorrow.toISOString().slice(0,10)&&d<=dayAfter.toISOString().slice(0,10);
   });
   var reminderIds=reminders.map(function(b){return b.id;});
+  var kurzfristigSetting=localStorage.getItem('kurzfristig_setting')||'keine';
   var confirms=all.filter(function(b){
     var d=b.termin_start?b.termin_start.slice(0,10):'';
-    return b.status!=='cancelled'&&d>=todayStr&&d<=tomorrow.toISOString().slice(0,10)&&reminderIds.indexOf(b.id)<0;
+    if(b.status==='cancelled')return false;
+    if(d<todayStr||d>tomorrow.toISOString().slice(0,10))return false;
+    // Kurzfristig = fällt ins Erinnerungsfenster
+    if(reminderIds.indexOf(b.id)>=0)return false;
+    return true;
   });
+  // Kurzfristige Termine (im Erinnerungsfenster aber gerade neu gebucht)
+  var kurzfristig=all.filter(function(b){
+    var d=b.termin_start?b.termin_start.slice(0,10):'';
+    return b.status!=='cancelled'&&reminderIds.indexOf(b.id)>=0&&d>=todayStr&&d<=tomorrow.toISOString().slice(0,10);
+  });
+  if(kurzfristigSetting==='bestaetigung'){
+    confirms=confirms.concat(kurzfristig);
+  }
+  // wenn 'keine' → kurzfristige weder in confirms noch in reminders anzeigen
+  if(kurzfristigSetting==='keine'){
+    var kurzfristigIds=kurzfristig.map(function(b){return b.id;});
+    reminders=reminders.filter(function(b){return kurzfristigIds.indexOf(b.id)<0;});
+  }
   var stornos=all.filter(function(b){
     return b.status==='cancelled'&&new Date(b.updated_at||b.created_at)>=sevenDaysAgo;
   }).slice(0,10);
@@ -541,6 +566,16 @@ function confirmErledigt(id){
   renderAll();
 }
 
+function saveKurzfristigSetting(val){
+  localStorage.setItem('kurzfristig_setting',val);
+  renderAll();
+}
+
+function initKurzfristigSetting(){
+  var sel=document.getElementById('kurzfristig-setting');
+  if(sel)sel.value=localStorage.getItem('kurzfristig_setting')||'keine';
+}
+
 function renderAll(){
   if(window._tickerRows)renderTicker(window._tickerRows,window._tickerVarianteMap,window._tickerStaffMap);
   if(window._lastStornoData)renderStorno(window._lastStornoData.rows,window._lastStornoData.varianteMap,window._lastStornoData.staffMap,window._lastStornoData.serviceMap);
@@ -646,6 +681,7 @@ function renderConfirm(rows){
 
 
 loadAll();
+initKurzfristigSetting();
 </script>
 </body>
 </html>
