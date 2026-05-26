@@ -411,8 +411,13 @@ function renderTicker(rows,varianteMap,staffMap){
     var tomorrowStr=new Date(now2.getFullYear(),now2.getMonth(),now2.getDate()+1).toISOString().slice(0,10);
     var dayAfterStr=new Date(now2.getFullYear(),now2.getMonth(),now2.getDate()+2).toISOString().slice(0,10);
     var terminDay=b.termin_start?b.termin_start.slice(0,10):'';
-    var canBestaetigen=type!=='cancel'&&!!phone&&(terminDay===todayStr2||terminDay===tomorrowStr);
-    var canErinnern=type!=='cancel'&&!!phone&&(terminDay===tomorrowStr||terminDay===dayAfterStr);
+    var isKurzfristig=(terminDay===tomorrowStr||terminDay===dayAfterStr)&&(terminDay===todayStr2||terminDay===tomorrowStr);
+    // Kurzfristig = Termin liegt im Erinnerungsfenster (morgen/übermorgen)
+    isKurzfristig=(terminDay===tomorrowStr||terminDay===dayAfterStr);
+    var kurzfristigSetting2=localStorage.getItem('kurzfristig_setting')||'keine';
+    var kurzfristigGesperrt=isKurzfristig&&kurzfristigSetting2==='keine';
+    var canBestaetigen=type!=='cancel'&&!!phone&&(terminDay===todayStr2||terminDay===tomorrowStr)&&!kurzfristigGesperrt;
+    var canErinnern=type!=='cancel'&&!!phone&&(terminDay===tomorrowStr||terminDay===dayAfterStr)&&!kurzfristigGesperrt;
     var canStorno=type==='cancel'&&!!phone;
 
     function btn(label,href,active,color,highlight){
