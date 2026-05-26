@@ -250,8 +250,6 @@ async function loadAll(){
     var d=b.termin_start?b.termin_start.slice(0,10):'';
     if(b.status==='cancelled')return false;
     if(d<todayStr||d>tomorrow.toISOString().slice(0,10))return false;
-    if(reminderIds.indexOf(b.id)>=0)return false;
-    // Kurzfristig = heute gebucht
     if(kurzfristigSetting==='keine'){
       var bookedDay=b.created_at?b.created_at.slice(0,10):'';
       if(bookedDay>=todayStr)return false;
