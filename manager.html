@@ -596,10 +596,7 @@ function initKurzfristigSetting(){
 }
 
 function renderAll(){
-  if(window._tickerRows)renderTicker(window._tickerRows,window._tickerVarianteMap,window._tickerStaffMap);
-  if(window._lastStornoData)renderStorno(window._lastStornoData.rows,window._lastStornoData.varianteMap,window._lastStornoData.staffMap,window._lastStornoData.serviceMap);
-  if(window._lastReminderData)renderReminders(window._lastReminderData);
-  if(window._lastConfirmData)renderConfirm(window._lastConfirmData);
+  loadAll();
 }
 
 function renderReminders(rows){
