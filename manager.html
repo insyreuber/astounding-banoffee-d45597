@@ -91,30 +91,25 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
 
 <div class="main">
 
-<div class="main">
+<div class="main" style="position:relative">
 
-  <!-- Zeile 1: Nächste Termine links + Live-Aktivitäten rechts -->
-  <div style="display:grid;grid-template-columns:1fr 2fr;gap:16px;grid-column:1/-1">
-
-    <!-- ② Nächste Termine — links 1/3 -->
-    <div class="card">
-      <div class="card-title">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        Nächste Termine
-      </div>
-      <div id="upcoming-list"><div class="loading">Wird geladen…</div></div>
+  <!-- ① Live-Ticker — volle Breite, mit Freiraum links -->
+  <div class="card span-full" style="margin-left:33%">
+    <div class="card-title">
+      <span class="live-dot"></span>
+      Live-Aktivitäten
+      <span id="ticker-count" style="margin-left:auto;font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0"></span>
     </div>
+    <div id="ticker-list"><div class="loading">Wird geladen…</div></div>
+  </div>
 
-    <!-- ① Live-Ticker — rechts 2/3 -->
-    <div class="card">
-      <div class="card-title">
-        <span class="live-dot"></span>
-        Live-Aktivitäten
-        <span id="ticker-count" style="margin-left:auto;font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0"></span>
-      </div>
-      <div id="ticker-list"><div class="loading">Wird geladen…</div></div>
+  <!-- ② Nächste Termine — absolut im Freiraum links -->
+  <div class="card span-full" style="position:absolute;top:24px;left:20px;width:calc(33% - 36px)">
+    <div class="card-title">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Nächste Termine
     </div>
-
+    <div id="upcoming-list"><div class="loading">Wird geladen…</div></div>
   </div>
 
   <!-- ③ Terminerinnerungen -->
