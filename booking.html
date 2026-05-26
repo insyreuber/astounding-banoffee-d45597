@@ -685,7 +685,9 @@ function availSlots(){
     if(st.day){
       var parts=st.day.split('-');
       var slotDate=new Date(+parts[0],+parts[1]-1,+parts[2],Math.floor(slotMin/60),slotMin%60);
-      if(slotDate<new Date(Date.now()+(window.SALON_VORLAUF_MIN||0)*60000))isPast=true;
+      var _cutoff = new Date();
+      if(window.SALON_VORLAUF_MIN) _cutoff = new Date(Date.now() + window.SALON_VORLAUF_MIN * 60000);
+      if(slotDate<_cutoff)isPast=true;
     }
     if(isPast)return{time:s,busy:false,closed:true,past:true};
     // Zu nah an Schließzeit — Termin würde nicht reinpassen (multi-slot aware)
@@ -913,11 +915,11 @@ function mkCal(){
     }
     var isBlocked=isPast||isClosed||todayNoSlots;
     if(!isBlocked && window.SALON_HORIZONT_WOCHEN){
-      var _heute=new Date(cd.now.getFullYear(),cd.now.getMonth(),cd.now.getDate());
-      var _max=new Date(_heute);
-      _max.setDate(_heute.getDate() + window.SALON_HORIZONT_WOCHEN*7);
-      var _tag=new Date(cd.base.getFullYear(),cd.base.getMonth(),d);
-      if(_tag>_max) isBlocked=true;
+      var _heute = new Date(cd.now.getFullYear(),cd.now.getMonth(),cd.now.getDate());
+      var _maxDatum = new Date(cd.now.getFullYear(),cd.now.getMonth(),cd.now.getDate());
+      _maxDatum.setDate(_maxDatum.getDate() + window.SALON_HORIZONT_WOCHEN * 7);
+      var _dieserTag = new Date(cd.base.getFullYear(),cd.base.getMonth(),d);
+      if(_dieserTag > _maxDatum) isBlocked=true;
     }
     days+='<div class="cd '+(isBlocked?'cp':'')+' '+(isToday&&!isSel&&!isBlocked?'ct':'')+' '+(isSel?'cs':'')+'"'
       +(isBlocked?'':' onclick="pickDay(\''+key+'\')"')+' style="'+(isClosed&&!isPast?'text-decoration:line-through;opacity:0.35':'')+'">'+d+'</div>';
@@ -1416,11 +1418,9 @@ async function loadSalonProfile(){
     // Slot-Raster aus feature_settings laden
     var fs=data.feature_settings||{};
     if(fs.slot_interval){buildBaseSlots(parseInt(fs.slot_interval)||15);}
-    // Buchungsvorlauf in Minuten (Index 0-8)
     var _vm=[0,60,120,240,480,720,1440,2880,4320];
-    window.SALON_VORLAUF_MIN = (fs.booking_vorlauf!=null) ? (_vm[fs.booking_vorlauf] || 0) : 0;
-    // Buchungshorizont in Wochen direkt aus DB (1,2,3,4,6,8,12)
-    window.SALON_HORIZONT_WOCHEN = (fs.booking_horizont!=null) ? fs.booking_horizont : null;
+    window.SALON_VORLAUF_MIN = fs.booking_vorlauf!=null ? _vm[parseInt(fs.booking_vorlauf)] : 0;
+    window.SALON_HORIZONT_WOCHEN = fs.booking_horizont!=null ? parseInt(fs.booking_horizont) : null;
 
     var salonName=data.brand_name||data.name||'Salonname';
     var phoneRaw=[data.area_code,data.phone_number].filter(Boolean).join(' ')||data.phone||'';
