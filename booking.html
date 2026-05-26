@@ -911,7 +911,12 @@ function mkCal(){
       var nowMin=cd.now.getHours()*60+cd.now.getMinutes();
       todayNoSlots=nowMin>=endMin;
     }
-    var isBlocked=isPast||isClosed||todayNoSlots||(new Date(cd.base.getFullYear(),cd.base.getMonth(),d)>new Date(cd.now.getFullYear(),cd.now.getMonth(),cd.now.getDate()+(window.SALON_HORIZONT_TAGE||9999)));
+    var isBlocked=isPast||isClosed||todayNoSlots;
+    if(!isBlocked&&window.SALON_HORIZONT_WOCHEN){
+      var _maxDay=new Date(cd.now.getFullYear(),cd.now.getMonth(),cd.now.getDate());
+      _maxDay.setDate(_maxDay.getDate()+window.SALON_HORIZONT_WOCHEN*7);
+      if(new Date(cd.base.getFullYear(),cd.base.getMonth(),d)>_maxDay)isBlocked=true;
+    }
     days+='<div class="cd '+(isBlocked?'cp':'')+' '+(isToday&&!isSel&&!isBlocked?'ct':'')+' '+(isSel?'cs':'')+'"'
       +(isBlocked?'':' onclick="pickDay(\''+key+'\')"')+' style="'+(isClosed&&!isPast?'text-decoration:line-through;opacity:0.35':'')+'">'+d+'</div>';
   }
@@ -1409,12 +1414,9 @@ async function loadSalonProfile(){
     // Slot-Raster aus feature_settings laden
     var fs=data.feature_settings||{};
     if(fs.slot_interval){buildBaseSlots(parseInt(fs.slot_interval)||15);}
-    // Buchungsvorlauf: Index→Minuten | Buchungshorizont: Wochen→Tage
-    var _vm=[0,60,120,240,480,720,1440,2880,4320];
-    window.SALON_VORLAUF_MIN = fs.booking_vorlauf!=null ? (_vm[fs.booking_vorlauf]||0) : 0;
-    window.SALON_HORIZONT_TAGE = fs.booking_horizont!=null ? fs.booking_horizont*7 : 9999;
-    console.log('[INSY] feature_settings:', JSON.stringify(fs));
-    console.log('[INSY] SALON_VORLAUF_MIN:', window.SALON_VORLAUF_MIN, '| SALON_HORIZONT_TAGE:', window.SALON_HORIZONT_TAGE);
+    var _vmap=[0,60,120,240,480,720,1440,2880,4320];
+    window.SALON_VORLAUF_MIN=(fs.booking_vorlauf>=0&&fs.booking_vorlauf!=null)?_vmap[fs.booking_vorlauf]:0;
+    window.SALON_HORIZONT_WOCHEN=(fs.booking_horizont>0)?fs.booking_horizont:null;
 
     var salonName=data.brand_name||data.name||'Salonname';
     var phoneRaw=[data.area_code,data.phone_number].filter(Boolean).join(' ')||data.phone||'';
