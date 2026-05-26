@@ -235,6 +235,7 @@ async function loadAll(){
   renderReminders(reminders);
   renderConfirm(confirms);
   renderStorno(stornos,varianteMap,staffMap,serviceMap);
+  window._lastStornoData={rows:stornos,varianteMap:varianteMap,staffMap:staffMap,serviceMap:serviceMap};
 }
 
 async function loadUpcomingFromCalendars(todayStr){
@@ -406,35 +407,70 @@ function renderStorno(rows,varianteMap,staffMap,serviceMap){
   serviceMap=serviceMap||{};
   var el=document.getElementById('storno-list');
   if(!rows.length){el.innerHTML='<div class="loading">Keine Stornos in den letzten 7 Tagen</div>';return;}
-  el.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px">'+
-    rows.map(function(b){
-      var d=new Date(b.termin_start);
-      var dateStr=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'})+' um '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr';
-      var cancelStr=b.cancelled_at?new Date(b.cancelled_at).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+' '+new Date(b.cancelled_at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}):'';
-      var variante=varianteMap[b.service_variante_id];
-      var svcParent2=variante&&variante.service_id?serviceMap[variante.service_id]||'':'';
-    var svcName=variante?[svcParent2,variante.service_name].filter(Boolean).join(' · ') ||'–':'–';
-      var staffName=staffMap[b.mitarbeiter_id]||'';
-      var bookingLink='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
-      var msg='Hallo '+(b.customer_name||'')+'!\nWir haben deine Stornierung für den '+dateStr+' erhalten und bestätigen diese hiermit.\n\nFalls du einen neuen Termin buchen möchtest:\n'+bookingLink+'\npowered by insy-reception';
-      var phone=b.customer_phone||'';
-      return'<div style="background:var(--bg);border:1.5px solid #fce8e8;border-radius:10px;padding:12px">'+
-        '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">'+
-          '<div class="ticker-dot cancel"></div>'+
-          '<span style="font-size:12px;font-weight:500">'+esc(b.customer_name||'Kunde')+'</span>'+
-          (b.customer_phone?'<span style="font-size:10px;color:var(--muted);margin-left:4px">'+esc(b.customer_phone)+'</span>':'')+
-        '</div>'+
-        '<div style="font-size:11px;color:var(--muted);margin-bottom:2px">'+esc(dateStr)+'</div>'+
-        '<div style="font-size:11px;color:var(--muted);margin-bottom:2px">'+esc(svcName)+(staffName?' · '+esc(staffName):'')+'</div>'+
-        (cancelStr?'<div style="font-size:10px;color:#e74c3c;margin-bottom:8px">Storniert: '+cancelStr+'</div>':'')+
-        (phone
-          ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:100%;justify-content:center;background:#e74c3c">'+
-             '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg>'+
-             ' Storno bestätigen</a>'
-          :'<span style="font-size:10px;color:var(--muted)">Keine Nummer</span>')+
-      '</div>';
-    }).join('')+
+
+  // Split into offen and erledigt (stored in localStorage)
+  var erledigtIds=JSON.parse(localStorage.getItem('storno_erledigt')||'[]');
+  var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
+  var erledigt=rows.filter(function(b){return erledigtIds.indexOf(b.id)>=0;});
+
+  function buildCard(b, isErledigt){
+    var d=new Date(b.termin_start);
+    var dateStr=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'})+' um '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr';
+    var cancelStr=b.cancelled_at?new Date(b.cancelled_at).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+' '+new Date(b.cancelled_at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}):'';
+    var variante=varianteMap[b.service_variante_id];
+    var svcParent2=variante&&variante.service_id?serviceMap[variante.service_id]||'':'';
+    var svcName=variante?[svcParent2,variante.service_name].filter(Boolean).join(' · ')||'–':'–';
+    var staffName=staffMap[b.mitarbeiter_id]||'';
+    var bookingLink='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
+    var msg='Hallo '+(b.customer_name||'')+'!\nWir haben deine Stornierung für den '+dateStr+' erhalten und bestätigen diese hiermit.\n\nFalls du einen neuen Termin buchen möchtest:\n'+bookingLink+'\npowered by insy-reception';
+    var phone=b.customer_phone||'';
+    return '<div style="background:var(--bg);border:1.5px solid '+(isErledigt?'#d1fae5':'#fce8e8')+';border-radius:10px;padding:12px;position:relative;opacity:'+(isErledigt?'0.6':'1')+'">'+
+      // ✓ Erledigt Button oben rechts
+      (!isErledigt
+        ? '<button onclick="stornoErledigt(\''+b.id+'\')" title="Als erledigt markieren" style="position:absolute;top:8px;right:8px;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;cursor:pointer;font-size:12px;color:#16a34a;font-weight:600">✓</button>'
+        : '<span style="position:absolute;top:8px;right:8px;font-size:11px;color:#16a34a;font-weight:600">✓ Erledigt</span>'
+      )+
+      '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;padding-right:50px">'+
+        '<div class="ticker-dot cancel"></div>'+
+        '<span style="font-size:12px;font-weight:500">'+esc(b.customer_name||'Kunde')+'</span>'+
+        (b.customer_phone?'<span style="font-size:10px;color:var(--muted);margin-left:4px">'+esc(b.customer_phone)+'</span>':'')+
+      '</div>'+
+      '<div style="font-size:11px;color:var(--muted);margin-bottom:2px">'+esc(dateStr)+'</div>'+
+      '<div style="font-size:11px;color:var(--muted);margin-bottom:2px">'+esc(svcName)+(staffName?' · '+esc(staffName):'')+'</div>'+
+      (cancelStr?'<div style="font-size:10px;color:#e74c3c;margin-bottom:8px">Storniert: '+cancelStr+'</div>':'')+
+      (phone&&!isErledigt
+        ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:100%;justify-content:center;background:#e74c3c">'+
+           '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg>'+
+           ' Storno bestätigen</a>'
+        :(phone&&isErledigt?'<span style="font-size:10px;color:var(--muted)">'+esc(phone)+'</span>':'<span style="font-size:10px;color:var(--muted)">Keine Nummer</span>'))+
+    '</div>';
+  }
+
+  var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px">'+
+    (offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Stornos erledigt</div>')+
   '</div>';
+
+  // Ausklappbarer Erledigt-Bereich
+  if(erledigt.length){
+    html+='<div style="margin-top:14px">'+
+      '<button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" '+
+      'style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500">'+
+      '<span>▶</span> Erledigt ('+erledigt.length+')</button>'+
+      '<div style="display:none;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-top:8px">'+
+        erledigt.map(function(b){return buildCard(b,true);}).join('')+
+      '</div>'+
+    '</div>';
+  }
+
+  el.innerHTML=html;
+}
+
+function stornoErledigt(id){
+  var ids=JSON.parse(localStorage.getItem('storno_erledigt')||'[]');
+  if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('storno_erledigt',JSON.stringify(ids));}
+  // Re-render
+  var cached=window._lastStornoData;
+  if(cached)renderStorno(cached.rows,cached.varianteMap,cached.staffMap,cached.serviceMap);
 }
 
 function renderReminders(rows){
