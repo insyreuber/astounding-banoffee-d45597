@@ -391,14 +391,20 @@ function renderTicker(rows,varianteMap,staffMap){
     var canStorno=type==='cancel'&&!!phone;
 
     function btn(label,href,active,color,highlight){
-      var activeStyle=highlight
-        ?'background:'+color+';border:1px solid '+color+';color:#fff;cursor:pointer;box-shadow:0 0 8px '+color+'99;font-weight:600;'
-        :'background:'+color+'18;border:1px solid '+color+'66;color:'+color+';cursor:pointer;font-weight:600;';
-      var inactiveStyle='background:#f0f0f0;border:1px solid #e0e0e0;color:#c0c0c0;cursor:default;pointer-events:none;font-weight:500;';
-      var style='border-radius:6px;padding:4px 9px;font-size:10px;text-decoration:none;white-space:nowrap;display:inline-block;letter-spacing:0.02em;'+(active?activeStyle:inactiveStyle);
-      return active
-        ?'<a href="'+href+'" target="_blank" style="'+style+'">'+label+'</a>'
-        :'<span style="'+style+'">'+label+'</span>';
+      var style,el;
+      if(isErledigt||!active){
+        // Grau wenn erledigt oder nicht anwendbar
+        style='background:#f0f0f0;border:1px solid #e0e0e0;color:#c0c0c0;cursor:default;pointer-events:none;font-weight:500;border-radius:6px;padding:4px 9px;font-size:10px;white-space:nowrap;display:inline-block;letter-spacing:0.02em;';
+        return'<span style="'+style+'">'+label+'</span>';
+      }
+      if(highlight){
+        // Starker Glow — Aktion dringend nötig
+        style='background:'+color+';border:1px solid '+color+';color:#fff;cursor:pointer;font-weight:700;box-shadow:0 0 10px '+color+',0 0 20px '+color+'66;border-radius:6px;padding:4px 9px;font-size:10px;white-space:nowrap;display:inline-block;letter-spacing:0.02em;text-decoration:none;';
+      } else {
+        // Aktiv aber kein Highlight
+        style='background:'+color+'22;border:1px solid '+color+'88;color:'+color+';cursor:pointer;font-weight:600;box-shadow:0 0 6px '+color+'44;border-radius:6px;padding:4px 9px;font-size:10px;white-space:nowrap;display:inline-block;letter-spacing:0.02em;text-decoration:none;';
+      }
+      return'<a href="'+href+'" target="_blank" style="'+style+'">'+label+'</a>';
     }
 
     var aktionen='<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;min-width:200px">';
