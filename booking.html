@@ -688,6 +688,14 @@ function availSlots(){
       if(slotDate<new Date())isPast=true;
     }
     if(isPast)return{time:s,busy:false,closed:true,past:true};
+    // Buchungsvorlauf: Slot muss mind. SALON_VORLAUF_MIN Minuten in der Zukunft liegen
+    var vorlaufMin=window.SALON_VORLAUF_MIN||0;
+    if(vorlaufMin>0&&st.day){
+      var partsV=st.day.split('-');
+      var slotDateV=new Date(+partsV[0],+partsV[1]-1,+partsV[2],Math.floor(slotMin/60),slotMin%60);
+      var cutoff=new Date(new Date().getTime()+vorlaufMin*60000);
+      if(slotDateV<cutoff)return{time:s,busy:false,closed:true,past:true};
+    }
     // Zu nah an Schließzeit — Termin würde nicht reinpassen (multi-slot aware)
     var fitsInSlot=false;
     if(totalMin>0){
@@ -897,6 +905,11 @@ function mkCal(){
     var isPast=calOff<0||(calOff===0&&d<cd.now.getDate());
     var isToday=calOff===0&&d===cd.now.getDate();
     var key=cd.base.getFullYear()+'-'+(cd.base.getMonth()+1)+'-'+d;
+    // Buchungshorizont: Tage die weiter als SALON_HORIZONT_TAGE in der Zukunft liegen sperren
+    var horizont=window.SALON_HORIZONT_TAGE!=null?window.SALON_HORIZONT_TAGE:28;
+    var horizontCutoff=new Date(cd.now.getFullYear(),cd.now.getMonth(),cd.now.getDate()+horizont);
+    var thisDay=new Date(cd.base.getFullYear(),cd.base.getMonth(),d);
+    var isBeyondHorizont=thisDay>horizontCutoff;
     var isSel=st.day===key;
     var DAY_KEYS=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
     var dateObj=new Date(cd.base.getFullYear(),cd.base.getMonth(),d);
@@ -911,9 +924,9 @@ function mkCal(){
       var nowMin=cd.now.getHours()*60+cd.now.getMinutes();
       todayNoSlots=nowMin>=endMin;
     }
-    var isBlocked=isPast||isClosed||todayNoSlots;
+    var isBlocked=isPast||isClosed||todayNoSlots||isBeyondHorizont;
     days+='<div class="cd '+(isBlocked?'cp':'')+' '+(isToday&&!isSel&&!isBlocked?'ct':'')+' '+(isSel?'cs':'')+'"'
-      +(isBlocked?'':' onclick="pickDay(\''+key+'\')"')+' style="'+(isClosed&&!isPast?'text-decoration:line-through;opacity:0.35':'')+'">'+d+'</div>';
+      +(isBlocked?'':' onclick="pickDay(\''+key+'\')"')+' style="'+(isClosed&&!isPast?'text-decoration:line-through;opacity:0.35':isBeyondHorizont&&!isPast?'opacity:0.25':'')+'">'+d+'</div>';
   }
   var slots=availSlots();
   var slotsHtml=st.day
@@ -1523,6 +1536,12 @@ async function loadSalonProfile(){
       erinnerung: f.erinnerung_on!==false||f.reminder_aktiv!==false,
       followup: f.followup_on!==false||f.followup_aktiv!==false
     };
+    // Buchungsvorlauf: Index 0-8 → Minuten
+    // 0=Sofort, 1=1h, 2=2h, 3=4h, 4=8h, 5=12h, 6=1Tag, 7=2Tage, 8=3Tage
+    var VORLAUF_MINUTEN=[0,60,120,240,480,720,1440,2880,4320];
+    window.SALON_VORLAUF_MIN=VORLAUF_MINUTEN[f.booking_vorlauf!=null?f.booking_vorlauf:0]||0;
+    // Buchungshorizont: Wochen direkt (1,2,3,4,6,8,12) → Tage
+    window.SALON_HORIZONT_TAGE=f.booking_horizont!=null?(f.booking_horizont*7):28;
     window.SALON_TEMP_AZ=data.temp_arbeitszeiten||null;
     renderWorkingHours(data.arbeitszeiten);
     await loadServices(salonId);
