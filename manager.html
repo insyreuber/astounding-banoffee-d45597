@@ -695,6 +695,7 @@ function renderStorno(rows,varianteMap,staffMap,serviceMap){
   var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Stornos erledigt</div>')+'</div>';
   if(erledigt.length){html+='<div style="margin-top:14px"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500"><span>▶</span> Erledigt ('+erledigt.length+')</button><div style="display:none;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-top:8px">'+erledigt.map(function(b){return buildCard(b,true);}).join('')+'</div></div>';}
   el.innerHTML=html;
+  var elMS=document.getElementById('storno-list-m');if(elMS)elMS.innerHTML=html;
 }
 
 function renderFromCache(){
@@ -705,14 +706,6 @@ function renderFromCache(){
   renderStorno(c.stornos,c.varianteMap,c.staffMap,c.serviceMap);
   renderReminders(c.reminders);
   renderConfirm(c.confirms);
-  // Mobile mirror
-  setTimeout(function(){
-    ['confirm-list','reminder-list','storno-list'].forEach(function(id){
-      var src=document.getElementById(id);
-      var dst=document.getElementById(id+'-m');
-      if(src&&dst)dst.innerHTML=src.innerHTML;
-    });
-  },20);
 }
 
 function stornoErledigt(id){
@@ -769,6 +762,7 @@ function renderReminders(rows){
   var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Erinnerungen erledigt</div>')+'</div>';
   if(erledigt.length){html+='<div style="margin-top:14px"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500"><span>▶</span> Erledigt ('+erledigt.length+')</button><div style="display:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:8px">'+erledigt.map(function(b){return buildCard(b,true);}).join('')+'</div></div>';}
   el.innerHTML=html;
+  var elMR=document.getElementById('reminder-list-m');if(elMR)elMR.innerHTML=html;
   // Countdown starten
   if(window._cdInterval)clearInterval(window._cdInterval);
   window._cdInterval=setInterval(function(){
@@ -815,6 +809,8 @@ function renderConfirm(rows){
   var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Bestätigungen erledigt</div>')+'</div>';
   if(erledigt.length){html+='<div style="margin-top:14px"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500"><span>▶</span> Erledigt ('+erledigt.length+')</button><div style="display:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:8px">'+erledigt.map(function(b){return buildCard(b,true);}).join('')+'</div></div>';}
   el.innerHTML=html;
+  var elM=document.getElementById('confirm-list-m');
+  if(elM)elM.innerHTML=html;
 }
 
 function saveKurzfristigReminderSetting(val){localStorage.setItem('kurzfristig_reminder_setting',val);renderAll();}
@@ -1142,7 +1138,7 @@ function renderMobileTickerCards(rows,varianteMap,staffMap,el){
       ?new Date(b.cancelled_at).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+' '+new Date(b.cancelled_at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})
       :new Date(b.created_at).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+' '+new Date(b.created_at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
     var variante=varianteMap[b.service_variante_id];
-    var svcParent=variante&&variante.service_id?(window._upcomingServiceMap||{})[variante.service_id]||'':'';
+    var svcParent=variante&&variante.service_id?(serviceMap||window._upcomingServiceMap||{})[variante.service_id]||'':'';
     var svcName=variante?[svcParent,variante.service_name].filter(Boolean).join(' · ')||'–':'–';
     var dur=variante&&variante.dauer_minuten?variante.dauer_minuten+' Min':'–';
     var price=variante&&variante.preis?variante.preis+' €':'–';
