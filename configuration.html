@@ -3621,12 +3621,14 @@ function setStatusDot(dotId,labelId,ok,onLabel,offLabel){
 }
 
 async function toggleBookingActive(){
-  if(!SALON_ID)return;
+  if(!SALON_ID){console.log('[TOGGLE] Kein SALON_ID');return;}
   var active=document.getElementById('dash-booking-active').checked;
+  console.log('[TOGGLE] booking_active wird gesetzt auf:', active);
   if(!window._pData)window._pData={};
   if(!window._pData.feature_settings)window._pData.feature_settings={};
   window._pData.feature_settings.booking_active=active;
-  await sb.from('kunden_profile').update({feature_settings:window._pData.feature_settings}).eq('id',SALON_ID);
+  var res=await sb.from('kunden_profile').update({feature_settings:window._pData.feature_settings}).eq('id',SALON_ID);
+  console.log('[TOGGLE] Supabase Antwort:', res.error?res.error:'OK', 'Gespeichert:', JSON.stringify(window._pData.feature_settings));
   var dot=document.getElementById('booking-status-dot');
   var lbl=document.getElementById('booking-status-label');
   if(dot)dot.style.background=active?'#27ae60':'#c0392b';
