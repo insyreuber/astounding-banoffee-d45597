@@ -3157,8 +3157,8 @@ async function loadDashboard(){
 
   // Buchungsseite toggle
   var bookToggle=document.getElementById('dash-booking-active');
-  if(bookToggle)bookToggle.checked=d.booking_active!==false;
-  setStatusDot('dash-status-booking','dash-status-booking-label',d.booking_active!==false,'Online','Gesperrt');
+  if(bookToggle)bookToggle.checked=d.feature_settings&&d.feature_settings.booking_active!==undefined?d.feature_settings.booking_active:true;
+  setStatusDot('dash-status-booking','dash-status-booking-label',d.feature_settings&&d.feature_settings.booking_active!==undefined?d.feature_settings.booking_active:true,'Online','Gesperrt');
 
   // Google Kalender
   var gcalOk=!!(d.google_connected&&d.google_calendar_id);
@@ -3623,8 +3623,10 @@ function setStatusDot(dotId,labelId,ok,onLabel,offLabel){
 async function toggleBookingActive(){
   if(!SALON_ID)return;
   var active=document.getElementById('dash-booking-active').checked;
-  await sb.from('kunden_profile').update({booking_active:active}).eq('id',SALON_ID);
-  if(window._pData)window._pData.booking_active=active;
+  if(!window._pData)window._pData={};
+  if(!window._pData.feature_settings)window._pData.feature_settings={};
+  window._pData.feature_settings.booking_active=active;
+  await sb.from('kunden_profile').update({feature_settings:window._pData.feature_settings}).eq('id',SALON_ID);
   var dot=document.getElementById('booking-status-dot');
   var lbl=document.getElementById('booking-status-label');
   if(dot)dot.style.background=active?'#27ae60':'#c0392b';
@@ -3710,21 +3712,6 @@ async function init(){
       if(_toggles)_toggles.style.display='flex';
       buildProfilToggles();
       initBookingStatus();
-      // Auto-open staff edit from manager.html link
-      var editStaffId=new URLSearchParams(window.location.search).get('edit_staff');
-      if(editStaffId){
-        var item=staffData.find(function(s){return s.id===editStaffId;});
-        if(item){
-          setTimeout(function(){
-            switchTab('profil');
-            setTimeout(function(){
-              var sidebar=document.getElementById('staff-sidebar');
-              if(sidebar)sidebar.scrollIntoView({behavior:'smooth',block:'center'});
-              setTimeout(function(){editStaff(editStaffId);},400);
-            },200);
-          },300);
-        }
-      }
     });
 }
 
