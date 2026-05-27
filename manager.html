@@ -195,8 +195,8 @@ async function loadAll(){
         });
       }
     }):Promise.resolve(),
-    staffIds.length?sb.from('mitarbeiter').select('id,display_name,name').in('id',staffIds).then(function(r){
-      if(r.data)r.data.forEach(function(s){staffMap[s.id]=s.display_name||s.name;});
+    staffIds.length?sb.from('mitarbeiter').select('id,display_name,name,avatar_url,farbe').in('id',staffIds).then(function(r){
+      if(r.data)r.data.forEach(function(s){staffMap[s.id]=s;});
     }):Promise.resolve()
   ]);
 
@@ -246,15 +246,27 @@ function renderUpcomingCalendar(events,varianteMap,staffMap,serviceMap){
     var variante=varianteMap[b.service_variante_id];
     var svcParent2=variante&&variante.service_id?serviceMap[variante.service_id]||'':'';
     var svcName=variante?[svcParent2,variante.service_name].filter(Boolean).join(' · ')||'–':'–';
-    var staffName=staffMap[b.mitarbeiter_id]||'–';
+    var staffObj=staffMap[b.mitarbeiter_id]||null;
+    var staffName=staffObj?(staffObj.display_name||staffObj.name||'–'):'–';
     var successUrl='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
     return'<div class="upcoming-row">'+
       '<div class="upcoming-date">'+esc(dateStr)+'</div>'+
       '<div class="upcoming-info"><div class="upcoming-name">'+esc(b.customer_name||'Kunde')+'</div><div class="upcoming-service">'+esc(svcName)+'</div></div>'+
-      '<div class="upcoming-staff" style="color:var(--tg);margin-right:8px">'+esc(staffName)+'</div>'+
+      '<div style="display:flex;align-items:center;gap:5px;margin-right:8px;flex-shrink:0">'+renderAvatar(staffObj,20)+'<span class="upcoming-staff" style="color:var(--tg)">'+esc(staffName)+'</span></div>'+
       '<a href="'+successUrl+'" target="_blank" style="flex-shrink:0;background:#5a2d82;border:1px solid #5a2d82;color:#fff;font-weight:700;box-shadow:0 0 8px #5a2d8299;border-radius:6px;padding:3px 8px;font-size:10px;white-space:nowrap;text-decoration:none;">↗</a>'+
     '</div>';
   }).join('');
+}
+
+function renderAvatar(staffObj,size){
+  if(!staffObj)return'';
+  var name=typeof staffObj==='string'?staffObj:(staffObj.display_name||staffObj.name||'?');
+  var ini=name.charAt(0).toUpperCase();
+  if(staffObj.avatar_url){
+    return'<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;background-image:url('+staffObj.avatar_url+');background-size:cover;background-position:center;flex-shrink:0;display:inline-block"></div>';
+  }
+  var color=staffObj.farbe||'#5a2d82';
+  return'<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;background:'+color+';display:inline-flex;align-items:center;justify-content:center;font-size:'+(size*0.4)+'px;font-weight:600;color:#fff;flex-shrink:0">'+ini+'</div>';
 }
 
 function renderTicker(rows,varianteMap,staffMap){
@@ -282,13 +294,16 @@ function renderTicker(rows,varianteMap,staffMap){
     var typeLabel=type==='cancel'?'Storno':type==='move'?'Verschoben':'Eingang';
     var d=new Date(b.termin_start||b.created_at||new Date());
     var dateStr=d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
-    var bookStr=new Date(b.created_at).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+' '+new Date(b.created_at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+    var bookStr=type==='cancel'&&b.cancelled_at
+      ?new Date(b.cancelled_at).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+' '+new Date(b.cancelled_at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})
+      :new Date(b.created_at).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+' '+new Date(b.created_at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
     var variante=varianteMap[b.service_variante_id];
     var svcParent=variante&&variante.service_id?serviceMap[variante.service_id]||'':'';
     var svcName=variante?[svcParent,variante.service_name].filter(Boolean).join(' · ')||'–':'–';
     var dur=variante&&variante.dauer_minuten?variante.dauer_minuten+' Min':'–';
     var price=variante&&variante.preis?variante.preis+' €':'–';
-    var staffName=esc(staffMap[b.mitarbeiter_id]||'–');
+    var staffObj=staffMap[b.mitarbeiter_id]||null;
+    var staffName=esc(staffObj?(staffObj.display_name||staffObj.name||'–'):'–');
     var phone=b.customer_phone||'';
     var bookingLink='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
     var termin=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'})+' um '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr';
@@ -320,7 +335,7 @@ function renderTicker(rows,varianteMap,staffMap){
     var isKachelErledigt=kachelErledigtIds.indexOf(b.id)>=0;
 
     var aktionen='<div style="display:flex;gap:5px;align-items:center;width:100%">';
-    aktionen+=btn('Bestätigung',waLink(phone,msgBestaetigung),canBestaetigen,'#2980b9');
+    aktionen+=btn('Bestätigung',waLink(phone,msgBestaetigung),canBestaetigen,'#27ae60');
     aktionen+=btn('Erinnerung',waLink(phone,msgErinnerung),canErinnern,'#e67e22');
     aktionen+=btn('Storno',waLink(phone,msgStorno),canStorno,'#e74c3c',stornoOffen);
     aktionen+='<a href="'+successUrl+'" target="_blank" style="background:#5a2d82;border:1px solid #5a2d82;color:#fff;font-weight:700;box-shadow:0 0 10px #5a2d8299,0 0 20px #5a2d8244;border-radius:6px;padding:4px 9px;font-size:11px;white-space:nowrap;display:inline-block;text-decoration:none;">↗ Buchung</a>';
@@ -338,7 +353,7 @@ function renderTicker(rows,varianteMap,staffMap){
       +'<td>'+svcName+'</td>'
       +'<td style="color:var(--muted);width:60px">'+dur+'</td>'
       +'<td style="font-weight:500;color:var(--tpl);width:60px">'+price+'</td>'
-      +'<td style="color:var(--tg);font-weight:500;width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+staffName+'</td>'
+      +'<td style="color:var(--tg);font-weight:500;width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><div style="display:flex;align-items:center;gap:5px">'+renderAvatar(staffObj,20)+staffName+'</div></td>'
       +'<td style="white-space:nowrap">'+esc(dateStr)+'</td>'
       +'<td style="font-size:13px;width:110px"><span class="badge '+type+'">'+typeLabel+'</span><div style="font-size:10px;color:var(--muted);margin-top:3px">'+esc(bookStr)+'</div></td>'
       +'<td style="font-size:13px;width:320px">'+aktionen+'</td>'
