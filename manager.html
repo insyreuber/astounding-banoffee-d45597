@@ -210,11 +210,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         Nächste Termine
       </div>
-      <div style="display:flex;gap:4px;margin-bottom:10px">
-        <button onclick="setUpcomingFilter('alle')" id="uf-alle" style="flex:1;padding:4px 0;border-radius:6px;border:1.5px solid var(--tpl);font-size:10px;font-weight:600;cursor:pointer;background:var(--tpl);color:#fff;font-family:inherit;transition:all .15s">Alle</button>
-        <button onclick="setUpcomingFilter('heute')" id="uf-heute" style="flex:1;padding:4px 0;border-radius:6px;border:1.5px solid #e74c3c;font-size:10px;font-weight:600;cursor:pointer;background:#fff;color:#e74c3c;font-family:inherit;transition:all .15s">Heute</button>
-        <button onclick="setUpcomingFilter('morgen')" id="uf-morgen" style="flex:1;padding:4px 0;border-radius:6px;border:1.5px solid #e67e22;font-size:10px;font-weight:600;cursor:pointer;background:#fff;color:#e67e22;font-family:inherit;transition:all .15s">Morgen</button>
-        <button onclick="setUpcomingFilter('uebermorgen')" id="uf-uebermorgen" style="flex:1;padding:4px 0;border-radius:6px;border:1.5px solid var(--muted);font-size:10px;font-weight:600;cursor:pointer;background:#fff;color:var(--muted);font-family:inherit;transition:all .15s">+2</button>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <button onclick="stepUpcomingFilter(-1)" style="background:none;border:1.5px solid var(--border);border-radius:7px;width:28px;height:28px;cursor:pointer;font-size:14px;color:var(--tpl);display:flex;align-items:center;justify-content:center;font-family:inherit;transition:all .15s" onmouseover="this.style.borderColor='var(--tpl)'" onmouseout="this.style.borderColor='var(--border)'">‹</button>
+        <span id="uf-label" style="font-size:11px;font-weight:700;color:var(--tpl);letter-spacing:.05em;text-transform:uppercase">Alle</span>
+        <button onclick="stepUpcomingFilter(1)" style="background:none;border:1.5px solid var(--border);border-radius:7px;width:28px;height:28px;cursor:pointer;font-size:14px;color:var(--tpl);display:flex;align-items:center;justify-content:center;font-family:inherit;transition:all .15s" onmouseover="this.style.borderColor='var(--tpl)'" onmouseout="this.style.borderColor='var(--border)'">›</button>
       </div>
       <div id="upcoming-list" style="max-height:400px;overflow-y:auto"><div class="loading">Wird geladen…</div></div>
     </div>
@@ -384,16 +383,24 @@ async function loadAll(){
 
 var _upcomingFilter='alle';
 var _upcomingAll=[];
+var _upcomingSteps=['alle','heute','morgen','uebermorgen'];
+var _upcomingLabels={'alle':'Alle','heute':'Heute','morgen':'Morgen','uebermorgen':'Übermorgen'};
+
+function stepUpcomingFilter(dir){
+  var idx=_upcomingSteps.indexOf(_upcomingFilter);
+  idx=Math.max(0,Math.min(_upcomingSteps.length-1,idx+dir));
+  _upcomingFilter=_upcomingSteps[idx];
+  var lbl=document.getElementById('uf-label');
+  if(lbl){
+    lbl.textContent=_upcomingLabels[_upcomingFilter];
+    var colors={'alle':'var(--tpl)','heute':'#e74c3c','morgen':'#e67e22','uebermorgen':'var(--muted)'};
+    lbl.style.color=colors[_upcomingFilter];
+  }
+  renderUpcomingCalendar(_upcomingAll,window._tickerVarianteMap||{},window._tickerStaffMap||{},{});
+}
 
 function setUpcomingFilter(f){
   _upcomingFilter=f;
-  ['alle','heute','morgen','uebermorgen'].forEach(function(k){
-    var btn=document.getElementById('uf-'+k);if(!btn)return;
-    var colors={alle:'var(--tpl)',heute:'#e74c3c',morgen:'#e67e22',uebermorgen:'var(--muted)'};
-    var active=k===f;
-    btn.style.background=active?colors[k]:'#fff';
-    btn.style.color=active?'#fff':colors[k];
-  });
   renderUpcomingCalendar(_upcomingAll,window._tickerVarianteMap||{},window._tickerStaffMap||{},{});
 }
 
