@@ -256,7 +256,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
         <span class="live-dot"></span>
         Live-Aktivitäten
       </div>
-      <div id="ticker-list" style="overflow-y:auto;max-height:390px"><div class="loading">Wird geladen…</div></div>
+      <div id="ticker-list" style="overflow-y:auto;max-height:480px"><div class="loading">Wird geladen…</div></div>
     </div>
 
   </div>
@@ -372,7 +372,7 @@ async function loadAll(){
   ]);
 
   var ticker=all;
-  var upcoming=all.filter(function(b){return b.status!=='cancelled'&&new Date(b.termin_start)>now;}).sort(function(a,b){return new Date(a.termin_start)-new Date(b.termin_start);}).slice(0,15);
+  var upcoming=all.filter(function(b){return b.status!=='cancelled'&&new Date(b.termin_start)>now;}).sort(function(a,b){return new Date(a.termin_start)-new Date(b.termin_start);});
   var reminders=all.filter(function(b){
     var d=b.termin_start?b.termin_start.slice(0,10):'';
     return b.status!=='cancelled'&&d>=tomorrow.toISOString().slice(0,10)&&d<=dayAfter.toISOString().slice(0,10);
@@ -395,7 +395,7 @@ async function loadAll(){
   });
   var stornos=all.filter(function(b){
     return b.status==='cancelled'&&new Date(b.updated_at||b.created_at)>=sevenDaysAgo;
-  }).slice(0,10);
+  });
 
   var confirmIds=confirms.map(function(b){return b.id;});
   var stornoIds=stornos.map(function(b){return b.id;});
