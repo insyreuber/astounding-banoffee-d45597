@@ -657,6 +657,9 @@ function tickerErledigt(id){
   var idx=ids.indexOf(id);
   if(idx<0){ids.push(id);}else{ids.splice(idx,1);}
   localStorage.setItem('erledigt_ids',JSON.stringify(ids));
+  // Sofort Mobile aus Cache neu rendern
+  var elM=document.getElementById('ticker-list-m');
+  if(elM&&window._mTicker)renderMobileTickerCards(window._mTicker,window._mVMap,window._mSMap,elM);
   renderAll();
 }
 
@@ -1163,7 +1166,7 @@ function renderMobileTickerCards(rows,varianteMap,staffMap,el){
           '<a href="'+bookingLink+'" target="_blank" style="flex-shrink:0;background:#5a2d82;color:#fff;border-radius:8px;padding:7px 8px;font-size:11px;font-weight:700;text-decoration:none">↗</a>'+
           (isKachelErledigt
             ?'<span style="flex-shrink:0;background:#e8f5e9;border:1px solid #4ade80;border-radius:8px;padding:7px 8px;font-size:12px;color:#16a34a;font-weight:600;opacity:0.5">✓</span>'
-            :'<button onclick="tickerErledigt(\''+b.id+'\');var e=document.getElementById(\'ticker-list-m\');if(e)renderMobileTickerCards(window._mTicker,window._mVMap,window._mSMap,e);" style="flex-shrink:0;background:'+(isErledigt?'#e8f5e9':'var(--bg)')+';border:1px solid '+(isErledigt?'#4ade80':'var(--border)')+';border-radius:8px;padding:7px 8px;font-size:12px;color:'+(isErledigt?'#16a34a':'#ccc')+';font-weight:600;cursor:pointer">✓</button>')
+            :'<button onclick="tickerErledigt(\''+b.id+'\')" style="flex-shrink:0;background:'+(isErledigt?'#e8f5e9':'var(--bg)')+';border:1px solid '+(isErledigt?'#4ade80':'var(--border)')+';border-radius:8px;padding:7px 8px;font-size:12px;color:'+(isErledigt?'#16a34a':'#ccc')+';font-weight:600;cursor:pointer">✓</button>')
         +'</div>'+
       '</div>'+
     '</div>';
