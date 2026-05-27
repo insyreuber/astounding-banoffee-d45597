@@ -475,17 +475,21 @@ function stepUpcomingFilter(idxOrDir,isDirect){
     mb.style.color=active?'#fff':colors[k];
     mb.style.borderColor=colors[k];
   });
-  renderUpcomingCalendar(_upcomingAll,window._tickerVarianteMap||{},window._tickerStaffMap||{},{});
+  renderUpcomingCalendar(_upcomingAll,window._upcomingVarianteMap||{},window._upcomingStaffMap||{},window._upcomingServiceMap||{});
 }
 
 function setUpcomingFilter(f){
   _upcomingFilter=f;
-  renderUpcomingCalendar(_upcomingAll,window._tickerVarianteMap||{},window._tickerStaffMap||{},{});
+  renderUpcomingCalendar(_upcomingAll,window._upcomingVarianteMap||{},window._upcomingStaffMap||{},window._upcomingServiceMap||{});
 }
 
 function renderUpcomingCalendar(events,varianteMap,staffMap,serviceMap){
   serviceMap=serviceMap||{};varianteMap=varianteMap||{};staffMap=staffMap||{};
   _upcomingAll=events;
+  // Cache maps for filter re-renders
+  window._upcomingVarianteMap=varianteMap;
+  window._upcomingStaffMap=staffMap;
+  window._upcomingServiceMap=serviceMap;
   var now4=new Date();
   var t3=now4.getFullYear()+'-'+String(now4.getMonth()+1).padStart(2,'0')+'-'+String(now4.getDate()).padStart(2,'0');
   var d4=new Date(now4.getFullYear(),now4.getMonth(),now4.getDate()+1);
