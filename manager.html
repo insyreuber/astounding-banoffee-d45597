@@ -13,7 +13,7 @@
   --tpp:#e0d5f5;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-height:100vh;overflow-x:hidden}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-height:100vh;overflow-x:hidden;scrollbar-gutter:stable}
 /* ── NAV — luxuriöser ── */
 .nav{
   background:linear-gradient(135deg,#3d1568 0%,#5a2d82 60%,#4a1f72 100%);
@@ -256,7 +256,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
         <span class="live-dot"></span>
         Live-Aktivitäten
       </div>
-      <div id="ticker-list" style="overflow-y:auto;max-height:480px"><div class="loading">Wird geladen…</div></div>
+      <div id="ticker-list" style="overflow-y:scroll;max-height:480px"><div class="loading">Wird geladen…</div></div>
     </div>
 
   </div>
