@@ -252,8 +252,7 @@ function renderUpcomingCalendar(events,varianteMap,staffMap,serviceMap){
     return'<div class="upcoming-row">'+
       '<div class="upcoming-date">'+esc(dateStr)+'</div>'+
       '<div class="upcoming-info"><div class="upcoming-name">'+esc(b.customer_name||'Kunde')+'</div><div class="upcoming-service">'+esc(svcName)+'</div></div>'+
-      '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;width:110px">'+renderAvatar(staffObj,22)+'<span class="upcoming-staff" style="color:var(--tg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(staffName)+'</span></div>'+
-      '<a href="'+successUrl+'" target="_blank" style="flex-shrink:0;background:#5a2d82;border:1px solid #5a2d82;color:#fff;font-weight:700;box-shadow:0 0 8px #5a2d8299;border-radius:6px;padding:3px 8px;font-size:10px;white-space:nowrap;text-decoration:none;">↗</a>'+
+      '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;width:120px">'+renderAvatar(staffObj,28)+'<span class="upcoming-staff" style="color:var(--tg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(staffName)+'</span><a href="'+successUrl+'" target="_blank" style="flex-shrink:0;background:#5a2d82;border:1px solid #5a2d82;color:#fff;font-weight:700;box-shadow:0 0 8px #5a2d8299;border-radius:6px;padding:3px 7px;font-size:10px;white-space:nowrap;text-decoration:none;margin-left:4px">↗</a></div>'+
     '</div>';
   }).join('');
 }
@@ -319,9 +318,17 @@ function renderTicker(rows,varianteMap,staffMap){
     var kurzfristigSetting2=localStorage.getItem('kurzfristig_setting')||'anzeigen';
     var kurzfristigReminderSetting2=localStorage.getItem('kurzfristig_reminder_setting')||'anzeigen';
     var bookedToday=b.created_at&&b.created_at.slice(0,10)>=todayStr2;
-    var canBestaetigen=type!=='cancel'&&!!phone&&new Date(b.termin_start)>now2&&!(bookedToday&&kurzfristigSetting2==='keine');
-    var canErinnern=type!=='cancel'&&!!phone&&(terminDay===tomorrowStr||terminDay===dayAfterStr)&&!(bookedToday&&kurzfristigReminderSetting2==='keine');
-    var canStorno=type==='cancel'&&!!phone;
+
+    // Erinnerung: genau gleiche Bedingung wie reminders-Kachel
+    var isInReminder=type!=='cancel'&&(terminDay===tomorrowStr||terminDay===dayAfterStr)&&!(kurzfristigReminderSetting2==='keine'&&bookedToday);
+    // Bestätigung: genau gleiche Bedingung wie confirms-Kachel (nicht in reminder, zukünftig)
+    var isInConfirm=type!=='cancel'&&new Date(b.termin_start)>now2&&!isInReminder&&!(kurzfristigSetting2==='keine'&&bookedToday);
+    // Storno: genau gleiche Bedingung wie stornos-Kachel
+    var isInStorno=type==='cancel'&&new Date(b.updated_at||b.created_at)>=new Date(now2.getTime()-7*24*60*60*1000);
+
+    var canBestaetigen=isInConfirm&&!!phone;
+    var canErinnern=isInReminder&&!!phone;
+    var canStorno=isInStorno&&!!phone;
 
     function btn(label,href,active,color,highlight){
       if(isErledigt||!active){return'<span style="background:#f0f0f0;border:1px solid #e0e0e0;color:#c0c0c0;cursor:default;pointer-events:none;font-weight:500;border-radius:6px;padding:4px 9px;font-size:10px;white-space:nowrap;display:inline-block;">'+label+'</span>';}
@@ -353,7 +360,7 @@ function renderTicker(rows,varianteMap,staffMap){
       +'<td>'+svcName+'</td>'
       +'<td style="color:var(--muted);width:60px">'+dur+'</td>'
       +'<td style="font-weight:500;color:var(--tpl);width:60px">'+price+'</td>'
-      +'<td style="width:130px"><div style="display:flex;align-items:center;gap:6px">'+renderAvatar(staffObj,22)+'<span style="color:var(--tg);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+staffName+'</span></div></td>'
+      +'<td style="width:130px"><div style="display:flex;align-items:center;gap:6px">'+renderAvatar(staffObj,28)+'<span style="color:var(--tg);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+staffName+'</span></div></td>'
       +'<td style="white-space:nowrap">'+esc(dateStr)+'</td>'
       +'<td style="font-size:13px;width:110px"><span class="badge '+type+'">'+typeLabel+'</span><div style="font-size:10px;color:var(--muted);margin-top:3px">'+esc(bookStr)+'</div></td>'
       +'<td style="font-size:13px;width:320px">'+aktionen+'</td>'
