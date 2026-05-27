@@ -1437,16 +1437,20 @@ async function loadSalonProfile(){
   try{
     var salonId=getSalonId();
     if(!salonId){console.warn('Keine salon_id in der URL.');return;}
-    var res=await sb.from('kunden_profile').select('*,booking_active').eq('id',salonId).single();
+    var res=await sb.from('kunden_profile').select('*').eq('id',salonId).single();
     if(res.error){console.error('Supabase Fehler:',res.error);return;}
     var data=res.data;
 
     // Slot-Raster aus feature_settings laden
     var fs=data.feature_settings||{};
 
-    console.log('[BOOKING] booking_active =', data.booking_active, typeof data.booking_active);
-    // Buchungsseite gesperrt? (null/undefined = online, explizit false = gesperrt)
-    if(data.booking_active===false){
+    console.log('[BOOKING] data keys:', Object.keys(data));
+    console.log('[BOOKING] feature_settings:', JSON.stringify(data.feature_settings));
+    // Buchungsseite gesperrt? — prüfe feature_settings.booking_active
+    var bookingActive = data.feature_settings&&data.feature_settings.booking_active!==undefined
+      ? data.feature_settings.booking_active
+      : true;
+    if(bookingActive===false){
       var sName=data.brand_name||data.name||'Salon';
       var logo=data.logo_url||'';
       document.body.innerHTML='<div style="position:fixed;inset:0;background:linear-gradient(135deg,#3d1568 0%,#5a2d82 60%,#4a1f72 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;text-align:center;padding:24px">'
