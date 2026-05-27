@@ -252,7 +252,7 @@ function renderUpcomingCalendar(events,varianteMap,staffMap,serviceMap){
     return'<div class="upcoming-row">'+
       '<div class="upcoming-date">'+esc(dateStr)+'</div>'+
       '<div class="upcoming-info"><div class="upcoming-name">'+esc(b.customer_name||'Kunde')+'</div><div class="upcoming-service">'+esc(svcName)+'</div></div>'+
-      '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;width:110px">'+renderAvatar(staffObj,28)+'<span class="upcoming-staff" style="color:var(--tg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(staffName)+'</span></div>'+
+      '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;width:110px">'+renderAvatar(staffObj,36)+'<span class="upcoming-staff" style="color:var(--tg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(staffName)+'</span></div>'+
       '<a href="'+successUrl+'" target="_blank" style="flex-shrink:0;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;background:#5a2d82;border:1px solid #5a2d82;color:#fff;font-weight:700;box-shadow:0 0 8px #5a2d8299;border-radius:6px;font-size:12px;text-decoration:none;">↗</a>'+
     '</div>';
   }).join('');
@@ -361,7 +361,7 @@ function renderTicker(rows,varianteMap,staffMap){
       +'<td>'+svcName+'</td>'
       +'<td style="color:var(--muted);width:60px">'+dur+'</td>'
       +'<td style="font-weight:500;color:var(--tpl);width:60px">'+price+'</td>'
-      +'<td style="width:130px"><div style="display:flex;align-items:center;gap:6px">'+renderAvatar(staffObj,28)+'<span style="color:var(--tg);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+staffName+'</span></div></td>'
+      +'<td style="width:130px"><div style="display:flex;align-items:center;gap:6px">'+renderAvatar(staffObj,36)+'<span style="color:var(--tg);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+staffName+'</span></div></td>'
       +'<td style="white-space:nowrap">'+esc(dateStr)+'</td>'
       +'<td style="font-size:13px;width:110px"><span class="badge '+type+'">'+typeLabel+'</span><div style="font-size:10px;color:var(--muted);margin-top:3px">'+esc(bookStr)+'</div></td>'
       +'<td style="font-size:13px;width:320px">'+aktionen+'</td>'
