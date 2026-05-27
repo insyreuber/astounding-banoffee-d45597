@@ -16,7 +16,7 @@
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-height:100vh}
 .nav{background:var(--tp);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2)}
 .nav-brand{padding:14px 20px 14px 0;border-right:1px solid rgba(255,255,255,.1);margin-right:4px;flex-shrink:0}
-.nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:600;color:#fff;letter-spacing:.01em;text-transform:none;line-height:1}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:600;color:#fff;letter-spacing:.01em;text-transform:none;line-height:1}
 .nav-logo span{color:#C9A84C}
 .nav-meta{font-size:11px;color:rgba(255,255,255,.5)}
 .nav-salon{font-size:13px;font-weight:600;color:rgba(255,255,255,.9)}
@@ -228,6 +228,12 @@ async function loadAll(){
     return b.status==='cancelled'&&new Date(b.updated_at||b.created_at)>=sevenDaysAgo;
   }).slice(0,10);
 
+  var confirmIds=confirms.map(function(b){return b.id;});
+  var stornoIds=stornos.map(function(b){return b.id;});
+  window._confirmIds=confirmIds;
+  window._reminderIds=reminders.map(function(b){return b.id;});
+  window._stornoIds=stornoIds;
+
   renderTicker(ticker,varianteMap,staffMap);
   renderUpcomingCalendar(upcoming,varianteMap,staffMap,serviceMap);
   renderReminders(reminders);
@@ -314,49 +320,38 @@ function renderTicker(rows,varianteMap,staffMap){
     var msgStorno='Hallo '+(b.customer_name||'')+'!\nWir haben deine Stornierung für den '+termin+' erhalten und bestätigen diese hiermit.\n\nFalls du einen neuen Termin buchen möchtest:\n'+bookingLink+'\npowered by insy-reception';
     var isErledigt=erledigtIds.indexOf(b.id)>=0;
     var now2=new Date();
-    var todayStr2=now2.toISOString().slice(0,10);
-    var tomorrowStr=new Date(now2.getFullYear(),now2.getMonth(),now2.getDate()+1).toISOString().slice(0,10);
-    var dayAfterStr=new Date(now2.getFullYear(),now2.getMonth(),now2.getDate()+2).toISOString().slice(0,10);
-    var terminDay=b.termin_start?b.termin_start.slice(0,10):'';
-    var kurzfristigSetting2=localStorage.getItem('kurzfristig_setting')||'anzeigen';
-    var kurzfristigReminderSetting2=localStorage.getItem('kurzfristig_reminder_setting')||'anzeigen';
-    var bookedToday=b.created_at&&b.created_at.slice(0,10)>=todayStr2;
+    var erledigtIds2=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
+    var isErledigt2=erledigtIds2.indexOf(b.id)>=0;
+    var kachelErledigtIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');
+    var isKachelErledigt=kachelErledigtIds.indexOf(b.id)>=0;
+    var alreadyDone=isErledigt2||isKachelErledigt;
 
-    // Erinnerung: genau gleiche Bedingung wie reminders-Kachel
-    var isInReminder=type!=='cancel'&&(terminDay===tomorrowStr||terminDay===dayAfterStr)&&!(kurzfristigReminderSetting2==='keine'&&bookedToday);
-    // Bestätigung: genau gleiche Bedingung wie confirms-Kachel (nicht in reminder, zukünftig)
-    var isInConfirm=type!=='cancel'&&new Date(b.termin_start)>now2&&!isInReminder&&!(kurzfristigSetting2==='keine'&&bookedToday);
-    // Storno: genau gleiche Bedingung wie stornos-Kachel
-    var isInStorno=type==='cancel'&&new Date(b.updated_at||b.created_at)>=new Date(now2.getTime()-7*24*60*60*1000);
+    // Buttons glowen nur wenn in der jeweiligen Kachel UND noch nicht erledigt
+    var canBestaetigen=!alreadyDone&&!!phone&&(window._confirmIds||[]).indexOf(b.id)>=0;
+    var canErinnern=!alreadyDone&&!!phone&&(window._reminderIds||[]).indexOf(b.id)>=0;
+    var canStorno=!alreadyDone&&!!phone&&(window._stornoIds||[]).indexOf(b.id)>=0;
 
-    var canBestaetigen=isInConfirm&&!!phone;
-    var canErinnern=isInReminder&&!!phone;
-    var canStorno=isInStorno&&!!phone;
-
-    function btn(label,href,active,color,highlight){
-      if(isErledigt||!active){return'<span style="background:#f0f0f0;border:1px solid #e0e0e0;color:#c0c0c0;cursor:default;pointer-events:none;font-weight:500;border-radius:6px;padding:4px 9px;font-size:10px;white-space:nowrap;display:inline-block;">'+label+'</span>';}
+    function btn(label,href,active,color){
+      if(alreadyDone||!active){return'<span style="background:#f0f0f0;border:1px solid #e0e0e0;color:#c0c0c0;cursor:default;pointer-events:none;font-weight:500;border-radius:6px;padding:4px 9px;font-size:10px;white-space:nowrap;display:inline-block;">'+label+'</span>';}
       var style='background:'+color+';border:1px solid '+color+';color:#fff;cursor:pointer;font-weight:700;box-shadow:0 0 10px '+color+',0 0 20px '+color+'66;border-radius:6px;padding:4px 9px;font-size:10px;white-space:nowrap;display:inline-block;text-decoration:none;';
       return'<a href="'+href+'" target="_blank" style="'+style+'">'+label+'</a>';
     }
 
-    var stornoOffen=type==='cancel'&&JSON.parse(localStorage.getItem('erledigt_ids')||'[]').indexOf(b.id)<0;
     var successUrl='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
-    var kachelErledigtIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');
-    var isKachelErledigt=kachelErledigtIds.indexOf(b.id)>=0;
 
     var aktionen='<div style="display:flex;gap:5px;align-items:center;width:100%">';
     aktionen+=btn('Bestätigung',waLink(phone,msgBestaetigung),canBestaetigen,'#27ae60');
     aktionen+=btn('Erinnerung',waLink(phone,msgErinnerung),canErinnern,'#e67e22');
-    aktionen+=btn('Storno',waLink(phone,msgStorno),canStorno,'#e74c3c',stornoOffen);
+    aktionen+=btn('Storno',waLink(phone,msgStorno),canStorno,'#e74c3c');
     aktionen+='<a href="'+successUrl+'" target="_blank" style="background:#5a2d82;border:1px solid #5a2d82;color:#fff;font-weight:700;box-shadow:0 0 10px #5a2d8299,0 0 20px #5a2d8244;border-radius:6px;padding:4px 9px;font-size:11px;white-space:nowrap;display:inline-block;text-decoration:none;">↗ Buchung</a>';
     if(isKachelErledigt){
       aktionen+='<span style="margin-left:auto;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;font-size:12px;color:#16a34a;font-weight:600;cursor:default">✓</span>';
     }else{
-      aktionen+='<button onclick="tickerErledigt(\''+b.id+'\')" style="margin-left:auto;background:'+(isErledigt?'#e8f5e9':'var(--bg)')+';border:1px solid '+(isErledigt?'#4ade80':'var(--border)')+';border-radius:6px;padding:2px 8px;font-size:12px;color:'+(isErledigt?'#16a34a':'#ccc')+';font-weight:600;cursor:pointer">✓</button>';
+      aktionen+='<button onclick="tickerErledigt(\''+b.id+'\')" style="margin-left:auto;background:'+(isErledigt2?'#e8f5e9':'var(--bg)')+';border:1px solid '+(isErledigt2?'#4ade80':'var(--border)')+';border-radius:6px;padding:2px 8px;font-size:12px;color:'+(isErledigt2?'#16a34a':'#ccc')+';font-weight:600;cursor:pointer">✓</button>';
     }
     aktionen+='</div>';
 
-    return'<tr style="'+(isErledigt?'opacity:0.55':!isErledigt&&!isKachelErledigt?'background:#f4f0fa':'')+'">'
+    return'<tr style="'+(alreadyDone?'opacity:0.55':!alreadyDone?'background:#f4f0fa':'')+'">'
       +'<td style="width:80px"><span class="badge '+type+'">'+typeLabel+'</span></td>'
       +'<td style="font-weight:500">'+esc(b.customer_name||'–')+'</td>'
       +'<td style="color:var(--muted);font-family:monospace;font-size:13px">'+esc(b.customer_phone||'–')+'</td>'
@@ -394,7 +389,8 @@ function renderStorno(rows,varianteMap,staffMap,serviceMap){
     var variante=varianteMap[b.service_variante_id];
     var svcParent2=variante&&variante.service_id?serviceMap[variante.service_id]||'':'';
     var svcName=variante?[svcParent2,variante.service_name].filter(Boolean).join(' · ')||'–':'–';
-    var staffName=staffMap[b.mitarbeiter_id]||'';
+    var staffObj2=staffMap[b.mitarbeiter_id]||null;
+    var staffName=staffObj2?(staffObj2.display_name||staffObj2.name||''):'';
     var bookingLink='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
     var msg='Hallo '+(b.customer_name||'')+'!\nWir haben deine Stornierung für den '+dateStr+' erhalten und bestätigen diese hiermit.\n\nFalls du einen neuen Termin buchen möchtest:\n'+bookingLink+'\npowered by insy-reception';
     var phone=b.customer_phone||'';
