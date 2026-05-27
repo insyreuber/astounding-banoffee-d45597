@@ -2632,6 +2632,60 @@ function hexToRgba(hex,alpha){
   return'rgba('+r+','+g+','+b+','+alpha+')';
 }
 
+// ── WA TEMPLATES ──────────────────────────────────────────────
+function waSelectTab(tab){
+  window._waActiveTab=tab;
+  var editor=document.getElementById('wa-template-editor');
+  if(editor&&window._waTemplates)window._waTemplates[window._waActiveTab]=editor.value;
+  ['bestaetigung','erinnerung','storno'].forEach(function(t){
+    var btn=document.getElementById('wat-'+t);
+    if(btn)btn.classList.toggle('wa-tab-active',t===tab);
+  });
+  window._waActiveTab=tab;
+  if(editor&&window._waTemplates){editor.value=window._waTemplates[tab]||'';updateWaPreview();}
+}
+
+function waInsertVar(v){
+  var editor=document.getElementById('wa-template-editor');
+  if(!editor)return;
+  var start=editor.selectionStart,end=editor.selectionEnd;
+  editor.value=editor.value.slice(0,start)+v+editor.value.slice(end);
+  editor.selectionStart=editor.selectionEnd=start+v.length;
+  editor.focus();
+  if(window._waTemplates)window._waTemplates[window._waActiveTab||'bestaetigung']=editor.value;
+  updateWaPreview();
+}
+
+function updateWaPreview(){
+  var editor=document.getElementById('wa-template-editor');
+  var prev=document.getElementById('wa-preview');
+  if(!editor||!prev)return;
+  var txt=editor.value;
+  if(window._waTemplates)window._waTemplates[window._waActiveTab||'bestaetigung']=txt;
+  txt=txt.replace(/\{\{name\}\}/g,'Maria Müller');
+  txt=txt.replace(/\{\{termin\}\}/g,'Montag, 02.06. um 14:00 Uhr');
+  txt=txt.replace(/\{\{datum\}\}/g,'Montag, 02.06.');
+  txt=txt.replace(/\{\{uhrzeit\}\}/g,'14:00 Uhr');
+  txt=txt.replace(/\{\{service\}\}/g,'Nageldesign · Lackieren');
+  txt=txt.replace(/\{\{buchungslink\}\}/g,'https://insy-reception.com/success?...');
+  txt=txt.replace(/\{\{salon\}\}/g,(window._pData&&(window._pData.brand_name||window._pData.name))||'Salon');
+  prev.textContent=txt;
+}
+
+async function saveWaTemplates(){
+  if(!SALON_ID)return;
+  var editor=document.getElementById('wa-template-editor');
+  if(editor&&window._waTemplates)window._waTemplates[window._waActiveTab||'bestaetigung']=editor.value;
+  if(!window._pData)window._pData={};
+  if(!window._pData.feature_settings)window._pData.feature_settings={};
+  window._pData.feature_settings.wa_template_bestaetigung=window._waTemplates.bestaetigung;
+  window._pData.feature_settings.wa_template_erinnerung=window._waTemplates.erinnerung;
+  window._pData.feature_settings.wa_template_storno=window._waTemplates.storno;
+  var res=await sb.from('kunden_profile').update({feature_settings:window._pData.feature_settings}).eq('id',SALON_ID);
+  if(res.error){toast('Fehler beim Speichern','error');return;}
+  toast('Templates gespeichert ✓','success');
+}
+
 function renderStaffSidebar(){
   var sidebar=document.getElementById('staff-sidebar');
   if(!sidebar)return;
@@ -4036,39 +4090,80 @@ function renderProfilContent(id){
 
   else if(id==='whatsapp'){
     wrap.innerHTML=
-      '<div class="card" id="feat-whatsapp">'+
-        '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">'+
-          '<div style="display:flex;align-items:flex-start;gap:11px">'+
-            '<div style="width:38px;height:38px;border-radius:10px;background:#e8f8ee;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+
-              '<svg width="20" height="20" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.072 22l4.948-1.348A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>'+
-            '</div>'+
-            '<div><div style="font-size:13px;font-weight:600;color:var(--td)">WhatsApp Benachrichtigungen</div><div style="font-size:12px;color:var(--muted)">Automatische Nachrichten für Buchungen &amp; Erinnerungen</div></div>'+
+      '<div class="card">'+
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">'+
+          '<div style="width:38px;height:38px;border-radius:10px;background:#e8f8ee;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+
+            '<svg width="20" height="20" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.072 22l4.948-1.348A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>'+
           '</div>'+
-          '<label class="toggle-sw" style="flex-shrink:0;margin-top:2px"><input type="checkbox" id="feat-whatsapp-on" onchange="toggleFeature(\'whatsapp\')"><span class="slider"></span></label>'+
+          '<div>'+
+            '<div style="font-size:14px;font-weight:600;color:var(--td)">WhatsApp Templates</div>'+
+            '<div style="font-size:12px;color:var(--muted)">Eigene Nachrichten für jeden Anlass konfigurieren</div>'+
+          '</div>'+
         '</div>'+
-        '<div id="whatsapp-setup" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)"></div>'+
-      '</div>'+
-      '<div class="card" style="padding:18px">'+
-        '<div class="card-title" style="margin-bottom:14px">'+
-          '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>'+
-          ' WhatsApp Guthaben'+
+        // Variablen-Legende
+        '<div style="background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:12px;margin-bottom:20px">'+
+          '<div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Verfügbare Variablen</div>'+
+          '<div style="display:flex;flex-wrap:wrap;gap:6px" id="wa-vars">'+
+            '<button onclick="waInsertVar(\'{{name}}\')" style="background:#e8f4fd;border:1.5px solid #3498db;color:#2980b9;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">{{name}}</button>'+
+            '<button onclick="waInsertVar(\'{{termin}}\')" style="background:#fef9e7;border:1.5px solid #f39c12;color:#e67e22;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">{{termin}}</button>'+
+            '<button onclick="waInsertVar(\'{{datum}}\')" style="background:#fef9e7;border:1.5px solid #f39c12;color:#e67e22;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">{{datum}}</button>'+
+            '<button onclick="waInsertVar(\'{{uhrzeit}}\')" style="background:#fef9e7;border:1.5px solid #f39c12;color:#e67e22;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">{{uhrzeit}}</button>'+
+            '<button onclick="waInsertVar(\'{{service}}\')" style="background:#f4f0fa;border:1.5px solid #9b59b6;color:#8e44ad;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">{{service}}</button>'+
+            '<button onclick="waInsertVar(\'{{buchungslink}}\')" style="background:#e8f8ee;border:1.5px solid #27ae60;color:#1e8449;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">{{buchungslink}}</button>'+
+            '<button onclick="waInsertVar(\'{{salon}}\')" style="background:#fce8e8;border:1.5px solid #e74c3c;color:#c0392b;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">{{salon}}</button>'+
+          '</div>'+
+          '<div style="font-size:10px;color:var(--muted);margin-top:8px">Klicke auf eine Variable um sie im aktiven Template einzufügen</div>'+
         '</div>'+
-        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'+
-          '<span style="font-size:11px;color:var(--muted)">Verbrauch</span>'+
-          '<span id="dash-wa-usage-label" style="font-size:11px;font-weight:600;color:var(--td)">—</span>'+
+        // Template Tabs
+        '<div style="display:flex;gap:6px;margin-bottom:16px">'+
+          '<button onclick="waSelectTab(\'bestaetigung\')" id="wat-bestaetigung" class="wa-tab-btn wa-tab-active">✓ Bestätigung</button>'+
+          '<button onclick="waSelectTab(\'erinnerung\')" id="wat-erinnerung" class="wa-tab-btn">⏰ Erinnerung</button>'+
+          '<button onclick="waSelectTab(\'storno\')" id="wat-storno" class="wa-tab-btn">✕ Storno</button>'+
         '</div>'+
-        '<div style="background:var(--border);border-radius:99px;height:10px;overflow:hidden;margin-bottom:16px">'+
-          '<div id="dash-wa-bar" style="height:100%;border-radius:99px;background:linear-gradient(90deg,#25d366,#128c7e);width:0%;transition:width .6s ease"></div>'+
+        // Editor
+        '<div style="position:relative">'+
+          '<textarea id="wa-template-editor" rows="8" style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px;font-size:13px;font-family:inherit;color:var(--td);background:#fff;outline:none;resize:vertical;line-height:1.6" placeholder="Nachricht eingeben..."></textarea>'+
         '</div>'+
-        '<div style="border-top:1px solid var(--border);padding-top:12px">'+
-          '<div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px">Aktive Automationen</div>'+
-          '<div id="dash-wa-automations" style="display:flex;flex-direction:column;gap:5px"></div>'+
+        // Vorschau
+        '<div style="margin-top:12px;background:#e8f8ee;border:1.5px solid #b7e4c7;border-radius:10px;padding:12px">'+
+          '<div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#1e8449;margin-bottom:8px">Vorschau</div>'+
+          '<div id="wa-preview" style="font-size:12px;color:#1a3c2e;white-space:pre-wrap;line-height:1.6"></div>'+
+        '</div>'+
+        '<div style="display:flex;justify-content:flex-end;margin-top:14px">'+
+          '<button onclick="saveWaTemplates()" class="btn btn-primary" style="gap:6px">'+
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>'+
+            'Templates speichern'+
+          '</button>'+
         '</div>'+
       '</div>';
-    loadFeatureSettings();
-    // Guthaben aus Profil-Daten befüllen
+
+    // CSS für Tabs
+    if(!document.getElementById('wa-tab-style')){
+      var s=document.createElement('style');s.id='wa-tab-style';
+      s.textContent='.wa-tab-btn{padding:6px 14px;border-radius:8px;border:1.5px solid var(--border);background:#fff;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}.wa-tab-active{background:var(--tpl);color:#fff;border-color:var(--tpl)}';
+      document.head.appendChild(s);
+    }
+
+    // Standard-Templates
+    var defaults={
+      bestaetigung:'Hallo {{name}}!\nDein Termin am {{termin}} ist bestätigt. Wir freuen uns auf dich! 😊\n\nDein Buchungslink: {{buchungslink}}\n\npowered by insy-reception',
+      erinnerung:'Hallo {{name}}!\n⏰ Erinnerung: Dein Termin ist am {{termin}}. Wir freuen uns auf dich!\n\nDein Buchungslink: {{buchungslink}}\n\npowered by insy-reception',
+      storno:'Hallo {{name}}!\nWir haben deine Stornierung für den {{termin}} erhalten und bestätigen diese hiermit.\n\nFalls du einen neuen Termin buchen möchtest:\n{{buchungslink}}\n\npowered by insy-reception'
+    };
+
     var d=window._pData||{};
-    renderGuthabenCard(d);
+    var fs=d.feature_settings||{};
+    window._waTemplates={
+      bestaetigung:fs.wa_template_bestaetigung||defaults.bestaetigung,
+      erinnerung:fs.wa_template_erinnerung||defaults.erinnerung,
+      storno:fs.wa_template_storno||defaults.storno
+    };
+    window._waActiveTab='bestaetigung';
+
+    var editor=document.getElementById('wa-template-editor');
+    editor.value=window._waTemplates.bestaetigung;
+    editor.addEventListener('input',updateWaPreview);
+    updateWaPreview();
   }
 
   else if(id==='team'){
