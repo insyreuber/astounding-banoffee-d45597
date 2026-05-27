@@ -403,7 +403,7 @@ function renderTicker(rows,varianteMap,staffMap){
   window._tickerRows=rows;window._tickerVarianteMap=varianteMap;window._tickerStaffMap=staffMap;
   var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var thead='<thead><tr>'
-    +'<th style="width:120px">Status</th>'
+    +'<th style="width:110px">Status</th>'
     +'<th>Name</th>'
     +'<th style="font-size:12px;width:110px">Telefon</th>'
     +'<th>Service</th>'
@@ -476,7 +476,7 @@ function renderTicker(rows,varianteMap,staffMap){
       +'<td style="font-weight:500;color:var(--tpl);width:60px">'+price+'</td>'
       +'<td style="width:130px"><div style="display:flex;align-items:center;gap:6px"><a href="#" onclick="openStaffOverlay(\''+esc(b.mitarbeiter_id||'')+'\');return false;" title="Profil ansehen" style="flex-shrink:0;text-decoration:none;cursor:pointer">'+renderAvatar(staffObj,36)+'</a><span style="color:var(--tg);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+staffName+'</span></div></td>'
       +'<td style="white-space:nowrap">'+esc(dateStr)+'</td>'
-      +'<td style="width:120px"><span class="badge '+type+'">'+typeLabel+'</span><div style="font-size:10px;color:var(--muted);margin-top:3px">'+esc(bookStr)+'</div></td>'
+      +'<td style="width:110px"><span class="badge '+type+'">'+typeLabel+'</span><div style="font-size:10px;color:var(--muted);margin-top:3px">'+esc(bookStr)+'</div></td>'
       +'<td style="font-size:13px;width:360px">'+aktionen+'</td>'
     +'</tr>';
   }).join('');
