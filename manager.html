@@ -211,14 +211,14 @@ async function loadAll(){
   if(kurzfristigReminderSetting==='keine'){
     reminders=reminders.filter(function(b){
       var bookedDay=b.created_at?b.created_at.slice(0,10):'';
-      var todayStr2=new Date().toISOString().slice(0,10);
-      return bookedDay<todayStr2;
+      return bookedDay<todayStr;
     });
   }
   var kurzfristigSetting=localStorage.getItem('kurzfristig_setting')||'anzeigen';
   var confirms=all.filter(function(b){
     if(b.status==='cancelled')return false;
     if(new Date(b.termin_start)<=now)return false;
+    if(reminderIds.indexOf(b.id)>=0)return false;
     if(kurzfristigSetting==='keine'){var bookedDay=b.created_at?b.created_at.slice(0,10):'';if(bookedDay>=todayStr)return false;}
     return true;
   });
@@ -252,7 +252,7 @@ function renderUpcomingCalendar(events,varianteMap,staffMap,serviceMap){
     return'<div class="upcoming-row">'+
       '<div class="upcoming-date">'+esc(dateStr)+'</div>'+
       '<div class="upcoming-info"><div class="upcoming-name">'+esc(b.customer_name||'Kunde')+'</div><div class="upcoming-service">'+esc(svcName)+'</div></div>'+
-      '<div style="display:flex;align-items:center;gap:5px;margin-right:8px;flex-shrink:0">'+renderAvatar(staffObj,20)+'<span class="upcoming-staff" style="color:var(--tg)">'+esc(staffName)+'</span></div>'+
+      '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;width:110px">'+renderAvatar(staffObj,22)+'<span class="upcoming-staff" style="color:var(--tg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(staffName)+'</span></div>'+
       '<a href="'+successUrl+'" target="_blank" style="flex-shrink:0;background:#5a2d82;border:1px solid #5a2d82;color:#fff;font-weight:700;box-shadow:0 0 8px #5a2d8299;border-radius:6px;padding:3px 8px;font-size:10px;white-space:nowrap;text-decoration:none;">↗</a>'+
     '</div>';
   }).join('');
@@ -340,9 +340,9 @@ function renderTicker(rows,varianteMap,staffMap){
     aktionen+=btn('Storno',waLink(phone,msgStorno),canStorno,'#e74c3c',stornoOffen);
     aktionen+='<a href="'+successUrl+'" target="_blank" style="background:#5a2d82;border:1px solid #5a2d82;color:#fff;font-weight:700;box-shadow:0 0 10px #5a2d8299,0 0 20px #5a2d8244;border-radius:6px;padding:4px 9px;font-size:11px;white-space:nowrap;display:inline-block;text-decoration:none;">↗ Buchung</a>';
     if(isKachelErledigt){
-      aktionen+='<span style="margin-left:auto;font-size:18px;color:#16a34a;padding:0 2px;filter:drop-shadow(0 0 4px #16a34a88);cursor:default;opacity:0.5">✓</span>';
+      aktionen+='<span style="margin-left:auto;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;font-size:12px;color:#16a34a;font-weight:600;cursor:default">✓</span>';
     }else{
-      aktionen+='<button onclick="tickerErledigt(\''+b.id+'\')" style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:18px;color:'+(isErledigt?'#16a34a':'#d0d0d0')+';padding:0 2px;line-height:1;'+(isErledigt?'filter:drop-shadow(0 0 4px #16a34a88)':'')+'">'+'✓</button>';
+      aktionen+='<button onclick="tickerErledigt(\''+b.id+'\')" style="margin-left:auto;background:'+(isErledigt?'#e8f5e9':'var(--bg)')+';border:1px solid '+(isErledigt?'#4ade80':'var(--border)')+';border-radius:6px;padding:2px 8px;font-size:12px;color:'+(isErledigt?'#16a34a':'#ccc')+';font-weight:600;cursor:pointer">✓</button>';
     }
     aktionen+='</div>';
 
