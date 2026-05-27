@@ -2634,15 +2634,21 @@ function hexToRgba(hex,alpha){
 
 // ── WA TEMPLATES ──────────────────────────────────────────────
 function waSelectTab(tab){
-  window._waActiveTab=tab;
   var editor=document.getElementById('wa-template-editor');
-  if(editor&&window._waTemplates)window._waTemplates[window._waActiveTab]=editor.value;
+  // Aktuellen Wert im bisherigen Tab speichern
+  if(editor&&window._waTemplates&&window._waActiveTab)
+    window._waTemplates[window._waActiveTab]=editor.value;
+  // Tab wechseln
+  window._waActiveTab=tab;
   ['bestaetigung','erinnerung','storno'].forEach(function(t){
     var btn=document.getElementById('wat-'+t);
     if(btn)btn.classList.toggle('wa-tab-active',t===tab);
   });
-  window._waActiveTab=tab;
-  if(editor&&window._waTemplates){editor.value=window._waTemplates[tab]||'';updateWaPreview();}
+  // Neuen Tab-Inhalt laden
+  if(editor&&window._waTemplates){
+    editor.value=window._waTemplates[tab]||'';
+    updateWaPreview();
+  }
 }
 
 function waInsertVar(v){
