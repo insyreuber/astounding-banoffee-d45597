@@ -3858,7 +3858,7 @@ function updateBsPanelStatus(active){
 
 function initBookingStatus(){
   var d=window._pData||{};
-  var active=d.booking_active!==false;
+  var active=d.feature_settings&&d.feature_settings.booking_active!==undefined?d.feature_settings.booking_active:true;
   var tog=document.getElementById('dash-booking-active');
   var dot=document.getElementById('booking-status-dot');
   var lbl=document.getElementById('booking-status-label');
