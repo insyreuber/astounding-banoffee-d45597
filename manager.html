@@ -41,9 +41,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
 /* ── TABLE — bessere Leseführung ── */
 .ticker-table{width:100%;border-collapse:separate;border-spacing:0 5px;font-size:13px}
 .ticker-table th{
-  background:transparent;color:var(--muted);
+  background:#fff;color:var(--muted);
   font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
   padding:2px 14px 12px;text-align:left;border-bottom:2px solid var(--border);white-space:nowrap;
+  position:sticky;top:0;z-index:2;
 }
 .ticker-table td{
   padding:13px 14px;border-bottom:none;
@@ -249,13 +250,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
       <div id="upcoming-list" style="max-height:400px;overflow-y:auto"><div class="loading">Wird geladen…</div></div>
     </div>
 
-    <!-- Live-Aktivitäten — Rest rechts, bis zum Rand -->
-    <div class="card" style="flex:1;border-radius:12px 0 0 12px;margin-right:0">
+    <!-- Live-Aktivitäten — rechts 2/3 bis zum Rand -->
+    <div class="card" style="flex:1;border-radius:12px 0 0 12px;margin-right:0;display:flex;flex-direction:column;overflow:hidden">
       <div class="card-title">
         <span class="live-dot"></span>
         Live-Aktivitäten
       </div>
-      <div id="ticker-list" style="max-height:400px;overflow-y:auto"><div class="loading">Wird geladen…</div></div>
+      <div id="ticker-list" style="overflow-y:auto;height:100%"><div class="loading">Wird geladen…</div></div>
     </div>
 
   </div>
@@ -346,7 +347,7 @@ async function loadAll(){
     .select('id,created_at,updated_at,cancelled_at,customer_name,customer_phone,termin_start,termin_ende,status,mitarbeiter_id,service_variante_id,kunde_id')
     .eq('kunde_id',SALON_ID)
     .order('created_at',{ascending:false})
-    .limit(100);
+    .limit(500);
 
   if(allRes.error){console.error('Bookings error:',JSON.stringify(allRes.error));return;}
   var all=allRes.data||[];
@@ -370,7 +371,7 @@ async function loadAll(){
     }):Promise.resolve()
   ]);
 
-  var ticker=all.slice(0,10);
+  var ticker=all;
   var upcoming=all.filter(function(b){return b.status!=='cancelled'&&new Date(b.termin_start)>now;}).sort(function(a,b){return new Date(a.termin_start)-new Date(b.termin_start);}).slice(0,15);
   var reminders=all.filter(function(b){
     var d=b.termin_start?b.termin_start.slice(0,10):'';
