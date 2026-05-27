@@ -266,10 +266,10 @@ function renderTicker(rows,varianteMap,staffMap){
     +'<th>Service</th>'
     +'<th style="width:60px">Dauer</th>'
     +'<th style="width:60px">Preis</th>'
-    +'<th>Mitarbeiter</th>'
+    +'<th style="width:55px">Mitarbeiter</th>'
     +'<th>Termin</th>'
     +'<th style="font-size:12px;width:110px">Status</th>'
-    +'<th style="font-size:12px;width:320px">Aktionen</th>'
+    +'<th style="font-size:12px;width:360px">Aktionen</th>'
   +'</tr></thead>';
   var tbody=rows.map(function(b){
     var type=b.status==='cancelled'?'cancel':b.status==='rescheduled'?'move':'in';
@@ -312,15 +312,15 @@ function renderTicker(rows,varianteMap,staffMap){
     var kachelErledigtIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');
     var isKachelErledigt=kachelErledigtIds.indexOf(b.id)>=0;
 
-    var aktionen='<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;min-width:200px">';
+    var aktionen='<div style="display:flex;gap:5px;align-items:center;width:100%">';
     aktionen+=btn('Bestätigung',waLink(phone,msgBestaetigung),canBestaetigen,'#2980b9');
     aktionen+=btn('Erinnerung',waLink(phone,msgErinnerung),canErinnern,'#e67e22');
     aktionen+=btn('Storno',waLink(phone,msgStorno),canStorno,'#e74c3c',stornoOffen);
     aktionen+='<a href="'+successUrl+'" target="_blank" style="background:#5a2d82;border:1px solid #5a2d82;color:#fff;font-weight:700;box-shadow:0 0 10px #5a2d8299,0 0 20px #5a2d8244;border-radius:6px;padding:4px 9px;font-size:11px;white-space:nowrap;display:inline-block;text-decoration:none;">↗ Buchung</a>';
     if(isKachelErledigt){
-      aktionen+='<span style="font-size:18px;color:#16a34a;padding:0 2px;filter:drop-shadow(0 0 4px #16a34a88);cursor:default;opacity:0.5">✓</span>';
+      aktionen+='<span style="margin-left:auto;font-size:18px;color:#16a34a;padding:0 2px;filter:drop-shadow(0 0 4px #16a34a88);cursor:default;opacity:0.5">✓</span>';
     }else{
-      aktionen+='<button onclick="tickerErledigt(\''+b.id+'\')" style="background:none;border:none;cursor:pointer;font-size:18px;color:'+(isErledigt?'#16a34a':'#d0d0d0')+';padding:0 2px;line-height:1;'+(isErledigt?'filter:drop-shadow(0 0 4px #16a34a88)':'')+'">'+'✓</button>';
+      aktionen+='<button onclick="tickerErledigt(\''+b.id+'\')" style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:18px;color:'+(isErledigt?'#16a34a':'#d0d0d0')+';padding:0 2px;line-height:1;'+(isErledigt?'filter:drop-shadow(0 0 4px #16a34a88)':'')+'">'+'✓</button>';
     }
     aktionen+='</div>';
 
@@ -331,7 +331,7 @@ function renderTicker(rows,varianteMap,staffMap){
       +'<td>'+svcName+'</td>'
       +'<td style="color:var(--muted);width:60px">'+dur+'</td>'
       +'<td style="font-weight:500;color:var(--tpl);width:60px">'+price+'</td>'
-      +'<td style="color:var(--tg);font-weight:500">'+staffName+'</td>'
+      +'<td style="color:var(--tg);font-weight:500;width:55px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+staffName+'</td>'
       +'<td style="white-space:nowrap">'+esc(dateStr)+'</td>'
       +'<td style="font-size:13px;width:110px"><span class="badge '+type+'">'+typeLabel+'</span><div style="font-size:10px;color:var(--muted);margin-top:3px">'+esc(bookStr)+'</div></td>'
       +'<td style="font-size:13px;width:320px">'+aktionen+'</td>'
