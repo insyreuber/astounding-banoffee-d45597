@@ -75,7 +75,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         Nächste Termine
       </div>
-      <div id="upcoming-list"><div class="loading">Wird geladen…</div></div>
+      <div id="upcoming-list" style="max-height:400px;overflow-y:auto"><div class="loading">Wird geladen…</div></div>
     </div>
 
     <!-- Live-Aktivitäten — Rest rechts, bis zum Rand -->
@@ -85,7 +85,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
         Live-Aktivitäten
         <span id="ticker-count" style="margin-left:auto;font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0"></span>
       </div>
-      <div id="ticker-list"><div class="loading">Wird geladen…</div></div>
+      <div id="ticker-list" style="max-height:400px;overflow-y:auto"><div class="loading">Wird geladen…</div></div>
     </div>
 
   </div>
@@ -107,7 +107,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
           </select>
         </span>
       </div>
-      <div id="confirm-list"><div class="loading">Wird geladen…</div></div>
+      <div id="confirm-list" style="max-height:350px;overflow-y:auto"><div class="loading">Wird geladen…</div></div>
     </div>
 
     <!-- ③ Terminerinnerungen -->
@@ -124,7 +124,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
           </select>
         </span>
       </div>
-      <div id="reminder-list"><div class="loading">Wird geladen…</div></div>
+      <div id="reminder-list" style="max-height:350px;overflow-y:auto"><div class="loading">Wird geladen…</div></div>
     </div>
 
     <!-- ⑤ Stornos -->
@@ -134,7 +134,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
         <span style="color:#e74c3c">Stornos</span>
         <span style="margin-left:auto;font-size:9px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">Letzte 7 Tage</span>
       </div>
-      <div id="storno-list"><div class="loading">Wird geladen…</div></div>
+      <div id="storno-list" style="max-height:350px;overflow-y:auto"><div class="loading">Wird geladen…</div></div>
     </div>
 
   </div>
