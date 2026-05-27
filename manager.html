@@ -291,7 +291,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
           </select>
         </span>
       </div>
-      <div id="confirm-list-d" style="max-height:350px;overflow-y:auto"><div class="loading">Wird geladen…</div></div>
+      <div id="confirm-list-desktop" style="max-height:350px;overflow-y:auto"></div>
     </div>
 
     <!-- ③ Terminerinnerungen -->
@@ -308,7 +308,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
           </select>
         </span>
       </div>
-      <div id="reminder-list-d" style="max-height:350px;overflow-y:auto"><div class="loading">Wird geladen…</div></div>
+      <div id="reminder-list-desktop" style="max-height:350px;overflow-y:auto"></div>
     </div>
 
     <!-- ⑤ Stornos -->
@@ -318,7 +318,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
         <span style="color:#e74c3c">Stornos</span>
         <span style="margin-left:auto;font-size:9px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">Letzte 7 Tage</span>
       </div>
-      <div id="storno-list-d" style="max-height:350px;overflow-y:auto"><div class="loading">Wird geladen…</div></div>
+      <div id="storno-list-desktop" style="max-height:350px;overflow-y:auto"></div>
     </div>
 
   </div>
@@ -661,7 +661,7 @@ function renderTicker(rows,varianteMap,staffMap){
 
 function renderStorno(rows,varianteMap,staffMap,serviceMap){
   varianteMap=varianteMap||{};staffMap=staffMap||{};serviceMap=serviceMap||{};
-  var el=document.getElementById('storno-list-d')||document.getElementById('storno-list');
+  var el=document.getElementById('storno-list') || {innerHTML:'',querySelectorAll:function(){return[];}};
   if(!rows.length){el.innerHTML='<div class="loading">Keine Stornos in den letzten 7 Tagen</div>';return;}
   var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
@@ -695,9 +695,14 @@ function renderStorno(rows,varianteMap,staffMap,serviceMap){
   var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Stornos erledigt</div>')+'</div>';
   if(erledigt.length){html+='<div style="margin-top:14px"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500"><span>▶</span> Erledigt ('+erledigt.length+')</button><div style="display:none;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-top:8px">'+erledigt.map(function(b){return buildCard(b,true);}).join('')+'</div></div>';}
   el.innerHTML=html;
-  ['storno-list','storno-list-d'].forEach(function(id){var x=document.getElementById(id);if(x&&x!==el)x.innerHTML=html;});
 }
 
+
+function mirrorToDesktop(mobileId, desktopId){
+  var m=document.getElementById(mobileId);
+  var d=document.getElementById(desktopId);
+  if(m&&d)d.innerHTML=m.innerHTML;
+}
 function renderFromCache(){
   if(!window._cache)return;
   var c=window._cache;
@@ -732,7 +737,7 @@ function tickerErledigt(id){
 }
 
 function renderReminders(rows){
-  var el=document.getElementById('reminder-list-d')||document.getElementById('reminder-list');
+  var el=document.getElementById('storno-list') || {innerHTML:'',querySelectorAll:function(){return[];}};
   if(!rows.length){el.innerHTML='<div class="loading">Keine Termine in den nächsten 2 Tagen</div>';return;}
   var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
@@ -762,7 +767,7 @@ function renderReminders(rows){
   var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Erinnerungen erledigt</div>')+'</div>';
   if(erledigt.length){html+='<div style="margin-top:14px"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500"><span>▶</span> Erledigt ('+erledigt.length+')</button><div style="display:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:8px">'+erledigt.map(function(b){return buildCard(b,true);}).join('')+'</div></div>';}
   el.innerHTML=html;
-  ['reminder-list','reminder-list-d'].forEach(function(id){var x=document.getElementById(id);if(x&&x!==el)x.innerHTML=html;});
+  mirrorToDesktop('reminder-list','reminder-list-desktop');
   // Countdown starten
   if(window._cdInterval)clearInterval(window._cdInterval);
   window._cdInterval=setInterval(function(){
@@ -781,7 +786,7 @@ function renderReminders(rows){
 }
 
 function renderConfirm(rows){
-  var el=document.getElementById('confirm-list-d')||document.getElementById('confirm-list');
+  var el=document.getElementById('storno-list') || {innerHTML:'',querySelectorAll:function(){return[];}};
   if(!rows.length){el.innerHTML='<div class="loading">Keine Termine heute / morgen</div>';return;}
   var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
@@ -809,6 +814,7 @@ function renderConfirm(rows){
   var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Bestätigungen erledigt</div>')+'</div>';
   if(erledigt.length){html+='<div style="margin-top:14px"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500"><span>▶</span> Erledigt ('+erledigt.length+')</button><div style="display:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:8px">'+erledigt.map(function(b){return buildCard(b,true);}).join('')+'</div></div>';}
   el.innerHTML=html;
+  mirrorToDesktop('confirm-list','confirm-list-desktop');
 }
 
 function saveKurzfristigReminderSetting(val){localStorage.setItem('kurzfristig_reminder_setting',val);renderAll();}
