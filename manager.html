@@ -269,8 +269,8 @@ function renderTicker(rows,varianteMap,staffMap){
     +'<th>Mitarbeiter</th>'
     +'<th>Termin</th>'
     +'<th style="font-size:12px">Buchung</th>'
-    +'<th style="font-size:12px">Status</th>'
-    +'<th style="font-size:12px">Aktionen</th>'
+    +'<th style="font-size:12px;width:80px">Status</th>'
+    +'<th style="font-size:12px;width:320px">Aktionen</th>'
   +'</tr></thead>';
   var tbody=rows.map(function(b){
     var type=b.status==='cancelled'?'cancel':b.status==='rescheduled'?'move':'in';
@@ -335,8 +335,8 @@ function renderTicker(rows,varianteMap,staffMap){
       +'<td style="color:var(--tg);font-weight:500">'+staffName+'</td>'
       +'<td style="white-space:nowrap">'+esc(dateStr)+'</td>'
       +'<td style="color:var(--muted);font-size:13px;white-space:nowrap">'+esc(bookStr)+'</td>'
-      +'<td style="font-size:13px"><span class="badge '+type+'">'+typeLabel+'</span></td>'
-      +'<td style="font-size:13px">'+aktionen+'</td>'
+      +'<td style="font-size:13px;width:80px"><span class="badge '+type+'">'+typeLabel+'</span></td>'
+      +'<td style="font-size:13px;width:320px">'+aktionen+'</td>'
     +'</tr>';
   }).join('');
   el.innerHTML='<table class="ticker-table" style="table-layout:fixed;width:100%">'+thead+'<tbody>'+tbody+'</tbody></table>';
