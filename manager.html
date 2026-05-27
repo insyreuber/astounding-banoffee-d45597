@@ -57,6 +57,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
 </head>
 <body>
 
+<!-- Staff Profile Overlay -->
+<div id="staff-overlay" onclick="if(event.target===this)closeStaffOverlay()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:16px;padding:28px;width:360px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.3);position:relative">
+    <button onclick="closeStaffOverlay()" style="position:absolute;top:14px;right:14px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1">×</button>
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
+      <div id="so-avatar"></div>
+      <div>
+        <div id="so-name" style="font-size:18px;font-weight:700;color:var(--td)"></div>
+        <div id="so-role" style="font-size:13px;color:var(--muted);margin-top:2px"></div>
+      </div>
+    </div>
+    <div id="so-details" style="font-size:13px;color:var(--td);line-height:1.8;margin-bottom:20px"></div>
+    <a id="so-edit-link" href="#" target="_blank" style="display:block;text-align:center;background:var(--tpl);color:#fff;border-radius:8px;padding:10px;font-weight:600;font-size:13px;text-decoration:none;box-shadow:0 4px 12px rgba(90,45,130,.4)">✎ Profil in Einstellungen bearbeiten</a>
+  </div>
+</div>
+
 <nav class="nav">
   <div class="nav-brand">
     <div class="nav-logo">Insy <span>Reception</span></div>
@@ -260,7 +276,7 @@ function renderUpcomingCalendar(events,varianteMap,staffMap,serviceMap){
     return'<div class="upcoming-row">'+
       '<div class="upcoming-date">'+esc(dateStr)+'</div>'+
       '<div class="upcoming-info"><div class="upcoming-name">'+esc(b.customer_name||'Kunde')+'</div><div class="upcoming-service">'+esc(svcName)+'</div></div>'+
-      '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;width:110px">'+renderAvatar(staffObj,36)+'<span class="upcoming-staff" style="color:var(--tg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(staffName)+'</span></div>'+
+      '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;width:110px"><a href="#" onclick="openStaffOverlay(\''+esc(b.mitarbeiter_id||'')+'\');return false;" title="Profil ansehen" style="flex-shrink:0;text-decoration:none;cursor:pointer">'+renderAvatar(staffObj,36)+'</a><span class="upcoming-staff" style="color:var(--tg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(staffName)+'</span></div>'+
       '<a href="'+successUrl+'" target="_blank" style="flex-shrink:0;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;background:#5a2d82;border:1px solid #5a2d82;color:#fff;font-weight:700;box-shadow:0 0 8px #5a2d8299;border-radius:6px;font-size:12px;text-decoration:none;">↗</a>'+
     '</div>';
   }).join('');
@@ -358,7 +374,7 @@ function renderTicker(rows,varianteMap,staffMap){
       +'<td>'+svcName+'</td>'
       +'<td style="color:var(--muted);width:60px">'+dur+'</td>'
       +'<td style="font-weight:500;color:var(--tpl);width:60px">'+price+'</td>'
-      +'<td style="width:130px"><div style="display:flex;align-items:center;gap:6px">'+renderAvatar(staffObj,36)+'<span style="color:var(--tg);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+staffName+'</span></div></td>'
+      +'<td style="width:130px"><div style="display:flex;align-items:center;gap:6px"><a href="#" onclick="openStaffOverlay(\''+esc(b.mitarbeiter_id||'')+'\');return false;" title="Profil ansehen" style="flex-shrink:0;text-decoration:none;cursor:pointer">'+renderAvatar(staffObj,36)+'</a><span style="color:var(--tg);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+staffName+'</span></div></td>'
       +'<td style="white-space:nowrap">'+esc(dateStr)+'</td>'
       +'<td style="font-size:13px;width:110px;color:var(--muted)">'+esc(bookStr)+'</td>'
       +'<td style="font-size:13px;width:360px">'+aktionen+'</td>'
@@ -496,6 +512,25 @@ function initKurzfristigSetting(){
   var sel=document.getElementById('kurzfristig-setting');if(sel)sel.value=localStorage.getItem('kurzfristig_setting')||'anzeigen';
   var sel2=document.getElementById('kurzfristig-reminder-setting');if(sel2)sel2.value=localStorage.getItem('kurzfristig_reminder_setting')||'anzeigen';
 }
+function openStaffOverlay(staffId){
+  var s=staffMap[staffId];
+  if(!s)return;
+  var name=s.display_name||s.name||'–';
+  var role=s.role||'';
+  var el=document.getElementById('staff-overlay');
+  document.getElementById('so-avatar').innerHTML=renderAvatar(s,56);
+  document.getElementById('so-name').textContent=name;
+  document.getElementById('so-role').textContent=role;
+  document.getElementById('so-details').innerHTML=
+    (s.farbe?'<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="width:14px;height:14px;border-radius:50%;background:'+s.farbe+';display:inline-block;flex-shrink:0"></span><span>Farbe</span></div>':'')+
+    (s.aktiv===false?'<div style="color:#e74c3c">● Nicht buchbar</div>':'<div style="color:#27ae60">● Buchbar</div>');
+  document.getElementById('so-edit-link').href='configuration.html?salon_id='+SALON_ID+'&edit_staff='+staffId;
+  el.style.display='flex';
+}
+function closeStaffOverlay(){
+  document.getElementById('staff-overlay').style.display='none';
+}
+
 function renderAll(){loadAll();}
 
 loadAll();
