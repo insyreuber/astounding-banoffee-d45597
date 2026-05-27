@@ -552,6 +552,8 @@ function renderAvatar(staffObj,size){
 
 function renderTicker(rows,varianteMap,staffMap){
   varianteMap=varianteMap||{};staffMap=staffMap||{};
+  // Cache für Re-Render ohne Supabase
+  window._mTicker=rows;window._mVMap=varianteMap;window._mSMap=staffMap;
   var el=document.getElementById('ticker-list');
   var elM=document.getElementById('ticker-list-m');
   var cnt=document.getElementById('ticker-count');
@@ -657,10 +659,10 @@ function tickerErledigt(id){
   var idx=ids.indexOf(id);
   if(idx<0){ids.push(id);}else{ids.splice(idx,1);}
   localStorage.setItem('erledigt_ids',JSON.stringify(ids));
-  // Sofort Mobile aus Cache neu rendern
-  var elM=document.getElementById('ticker-list-m');
-  if(elM&&window._mTicker)renderMobileTickerCards(window._mTicker,window._mVMap,window._mSMap,elM);
-  renderAll();
+  // Sofort beide Ansichten neu rendern aus Cache — kein Supabase-Warten
+  if(window._mTicker&&window._mVMap&&window._mSMap){
+    renderTicker(window._mTicker,window._mVMap,window._mSMap);
+  }
 }
 
 function renderStorno(rows,varianteMap,staffMap,serviceMap){
