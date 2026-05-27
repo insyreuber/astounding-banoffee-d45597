@@ -425,6 +425,11 @@ async function loadAll(){
   window._reminderIds=reminders.map(function(b){return b.id;});
   window._stornoIds=stornoIds;
 
+  window._cache={
+    ticker:ticker,upcoming:upcoming,stornos:stornos,
+    reminders:reminders,confirms:confirms,
+    varianteMap:varianteMap,staffMap:staffMap,serviceMap:serviceMap
+  };
   renderTicker(ticker,varianteMap,staffMap);
   renderUpcomingCalendar(upcoming,varianteMap,staffMap,serviceMap);
   renderReminders(reminders);
@@ -654,17 +659,6 @@ function renderTicker(rows,varianteMap,staffMap){
   if(elM)renderMobileTickerCards(rows,varianteMap,staffMap,elM);
 }
 
-function tickerErledigt(id){
-  var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
-  var idx=ids.indexOf(id);
-  if(idx<0){ids.push(id);}else{ids.splice(idx,1);}
-  localStorage.setItem('erledigt_ids',JSON.stringify(ids));
-  // Sofort beide Ansichten neu rendern aus Cache — kein Supabase-Warten
-  if(window._mTicker&&window._mVMap&&window._mSMap){
-    renderTicker(window._mTicker,window._mVMap,window._mSMap);
-  }
-}
-
 function renderStorno(rows,varianteMap,staffMap,serviceMap){
   varianteMap=varianteMap||{};staffMap=staffMap||{};serviceMap=serviceMap||{};
   var el=document.getElementById('storno-list');
@@ -703,20 +697,45 @@ function renderStorno(rows,varianteMap,staffMap,serviceMap){
   el.innerHTML=html;
 }
 
+function renderFromCache(){
+  if(!window._cache)return;
+  var c=window._cache;
+  renderTicker(c.ticker,c.varianteMap,c.staffMap);
+  renderUpcomingCalendar(c.upcoming,c.varianteMap,c.staffMap,c.serviceMap);
+  renderStorno(c.stornos,c.varianteMap,c.staffMap,c.serviceMap);
+  renderReminders(c.reminders);
+  renderConfirm(c.confirms);
+  // Mobile mirror
+  setTimeout(function(){
+    ['confirm-list','reminder-list','storno-list'].forEach(function(id){
+      var src=document.getElementById(id);
+      var dst=document.getElementById(id+'-m');
+      if(src&&dst)dst.innerHTML=src.innerHTML;
+    });
+  },20);
+}
+
 function stornoErledigt(id){
   var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(ids));}
   var kIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem('kachel_erledigt_ids',JSON.stringify(kIds));}
-  renderAll();
+  renderFromCache();
 }
 function reminderErledigt(id){
   var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(ids));}
   var kIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem('kachel_erledigt_ids',JSON.stringify(kIds));}
-  renderAll();
+  renderFromCache();
 }
 function confirmErledigt(id){
   var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(ids));}
   var kIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem('kachel_erledigt_ids',JSON.stringify(kIds));}
-  renderAll();
+  renderFromCache();
+}
+function tickerErledigt(id){
+  var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
+  var idx=ids.indexOf(id);
+  if(idx<0){ids.push(id);}else{ids.splice(idx,1);}
+  localStorage.setItem('erledigt_ids',JSON.stringify(ids));
+  renderFromCache();
 }
 
 function renderReminders(rows){
