@@ -403,7 +403,7 @@ function renderTicker(rows,varianteMap,staffMap){
   window._tickerRows=rows;window._tickerVarianteMap=varianteMap;window._tickerStaffMap=staffMap;
   var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var thead='<thead><tr>'
-    +'<th style="width:80px">Status</th>'
+    +'<th style="width:120px">Status</th>'
     +'<th>Name</th>'
     +'<th style="font-size:12px;width:110px">Telefon</th>'
     +'<th>Service</th>'
@@ -411,7 +411,6 @@ function renderTicker(rows,varianteMap,staffMap){
     +'<th style="width:60px">Preis</th>'
     +'<th style="width:130px">Mitarbeiter</th>'
     +'<th style="width:120px">Termin</th>'
-    +'<th style="font-size:12px;width:110px">Buchung</th>'
     +'<th style="font-size:12px;width:360px">Aktionen</th>'
   +'</tr></thead>';
   var tbody=rows.map(function(b){
@@ -477,7 +476,7 @@ function renderTicker(rows,varianteMap,staffMap){
       +'<td style="font-weight:500;color:var(--tpl);width:60px">'+price+'</td>'
       +'<td style="width:130px"><div style="display:flex;align-items:center;gap:6px"><a href="#" onclick="openStaffOverlay(\''+esc(b.mitarbeiter_id||'')+'\');return false;" title="Profil ansehen" style="flex-shrink:0;text-decoration:none;cursor:pointer">'+renderAvatar(staffObj,36)+'</a><span style="color:var(--tg);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+staffName+'</span></div></td>'
       +'<td style="white-space:nowrap">'+esc(dateStr)+'</td>'
-      +'<td style="font-size:13px;width:110px;color:var(--muted)">'+esc(bookStr)+'</td>'
+      +'<td style="width:120px"><span class="badge '+type+'">'+typeLabel+'</span><div style="font-size:10px;color:var(--muted);margin-top:3px">'+esc(bookStr)+'</div></td>'
       +'<td style="font-size:13px;width:360px">'+aktionen+'</td>'
     +'</tr>';
   }).join('');
@@ -615,82 +614,230 @@ function initKurzfristigSetting(){
 }
 function renderAll(){loadAll();}
 
-// ── STAFF MODAL FUNCTIONS ──
+// ── STAFF MODAL — exakt wie config.html ──────────────────────
 var editingStaffId=null;
 var staffTempEntries=[];
 var staffTempIdCounter=0;
-var servicesData=[];
+var staffTempCalOffset={};
+var staffServicesData=[];
 
-function openStaffOverlay(staffId){editStaff(staffId);}
-function closeStaffOverlay(){}
+var DAYS=[
+  {key:'monday',label:'Mo'},{key:'tuesday',label:'Di'},{key:'wednesday',label:'Mi'},
+  {key:'thursday',label:'Do'},{key:'friday',label:'Fr'},{key:'saturday',label:'Sa'},{key:'sunday',label:'So'}
+];
+
+function buildTimeOptions(selected){
+  var times=[];
+  for(var h=6;h<=23;h++){times.push(('0'+h).slice(-2)+':00');times.push(('0'+h).slice(-2)+':30');}
+  return times.map(function(t){return'<option value="'+t+'"'+(t===selected?' selected':'')+'>'+t+'</option>';}).join('');
+}
+
+function _slotsFor(h){
+  if(h.slots&&h.slots.length)return h.slots;
+  if(h.start||h.end)return[{start:h.start||'09:00',end:h.end||'18:00'}];
+  return[{start:'09:00',end:'18:00'}];
+}
+
+function buildSlotHtml(prefix,dayKey,slots,aktiv){
+  return slots.map(function(sl,si){
+    return'<div class="hours-slot" id="'+prefix+'slot-'+dayKey+'-'+si+'" style="display:flex;align-items:center;gap:5px;">'
+      +'<select class="hz-start" onchange="syncHourSlot()">'+buildTimeOptions(sl.start||'09:00')+'</select>'
+      +'<span style="font-size:10px;color:var(--muted)">–</span>'
+      +'<select class="hz-end" onchange="syncHourSlot()">'+buildTimeOptions(sl.end||'18:00')+'</select>'
+      +(si===0
+        ?'<button type="button" onclick="addHourSlot(\''+prefix+'\',\''+dayKey+'\')" style="background:var(--tpl);border:none;border-radius:5px;width:20px;height:20px;cursor:pointer;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">+</button>'
+        :'<button type="button" onclick="removeHourSlot(\''+prefix+'\',\''+dayKey+'\','+si+')" style="background:#c0392b;border:none;border-radius:5px;width:20px;height:20px;cursor:pointer;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">×</button>'
+      )+'</div>';
+  }).join('');
+}
+
+function buildHoursCols(az,containerId,prefix,small){
+  var cols=document.getElementById(containerId);if(!cols)return;
+  var cls=small?'hours-col-sm':'hours-col';
+  var dayLblCls=small?'hours-col-sm-day':'hours-col-day';
+  cols.innerHTML=DAYS.map(function(d){
+    var h=az&&az[d.key]?az[d.key]:{aktiv:d.key!=='sunday',slots:[{start:'09:00',end:'18:00'}]};
+    var aktiv=h.aktiv;var slots=_slotsFor(h);
+    return'<div class="'+cls+' '+(aktiv?'aktiv':'')+'" id="'+prefix+'col-'+d.key+'">'
+      +'<label class="toggle-sw" style="flex-shrink:0"><input type="checkbox" id="'+prefix+'aktiv-'+d.key+'" '+(aktiv?'checked':'')+' onchange="toggleHourCol(\''+d.key+'\',\''+prefix+'\')"><span class="slider"></span></label>'
+      +'<div class="'+dayLblCls+'" style="flex-shrink:0">'+d.label+'</div>'
+      +'<div class="hours-slots-wrap" id="'+prefix+'times-'+d.key+'" style="display:flex;flex-direction:row;flex-wrap:wrap;flex:1;align-items:center;gap:4px;'+(aktiv?'':'opacity:.3;pointer-events:none')+'">'
+        +buildSlotHtml(prefix,d.key,slots,aktiv)
+      +'</div>'
+    +'</div>';
+  }).join('');
+}
+
+function toggleHourCol(key,prefix){
+  var aktiv=document.getElementById(prefix+'aktiv-'+key).checked;
+  var col=document.getElementById(prefix+'col-'+key);
+  var times=document.getElementById(prefix+'times-'+key);
+  col.classList.toggle('aktiv',aktiv);
+  if(times){times.style.opacity=aktiv?'1':'0.3';times.style.pointerEvents=aktiv?'auto':'none';}
+}
+
+function addHourSlot(prefix,dayKey){
+  var wrap=document.getElementById(prefix+'times-'+dayKey);if(!wrap)return;
+  var newSlot=document.createElement('div');newSlot.className='hours-slot';
+  newSlot.style.cssText='display:flex;align-items:center;gap:5px;';
+  newSlot.innerHTML='<select class="hz-start">'+buildTimeOptions('09:00')+'</select><span style="font-size:10px;color:var(--muted)">–</span><select class="hz-end">'+buildTimeOptions('18:00')+'</select><button type="button" onclick="this.closest(\'.hours-slot\').remove()" style="background:#c0392b;border:none;border-radius:5px;width:20px;height:20px;cursor:pointer;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">×</button>';
+  wrap.appendChild(newSlot);
+}
+
+function removeHourSlot(prefix,dayKey,idx){
+  var wrap=document.getElementById(prefix+'times-'+dayKey);if(!wrap)return;
+  var slots=wrap.querySelectorAll('.hours-slot');if(slots[idx])slots[idx].remove();
+}
+
+function syncHourSlot(){}
+
+function readHours(prefix){
+  var az={};
+  DAYS.forEach(function(d){
+    var aktiv=document.getElementById(prefix+'aktiv-'+d.key);
+    var wrap=document.getElementById(prefix+'times-'+d.key);
+    var slots=[];
+    if(wrap){wrap.querySelectorAll('.hours-slot').forEach(function(row){var s=row.querySelector('.hz-start');var e=row.querySelector('.hz-end');if(s&&e)slots.push({start:s.value,end:e.value});});}
+    az[d.key]={aktiv:aktiv?aktiv.checked:false,slots:slots.length?slots:[{start:'09:00',end:'18:00'}]};
+  });
+  return az;
+}
+
+function buildStaffSvcList(selectedVarianteIds){
+  var list=document.getElementById('s-svc-list');
+  if(!staffServicesData.length){list.innerHTML='<div style="font-size:12px;color:var(--muted)">Keine Services vorhanden</div>';return;}
+  var html='';
+  staffServicesData.forEach(function(item){
+    var s=item.service;var vars=item.varianten;if(!vars.length)return;
+    var anyChecked=vars.some(function(v){return selectedVarianteIds.indexOf(v.id)>=0;});
+    var accId='svc-acc-'+s.id;
+    html+='<div style="border:1.5px solid '+(anyChecked?'#a8e6bf':'var(--border)')+';border-radius:8px;overflow:hidden;margin-bottom:6px">';
+    html+='<div onclick="toggleSvcAcc(\''+accId+'\')" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;cursor:pointer;background:'+(anyChecked?'#f0faf4':'var(--bg)')+';">';
+    html+='<span style="font-size:12px;font-weight:600;color:'+(anyChecked?'#1e7a3c':'var(--td)')+'">'+esc(s.name)+'</span>';
+    html+='<svg id="chev-'+accId+'" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" style="transition:transform .2s"><polyline points="6 9 12 15 18 9"/></svg>';
+    html+='</div><div id="'+accId+'" style="display:none;padding:4px 8px 8px">';
+    vars.forEach(function(v){
+      var checked=selectedVarianteIds.indexOf(v.id)>=0;
+      var label=v.service_name||(v.dauer_minuten+' Min');
+      var preis=v.preis?'· '+parseFloat(v.preis).toFixed(2)+' €':'';
+      html+='<div class="svc-check-item '+(checked?'checked':'')+'" id="sc-'+v.id+'" onclick="toggleVarCheck(\''+v.id+'\')" style="margin-top:4px">'
+        +'<div class="svc-check-box">'+(checked?'<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="10 3 5 9 2 6"/></svg>':'')+'</div>'
+        +'<div><div class="svc-check-name">'+esc(label)+'<span style="font-weight:400;color:var(--muted);font-size:11px"> '+preis+'</span></div></div>'
+        +'</div>';
+    });
+    html+='</div></div>';
+  });
+  list.innerHTML=html||'<div style="font-size:12px;color:var(--muted)">Keine Varianten</div>';
+}
+
+function toggleSvcAcc(id){
+  var body=document.getElementById(id);var chev=document.getElementById('chev-'+id);if(!body)return;
+  var open=body.style.display==='block';body.style.display=open?'none':'block';
+  if(chev)chev.style.transform=open?'':'rotate(180deg)';
+}
+
+function toggleVarCheck(varId){
+  var el=document.getElementById('sc-'+varId);if(!el)return;
+  var on=el.classList.contains('checked');
+  el.classList.toggle('checked',!on);
+  el.querySelector('.svc-check-box').innerHTML=!on?'<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="10 3 5 9 2 6"/></svg>':'';
+}
+
+function getCheckedVarianten(){
+  var ids=[];
+  staffServicesData.forEach(function(item){
+    item.varianten.forEach(function(v){var el=document.getElementById('sc-'+v.id);if(el&&el.classList.contains('checked'))ids.push(v.id);});
+  });
+  return ids;
+}
+
+async function loadStaffServices(){
+  if(staffServicesData.length)return;
+  var sRes=await sb.from('services').select('id,name').eq('salon_id',SALON_ID).order('sortierung');
+  if(sRes.error||!sRes.data)return;
+  var vRes=await sb.from('service_varianten').select('id,service_name,dauer_minuten,preis,service_id').eq('salon_id',SALON_ID);
+  var varianten=vRes.data||[];
+  staffServicesData=sRes.data.map(function(s){
+    return{service:s,varianten:varianten.filter(function(v){return v.service_id===s.id;})};
+  });
+}
+
+async function openStaffOverlay(staffId){
+  await loadStaffServices();
+  // Lade frische Mitarbeiter-Daten aus Supabase
+  var mRes=await sb.from('mitarbeiter').select('*').eq('id',staffId).single();
+  if(mRes.error)return;
+  var m=mRes.data;
+  var aRes=await sb.from('mitarbeiter_service_varianten').select('service_variante_id').eq('mitarbeiter_id',staffId).eq('aktiv',true);
+  var varianteIds=(aRes.data||[]).map(function(a){return a.service_variante_id;});
+
+  editingStaffId=staffId;
+  document.getElementById('staff-modal-title').textContent='Profil bearbeiten — '+(m.display_name||m.name||'');
+  document.getElementById('s-display').value=m.display_name||'';
+  document.getElementById('s-role').value=m.role||'';
+  document.getElementById('s-online').checked=m.aktiv!==false;
+  document.getElementById('s-cal').value=m.google_calendar_id||'';
+  pickColor(m.farbe||'#3498db');
+  document.getElementById('s-color-picker-wrap').style.display='none';
+  document.getElementById('s-avatar-url').value=m.avatar_url||'';
+  document.getElementById('s-avatar-remove').style.display=m.avatar_url?'block':'none';
+  setTimeout(updateModalAvatar,20);
+  updateOnlineLabel();
+  var hasCustom=!!(m.arbeitszeiten&&Object.keys(m.arbeitszeiten).length);
+  document.getElementById('s-custom-hours').checked=hasCustom;
+  document.getElementById('s-hours-wrap').style.display=hasCustom?'block':'none';
+  if(hasCustom)buildHoursCols(m.arbeitszeiten,'s-hours-cols','s-',true);
+  buildStaffSvcList(varianteIds);
+  document.getElementById('staff-modal-overlay').style.display='block';
+  document.getElementById('staff-modal').classList.add('open');
+}
 
 function closeStaffModal(){
   document.getElementById('staff-modal').classList.remove('open');
   document.getElementById('staff-modal-overlay').style.display='none';
-}
-
-function editStaff(id){
-  var item=staffMap[id];
-  if(!item)return;
-  editingStaffId=id;
-  document.getElementById('staff-modal-title').textContent='Profil bearbeiten';
-  document.getElementById('s-display').value=item.display_name||item.name||'';
-  document.getElementById('s-role').value=item.role||'';
-  document.getElementById('s-online').checked=item.aktiv!==false;
-  document.getElementById('s-color').value=item.farbe||'#3498db';
-  document.getElementById('s-avatar-url').value=item.avatar_url||'';
-  document.getElementById('s-cal').value=item.google_calendar_id||'';
-  document.getElementById('s-avatar-remove').style.display=item.avatar_url?'block':'none';
-  updateModalAvatar();
-  updateOnlineLabel();
-  // Services laden falls noch nicht geladen
-  if(!servicesData.length){
-    sb.from('service_varianten').select('id,service_name,service_id').eq('salon_id',SALON_ID).then(function(r){
-      if(r.data)servicesData=r.data;
-      buildStaffSvcList(item.varianteIds||[]);
-    });
-  } else {
-    buildStaffSvcList(item.varianteIds||[]);
-  }
-  // Stunden laden
-  buildStaffHours(item.az||null);
-  document.getElementById('s-custom-hours').checked=!!(item.az&&Object.keys(item.az).length);
-  toggleCustomHours();
-  document.getElementById('staff-modal').classList.add('open');
-  document.getElementById('staff-modal-overlay').style.display='block';
+  editingStaffId=null;
 }
 
 async function saveStaff(){
-  var id=editingStaffId;
-  if(!id)return;
   var display=document.getElementById('s-display').value.trim();
-  if(!display){alert('Anzeigename ist erforderlich');return;}
-  var color=document.getElementById('s-color').value;
-  var avatarUrl=document.getElementById('s-avatar-url').value;
-  var online=document.getElementById('s-online').checked;
-  var role=document.getElementById('s-role').value.trim();
-  // Services sammeln
-  var checkedIds=Array.from(document.querySelectorAll('.svc-check-item.checked')).map(function(el){return el.getAttribute('data-id');});
-  // Stunden sammeln
-  var az={};
-  if(document.getElementById('s-custom-hours').checked){
-    var days=['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
-    var labels=['Mo','Di','Mi','Do','Fr','Sa','So'];
-    days.forEach(function(d,i){
-      var cb=document.getElementById('sh-aktiv-'+d);
-      if(!cb)return;
-      az[d]={aktiv:cb.checked,start:document.getElementById('sh-start-'+d).value,end:document.getElementById('sh-end-'+d).value};
-    });
+  if(!display){alert('Anzeigename ist Pflichtfeld');return;}
+  var btn=document.getElementById('btn-staff-save');btn.disabled=true;
+  btn.textContent='Speichern…';
+  var hasCustom=document.getElementById('s-custom-hours').checked;
+  var payload={
+    name:display,display_name:display,
+    role:document.getElementById('s-role').value.trim(),
+    google_calendar_id:document.getElementById('s-cal').value.trim()||null,
+    arbeitszeiten:hasCustom?readHours('s-'):null,
+    farbe:document.getElementById('s-color').value,
+    aktiv:document.getElementById('s-online').checked,
+    avatar_url:document.getElementById('s-avatar-url').value||null
+  };
+  // Avatar hochladen wenn base64
+  if(payload.avatar_url&&payload.avatar_url.startsWith('data:')){
+    var parts=payload.avatar_url.split(',');
+    var mime=parts[0].match(/:(.*?);/)[1];
+    var b64=parts[1];
+    var path='avatars/'+editingStaffId+'-'+Date.now()+'.'+mime.split('/')[1];
+    var bytes=atob(b64);var arr=new Uint8Array(bytes.length);
+    for(var i=0;i<bytes.length;i++)arr[i]=bytes.charCodeAt(i);
+    var blob=new Blob([arr],{type:mime});
+    var upRes=await sb.storage.from('mitarbeiter-avatars').upload(path,blob,{upsert:true});
+    if(!upRes.error)payload.avatar_url=sb.storage.from('mitarbeiter-avatars').getPublicUrl(path).data.publicUrl;
   }
-  var update={display_name:display,name:display,role:role,farbe:color,aktiv:online,varianteIds:checkedIds};
-  if(avatarUrl)update.avatar_url=avatarUrl;
-  if(Object.keys(az).length)update.az=az;
-  var res=await sb.from('mitarbeiter').update(update).eq('id',id);
-  if(res.error){alert('Fehler: '+res.error.message);return;}
-  // staffMap aktualisieren
-  if(staffMap[id]){Object.assign(staffMap[id],update);}
+  var res=await sb.from('mitarbeiter').update(payload).eq('id',editingStaffId);
+  if(res.error){alert('Fehler: '+res.error.message);btn.disabled=false;btn.textContent='Speichern';return;}
+  // Services synchronisieren
+  var checkedIds=getCheckedVarianten();
+  await sb.from('mitarbeiter_service_varianten').delete().eq('mitarbeiter_id',editingStaffId);
+  if(checkedIds.length){
+    await sb.from('mitarbeiter_service_varianten').insert(
+      checkedIds.map(function(vid){return{mitarbeiter_id:editingStaffId,service_variante_id:vid,aktiv:true};})
+    );
+  }
+  btn.disabled=false;btn.textContent='Speichern';
   closeStaffModal();
-  loadAll();
+  loadAll(); // Alles neu laden → staffMap wird aktualisiert
 }
 
 function updateModalAvatar(){
@@ -699,7 +846,8 @@ function updateModalAvatar(){
   var avatarUrl=document.getElementById('s-avatar-url').value;
   var av=document.getElementById('s-modal-avatar');
   var ini=document.getElementById('s-modal-avatar-ini');
-  if(avatarUrl){av.style.backgroundImage='url('+avatarUrl+')';ini.style.display='none';}
+  if(avatarUrl&&!avatarUrl.startsWith('data:')){av.style.backgroundImage='url('+avatarUrl+')';ini.style.display='none';}
+  else if(avatarUrl&&avatarUrl.startsWith('data:')){av.style.backgroundImage='url('+avatarUrl+')';ini.style.display='none';}
   else{av.style.backgroundImage='';av.style.background=color;ini.style.display='';ini.textContent=name.charAt(0).toUpperCase();}
 }
 
@@ -715,27 +863,26 @@ function toggleColorPicker(){
 
 function pickColor(hex){
   document.getElementById('s-color').value=hex;
-  document.querySelectorAll('.color-swatch').forEach(function(s){s.classList.remove('selected');if(s.style.background===hex||s.getAttribute('data-color')===hex)s.classList.add('selected');});
+  document.querySelectorAll('.color-swatch').forEach(function(s){
+    var bg=s.style.background||s.style.backgroundColor;
+    s.classList.toggle('selected',bg===hex||bg.replace(/\s/g,'')===hex);
+  });
   updateModalAvatar();
 }
 
 async function handleAvatarUpload(event){
   var file=event.target.files[0];if(!file)return;
+  if(file.size>2*1024*1024){alert('Foto max. 2 MB');return;}
   var reader=new FileReader();
-  reader.onload=async function(e){
-    var base64=e.target.result.split(',')[1];
-    var path='avatars/'+editingStaffId+'-'+Date.now()+'.'+file.name.split('.').pop();
-    var res=await sb.storage.from('mitarbeiter-avatars').upload(path,_base64ToBlob(base64,file.type),{upsert:true});
-    if(res.error){alert('Upload fehlgeschlagen');return;}
-    var url=sb.storage.from('mitarbeiter-avatars').getPublicUrl(path).data.publicUrl;
-    document.getElementById('s-avatar-url').value=url;
+  reader.onload=function(e){
+    document.getElementById('s-avatar-url').value=e.target.result;
     document.getElementById('s-avatar-remove').style.display='block';
     updateModalAvatar();
+    document.getElementById('s-color-picker-wrap').style.display='none';
   };
   reader.readAsDataURL(file);
+  event.target.value='';
 }
-
-function _base64ToBlob(b64,mime){var bytes=atob(b64),arr=new Uint8Array(bytes.length);for(var i=0;i<bytes.length;i++)arr[i]=bytes.charCodeAt(i);return new Blob([arr],{type:mime});}
 
 function removeAvatarPhoto(){
   document.getElementById('s-avatar-url').value='';
@@ -743,45 +890,10 @@ function removeAvatarPhoto(){
   updateModalAvatar();
 }
 
-function buildStaffSvcList(selected){
-  var el=document.getElementById('s-svc-list');
-  if(!servicesData.length){el.innerHTML='<div style="font-size:12px;color:var(--muted)">Keine Services gefunden</div>';return;}
-  el.innerHTML=servicesData.map(function(v){
-    var checked=selected.indexOf(v.id)>=0;
-    return'<div class="svc-check-item'+(checked?' checked':'')+'" data-id="'+v.id+'" onclick="this.classList.toggle(\'checked\')">'+
-      '<div class="svc-check-box">'+(checked?'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>':'')+' </div>'+
-      '<span class="svc-check-name">'+esc(v.service_name||'–')+'</span>'+
-    '</div>';
-  }).join('');
-  // Re-check on click to update checkmark svg
-  el.querySelectorAll('.svc-check-item').forEach(function(item){
-    item.onclick=function(){
-      this.classList.toggle('checked');
-      var box=this.querySelector('.svc-check-box');
-      box.innerHTML=this.classList.contains('checked')?'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>':'';
-    };
-  });
-}
-
-function buildStaffHours(az){
-  var days=['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
-  var labels=['Mo','Di','Mi','Do','Fr','Sa','So'];
-  var el=document.getElementById('s-hours-cols');
-  el.innerHTML=days.map(function(d,i){
-    var data=(az&&az[d])||{aktiv:false,start:'09:00',end:'18:00'};
-    return'<div class="hours-col-sm'+(data.aktiv?' aktiv':'')+'">'+
-      '<label class="toggle-sw" style="flex-shrink:0"><input type="checkbox" id="sh-aktiv-'+d+'" '+(data.aktiv?'checked':'')+' onchange="var p=this.closest(\'.hours-col-sm\');p.classList.toggle(\'aktiv\',this.checked)"><span class="slider"></span></label>'+
-      '<span class="hours-col-sm-day">'+labels[i]+'</span>'+
-      '<input type="time" id="sh-start-'+d+'" value="'+(data.start||'09:00')+'">'+
-      '<span style="font-size:10px;color:var(--muted)">–</span>'+
-      '<input type="time" id="sh-end-'+d+'" value="'+(data.end||'18:00')+'">'+
-    '</div>';
-  }).join('');
-}
-
 function toggleCustomHours(){
   var on=document.getElementById('s-custom-hours').checked;
   document.getElementById('s-hours-wrap').style.display=on?'block':'none';
+  if(on&&!document.getElementById('s-hours-cols').children.length)buildHoursCols(null,'s-hours-cols','s-',true);
 }
 
 loadAll();
