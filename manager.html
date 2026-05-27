@@ -497,7 +497,9 @@ function renderUpcomingCalendar(events,varianteMap,staffMap,serviceMap){
   var d5=new Date(now4.getFullYear(),now4.getMonth(),now4.getDate()+2);
   var t5=d5.getFullYear()+'-'+String(d5.getMonth()+1).padStart(2,'0')+'-'+String(d5.getDate()).padStart(2,'0');
   var filtered=events.filter(function(b){
-    var day=b.termin_start?b.termin_start.slice(0,10):'';
+    if(!b.termin_start)return _upcomingFilter==='alle';
+    var bd=new Date(b.termin_start);
+    var day=bd.getFullYear()+'-'+String(bd.getMonth()+1).padStart(2,'0')+'-'+String(bd.getDate()).padStart(2,'0');
     if(_upcomingFilter==='heute')return day===t3;
     if(_upcomingFilter==='morgen')return day===t4;
     if(_upcomingFilter==='uebermorgen')return day===t5;
@@ -515,13 +517,15 @@ function renderUpcomingCalendar(events,varianteMap,staffMap,serviceMap){
     var staffName=staffObj?(staffObj.display_name||staffObj.name||'–'):'–';
     var successUrl='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
     var now3=new Date();
-    var todayStr3=now3.toISOString().slice(0,10);
-    var tomorrowStr3=new Date(now3.getFullYear(),now3.getMonth(),now3.getDate()+1).toISOString().slice(0,10);
-    var terminDay3=b.termin_start?b.termin_start.slice(0,10):'';
+    var t3m=now3.getFullYear()+'-'+String(now3.getMonth()+1).padStart(2,'0')+'-'+String(now3.getDate()).padStart(2,'0');
+    var d4m=new Date(now3.getFullYear(),now3.getMonth(),now3.getDate()+1);
+    var t4m=d4m.getFullYear()+'-'+String(d4m.getMonth()+1).padStart(2,'0')+'-'+String(d4m.getDate()).padStart(2,'0');
+    var bd3=new Date(b.termin_start);
+    var terminDay3=bd3.getFullYear()+'-'+String(bd3.getMonth()+1).padStart(2,'0')+'-'+String(bd3.getDate()).padStart(2,'0');
     var timeTag='';
-    if(terminDay3===todayStr3){
+    if(terminDay3===t3m){
       timeTag='<span style="display:inline-block;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:#e74c3c;color:#fff;border-radius:4px;padding:1px 6px;margin-left:5px;vertical-align:middle;animation:pulse 2s infinite">Heute</span>';
-    } else if(terminDay3===tomorrowStr3){
+    } else if(terminDay3===t4m){
       timeTag='<span style="display:inline-block;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:#e67e22;color:#fff;border-radius:4px;padding:1px 6px;margin-left:5px;vertical-align:middle">Morgen</span>';
     }
     var cdId='ucd-'+b.id;
@@ -1092,39 +1096,6 @@ function toggleCustomHours(){
   if(on&&!document.getElementById('s-hours-cols').children.length)buildHoursCols(null,'s-hours-cols','s-',true);
 }
 
-loadAll();
-initKurzfristigSetting();
-</script>
-
-<!-- Mobile Navigation -->
-<nav class="mobile-nav">
-  <button class="mobile-nav-btn active" onclick="mobileTab('live')" id="mn-live"><span style="font-size:16px">⚡</span><span>Live</span></button>
-  <button class="mobile-nav-btn" onclick="mobileTab('termine')" id="mn-termine"><span style="font-size:16px">📅</span><span>Termine</span></button>
-  <button class="mobile-nav-btn" onclick="mobileTab('bestaetigung')" id="mn-bestaetigung"><span style="font-size:16px">✓</span><span>Best.</span></button>
-  <button class="mobile-nav-btn" onclick="mobileTab('erinnerung')" id="mn-erinnerung"><span style="font-size:16px">⏰</span><span>Erin.</span></button>
-  <button class="mobile-nav-btn" onclick="mobileTab('storno')" id="mn-storno"><span style="font-size:16px">✕</span><span>Storno</span></button>
-</nav>
-
-<!-- Mobile Sections -->
-<div class="mobile-section active" id="ms-live" style="padding:12px">
-  <div class="card-title" style="padding:4px 0 10px"><span class="live-dot"></span> Live-Aktivitäten</div>
-  <div id="ticker-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"><div class="loading">Wird geladen…</div></div>
-</div>
-<div class="mobile-section" id="ms-termine" style="padding:12px">
-  <div class="card-title" style="padding:4px 0 10px">📅 Nächste Termine</div>
-  <div style="display:flex;gap:6px;margin-bottom:10px">
-    <button onclick="stepUpcomingFilter(0,true)" id="muf-alle" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid var(--tpl);font-size:11px;font-weight:600;cursor:pointer;background:var(--tpl);color:#fff;font-family:inherit">Alle</button>
-    <button onclick="stepUpcomingFilter(1,true)" id="muf-heute" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid #e74c3c;font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:#e74c3c;font-family:inherit">Heute</button>
-    <button onclick="stepUpcomingFilter(2,true)" id="muf-morgen" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid #e67e22;font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:#e67e22;font-family:inherit">Morgen</button>
-    <button onclick="stepUpcomingFilter(3,true)" id="muf-uebermorgen" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid var(--muted);font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:var(--muted);font-family:inherit">+2</button>
-  </div>
-  <div id="upcoming-list-m" style="overflow-y:auto;max-height:calc(100vh - 220px)"><div class="loading">Wird geladen…</div></div>
-</div>
-<div class="mobile-section" id="ms-bestaetigung" style="padding:12px"><div class="card-title" style="padding:4px 0 10px">✓ Terminbestätigung</div><div id="confirm-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"><div class="loading">Wird geladen…</div></div></div>
-<div class="mobile-section" id="ms-erinnerung" style="padding:12px"><div class="card-title" style="padding:4px 0 10px">⏰ Terminerinnerung</div><div id="reminder-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"><div class="loading">Wird geladen…</div></div></div>
-<div class="mobile-section" id="ms-storno" style="padding:12px"><div class="card-title" style="padding:4px 0 10px;color:#e74c3c">✕ Stornos</div><div id="storno-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"><div class="loading">Wird geladen…</div></div></div>
-
-<script>
 function renderMobileTicker(rows,varianteMap,staffMap){
   var el=document.getElementById('ticker-list-m');
   if(!el)return;
@@ -1213,6 +1184,39 @@ function mobileTab(tab){
   var s=document.getElementById('ms-'+tab);var b=document.getElementById('mn-'+tab);
   if(s)s.classList.add('active');if(b)b.classList.add('active');
 }
+
+loadAll();
+initKurzfristigSetting();
 </script>
+
+
+<!-- Mobile Only -->
+<!-- Mobile Navigation -->
+<nav class="mobile-nav">
+  <button class="mobile-nav-btn active" onclick="mobileTab('live')" id="mn-live"><span style="font-size:16px">⚡</span><span>Live</span></button>
+  <button class="mobile-nav-btn" onclick="mobileTab('termine')" id="mn-termine"><span style="font-size:16px">📅</span><span>Termine</span></button>
+  <button class="mobile-nav-btn" onclick="mobileTab('bestaetigung')" id="mn-bestaetigung"><span style="font-size:16px">✓</span><span>Best.</span></button>
+  <button class="mobile-nav-btn" onclick="mobileTab('erinnerung')" id="mn-erinnerung"><span style="font-size:16px">⏰</span><span>Erin.</span></button>
+  <button class="mobile-nav-btn" onclick="mobileTab('storno')" id="mn-storno"><span style="font-size:16px">✕</span><span>Storno</span></button>
+</nav>
+
+<!-- Mobile Sections -->
+<div class="mobile-section active" id="ms-live" style="padding:12px">
+  <div class="card-title" style="padding:4px 0 10px"><span class="live-dot"></span> Live-Aktivitäten</div>
+  <div id="ticker-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"><div class="loading">Wird geladen…</div></div>
+</div>
+<div class="mobile-section" id="ms-termine" style="padding:12px">
+  <div class="card-title" style="padding:4px 0 10px">📅 Nächste Termine</div>
+  <div style="display:flex;gap:6px;margin-bottom:10px">
+    <button onclick="stepUpcomingFilter(0,true)" id="muf-alle" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid var(--tpl);font-size:11px;font-weight:600;cursor:pointer;background:var(--tpl);color:#fff;font-family:inherit">Alle</button>
+    <button onclick="stepUpcomingFilter(1,true)" id="muf-heute" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid #e74c3c;font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:#e74c3c;font-family:inherit">Heute</button>
+    <button onclick="stepUpcomingFilter(2,true)" id="muf-morgen" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid #e67e22;font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:#e67e22;font-family:inherit">Morgen</button>
+    <button onclick="stepUpcomingFilter(3,true)" id="muf-uebermorgen" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid var(--muted);font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:var(--muted);font-family:inherit">+2</button>
+  </div>
+  <div id="upcoming-list-m" style="overflow-y:auto;max-height:calc(100vh - 220px)"><div class="loading">Wird geladen…</div></div>
+</div>
+<div class="mobile-section" id="ms-bestaetigung" style="padding:12px"><div class="card-title" style="padding:4px 0 10px">✓ Terminbestätigung</div><div id="confirm-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"><div class="loading">Wird geladen…</div></div></div>
+<div class="mobile-section" id="ms-erinnerung" style="padding:12px"><div class="card-title" style="padding:4px 0 10px">⏰ Terminerinnerung</div><div id="reminder-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"><div class="loading">Wird geladen…</div></div></div>
+<div class="mobile-section" id="ms-storno" style="padding:12px"><div class="card-title" style="padding:4px 0 10px;color:#e74c3c">✕ Stornos</div><div id="storno-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"><div class="loading">Wird geladen…</div></div></div>
 </body>
 </html>
