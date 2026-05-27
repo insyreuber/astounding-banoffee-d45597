@@ -426,6 +426,8 @@ async function loadAll(){
   window._stornoIds=stornoIds;
 
   renderTicker(ticker,varianteMap,staffMap);
+  // Mobile ticker synchron
+  setTimeout(function(){renderMobileTicker(ticker,varianteMap,staffMap);},30);
   renderUpcomingCalendar(upcoming,varianteMap,staffMap,serviceMap);
   renderReminders(reminders);
   window._lastReminderData=reminders;
@@ -434,14 +436,13 @@ async function loadAll(){
   renderStorno(stornos,varianteMap,staffMap,serviceMap);
   window._lastStornoData={rows:stornos,varianteMap:varianteMap,staffMap:staffMap,serviceMap:serviceMap};
 
-  // Mobile mirror — copy innerHTML to mobile sections (nicht ticker, hat eigenen renderer)
+  // Mobile mirror — copy innerHTML to mobile sections
   setTimeout(function(){
     ['upcoming-list','confirm-list','reminder-list','storno-list'].forEach(function(id){
       var src=document.getElementById(id);
       var dst=document.getElementById(id+'-m');
       if(src&&dst)dst.innerHTML=src.innerHTML;
     });
-    renderMobileTicker(ticker,varianteMap,staffMap);
   },50);
 }
 
@@ -450,22 +451,23 @@ var _upcomingAll=[];
 var _upcomingSteps=['alle','heute','morgen','uebermorgen'];
 var _upcomingLabels={'alle':'Alle','heute':'Heute','morgen':'Morgen','uebermorgen':'Übermorgen'};
 
-function stepUpcomingFilter(idxOrDir){
-  // Wenn direkter Index (von Mobile) oder Richtung (von Desktop ‹›)
+function stepUpcomingFilter(idxOrDir,isDirect){
   var newIdx;
-  if(idxOrDir===0||idxOrDir===1||idxOrDir===2||idxOrDir===3){
+  if(isDirect){
+    // Direkt von Mobile-Buttons: 0=alle,1=heute,2=morgen,3=übermorgen
     newIdx=idxOrDir;
   } else {
+    // Von Desktop ‹›: Richtung -1 oder +1
     var idx=_upcomingSteps.indexOf(_upcomingFilter);
     newIdx=Math.max(0,Math.min(_upcomingSteps.length-1,idx+idxOrDir));
   }
   _upcomingFilter=_upcomingSteps[newIdx];
   var colors={'alle':'var(--tpl)','heute':'#e74c3c','morgen':'#e67e22','uebermorgen':'var(--muted)'};
+  // Desktop label
   var lbl=document.getElementById('uf-label');
   if(lbl){lbl.textContent=_upcomingLabels[_upcomingFilter];lbl.style.color=colors[_upcomingFilter];}
   // Mobile Buttons sync
-  var mMap={0:'alle',1:'heute',2:'morgen',3:'uebermorgen'};
-  ['alle','heute','morgen','uebermorgen'].forEach(function(k,i){
+  ['alle','heute','morgen','uebermorgen'].forEach(function(k){
     var mb=document.getElementById('muf-'+k);
     if(!mb)return;
     var active=k===_upcomingFilter;
@@ -800,7 +802,9 @@ function applyTemplate(type,vars){
     .replace(/\{\{salon\}\}/g,vars.salon||window.SALON_NAME||'');
 }
 
-function renderAll(){loadAll();}
+function renderAll(){
+  loadAll();
+}
 
 // ── STAFF MODAL — exakt wie config.html ──────────────────────
 var editingStaffId=null;
@@ -1105,10 +1109,10 @@ initKurzfristigSetting();
 <div class="mobile-section" id="ms-termine" style="padding:12px">
   <div class="card-title" style="padding:4px 0 10px">📅 Nächste Termine</div>
   <div style="display:flex;gap:6px;margin-bottom:10px">
-    <button onclick="stepUpcomingFilter(0)" id="muf-alle" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid var(--tpl);font-size:11px;font-weight:600;cursor:pointer;background:var(--tpl);color:#fff;font-family:inherit">Alle</button>
-    <button onclick="stepUpcomingFilter(1)" id="muf-heute" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid #e74c3c;font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:#e74c3c;font-family:inherit">Heute</button>
-    <button onclick="stepUpcomingFilter(2)" id="muf-morgen" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid #e67e22;font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:#e67e22;font-family:inherit">Morgen</button>
-    <button onclick="stepUpcomingFilter(3)" id="muf-uebermorgen" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid var(--muted);font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:var(--muted);font-family:inherit">+2</button>
+    <button onclick="stepUpcomingFilter(0,true)" id="muf-alle" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid var(--tpl);font-size:11px;font-weight:600;cursor:pointer;background:var(--tpl);color:#fff;font-family:inherit">Alle</button>
+    <button onclick="stepUpcomingFilter(1,true)" id="muf-heute" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid #e74c3c;font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:#e74c3c;font-family:inherit">Heute</button>
+    <button onclick="stepUpcomingFilter(2,true)" id="muf-morgen" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid #e67e22;font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:#e67e22;font-family:inherit">Morgen</button>
+    <button onclick="stepUpcomingFilter(3,true)" id="muf-uebermorgen" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid var(--muted);font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:var(--muted);font-family:inherit">+2</button>
   </div>
   <div id="upcoming-list-m" style="overflow-y:auto;max-height:calc(100vh - 220px)"><div class="loading">Wird geladen…</div></div>
 </div>
