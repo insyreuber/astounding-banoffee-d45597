@@ -214,8 +214,13 @@ async function loadAll(){
   var confirms=all.filter(function(b){
     var d=b.termin_start?b.termin_start.slice(0,10):'';
     if(b.status==='cancelled')return false;
-    if(d<todayStr||d>tomorrow.toISOString().slice(0,10))return false;
-    if(kurzfristigSetting==='keine'){var bookedDay=b.created_at?b.created_at.slice(0,10):'';if(bookedDay>=todayStr)return false;}
+    // Termin muss heute oder morgen sein
+    if(d!==todayStr&&d!==tomorrow.toISOString().slice(0,10))return false;
+    // Kurzfristig = heute gebucht → nur ausblenden wenn Einstellung "keine"
+    if(kurzfristigSetting==='keine'){
+      var bookedDay=b.created_at?b.created_at.slice(0,10):'';
+      if(bookedDay>=todayStr)return false;
+    }
     return true;
   });
   var stornos=all.filter(function(b){
