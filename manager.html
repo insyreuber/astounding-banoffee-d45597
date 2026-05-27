@@ -38,7 +38,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
 .ticker-dot.move{background:#f39c12}
 .upcoming-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
 .upcoming-row:last-child{border-bottom:none}
-.upcoming-date{font-size:12px;font-weight:700;color:var(--tpl);width:90px;flex-shrink:0}
+.upcoming-date{font-size:12px;font-weight:700;color:var(--tpl);width:130px;flex-shrink:0}
 .upcoming-info{flex:1;min-width:0}
 .upcoming-name{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .upcoming-service{font-size:11px;color:var(--muted)}
@@ -210,6 +210,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         Nächste Termine
       </div>
+      <div style="display:flex;gap:4px;margin-bottom:10px">
+        <button onclick="setUpcomingFilter('alle')" id="uf-alle" style="flex:1;padding:4px 0;border-radius:6px;border:1.5px solid var(--tpl);font-size:10px;font-weight:600;cursor:pointer;background:var(--tpl);color:#fff;font-family:inherit;transition:all .15s">Alle</button>
+        <button onclick="setUpcomingFilter('heute')" id="uf-heute" style="flex:1;padding:4px 0;border-radius:6px;border:1.5px solid #e74c3c;font-size:10px;font-weight:600;cursor:pointer;background:#fff;color:#e74c3c;font-family:inherit;transition:all .15s">Heute</button>
+        <button onclick="setUpcomingFilter('morgen')" id="uf-morgen" style="flex:1;padding:4px 0;border-radius:6px;border:1.5px solid #e67e22;font-size:10px;font-weight:600;cursor:pointer;background:#fff;color:#e67e22;font-family:inherit;transition:all .15s">Morgen</button>
+        <button onclick="setUpcomingFilter('uebermorgen')" id="uf-uebermorgen" style="flex:1;padding:4px 0;border-radius:6px;border:1.5px solid var(--muted);font-size:10px;font-weight:600;cursor:pointer;background:#fff;color:var(--muted);font-family:inherit;transition:all .15s">+2</button>
+      </div>
       <div id="upcoming-list" style="max-height:400px;overflow-y:auto"><div class="loading">Wird geladen…</div></div>
     </div>
 
@@ -376,11 +382,38 @@ async function loadAll(){
   window._lastStornoData={rows:stornos,varianteMap:varianteMap,staffMap:staffMap,serviceMap:serviceMap};
 }
 
+var _upcomingFilter='alle';
+var _upcomingAll=[];
+
+function setUpcomingFilter(f){
+  _upcomingFilter=f;
+  ['alle','heute','morgen','uebermorgen'].forEach(function(k){
+    var btn=document.getElementById('uf-'+k);if(!btn)return;
+    var colors={alle:'var(--tpl)',heute:'#e74c3c',morgen:'#e67e22',uebermorgen:'var(--muted)'};
+    var active=k===f;
+    btn.style.background=active?colors[k]:'#fff';
+    btn.style.color=active?'#fff':colors[k];
+  });
+  renderUpcomingCalendar(_upcomingAll,window._tickerVarianteMap||{},window._tickerStaffMap||{},{});
+}
+
 function renderUpcomingCalendar(events,varianteMap,staffMap,serviceMap){
   serviceMap=serviceMap||{};varianteMap=varianteMap||{};staffMap=staffMap||{};
+  _upcomingAll=events;
+  var now4=new Date();
+  var t3=now4.toISOString().slice(0,10);
+  var t4=new Date(now4.getFullYear(),now4.getMonth(),now4.getDate()+1).toISOString().slice(0,10);
+  var t5=new Date(now4.getFullYear(),now4.getMonth(),now4.getDate()+2).toISOString().slice(0,10);
+  var filtered=events.filter(function(b){
+    var day=b.termin_start?b.termin_start.slice(0,10):'';
+    if(_upcomingFilter==='heute')return day===t3;
+    if(_upcomingFilter==='morgen')return day===t4;
+    if(_upcomingFilter==='uebermorgen')return day===t5;
+    return true;
+  });
   var el=document.getElementById('upcoming-list');
-  if(!events.length){el.innerHTML='<div class="loading">Keine bevorstehenden Termine</div>';return;}
-  el.innerHTML=events.map(function(b){
+  if(!filtered.length){el.innerHTML='<div class="loading">Keine Termine</div>';return;}
+  el.innerHTML=filtered.map(function(b){
     var d=new Date(b.termin_start);
     var dateStr=d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
     var variante=varianteMap[b.service_variante_id];
