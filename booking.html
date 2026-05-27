@@ -1444,12 +1444,8 @@ async function loadSalonProfile(){
     // Slot-Raster aus feature_settings laden
     var fs=data.feature_settings||{};
 
-    console.log('[BOOKING] data keys:', Object.keys(data));
-    console.log('[BOOKING] feature_settings:', JSON.stringify(data.feature_settings));
-    // Buchungsseite gesperrt? — prüfe feature_settings.booking_active
-    var bookingActive = data.feature_settings&&data.feature_settings.booking_active!==undefined
-      ? data.feature_settings.booking_active
-      : true;
+    // Buchungsseite gesperrt? — nur wenn explizit false gesetzt
+    var bookingActive = data.feature_settings&&data.feature_settings.booking_active===false ? false : true;
     if(bookingActive===false){
       var sName=data.brand_name||data.name||'Salon';
       var logo=data.logo_url||'';
