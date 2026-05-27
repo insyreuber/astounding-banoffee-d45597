@@ -468,7 +468,7 @@ function renderTicker(rows,varianteMap,staffMap){
     aktionen+='</div>';
 
     return'<tr style="'+(alreadyDone?'opacity:0.55':!alreadyDone?'background:#f4f0fa':'')+'">'
-      +'<td style="width:80px"><span class="badge '+type+'">'+typeLabel+'</span></td>'
+      +'<td style="width:110px"><span class="badge '+type+'">'+typeLabel+'</span><div style="font-size:10px;color:var(--muted);margin-top:3px">'+esc(bookStr)+'</div></td>'
       +'<td style="font-weight:500">'+esc(b.customer_name||'–')+'</td>'
       +'<td style="color:var(--muted);font-family:monospace;font-size:13px"><a href="tel:'+esc(b.customer_phone||'')+'" style="color:var(--tpl);text-decoration:none;font-weight:500">'+esc(b.customer_phone||'–')+'</a></td>'
       +'<td>'+svcName+'</td>'
@@ -476,7 +476,6 @@ function renderTicker(rows,varianteMap,staffMap){
       +'<td style="font-weight:500;color:var(--tpl);width:60px">'+price+'</td>'
       +'<td style="width:130px"><div style="display:flex;align-items:center;gap:6px"><a href="#" onclick="openStaffOverlay(\''+esc(b.mitarbeiter_id||'')+'\');return false;" title="Profil ansehen" style="flex-shrink:0;text-decoration:none;cursor:pointer">'+renderAvatar(staffObj,36)+'</a><span style="color:var(--tg);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+staffName+'</span></div></td>'
       +'<td style="white-space:nowrap">'+esc(dateStr)+'</td>'
-      +'<td style="width:110px"><span class="badge '+type+'">'+typeLabel+'</span><div style="font-size:10px;color:var(--muted);margin-top:3px">'+esc(bookStr)+'</div></td>'
       +'<td style="font-size:13px;width:360px">'+aktionen+'</td>'
     +'</tr>';
   }).join('');
