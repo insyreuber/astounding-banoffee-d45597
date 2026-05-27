@@ -201,7 +201,7 @@ async function loadAll(){
   ]);
 
   var ticker=all.slice(0,10);
-  var upcoming=all.filter(function(b){return b.status!=='cancelled'&&new Date(b.termin_start)>now;}).slice(0,15);
+  var upcoming=all.filter(function(b){return b.status!=='cancelled'&&new Date(b.termin_start)>now;}).sort(function(a,b){return new Date(a.termin_start)-new Date(b.termin_start);}).slice(0,15);
   var reminders=all.filter(function(b){
     var d=b.termin_start?b.termin_start.slice(0,10):'';
     return b.status!=='cancelled'&&d>=tomorrow.toISOString().slice(0,10)&&d<=dayAfter.toISOString().slice(0,10);
@@ -247,10 +247,12 @@ function renderUpcomingCalendar(events,varianteMap,staffMap,serviceMap){
     var svcParent2=variante&&variante.service_id?serviceMap[variante.service_id]||'':'';
     var svcName=variante?[svcParent2,variante.service_name].filter(Boolean).join(' · ')||'–':'–';
     var staffName=staffMap[b.mitarbeiter_id]||'–';
+    var successUrl='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
     return'<div class="upcoming-row">'+
       '<div class="upcoming-date">'+esc(dateStr)+'</div>'+
       '<div class="upcoming-info"><div class="upcoming-name">'+esc(b.customer_name||'Kunde')+'</div><div class="upcoming-service">'+esc(svcName)+'</div></div>'+
-      '<div class="upcoming-staff" style="color:var(--tg)">'+esc(staffName)+'</div>'+
+      '<div class="upcoming-staff" style="color:var(--tg);margin-right:8px">'+esc(staffName)+'</div>'+
+      '<a href="'+successUrl+'" target="_blank" style="flex-shrink:0;background:#5a2d82;border:1px solid #5a2d82;color:#fff;font-weight:700;box-shadow:0 0 8px #5a2d8299;border-radius:6px;padding:3px 8px;font-size:10px;white-space:nowrap;text-decoration:none;">↗</a>'+
     '</div>';
   }).join('');
 }
