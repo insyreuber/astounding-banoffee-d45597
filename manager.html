@@ -210,10 +210,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         Nächste Termine
       </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <button onclick="stepUpcomingFilter(-1)" style="background:none;border:1.5px solid var(--border);border-radius:7px;width:28px;height:28px;cursor:pointer;font-size:14px;color:var(--tpl);display:flex;align-items:center;justify-content:center;font-family:inherit;transition:all .15s" onmouseover="this.style.borderColor='var(--tpl)'" onmouseout="this.style.borderColor='var(--border)'">‹</button>
-        <span id="uf-label" style="font-size:11px;font-weight:700;color:var(--tpl);letter-spacing:.05em;text-transform:uppercase">Alle</span>
-        <button onclick="stepUpcomingFilter(1)" style="background:none;border:1.5px solid var(--border);border-radius:7px;width:28px;height:28px;cursor:pointer;font-size:14px;color:var(--tpl);display:flex;align-items:center;justify-content:center;font-family:inherit;transition:all .15s" onmouseover="this.style.borderColor='var(--tpl)'" onmouseout="this.style.borderColor='var(--border)'">›</button>
+      <div style="display:flex;align-items:center;margin-bottom:10px">
+        <button onclick="stepUpcomingFilter(-1)" style="flex-shrink:0;width:130px;background:none;border:none;padding:0;cursor:pointer;font-size:16px;color:var(--border);text-align:left;font-family:inherit;transition:color .15s" onmouseover="this.style.color='var(--tpl)'" onmouseout="this.style.color='var(--border)'">‹</button>
+        <span id="uf-label" style="flex:1;font-size:11px;font-weight:700;color:var(--tpl);letter-spacing:.05em;text-transform:uppercase;text-align:left">Alle</span>
+        <div style="width:110px;flex-shrink:0"></div>
+        <button onclick="stepUpcomingFilter(1)" style="flex-shrink:0;width:28px;height:28px;background:none;border:1.5px solid var(--border);border-radius:7px;cursor:pointer;font-size:14px;color:var(--tpl);display:flex;align-items:center;justify-content:center;font-family:inherit;transition:all .15s" onmouseover="this.style.borderColor='var(--tpl)'" onmouseout="this.style.borderColor='var(--border)'">›</button>
       </div>
       <div id="upcoming-list" style="max-height:400px;overflow-y:auto"><div class="loading">Wird geladen…</div></div>
     </div>
