@@ -426,7 +426,10 @@ async function loadAll(){
   window._stornoIds=stornoIds;
 
   renderTicker(ticker,varianteMap,staffMap);
-  // Mobile ticker synchron
+  // Mobile ticker synchron halten
+  window._tickerRows=ticker;
+  window._tickerVarianteMap=varianteMap;
+  window._tickerStaffMap=staffMap;
   setTimeout(function(){renderMobileTicker(ticker,varianteMap,staffMap);},30);
   renderUpcomingCalendar(upcoming,varianteMap,staffMap,serviceMap);
   renderReminders(reminders);
@@ -1189,34 +1192,49 @@ loadAll();
 initKurzfristigSetting();
 </script>
 
-
-<!-- Mobile Only -->
-<!-- Mobile Navigation -->
-<nav class="mobile-nav">
-  <button class="mobile-nav-btn active" onclick="mobileTab('live')" id="mn-live"><span style="font-size:16px">⚡</span><span>Live</span></button>
-  <button class="mobile-nav-btn" onclick="mobileTab('termine')" id="mn-termine"><span style="font-size:16px">📅</span><span>Termine</span></button>
-  <button class="mobile-nav-btn" onclick="mobileTab('bestaetigung')" id="mn-bestaetigung"><span style="font-size:16px">✓</span><span>Best.</span></button>
-  <button class="mobile-nav-btn" onclick="mobileTab('erinnerung')" id="mn-erinnerung"><span style="font-size:16px">⏰</span><span>Erin.</span></button>
-  <button class="mobile-nav-btn" onclick="mobileTab('storno')" id="mn-storno"><span style="font-size:16px">✕</span><span>Storno</span></button>
-</nav>
-
-<!-- Mobile Sections -->
-<div class="mobile-section active" id="ms-live" style="padding:12px">
-  <div class="card-title" style="padding:4px 0 10px"><span class="live-dot"></span> Live-Aktivitäten</div>
-  <div id="ticker-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"><div class="loading">Wird geladen…</div></div>
-</div>
-<div class="mobile-section" id="ms-termine" style="padding:12px">
-  <div class="card-title" style="padding:4px 0 10px">📅 Nächste Termine</div>
-  <div style="display:flex;gap:6px;margin-bottom:10px">
-    <button onclick="stepUpcomingFilter(0,true)" id="muf-alle" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid var(--tpl);font-size:11px;font-weight:600;cursor:pointer;background:var(--tpl);color:#fff;font-family:inherit">Alle</button>
-    <button onclick="stepUpcomingFilter(1,true)" id="muf-heute" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid #e74c3c;font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:#e74c3c;font-family:inherit">Heute</button>
-    <button onclick="stepUpcomingFilter(2,true)" id="muf-morgen" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid #e67e22;font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:#e67e22;font-family:inherit">Morgen</button>
-    <button onclick="stepUpcomingFilter(3,true)" id="muf-uebermorgen" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid var(--muted);font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:var(--muted);font-family:inherit">+2</button>
+<!-- Mobile Only — auf Desktop komplett hidden -->
+<div id="mobile-shell" style="display:none">
+  <nav class="mobile-nav">
+    <button class="mobile-nav-btn active" onclick="mobileTab('live')" id="mn-live"><span style="font-size:16px">⚡</span><span>Live</span></button>
+    <button class="mobile-nav-btn" onclick="mobileTab('termine')" id="mn-termine"><span style="font-size:16px">📅</span><span>Termine</span></button>
+    <button class="mobile-nav-btn" onclick="mobileTab('bestaetigung')" id="mn-bestaetigung"><span style="font-size:16px">✓</span><span>Best.</span></button>
+    <button class="mobile-nav-btn" onclick="mobileTab('erinnerung')" id="mn-erinnerung"><span style="font-size:16px">⏰</span><span>Erin.</span></button>
+    <button class="mobile-nav-btn" onclick="mobileTab('storno')" id="mn-storno"><span style="font-size:16px">✕</span><span>Storno</span></button>
+  </nav>
+  <div class="mobile-section active" id="ms-live" style="padding:12px"><div class="card-title" style="padding:4px 0 10px"><span class="live-dot"></span> Live-Aktivitäten</div><div id="ticker-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"><div class="loading">Wird geladen…</div></div></div>
+  <div class="mobile-section" id="ms-termine" style="padding:12px">
+    <div class="card-title" style="padding:4px 0 10px">📅 Nächste Termine</div>
+    <div style="display:flex;gap:6px;margin-bottom:10px">
+      <button onclick="stepUpcomingFilter(0,true)" id="muf-alle" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid var(--tpl);font-size:11px;font-weight:600;cursor:pointer;background:var(--tpl);color:#fff;font-family:inherit">Alle</button>
+      <button onclick="stepUpcomingFilter(1,true)" id="muf-heute" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid #e74c3c;font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:#e74c3c;font-family:inherit">Heute</button>
+      <button onclick="stepUpcomingFilter(2,true)" id="muf-morgen" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid #e67e22;font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:#e67e22;font-family:inherit">Morgen</button>
+      <button onclick="stepUpcomingFilter(3,true)" id="muf-uebermorgen" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid var(--muted);font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:var(--muted);font-family:inherit">+2</button>
+    </div>
+    <div id="upcoming-list-m" style="overflow-y:auto;max-height:calc(100vh - 220px)"><div class="loading">Wird geladen…</div></div>
   </div>
-  <div id="upcoming-list-m" style="overflow-y:auto;max-height:calc(100vh - 220px)"><div class="loading">Wird geladen…</div></div>
+  <div class="mobile-section" id="ms-bestaetigung" style="padding:12px"><div class="card-title" style="padding:4px 0 10px">✓ Terminbestätigung</div><div id="confirm-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"><div class="loading">Wird geladen…</div></div></div>
+  <div class="mobile-section" id="ms-erinnerung" style="padding:12px"><div class="card-title" style="padding:4px 0 10px">⏰ Terminerinnerung</div><div id="reminder-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"><div class="loading">Wird geladen…</div></div></div>
+  <div class="mobile-section" id="ms-storno" style="padding:12px"><div class="card-title" style="padding:4px 0 10px;color:#e74c3c">✕ Stornos</div><div id="storno-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"><div class="loading">Wird geladen…</div></div></div>
 </div>
-<div class="mobile-section" id="ms-bestaetigung" style="padding:12px"><div class="card-title" style="padding:4px 0 10px">✓ Terminbestätigung</div><div id="confirm-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"><div class="loading">Wird geladen…</div></div></div>
-<div class="mobile-section" id="ms-erinnerung" style="padding:12px"><div class="card-title" style="padding:4px 0 10px">⏰ Terminerinnerung</div><div id="reminder-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"><div class="loading">Wird geladen…</div></div></div>
-<div class="mobile-section" id="ms-storno" style="padding:12px"><div class="card-title" style="padding:4px 0 10px;color:#e74c3c">✕ Stornos</div><div id="storno-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"><div class="loading">Wird geladen…</div></div></div>
+
+<script>
+// Zeige mobile-shell nur auf kleinen Bildschirmen
+(function(){
+  function checkMobile(){
+    var shell=document.getElementById('mobile-shell');
+    var desktop=document.getElementById('desktop-main');
+    if(!shell)return;
+    if(window.innerWidth<=768){
+      shell.style.display='block';
+      if(desktop)desktop.style.display='none';
+    } else {
+      shell.style.display='none';
+      if(desktop)desktop.style.display='';
+    }
+  }
+  checkMobile();
+  window.addEventListener('resize',checkMobile);
+})();
+</script>
 </body>
 </html>
