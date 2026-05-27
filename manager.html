@@ -268,8 +268,7 @@ function renderTicker(rows,varianteMap,staffMap){
     +'<th style="width:60px">Preis</th>'
     +'<th>Mitarbeiter</th>'
     +'<th>Termin</th>'
-    +'<th style="font-size:12px">Buchung</th>'
-    +'<th style="font-size:12px;width:80px">Status</th>'
+    +'<th style="font-size:12px;width:110px">Status</th>'
     +'<th style="font-size:12px;width:320px">Aktionen</th>'
   +'</tr></thead>';
   var tbody=rows.map(function(b){
@@ -334,8 +333,7 @@ function renderTicker(rows,varianteMap,staffMap){
       +'<td style="font-weight:500;color:var(--tpl);width:60px">'+price+'</td>'
       +'<td style="color:var(--tg);font-weight:500">'+staffName+'</td>'
       +'<td style="white-space:nowrap">'+esc(dateStr)+'</td>'
-      +'<td style="color:var(--muted);font-size:13px;white-space:nowrap">'+esc(bookStr)+'</td>'
-      +'<td style="font-size:13px;width:80px"><span class="badge '+type+'">'+typeLabel+'</span></td>'
+      +'<td style="font-size:13px;width:110px"><span class="badge '+type+'">'+typeLabel+'</span><div style="font-size:10px;color:var(--muted);margin-top:3px">'+esc(bookStr)+'</div></td>'
       +'<td style="font-size:13px;width:320px">'+aktionen+'</td>'
     +'</tr>';
   }).join('');
