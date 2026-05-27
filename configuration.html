@@ -3716,10 +3716,12 @@ async function init(){
         var item=staffData.find(function(s){return s.id===editStaffId;});
         if(item){
           setTimeout(function(){
-            // Scroll to team section and open edit modal
-            var teamSection=document.getElementById('sec-team');
-            if(teamSection)teamSection.scrollIntoView({behavior:'smooth'});
-            setTimeout(function(){editStaff(editStaffId);},400);
+            switchTab('profil');
+            setTimeout(function(){
+              var sidebar=document.getElementById('staff-sidebar');
+              if(sidebar)sidebar.scrollIntoView({behavior:'smooth',block:'center'});
+              setTimeout(function(){editStaff(editStaffId);},400);
+            },200);
           },300);
         }
       }
