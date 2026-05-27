@@ -335,8 +335,17 @@ function fmt(dt){var d=new Date(dt);return d.toLocaleDateString('de-DE',{weekday
 function waLink(phone,msg){var clean=(phone||'').replace(/\D/g,'');if(clean.startsWith('0'))clean='49'+clean.slice(1);return'https://wa.me/'+clean+'?text='+encodeURIComponent(msg);}
 
 async function loadAll(){
-  var salonRes=await sb.from('kunden_profile').select('brand_name,name').eq('id',SALON_ID).single();
-  if(salonRes.data){document.getElementById('nav-salon-name').textContent=salonRes.data.brand_name||salonRes.data.name||'Salon';}
+  var salonRes=await sb.from('kunden_profile').select('brand_name,name,feature_settings').eq('id',SALON_ID).single();
+  if(salonRes.data){
+    document.getElementById('nav-salon-name').textContent=salonRes.data.brand_name||salonRes.data.name||'Salon';
+    var fs=salonRes.data.feature_settings||{};
+    window.SALON_NAME=salonRes.data.brand_name||salonRes.data.name||'Salon';
+    window.WA_TPL={
+      bestaetigung:fs.wa_template_bestaetigung||'Hallo {{name}}!\nDein Termin am {{termin}} ist bestätigt. Bis dann!\n\nDein Link zur Buchung: {{buchungslink}}\npowered by insy-reception',
+      erinnerung:fs.wa_template_erinnerung||'Hallo {{name}}!\nErinnerung: Dein Termin ist am {{termin}}. Wir freuen uns auf dich!\n\nDein Link zur Buchung: {{buchungslink}}\npowered by insy-reception',
+      storno:fs.wa_template_storno||'Hallo {{name}}!\nWir haben deine Stornierung für den {{termin}} erhalten und bestätigen diese hiermit.\n\nFalls du einen neuen Termin buchen möchtest:\n{{buchungslink}}\npowered by insy-reception'
+    };
+  }
 
   var now=new Date();
   var nowIso=now.toISOString();
@@ -533,9 +542,18 @@ function renderTicker(rows,varianteMap,staffMap){
     var phone=b.customer_phone||'';
     var bookingLink='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
     var termin=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'})+' um '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr';
-    var msgBestaetigung='Hallo '+(b.customer_name||'')+'!\nDein Termin am '+termin+' ist bestätigt. Bis dann!\n\nDein Link zur Buchung: '+bookingLink+'\npowered by insy-reception';
-    var msgErinnerung='Hallo '+(b.customer_name||'')+'!\nErinnerung: Dein Termin ist am '+termin+'. Wir freuen uns auf dich!\n\nDein Link zur Buchung: '+bookingLink+'\npowered by insy-reception';
-    var msgStorno='Hallo '+(b.customer_name||'')+'!\nWir haben deine Stornierung für den '+termin+' erhalten und bestätigen diese hiermit.\n\nFalls du einen neuen Termin buchen möchtest:\n'+bookingLink+'\npowered by insy-reception';
+    var tplVars={
+      name:b.customer_name||'',
+      termin:termin,
+      datum:d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'}),
+      uhrzeit:d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr',
+      service:svcName.replace(/<[^>]*>/g,''),
+      buchungslink:bookingLink,
+      salon:window.SALON_NAME||''
+    };
+    var msgBestaetigung=applyTemplate('bestaetigung',tplVars);
+    var msgErinnerung=applyTemplate('erinnerung',tplVars);
+    var msgStorno=applyTemplate('storno',tplVars);
     var isErledigt=erledigtIds.indexOf(b.id)>=0;
     var now2=new Date();
     var erledigtIds2=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
@@ -611,7 +629,8 @@ function renderStorno(rows,varianteMap,staffMap,serviceMap){
     var staffObj2=staffMap[b.mitarbeiter_id]||null;
     var staffName=staffObj2?(staffObj2.display_name||staffObj2.name||''):'';
     var bookingLink='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
-    var msg='Hallo '+(b.customer_name||'')+'!\nWir haben deine Stornierung für den '+dateStr+' erhalten und bestätigen diese hiermit.\n\nFalls du einen neuen Termin buchen möchtest:\n'+bookingLink+'\npowered by insy-reception';
+    var stornoTermin=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'})+' um '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr';
+    var msg=applyTemplate('storno',{name:b.customer_name||'',termin:stornoTermin,datum:d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'}),uhrzeit:d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr',service:svcName,buchungslink:bookingLink,salon:window.SALON_NAME||''});
     var phone=b.customer_phone||'';
     var activeStyle3='background:#fff;border:2px solid #e74c3c;border-radius:10px;padding:12px;position:relative;box-shadow:0 4px 16px rgba(231,76,60,.18),0 0 0 1px rgba(231,76,60,.08);animation:glowRed 3s ease-in-out infinite,fadeIn .35s ease both';
     var doneStyle3='background:#f8f8f8;border:1.5px solid #e5e5e5;border-radius:10px;padding:12px;position:relative;opacity:0.45;filter:grayscale(0.3)';
@@ -658,7 +677,7 @@ function renderReminders(rows){
     var dateStr=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'});
     var timeStr=new Date(b.termin_start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
     var bookingLink='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
-    var msg='Hallo '+(b.customer_name||'')+'!\nErinnerung: Dein Termin ist am '+dateStr+' um '+timeStr+' Uhr. Wir freuen uns auf dich!\n\nDein Link zur Buchung: '+bookingLink+'\npowered by insy-reception';
+    var msg=applyTemplate('erinnerung',{name:b.customer_name||b.name||'',termin:dateStr+' um '+timeStr+' Uhr',datum:dateStr,uhrzeit:timeStr+' Uhr',service:'',buchungslink:bookingLink,salon:window.SALON_NAME||''});
     var phone=b.customer_phone||b.phone||'';
     var cdId='cd-'+b.id;
     var activeStyle='background:#fff;border:2px solid #e67e22;border-radius:10px;padding:12px;position:relative;box-shadow:0 4px 16px rgba(230,126,34,.18),0 0 0 1px rgba(230,126,34,.08);animation:glowOrange 3s ease-in-out infinite,fadeIn .35s ease both';
@@ -706,7 +725,7 @@ function renderConfirm(rows){
     var dateStr=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'});
     var timeStr2=new Date(b.termin_start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
     var bookingLink2='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
-    var msg='Hallo '+(b.customer_name||'')+'!\nDein Termin am '+dateStr+' um '+timeStr2+' Uhr ist bestätigt. Bis dann!\n\nDein Link zur Buchung: '+bookingLink2+'\npowered by insy-reception';
+    var msg=applyTemplate('bestaetigung',{name:b.customer_name||b.name||'',termin:dateStr+' um '+timeStr2+' Uhr',datum:dateStr,uhrzeit:timeStr2+' Uhr',service:'',buchungslink:bookingLink2,salon:window.SALON_NAME||''});
     var phone=b.customer_phone||b.phone||'';
     var activeStyle2='background:#fff;border:2px solid #27ae60;border-radius:10px;padding:12px;position:relative;box-shadow:0 4px 16px rgba(39,174,96,.18),0 0 0 1px rgba(39,174,96,.08);animation:glow 3s ease-in-out infinite,fadeIn .35s ease both';
     var doneStyle2='background:#f8f8f8;border:1.5px solid #e5e5e5;border-radius:10px;padding:12px;position:relative;opacity:0.45;filter:grayscale(0.3)';
@@ -732,6 +751,18 @@ function initKurzfristigSetting(){
   var sel=document.getElementById('kurzfristig-setting');if(sel)sel.value=localStorage.getItem('kurzfristig_setting')||'anzeigen';
   var sel2=document.getElementById('kurzfristig-reminder-setting');if(sel2)sel2.value=localStorage.getItem('kurzfristig_reminder_setting')||'anzeigen';
 }
+function applyTemplate(type,vars){
+  var tpl=(window.WA_TPL&&window.WA_TPL[type])||'';
+  return tpl
+    .replace(/\{\{name\}\}/g,vars.name||'')
+    .replace(/\{\{termin\}\}/g,vars.termin||'')
+    .replace(/\{\{datum\}\}/g,vars.datum||'')
+    .replace(/\{\{uhrzeit\}\}/g,vars.uhrzeit||'')
+    .replace(/\{\{service\}\}/g,vars.service||'')
+    .replace(/\{\{buchungslink\}\}/g,vars.buchungslink||'')
+    .replace(/\{\{salon\}\}/g,vars.salon||window.SALON_NAME||'');
+}
+
 function renderAll(){loadAll();}
 
 // ── STAFF MODAL — exakt wie config.html ──────────────────────
