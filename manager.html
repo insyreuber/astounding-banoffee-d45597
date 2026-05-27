@@ -265,8 +265,8 @@ function renderTicker(rows,varianteMap,staffMap){
     +'<th>Service</th>'
     +'<th style="width:60px">Dauer</th>'
     +'<th style="width:60px">Preis</th>'
-    +'<th style="width:55px">Mitarbeiter</th>'
-    +'<th>Termin</th>'
+    +'<th style="width:90px">Mitarbeiter</th>'
+    +'<th style="width:120px">Termin</th>'
     +'<th style="font-size:12px;width:110px">Status</th>'
     +'<th style="font-size:12px;width:360px">Aktionen</th>'
   +'</tr></thead>';
@@ -296,7 +296,7 @@ function renderTicker(rows,varianteMap,staffMap){
     var kurzfristigSetting2=localStorage.getItem('kurzfristig_setting')||'anzeigen';
     var kurzfristigReminderSetting2=localStorage.getItem('kurzfristig_reminder_setting')||'anzeigen';
     var bookedToday=b.created_at&&b.created_at.slice(0,10)>=todayStr2;
-    var canBestaetigen=type!=='cancel'&&!!phone&&(terminDay===todayStr2||terminDay===tomorrowStr)&&!(bookedToday&&kurzfristigSetting2==='keine');
+    var canBestaetigen=type!=='cancel'&&!!phone&&new Date(b.termin_start)>now2&&!(bookedToday&&kurzfristigSetting2==='keine');
     var canErinnern=type!=='cancel'&&!!phone&&(terminDay===tomorrowStr||terminDay===dayAfterStr)&&!(bookedToday&&kurzfristigReminderSetting2==='keine');
     var canStorno=type==='cancel'&&!!phone;
 
@@ -330,7 +330,7 @@ function renderTicker(rows,varianteMap,staffMap){
       +'<td>'+svcName+'</td>'
       +'<td style="color:var(--muted);width:60px">'+dur+'</td>'
       +'<td style="font-weight:500;color:var(--tpl);width:60px">'+price+'</td>'
-      +'<td style="color:var(--tg);font-weight:500;width:55px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+staffName+'</td>'
+      +'<td style="color:var(--tg);font-weight:500;width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+staffName+'</td>'
       +'<td style="white-space:nowrap">'+esc(dateStr)+'</td>'
       +'<td style="font-size:13px;width:110px"><span class="badge '+type+'">'+typeLabel+'</span><div style="font-size:10px;color:var(--muted);margin-top:3px">'+esc(bookStr)+'</div></td>'
       +'<td style="font-size:13px;width:320px">'+aktionen+'</td>'
