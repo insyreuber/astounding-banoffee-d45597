@@ -426,11 +426,6 @@ async function loadAll(){
   window._stornoIds=stornoIds;
 
   renderTicker(ticker,varianteMap,staffMap);
-  // Mobile ticker synchron halten
-  window._tickerRows=ticker;
-  window._tickerVarianteMap=varianteMap;
-  window._tickerStaffMap=staffMap;
-  setTimeout(function(){renderMobileTicker(ticker,varianteMap,staffMap);},30);
   renderUpcomingCalendar(upcoming,varianteMap,staffMap,serviceMap);
   renderReminders(reminders);
   window._lastReminderData=reminders;
@@ -558,6 +553,7 @@ function renderAvatar(staffObj,size){
 function renderTicker(rows,varianteMap,staffMap){
   varianteMap=varianteMap||{};staffMap=staffMap||{};
   var el=document.getElementById('ticker-list');
+  var elM=document.getElementById('ticker-list-m');
   var cnt=document.getElementById('ticker-count');
   if(cnt)cnt.textContent=rows.length+' Einträge';
   if(!rows.length){el.innerHTML='<div class="loading">Noch keine Aktivitäten</div>';return;}
@@ -652,6 +648,8 @@ function renderTicker(rows,varianteMap,staffMap){
   el.innerHTML='<div style="overflow-x:hidden"><table class="ticker-table" style="table-layout:fixed;width:100%">'+thead+'<tbody>'+tbody+'</tbody></table></div>';
   // Fade-in neue Zeilen
   el.querySelectorAll('tr').forEach(function(tr,i){tr.style.animation='fadeIn .3s ease '+(i*0.04)+'s both';});
+  // Mobile synchron
+  if(elM)elM.innerHTML=el.innerHTML;
 }
 
 function tickerErledigt(id){
@@ -1099,87 +1097,6 @@ function toggleCustomHours(){
   if(on&&!document.getElementById('s-hours-cols').children.length)buildHoursCols(null,'s-hours-cols','s-',true);
 }
 
-function renderMobileTicker(rows,varianteMap,staffMap){
-  var el=document.getElementById('ticker-list-m');
-  if(!el)return;
-  if(!rows||!rows.length){el.innerHTML='<div class="loading">Keine Aktivitäten</div>';return;}
-  varianteMap=varianteMap||{};staffMap=staffMap||{};
-  var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
-  var kachelErledigtIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');
-  var now2=new Date();
-  var todayStr2=now2.toISOString().slice(0,10);
-  var tomorrowStr=new Date(now2.getFullYear(),now2.getMonth(),now2.getDate()+1).toISOString().slice(0,10);
-  var dayAfterStr=new Date(now2.getFullYear(),now2.getMonth(),now2.getDate()+2).toISOString().slice(0,10);
-
-  el.innerHTML=rows.map(function(b,i){
-    var type=b.status==='cancelled'?'cancel':b.status==='rescheduled'?'move':'in';
-    var typeLabel=type==='cancel'?'Storno':type==='move'?'Verschoben':'Eingang';
-    var d=new Date(b.termin_start||b.created_at||new Date());
-    var dateStr=d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
-    var bookStr=type==='cancel'&&b.cancelled_at
-      ?new Date(b.cancelled_at).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+' '+new Date(b.cancelled_at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})
-      :new Date(b.created_at).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+' '+new Date(b.created_at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
-    var variante=varianteMap[b.service_variante_id];
-    var svcParent=variante&&variante.service_id?serviceMap[variante.service_id]||'':'';
-    var svcName=variante?[svcParent,variante.service_name].filter(Boolean).join(' · ')||'–':'–';
-    var dur=variante&&variante.dauer_minuten?variante.dauer_minuten+' Min':'–';
-    var price=variante&&variante.preis?variante.preis+' €':'–';
-    var staffObj=staffMap[b.mitarbeiter_id]||null;
-    var staffName=staffObj?(staffObj.display_name||staffObj.name||'–'):'–';
-    var phone=b.customer_phone||'';
-    var bookingLink='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
-    var termin=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'})+' um '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr';
-    var tplVars={name:b.customer_name||'',termin:termin,datum:d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'}),uhrzeit:d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr',service:svcName,buchungslink:bookingLink,salon:window.SALON_NAME||''};
-    var isErledigt=erledigtIds.indexOf(b.id)>=0;
-    var isKachelErledigt=kachelErledigtIds.indexOf(b.id)>=0;
-    var alreadyDone=isErledigt||isKachelErledigt;
-    var terminDay=b.termin_start?b.termin_start.slice(0,10):'';
-    var bookedToday=b.created_at&&b.created_at.slice(0,10)>=todayStr2;
-    var kurzfristigSetting2=localStorage.getItem('kurzfristig_setting')||'anzeigen';
-    var kurzfristigReminderSetting2=localStorage.getItem('kurzfristig_reminder_setting')||'anzeigen';
-    var isInReminder=type!=='cancel'&&(terminDay===tomorrowStr||terminDay===dayAfterStr)&&!(kurzfristigReminderSetting2==='keine'&&bookedToday);
-    var isInConfirm=type!=='cancel'&&new Date(b.termin_start)>now2&&!isInReminder&&!(kurzfristigSetting2==='keine'&&bookedToday);
-    var isInStorno=type==='cancel'&&new Date(b.updated_at||b.created_at)>=new Date(now2.getTime()-7*24*60*60*1000);
-    var canB=!alreadyDone&&!!phone&&isInConfirm;
-    var canE=!alreadyDone&&!!phone&&isInReminder;
-    var canS=!alreadyDone&&!!phone&&isInStorno;
-
-    function mbtn(label,href,active,color){
-      if(alreadyDone||!active)return'<span style="background:#f0f0f0;border:1px solid #e0e0e0;color:#c0c0c0;border-radius:8px;padding:7px 8px;font-size:11px;font-weight:500;text-align:center;flex:1;display:block">'+label+'</span>';
-      return'<a href="'+href+'" target="_blank" style="flex:1;text-align:center;background:'+color+';color:#fff;border-radius:8px;padding:7px 8px;font-size:11px;font-weight:700;text-decoration:none;box-shadow:0 0 10px '+color+',0 0 20px '+color+'66;display:block">'+label+'</a>';
-    }
-
-    var borderColor=type==='cancel'?'rgba(231,76,60,.3)':type==='move'?'rgba(243,156,18,.3)':'rgba(39,174,96,.3)';
-    return'<div style="border:1.5px solid '+(alreadyDone?'#e5e5e5':borderColor)+';border-radius:12px;margin-bottom:10px;background:#fff;'+(alreadyDone?'opacity:0.4;filter:grayscale(0.3)':'border-left:3px solid var(--tpl)')+'">'+
-      '<div style="padding:11px 12px">'+
-        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">'+
-          '<span class="badge '+type+'" style="font-size:10px;flex-shrink:0">'+typeLabel+'<div style="font-size:9px;font-weight:400;opacity:.7">'+esc(bookStr)+'</div></span>'+
-          '<span style="font-size:14px;font-weight:600;color:var(--td);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(b.customer_name||'–')+'</span>'+
-          (phone?'<a href="tel:'+esc(phone)+'" style="color:var(--tpl);font-size:11px;text-decoration:none;font-family:monospace">'+esc(phone)+'</a>':'')
-        +'</div>'+
-        '<div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap">'+
-          '<span style="font-size:11px;color:var(--td)">'+esc(svcName)+'</span>'+
-          '<span style="font-size:11px;color:var(--muted)">·</span>'+
-          '<span style="font-size:11px;color:var(--muted)">'+esc(dur)+'</span>'+
-          '<span style="font-size:11px;color:var(--muted)">·</span>'+
-          '<span style="font-size:11px;color:var(--tpl);font-weight:600">'+esc(price)+'</span>'+
-          '<span style="font-size:11px;color:var(--muted)">·</span>'+
-          '<span style="font-size:11px;color:var(--tg);font-weight:500">'+esc(staffName)+'</span>'+
-        '</div>'+
-        '<div style="font-size:12px;font-weight:600;color:var(--td);margin-bottom:10px">📅 '+esc(dateStr)+'</div>'+
-        '<div style="display:flex;gap:6px">'+
-          mbtn('Bestätigung',waLink(phone,applyTemplate('bestaetigung',tplVars)),canB,'#27ae60')+
-          mbtn('Erinnerung',waLink(phone,applyTemplate('erinnerung',tplVars)),canE,'#e67e22')+
-          mbtn('Storno',waLink(phone,applyTemplate('storno',tplVars)),canS,'#e74c3c')+
-          '<a href="'+bookingLink+'" target="_blank" style="flex-shrink:0;background:#5a2d82;color:#fff;border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;text-decoration:none;box-shadow:0 0 10px #5a2d8299">↗</a>'+
-          (isKachelErledigt
-            ?'<span style="flex-shrink:0;background:#e8f5e9;border:1px solid #4ade80;border-radius:8px;padding:7px 10px;font-size:12px;color:#16a34a;font-weight:600;opacity:0.5">✓</span>'
-            :'<button onclick="tickerErledigt(\''+b.id+'\');setTimeout(function(){renderMobileTicker(window._tickerRows,window._tickerVarianteMap,window._tickerStaffMap)},100)" style="flex-shrink:0;background:'+(isErledigt?'#e8f5e9':'var(--bg)')+';border:1px solid '+(isErledigt?'#4ade80':'var(--border)')+';border-radius:8px;padding:7px 10px;font-size:12px;color:'+(isErledigt?'#16a34a':'#ccc')+';font-weight:600;cursor:pointer">✓</button>')
-        +'</div>'+
-      '</div>'+
-    '</div>';
-  }).join('');
-}
 
 function mobileTab(tab){
   document.querySelectorAll('.mobile-section').forEach(function(s){s.classList.remove('active');});
