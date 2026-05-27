@@ -15,7 +15,8 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-height:100vh}
 .nav{background:var(--tp);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2)}
-.nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:600;color:#fff;letter-spacing:.01em}
+.nav-brand{padding:14px 20px 14px 0;border-right:1px solid rgba(255,255,255,.1);margin-right:4px;flex-shrink:0}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:600;color:#fff;letter-spacing:.01em;text-transform:none;line-height:1}
 .nav-logo span{color:#C9A84C}
 .nav-meta{font-size:11px;color:rgba(255,255,255,.5)}
 .nav-salon{font-size:13px;font-weight:600;color:rgba(255,255,255,.9)}
@@ -57,10 +58,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
 <body>
 
 <nav class="nav">
-  <div class="nav-logo">Insy <span>Reception</span></div>
+  <div class="nav-brand">
+    <div class="nav-logo">Insy <span>Reception</span></div>
+  </div>
   <div style="text-align:right">
     <div class="nav-salon" id="nav-salon-name">Manager</div>
-    <div class="nav-meta">Dashboard</div>
+    <div class="nav-meta">Manager</div>
   </div>
 </nav>
 
@@ -83,7 +86,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
       <div class="card-title">
         <span class="live-dot"></span>
         Live-Aktivitäten
-        <span id="ticker-count" style="margin-left:auto;font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0"></span>
       </div>
       <div id="ticker-list" style="max-height:400px;overflow-y:auto"><div class="loading">Wird geladen…</div></div>
     </div>
@@ -443,7 +445,7 @@ function renderReminders(rows){
       (!isErledigt?'<button onclick="reminderErledigt(\''+b.id+'\')" style="position:absolute;top:8px;right:8px;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;cursor:pointer;font-size:12px;color:#16a34a;font-weight:600">✓</button>':'<span style="position:absolute;top:8px;right:8px;font-size:11px;color:#16a34a;font-weight:600">✓ Erledigt</span>')+
       '<div style="font-size:12px;font-weight:500;margin-bottom:3px;padding-right:55px">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
       '<div style="font-size:10px;color:var(--muted);margin-bottom:10px">'+esc(dateStr)+' '+timeStr+'</div>'+
-      (phone&&!isErledigt?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:100%;justify-content:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg> Erinnerung senden</a>':'<span style="font-size:10px;color:var(--muted)">'+(phone?esc(phone):'Keine Nummer')+'</span>')+
+      (phone&&!isErledigt?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:100%;justify-content:center;background:#e67e22;box-shadow:0 0 10px #e67e2299,0 0 20px #e67e2244"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg> Erinnerung senden</a>':'<span style="font-size:10px;color:var(--muted)">'+(phone?esc(phone):'Keine Nummer')+'</span>')+
     '</div>';
   }
   var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Erinnerungen erledigt</div>')+'</div>';
