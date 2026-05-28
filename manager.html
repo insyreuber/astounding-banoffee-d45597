@@ -698,6 +698,7 @@ function renderStorno(rows,varianteMap,staffMap,serviceMap){
 function writeList(id, html){
   [id, id+'-m', id+'-desktop'].forEach(function(k){
     var x=document.getElementById(k);
+    console.log('[writeList]',k, x?'OK':'NOT FOUND');
     if(x) x.innerHTML=html;
   });
 }
