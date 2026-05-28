@@ -513,7 +513,13 @@ function renderUpcomingCalendar(events,varianteMap,staffMap,serviceMap){
     return true;
   });
   var el=document.getElementById('upcoming-list');
-  if(!filtered.length){el.innerHTML='<div class="loading">Keine Termine</div>';return;}
+  var elM=document.getElementById('upcoming-list-m');
+  if(!filtered.length){
+    var empty='<div class="loading">Keine Termine</div>';
+    el.innerHTML=empty;
+    if(elM)elM.innerHTML=empty;
+    return;
+  }
   el.innerHTML=filtered.map(function(b){
     var d=new Date(b.termin_start);
     var dateStr=d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
