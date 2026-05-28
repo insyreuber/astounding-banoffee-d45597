@@ -662,7 +662,7 @@ function renderTicker(rows,varianteMap,staffMap){
 function renderStorno(rows,varianteMap,staffMap,serviceMap){
   varianteMap=varianteMap||{};staffMap=staffMap||{};serviceMap=serviceMap||{};
   var el=document.getElementById('storno-list');
-  if(!rows.length){el.innerHTML='<div class="loading">Keine Stornos in den letzten 7 Tagen</div>';return;}
+  if(!rows.length){writeList('storno-list','<div class="loading">Keine Stornos in den letzten 7 Tagen</div>');return;}
   var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
   var erledigt=rows.filter(function(b){return erledigtIds.indexOf(b.id)>=0;});
@@ -700,9 +700,9 @@ function renderStorno(rows,varianteMap,staffMap,serviceMap){
 
 
 function writeList(id, html){
-  [id, id+'-m', id+'-desktop'].forEach(function(i){
-    var el=document.getElementById(i);
-    if(el) el.innerHTML=html;
+  [id, id+'-m', id+'-desktop'].forEach(function(k){
+    var x=document.getElementById(k);
+    if(x) x.innerHTML=html;
   });
 }
 function renderFromCache(){
@@ -739,8 +739,8 @@ function tickerErledigt(id){
 }
 
 function renderReminders(rows){
-  var el=document.getElementById('storno-list');
-  if(!rows.length){el.innerHTML='<div class="loading">Keine Termine in den nächsten 2 Tagen</div>';return;}
+  var el={innerHTML:''}; // reminder placeholder
+  if(!rows.length){writeList('reminder-list','<div class="loading">Keine Termine in den nächsten 2 Tagen</div>');return;}
   var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
   var erledigt=rows.filter(function(b){return erledigtIds.indexOf(b.id)>=0;});
@@ -787,8 +787,8 @@ function renderReminders(rows){
 }
 
 function renderConfirm(rows){
-  var el=document.getElementById('storno-list');
-  if(!rows.length){el.innerHTML='<div class="loading">Keine Termine heute / morgen</div>';return;}
+  var el={innerHTML:''}; // confirm placeholder
+  if(!rows.length){writeList('confirm-list','<div class="loading">Keine Termine heute / morgen</div>');return;}
   var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
   var erledigt=rows.filter(function(b){return erledigtIds.indexOf(b.id)>=0;});
