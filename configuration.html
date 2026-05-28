@@ -666,25 +666,12 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
         </a>
       </div>
     </div>
-    <!-- Buchungsseite Preview — skaliertes iframe wie index.html -->
-    <div id="bs-iframe-wrap" style="border:2px solid rgba(201,168,76,0.4);border-radius:12px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.2);position:relative;background:#fff;width:100%;height:75vh;">
-      <iframe id="booking-iframe" src="" style="width:390px;height:844px;border:none;transform-origin:top left;" scrolling="yes"></iframe>
+    <!-- Buchungsseite Preview -->
+    <div id="bs-iframe-wrap" style="border:2px solid rgba(201,168,76,0.4);border-radius:12px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.2);position:relative;background:#fff;width:100%;">
+      <iframe id="booking-iframe" src="" style="width:100%;height:85vh;border:none;display:block;" scrolling="yes"></iframe>
     </div>
     <script>
-    (function(){
-      function scaleBsIframe(){
-        var wrap=document.getElementById('bs-iframe-wrap');
-        var iframe=document.getElementById('booking-iframe');
-        if(!wrap||!iframe)return;
-        var w=wrap.offsetWidth;
-        var scale=w/390;
-        iframe.style.transform='scale('+scale+')';
-        wrap.style.height=Math.round(844*scale)+'px';
-      }
-      window.addEventListener('resize',scaleBsIframe);
-      // Run after tab switch
-      window._scaleBsIframe=scaleBsIframe;
-    })();
+    window._scaleBsIframe=function(){};
     </script>
   </div>
 
