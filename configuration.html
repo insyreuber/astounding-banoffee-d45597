@@ -649,27 +649,40 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 
   <!-- ════ BUCHUNGSSEITE ════ -->
   <div class="tab-panel" id="panel-buchungsseite" style="padding:0;position:relative;width:calc(100vw - 48px);margin-left:calc(-50vw + 50% + 24px);margin-top:-28px">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px 12px;background:var(--white);border:1.5px solid var(--border);border-radius:12px;margin:0 0 12px;box-shadow:0 2px 8px rgba(74,28,107,.05)">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:12px 16px;background:var(--white);border:1.5px solid var(--border);border-radius:12px;margin:0 0 12px;box-shadow:0 2px 8px rgba(74,28,107,.05)">
       <div>
         <div class="sec-title">Live-Buchungsseite</div>
         <div class="sec-sub">So sehen deine Kunden die Buchungsseite</div>
       </div>
-      <div style="display:flex;align-items:center;gap:12px">
-        <!-- Booking online/offline toggle -->
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px">
           <div id="bs-panel-dot" style="width:8px;height:8px;border-radius:50%;background:#27ae60;flex-shrink:0"></div>
           <span id="bs-panel-label" style="font-size:12px;font-weight:500;color:var(--td)">Online</span>
           <label class="toggle-sw toggle-sm" style="margin-left:4px"><input type="checkbox" id="bs-panel-toggle" onchange="bsPanelToggle()"><span class="slider"></span></label>
         </div>
-        <!-- Open in new tab icon -->
         <a id="booking-open-link" href="#" target="_blank" title="In neuem Tab öffnen" style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;background:var(--bg);border:1.5px solid var(--border);color:var(--tpl);flex-shrink:0">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         </a>
+        <!-- Mobile: direkt auf Buchungsseite öffnen -->
+        <a id="booking-mobile-link" href="#" target="_blank" style="display:none;align-items:center;gap:6px;padding:8px 14px;background:var(--tpl);color:#fff;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Buchungsseite öffnen
+        </a>
       </div>
     </div>
-    <!-- iframe -->
-    <iframe id="booking-iframe" src="" style="width:100%;height:80vh;border:1.5px solid var(--border);border-radius:12px;display:block" scrolling="yes"></iframe>
+    <!-- Desktop: iframe, Mobile: Link-Button statt iframe -->
+    <div id="bs-iframe-wrap">
+      <iframe id="booking-iframe" src="" style="width:100%;height:80vh;border:1.5px solid var(--border);border-radius:12px;display:block" scrolling="yes"></iframe>
+    </div>
   </div>
+  <style>
+  @media(max-width:768px){
+    #panel-buchungsseite{width:100%!important;margin-left:0!important;}
+    #bs-iframe-wrap{display:none!important;}
+    #booking-mobile-link{display:inline-flex!important;}
+    #booking-open-link{display:none!important;}
+  }
+  </style>
 
   <!-- ════ RECHNUNGEN ════ -->
   <div class="tab-panel" id="panel-bills">
@@ -1073,6 +1086,8 @@ function switchTab(n){
     if(urlBar)urlBar.textContent=fullUrl;
     var openLink=document.getElementById('booking-open-link');
     if(openLink)openLink.href=fullUrl;
+    var mobileLink=document.getElementById('booking-mobile-link');
+    if(mobileLink)mobileLink.href=fullUrl;
     loadLiveTicker();
   }
   if(n==='profil')buildProfilToggles();
