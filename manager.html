@@ -698,31 +698,28 @@ function renderStorno(rows,varianteMap,staffMap,serviceMap){
 function writeList(id, html){
   [id, id+'-m', id+'-desktop'].forEach(function(k){
     var x=document.getElementById(k);
-    console.log('[writeList]',k, x?'OK':'NOT FOUND');
     if(x) x.innerHTML=html;
   });
 }
 function renderFromCache(){
-  if(!window._cache){console.log('[CACHE] leer!');return;}
-  console.log('[CACHE] render start');
   var c=window._cache;
   renderTicker(c.ticker,c.varianteMap,c.staffMap);
   renderUpcomingCalendar(c.upcoming,c.varianteMap,c.staffMap,c.serviceMap);
   renderStorno(c.stornos,c.varianteMap,c.staffMap,c.serviceMap);
   renderReminders(c.reminders);
   renderConfirm(c.confirms);
-  console.log('[CACHE] render done');
 }
 
 function erledigt(id){
-  console.log('[ERLEDIGT] id='+id);
   var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   if(ids.indexOf(id)<0){ids.push(id);}
   localStorage.setItem('erledigt_ids',JSON.stringify(ids));
   renderFromCache();
 }
+function stornoErledigt(id){erledigt(id);}
+function reminderErledigt(id){erledigt(id);}
+function confirmErledigt(id){erledigt(id);}
 function tickerErledigt(id){
-  console.log('[TICKER_ERLEDIGT] id='+id);
   var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var idx=ids.indexOf(id);
   if(idx<0){ids.push(id);}else{ids.splice(idx,1);}
