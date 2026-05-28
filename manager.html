@@ -611,7 +611,7 @@ function renderTicker(rows,varianteMap,staffMap){
     var now2=new Date();
     var erledigtIds2=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
     var isErledigt2=erledigtIds2.indexOf(b.id)>=0;
-    var kachelErledigtIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');
+    var kachelErledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
     var isKachelErledigt=kachelErledigtIds.indexOf(b.id)>=0;
     var alreadyDone=isErledigt2||isKachelErledigt;
 
@@ -701,7 +701,6 @@ function renderStorno(rows,varianteMap,staffMap,serviceMap){
 function writeList(id, html){
   [id, id+'-m', id+'-desktop'].forEach(function(k){
     var x=document.getElementById(k);
-    console.log('[writeList]',k, x?'FOUND':'NOT FOUND');
     if(x) x.innerHTML=html;
   });
 }
@@ -717,17 +716,17 @@ function renderFromCache(){
 
 function stornoErledigt(id){
   var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(ids));}
-  var kIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem('kachel_erledigt_ids',JSON.stringify(kIds));}
+  var kIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(kIds));}
   renderFromCache();
 }
 function reminderErledigt(id){
   var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(ids));}
-  var kIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem('kachel_erledigt_ids',JSON.stringify(kIds));}
+  var kIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(kIds));}
   renderFromCache();
 }
 function confirmErledigt(id){
   var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(ids));}
-  var kIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem('kachel_erledigt_ids',JSON.stringify(kIds));}
+  var kIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(kIds));}
   renderFromCache();
 }
 function tickerErledigt(id){
@@ -1125,7 +1124,7 @@ function renderMobileTickerCards(rows,varianteMap,staffMap,el){
   if(!rows||!rows.length){el.innerHTML='<div class="loading">Keine Aktivitäten</div>';return;}
   varianteMap=varianteMap||{};staffMap=staffMap||{};
   var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
-  var kachelErledigtIds=JSON.parse(localStorage.getItem('kachel_erledigt_ids')||'[]');
+  var kachelErledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var now2=new Date();
   var todayStr2=now2.toISOString().slice(0,10);
   var tomorrowStr=new Date(now2.getFullYear(),now2.getMonth(),now2.getDate()+1).toISOString().slice(0,10);
