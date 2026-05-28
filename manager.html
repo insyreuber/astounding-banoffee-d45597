@@ -609,11 +609,9 @@ function renderTicker(rows,varianteMap,staffMap){
     var msgStorno=applyTemplate('storno',tplVars);
     var isErledigt=erledigtIds.indexOf(b.id)>=0;
     var now2=new Date();
-    var erledigtIds2=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
-    var isErledigt2=erledigtIds2.indexOf(b.id)>=0;
-    var kachelErledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
-    var isKachelErledigt=kachelErledigtIds.indexOf(b.id)>=0;
-    var alreadyDone=isErledigt2||isKachelErledigt;
+    var alreadyDone=erledigtIds.indexOf(b.id)>=0;
+    var isKachelErledigt=alreadyDone;
+    var isErledigt2=alreadyDone;
 
     // Buttons glowen nur wenn in der jeweiligen Kachel UND noch nicht erledigt
     var canBestaetigen=!alreadyDone&&!!phone&&(window._confirmIds||[]).indexOf(b.id)>=0;
@@ -714,21 +712,15 @@ function renderFromCache(){
   renderConfirm(c.confirms);
 }
 
-function stornoErledigt(id){
-  var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(ids));}
-  var kIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(kIds));}
+function erledigt(id){
+  var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
+  if(ids.indexOf(id)<0){ids.push(id);}
+  localStorage.setItem('erledigt_ids',JSON.stringify(ids));
   renderFromCache();
 }
-function reminderErledigt(id){
-  var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(ids));}
-  var kIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(kIds));}
-  renderFromCache();
-}
-function confirmErledigt(id){
-  var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');if(ids.indexOf(id)<0){ids.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(ids));}
-  var kIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');if(kIds.indexOf(id)<0){kIds.push(id);localStorage.setItem('erledigt_ids',JSON.stringify(kIds));}
-  renderFromCache();
-}
+function stornoErledigt(id){erledigt(id);}
+function reminderErledigt(id){erledigt(id);}
+function confirmErledigt(id){erledigt(id);}
 function tickerErledigt(id){
   var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var idx=ids.indexOf(id);
@@ -1124,7 +1116,6 @@ function renderMobileTickerCards(rows,varianteMap,staffMap,el){
   if(!rows||!rows.length){el.innerHTML='<div class="loading">Keine Aktivitäten</div>';return;}
   varianteMap=varianteMap||{};staffMap=staffMap||{};
   var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
-  var kachelErledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var now2=new Date();
   var todayStr2=now2.toISOString().slice(0,10);
   var tomorrowStr=new Date(now2.getFullYear(),now2.getMonth(),now2.getDate()+1).toISOString().slice(0,10);
@@ -1150,8 +1141,8 @@ function renderMobileTickerCards(rows,varianteMap,staffMap,el){
     var termin=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'})+' um '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr';
     var tplVars={name:b.customer_name||'',termin:termin,datum:d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'}),uhrzeit:d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr',service:svcName,buchungslink:bookingLink,salon:window.SALON_NAME||''};
     var isErledigt=erledigtIds.indexOf(b.id)>=0;
-    var isKachelErledigt=kachelErledigtIds.indexOf(b.id)>=0;
-    var alreadyDone=isErledigt||isKachelErledigt;
+    var isKachelErledigt=isErledigt;
+    var alreadyDone=isErledigt;
     var terminDay=b.termin_start?b.termin_start.slice(0,10):'';
     var bookedToday=b.created_at&&b.created_at.slice(0,10)>=todayStr2;
     var ks=localStorage.getItem('kurzfristig_setting')||'anzeigen';
