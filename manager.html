@@ -661,7 +661,7 @@ function renderTicker(rows,varianteMap,staffMap){
 
 function renderStorno(rows,varianteMap,staffMap,serviceMap){
   varianteMap=varianteMap||{};staffMap=staffMap||{};serviceMap=serviceMap||{};
-  var el=document.getElementById('storno-list');}};
+  var el=document.getElementById('storno-list');
   if(!rows.length){el.innerHTML='<div class="loading">Keine Stornos in den letzten 7 Tagen</div>';return;}
   var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
@@ -694,7 +694,7 @@ function renderStorno(rows,varianteMap,staffMap,serviceMap){
   }
   var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Stornos erledigt</div>')+'</div>';
   if(erledigt.length){html+='<div style="margin-top:14px"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500"><span>▶</span> Erledigt ('+erledigt.length+')</button><div style="display:none;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-top:8px">'+erledigt.map(function(b){return buildCard(b,true);}).join('')+'</div></div>';}
-  el.innerHTML=html;
+  writeList('storno-list',html);
 }
 
 
@@ -739,7 +739,7 @@ function tickerErledigt(id){
 }
 
 function renderReminders(rows){
-  var el=document.getElementById('storno-list');}};
+  var el=document.getElementById('storno-list');
   if(!rows.length){el.innerHTML='<div class="loading">Keine Termine in den nächsten 2 Tagen</div>';return;}
   var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
@@ -787,7 +787,7 @@ function renderReminders(rows){
 }
 
 function renderConfirm(rows){
-  var el=document.getElementById('storno-list');}};
+  var el=document.getElementById('storno-list');
   if(!rows.length){el.innerHTML='<div class="loading">Keine Termine heute / morgen</div>';return;}
   var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
