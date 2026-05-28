@@ -351,6 +351,7 @@ async function loadAll(){
     document.getElementById('nav-salon-name').textContent=salonRes.data.brand_name||salonRes.data.name||'Salon';
     var fs=salonRes.data.feature_settings||{};
     window.SALON_NAME=salonRes.data.brand_name||salonRes.data.name||'Salon';
+    window._erledigtIds=fs.manager_erledigt||[];
     window.WA_TPL={
       bestaetigung:fs.wa_template_bestaetigung||'Hallo {{name}}!\nDein Termin am {{termin}} ist bestätigt. Bis dann!\n\nDein Link zur Buchung: {{buchungslink}}\npowered by insy-reception',
       erinnerung:fs.wa_template_erinnerung||'Hallo {{name}}!\nErinnerung: Dein Termin ist am {{termin}}. Wir freuen uns auf dich!\n\nDein Link zur Buchung: {{buchungslink}}\npowered by insy-reception',
@@ -565,7 +566,7 @@ function renderTicker(rows,varianteMap,staffMap){
   if(cnt)cnt.textContent=rows.length+' Einträge';
   if(!rows.length){el.innerHTML='<div class="loading">Noch keine Aktivitäten</div>';return;}
   window._tickerRows=rows;window._tickerVarianteMap=varianteMap;window._tickerStaffMap=staffMap;
-  var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
+  var erledigtIds=(window._erledigtIds||[]);
   var thead='<thead><tr>'
     +'<th style="width:110px">Status</th>'
     +'<th>Name</th>'
@@ -659,7 +660,7 @@ function renderTicker(rows,varianteMap,staffMap){
 function renderStorno(rows,varianteMap,staffMap,serviceMap){
   varianteMap=varianteMap||{};staffMap=staffMap||{};serviceMap=serviceMap||{};
   if(!rows.length){writeList('storno-list','<div class="loading">Keine Stornos in den letzten 7 Tagen</div>');return;}
-  var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
+  var erledigtIds=(window._erledigtIds||[]);
   var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
   var erledigt=rows.filter(function(b){return erledigtIds.indexOf(b.id)>=0;});
   function buildCard(b,isErledigt){
@@ -711,7 +712,7 @@ function renderFromCache(){
 }
 
 function erledigt(id){
-  var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
+  var ids=(window._erledigtIds||[]);
   if(ids.indexOf(id)<0){ids.push(id);}
   localStorage.setItem('erledigt_ids',JSON.stringify(ids));
   renderFromCache();
@@ -720,7 +721,7 @@ function stornoErledigt(id){erledigt(id);}
 function reminderErledigt(id){erledigt(id);}
 function confirmErledigt(id){erledigt(id);}
 function tickerErledigt(id){
-  var ids=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
+  var ids=(window._erledigtIds||[]);
   var idx=ids.indexOf(id);
   if(idx<0){ids.push(id);}else{ids.splice(idx,1);}
   localStorage.setItem('erledigt_ids',JSON.stringify(ids));
@@ -729,7 +730,7 @@ function tickerErledigt(id){
 
 function renderReminders(rows){
   if(!rows.length){writeList('reminder-list','<div class="loading">Keine Termine in den nächsten 2 Tagen</div>');return;}
-  var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
+  var erledigtIds=(window._erledigtIds||[]);
   var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
   var erledigt=rows.filter(function(b){return erledigtIds.indexOf(b.id)>=0;});
   function buildCard(b,isErledigt){
@@ -776,7 +777,7 @@ function renderReminders(rows){
 
 function renderConfirm(rows){
   if(!rows.length){writeList('confirm-list','<div class="loading">Keine Termine heute / morgen</div>');return;}
-  var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
+  var erledigtIds=(window._erledigtIds||[]);
   var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
   var erledigt=rows.filter(function(b){return erledigtIds.indexOf(b.id)>=0;});
   function buildCard(b,isErledigt){
@@ -1114,7 +1115,7 @@ function renderMobileTickerCards(rows,varianteMap,staffMap,el){
   if(!el)return;
   if(!rows||!rows.length){el.innerHTML='<div class="loading">Keine Aktivitäten<\/div>';return;}
   varianteMap=varianteMap||{};staffMap=staffMap||{};
-  var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
+  var erledigtIds=(window._erledigtIds||[]);
   el.innerHTML=rows.map(function(b){
     var type=b.status==='cancelled'?'cancel':b.status==='rescheduled'?'move':'in';
     var typeLabel=type==='cancel'?'Storno':type==='move'?'Verschoben':'Eingang';
