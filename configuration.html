@@ -269,9 +269,6 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   #slot-raster-btns button { padding: 10px 6px !important; min-width: 0 !important; flex: 1 !important; }
   #slot-raster-btns button svg { width: 72px !important; height: 72px !important; display: block !important; margin: 0 auto 6px !important; }
   #panel-buchungsseite{width:100%!important;margin-left:0!important;}
-  #bs-iframe-wrap{display:none!important;}
-  #booking-mobile-link{display:inline-flex!important;}
-  #booking-open-link{display:none!important;}
 
   /* Nav: Akkordion auf Mobile */
   .nav{flex-direction:column;padding:0;gap:0;width:100%;}
@@ -667,16 +664,11 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
         <a id="booking-open-link" href="#" target="_blank" title="In neuem Tab öffnen" style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;background:var(--bg);border:1.5px solid var(--border);color:var(--tpl);flex-shrink:0">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         </a>
-        <!-- Mobile: direkt auf Buchungsseite öffnen -->
-        <a id="booking-mobile-link" href="#" target="_blank" style="display:none;align-items:center;gap:6px;padding:8px 14px;background:var(--tpl);color:#fff;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          Buchungsseite öffnen
-        </a>
       </div>
     </div>
-    <!-- Desktop: iframe, Mobile: Link-Button statt iframe -->
-    <div id="bs-iframe-wrap">
-      <iframe id="booking-iframe" src="" style="width:100%;height:80vh;border:1.5px solid var(--border);border-radius:12px;display:block" scrolling="yes"></iframe>
+    <!-- Buchungsseite Preview — skaliertes iframe wie index.html -->
+    <div id="bs-iframe-wrap" style="border:2px solid rgba(201,168,76,0.4);border-radius:12px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.2);position:relative;background:#fff;width:100%;height:75vh;">
+      <iframe id="booking-iframe" src="" style="width:200%;height:200%;border:none;transform:scale(0.5);transform-origin:top left;" scrolling="yes"></iframe>
     </div>
   </div>
 
@@ -4176,8 +4168,8 @@ function renderProfilContent(id){
 
     // Standard-Templates
     var defaults={
-      bestaetigung:'Hallo {{name}}!\nDein Termin am {{termin}} ist bestätigt. Wir freuen uns auf dich! \n\nDein Buchungslink: {{buchungslink}}\n\npowered by insy-reception',
-      erinnerung:'Hallo {{name}}!\nErinnerung: Dein Termin ist am {{termin}}. Wir freuen uns auf dich!\n\nDein Buchungslink: {{buchungslink}}\n\npowered by insy-reception',
+      bestaetigung:'Hallo {{name}}!\nDein Termin am {{termin}} ist bestätigt. Wir freuen uns auf dich! 😊\n\nDein Buchungslink: {{buchungslink}}\n\npowered by insy-reception',
+      erinnerung:'Hallo {{name}}!\n⏰ Erinnerung: Dein Termin ist am {{termin}}. Wir freuen uns auf dich!\n\nDein Buchungslink: {{buchungslink}}\n\npowered by insy-reception',
       storno:'Hallo {{name}}!\nWir haben deine Stornierung für den {{termin}} erhalten und bestätigen diese hiermit.\n\nFalls du einen neuen Termin buchen möchtest:\n{{buchungslink}}\n\npowered by insy-reception'
     };
 
