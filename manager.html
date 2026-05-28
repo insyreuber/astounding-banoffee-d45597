@@ -1114,7 +1114,7 @@ function toggleCustomHours(){
 
 function renderMobileTickerCards(rows,varianteMap,staffMap,el){
   if(!el)return;
-  if(!rows||!rows.length){el.innerHTML='<div class="loading">Keine Aktivitäten</div>';return;}
+  if(!rows||!rows.length){el.innerHTML='<div class="loading">Keine Aktivitäten<\/div>';return;}
   varianteMap=varianteMap||{};staffMap=staffMap||{};
   var erledigtIds=JSON.parse(localStorage.getItem('erledigt_ids')||'[]');
   el.innerHTML=rows.map(function(b){
@@ -1147,30 +1147,30 @@ function renderMobileTickerCards(rows,varianteMap,staffMap,el){
     var canErinnern=!alreadyDone&&!!phone&&(window._reminderIds||[]).indexOf(b.id)>=0;
     var canStorno=!alreadyDone&&!!phone&&(window._stornoIds||[]).indexOf(b.id)>=0;
     function btn(label,href,active,color){
-      if(alreadyDone||!active){return'<span style="background:#f0f0f0;border:1px solid #e0e0e0;color:#c0c0c0;font-weight:500;border-radius:6px;padding:6px 8px;font-size:10px;display:block;text-align:center;flex:1">'+label+'</span>';}
-      return'<a href="'+href+'" target="_blank" style="background:'+color+';border:1px solid '+color+';color:#fff;font-weight:700;box-shadow:0 0 10px '+color+',0 0 20px '+color+'66;border-radius:6px;padding:6px 8px;font-size:10px;display:block;text-align:center;text-decoration:none;flex:1">'+label+'</a>';
+      if(alreadyDone||!active){return'<span style="background:#f0f0f0;border:1px solid #e0e0e0;color:#c0c0c0;font-weight:500;border-radius:6px;padding:6px 8px;font-size:10px;display:block;text-align:center;flex:1">'+label+'<\/span>';}
+      return'<a href="'+href+'" target="_blank" style="background:'+color+';border:1px solid '+color+';color:#fff;font-weight:700;box-shadow:0 0 10px '+color+',0 0 20px '+color+'66;border-radius:6px;padding:6px 8px;font-size:10px;display:block;text-align:center;text-decoration:none;flex:1">'+label+'<\/a>';
     }
     var aktionen='<div style="display:flex;gap:5px;align-items:center;margin-top:10px">';
     aktionen+=btn('Bestätigung',waLink(phone,msgBestaetigung),canBestaetigen,'#27ae60');
     aktionen+=btn('Erinnerung',waLink(phone,msgErinnerung),canErinnern,'#e67e22');
     aktionen+=btn('Storno',waLink(phone,msgStorno),canStorno,'#e74c3c');
-    aktionen+='<a href="'+bookingLink+'" target="_blank" style="background:#5a2d82;color:#fff;font-weight:700;box-shadow:0 0 8px #5a2d8299;border-radius:6px;padding:6px 8px;font-size:10px;text-decoration:none;flex-shrink:0">↗</a>';
+    aktionen+='<a href="'+bookingLink+'" target="_blank" style="background:#5a2d82;color:#fff;font-weight:700;box-shadow:0 0 8px #5a2d8299;border-radius:6px;padding:6px 8px;font-size:10px;text-decoration:none;flex-shrink:0">↗<\/a>';
     if(isKachelErledigt){
-      aktionen+='<span style="margin-left:auto;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;font-size:12px;color:#16a34a;font-weight:600">✓</span>';
+      aktionen+='<span style="margin-left:auto;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;font-size:12px;color:#16a34a;font-weight:600">✓<\/span>';
     }else{
-      aktionen+='<button onclick="tickerErledigt(''+b.id+'')" style="margin-left:auto;background:'+(isErledigt2?'#e8f5e9':'var(--bg)')+';border:1px solid '+(isErledigt2?'#4ade80':'var(--border)')+';border-radius:6px;padding:2px 8px;font-size:12px;color:'+(isErledigt2?'#16a34a':'#ccc')+';font-weight:600;cursor:pointer">✓</button>';
+      aktionen+='<button onclick="tickerErledigt(\''+b.id+'\')" style="margin-left:auto;background:'+(isErledigt2?'#e8f5e9':'var(--bg)')+';border:1px solid '+(isErledigt2?'#4ade80':'var(--border)')+';border-radius:6px;padding:2px 8px;font-size:12px;color:'+(isErledigt2?'#16a34a':'#ccc')+';font-weight:600;cursor:pointer">✓<\/button>';
     }
-    aktionen+='</div>';
+    aktionen+='<\/div>';
     return'<div style="background:#fff;border-radius:12px;margin-bottom:10px;border:1.5px solid '+(alreadyDone?'#e5e5e5':'var(--border)')+';border-left:3px solid '+(alreadyDone?'#e5e5e5':type==='cancel'?'#e74c3c':type==='move'?'#f39c12':'#27ae60')+';padding:10px 12px;'+(alreadyDone?'opacity:0.4;filter:grayscale(0.3)':'')+'">'+
       '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">'+
-        '<div><span class="badge '+type+'" style="font-size:10px">'+typeLabel+'</span><div style="font-size:9px;color:var(--muted);margin-top:1px">'+esc(bookStr)+'</div></div>'+
-        '<span style="font-size:13px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(b.customer_name||'–')+'</span>'+
-        (phone?'<a href="tel:'+esc(phone)+'" style="color:var(--tpl);font-size:10px;text-decoration:none">'+esc(phone)+'</a>':'')
-      +'</div>'+
-      '<div style="font-size:11px;color:var(--muted)">'+esc(svcName)+' · '+esc(dur)+' · <span style="color:var(--tpl);font-weight:600">'+esc(price)+'</span> · <span style="color:var(--tg)">'+esc(staffName)+'</span></div>'+
-      '<div style="font-size:11px;font-weight:600;color:var(--td);margin-top:3px">📅 '+esc(dateStr)+'</div>'+
+        '<div><span class="badge '+type+'" style="font-size:10px">'+typeLabel+'<\/span><div style="font-size:9px;color:var(--muted);margin-top:1px">'+esc(bookStr)+'<\/div><\/div>'+
+        '<span style="font-size:13px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(b.customer_name||'–')+'<\/span>'+
+        (phone?'<a href="tel:'+esc(phone)+'" style="color:var(--tpl);font-size:10px;text-decoration:none">'+esc(phone)+'<\/a>':'')
+      +'<\/div>'+
+      '<div style="font-size:11px;color:var(--muted)">'+esc(svcName)+' · '+esc(dur)+' · <span style="color:var(--tpl);font-weight:600">'+esc(price)+'<\/span> · <span style="color:var(--tg)">'+esc(staffName)+'<\/span><\/div>'+
+      '<div style="font-size:11px;font-weight:600;color:var(--td);margin-top:3px">📅 '+esc(dateStr)+'<\/div>'+
       aktionen+
-    '</div>';
+    '<\/div>';
   }).join('');
 }
 
