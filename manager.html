@@ -652,6 +652,9 @@ function renderTicker(rows,varianteMap,staffMap){
   }).join('');
   el.innerHTML='<div style="overflow-x:hidden"><table class="ticker-table" style="table-layout:fixed;width:100%">'+thead+'<tbody>'+tbody+'</tbody></table></div>';
   el.querySelectorAll('tr').forEach(function(tr,i){tr.style.animation='fadeIn .3s ease '+(i*0.04)+'s both';});
+  // Mobile: refresh active tab so ticker-list is visible
+  var activeTab=document.querySelector('.mobile-nav-btn.active');
+  if(activeTab){var t=activeTab.getAttribute('onclick').match(/mobileTab\('([^']+)'\)/);if(t)mobileTab(t[1]);}
 }
 
 function renderStorno(rows,varianteMap,staffMap,serviceMap){
@@ -1188,6 +1191,8 @@ function mobileTab(tab){
 
 loadAll();
 initKurzfristigSetting();
+// Mobile: initial tab setup
+if(window.innerWidth<=768){mobileTab('live');}
 </script>
 
 <!-- Mobile Only — auf Desktop komplett hidden -->
