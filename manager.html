@@ -351,6 +351,7 @@ async function loadAll(){
     document.getElementById('nav-salon-name').textContent=salonRes.data.brand_name||salonRes.data.name||'Salon';
     var fs=salonRes.data.feature_settings||{};
     window.SALON_NAME=salonRes.data.brand_name||salonRes.data.name||'Salon';
+    window._pData=salonRes.data;
     window._erledigtIds=fs.manager_erledigt||[];
     window.WA_TPL={
       bestaetigung:fs.wa_template_bestaetigung||'Hallo {{name}}!\nDein Termin am {{termin}} ist bestätigt. Bis dann!\n\nDein Link zur Buchung: {{buchungslink}}\npowered by insy-reception',
@@ -711,20 +712,26 @@ function renderFromCache(){
   renderConfirm(c.confirms);
 }
 
+async function saveErledigtIds(){
+  if(!window._pData){var r=await sb.from('kunden_profile').select('feature_settings').eq('id',SALON_ID).single();window._pData=r.data||{};}
+  if(!window._pData.feature_settings)window._pData.feature_settings={};
+  window._pData.feature_settings.manager_erledigt=window._erledigtIds||[];
+  await sb.from('kunden_profile').update({feature_settings:window._pData.feature_settings}).eq('id',SALON_ID);
+}
 function erledigt(id){
-  var ids=(window._erledigtIds||[]);
-  if(ids.indexOf(id)<0){ids.push(id);}
-  localStorage.setItem('erledigt_ids',JSON.stringify(ids));
+  if(!window._erledigtIds)window._erledigtIds=[];
+  if(window._erledigtIds.indexOf(id)<0){window._erledigtIds.push(id);}
+  saveErledigtIds();
   renderFromCache();
 }
 function stornoErledigt(id){erledigt(id);}
 function reminderErledigt(id){erledigt(id);}
 function confirmErledigt(id){erledigt(id);}
 function tickerErledigt(id){
-  var ids=(window._erledigtIds||[]);
-  var idx=ids.indexOf(id);
-  if(idx<0){ids.push(id);}else{ids.splice(idx,1);}
-  localStorage.setItem('erledigt_ids',JSON.stringify(ids));
+  if(!window._erledigtIds)window._erledigtIds=[];
+  var idx=window._erledigtIds.indexOf(id);
+  if(idx<0){window._erledigtIds.push(id);}else{window._erledigtIds.splice(idx,1);}
+  saveErledigtIds();
   renderFromCache();
 }
 
