@@ -702,13 +702,15 @@ function writeList(id, html){
   });
 }
 function renderFromCache(){
-  if(!window._cache)return;
+  if(!window._cache){console.log('[CACHE] leer!');return;}
+  console.log('[CACHE] render start');
   var c=window._cache;
   renderTicker(c.ticker,c.varianteMap,c.staffMap);
   renderUpcomingCalendar(c.upcoming,c.varianteMap,c.staffMap,c.serviceMap);
   renderStorno(c.stornos,c.varianteMap,c.staffMap,c.serviceMap);
   renderReminders(c.reminders);
   renderConfirm(c.confirms);
+  console.log('[CACHE] render done');
 }
 
 function erledigt(id){
