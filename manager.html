@@ -652,9 +652,8 @@ function renderTicker(rows,varianteMap,staffMap){
   }).join('');
   el.innerHTML='<div style="overflow-x:hidden"><table class="ticker-table" style="table-layout:fixed;width:100%">'+thead+'<tbody>'+tbody+'</tbody></table></div>';
   el.querySelectorAll('tr').forEach(function(tr,i){tr.style.animation='fadeIn .3s ease '+(i*0.04)+'s both';});
-  // Mobile: refresh active tab so ticker-list is visible
-  var activeTab=document.querySelector('.mobile-nav-btn.active');
-  if(activeTab){var t=activeTab.getAttribute('onclick').match(/mobileTab\('([^']+)'\)/);if(t)mobileTab(t[1]);}
+  var em=document.getElementById('ticker-list-m');
+  if(em)renderMobileTickerCards(rows,varianteMap,staffMap,em);
 }
 
 function renderStorno(rows,varianteMap,staffMap,serviceMap){
@@ -1181,18 +1180,11 @@ function mobileTab(tab){
   var s=document.getElementById('ms-'+tab);var b=document.getElementById('mn-'+tab);
   if(s)s.classList.add('active');if(b)b.classList.add('active');
   // Zeige denselben Desktop-Div in der Mobile-Section
-  var map={'live':'ticker-list','bestaetigung':'confirm-list-desktop','erinnerung':'reminder-list-desktop','storno':'storno-list-desktop'};
-  if(map[tab]){
-    var src=document.getElementById(map[tab]);
-    var dst=document.getElementById('ms-'+tab+'-list');
-    if(src&&dst&&src.parentNode!==dst){dst.appendChild(src);}
-  }
+
 }
 
 loadAll();
 initKurzfristigSetting();
-// Mobile: initial tab setup
-if(window.innerWidth<=768){mobileTab('live');}
 </script>
 
 <!-- Mobile Only — auf Desktop komplett hidden -->
@@ -1204,7 +1196,7 @@ if(window.innerWidth<=768){mobileTab('live');}
     <button class="mobile-nav-btn" onclick="mobileTab('erinnerung')" id="mn-erinnerung"><span style="font-size:16px">⏰</span><span>Erin.</span></button>
     <button class="mobile-nav-btn" onclick="mobileTab('storno')" id="mn-storno"><span style="font-size:16px">✕</span><span>Storno</span></button>
   </nav>
-  <div class="mobile-section active" id="ms-live" style="padding:12px"><div class="card-title" style="padding:4px 0 10px"><span class="live-dot"></span> Live-Aktivitäten</div><div id="ms-live-list"></div></div>
+  <div class="mobile-section active" id="ms-live" style="padding:12px"><div class="card-title" style="padding:4px 0 10px"><span class="live-dot"></span> Live-Aktivitäten</div><div id="ticker-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"></div></div>
   <div class="mobile-section" id="ms-termine" style="padding:12px">
     <div class="card-title" style="padding:4px 0 10px">📅 Nächste Termine</div>
     <div style="display:flex;gap:6px;margin-bottom:10px">
@@ -1215,9 +1207,9 @@ if(window.innerWidth<=768){mobileTab('live');}
     </div>
     <div id="upcoming-list-m" style="overflow-y:auto;max-height:calc(100vh - 220px)"><div class="loading">Wird geladen…</div></div>
   </div>
-  <div class="mobile-section" id="ms-bestaetigung" style="padding:12px"><div class="card-title" style="padding:4px 0 10px">✓ Terminbestätigung</div><div id="ms-bestaetigung-list"></div></div>
-  <div class="mobile-section" id="ms-erinnerung" style="padding:12px"><div class="card-title" style="padding:4px 0 10px">⏰ Terminerinnerung</div><div id="ms-erinnerung-list"></div></div>
-  <div class="mobile-section" id="ms-storno" style="padding:12px"><div class="card-title" style="padding:4px 0 10px;color:#e74c3c">✕ Stornos</div><div id="ms-storno-list"></div></div>
+  <div class="mobile-section" id="ms-bestaetigung" style="padding:12px"><div class="card-title" style="padding:4px 0 10px">✓ Terminbestätigung</div><div id="confirm-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"></div></div>
+  <div class="mobile-section" id="ms-erinnerung" style="padding:12px"><div class="card-title" style="padding:4px 0 10px">⏰ Terminerinnerung</div><div id="reminder-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"></div></div>
+  <div class="mobile-section" id="ms-storno" style="padding:12px"><div class="card-title" style="padding:4px 0 10px;color:#e74c3c">✕ Stornos</div><div id="storno-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"></div></div>
 </div>
 
 <script>
