@@ -1180,6 +1180,13 @@ function mobileTab(tab){
   document.querySelectorAll('.mobile-nav-btn').forEach(function(b){b.classList.remove('active');});
   var s=document.getElementById('ms-'+tab);var b=document.getElementById('mn-'+tab);
   if(s)s.classList.add('active');if(b)b.classList.add('active');
+  // Zeige denselben Desktop-Div in der Mobile-Section
+  var map={'bestaetigung':'confirm-list-desktop','erinnerung':'reminder-list-desktop','storno':'storno-list-desktop'};
+  if(map[tab]){
+    var src=document.getElementById(map[tab]);
+    var dst=document.getElementById('ms-'+tab+'-list');
+    if(src&&dst&&src.parentNode!==dst){dst.appendChild(src);}
+  }
 }
 
 loadAll();
@@ -1206,9 +1213,9 @@ initKurzfristigSetting();
     </div>
     <div id="upcoming-list-m" style="overflow-y:auto;max-height:calc(100vh - 220px)"><div class="loading">Wird geladen…</div></div>
   </div>
-  <div class="mobile-section" id="ms-bestaetigung" style="padding:12px"><div class="card-title" style="padding:4px 0 10px">✓ Terminbestätigung</div><div id="confirm-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"><div class="loading">Wird geladen…</div></div></div>
-  <div class="mobile-section" id="ms-erinnerung" style="padding:12px"><div class="card-title" style="padding:4px 0 10px">⏰ Terminerinnerung</div><div id="reminder-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"><div class="loading">Wird geladen…</div></div></div>
-  <div class="mobile-section" id="ms-storno" style="padding:12px"><div class="card-title" style="padding:4px 0 10px;color:#e74c3c">✕ Stornos</div><div id="storno-list-m" style="overflow-y:auto;max-height:calc(100vh - 160px)"><div class="loading">Wird geladen…</div></div></div>
+  <div class="mobile-section" id="ms-bestaetigung" style="padding:12px"><div class="card-title" style="padding:4px 0 10px">✓ Terminbestätigung</div><div id="ms-bestaetigung-list"></div></div>
+  <div class="mobile-section" id="ms-erinnerung" style="padding:12px"><div class="card-title" style="padding:4px 0 10px">⏰ Terminerinnerung</div><div id="ms-erinnerung-list"></div></div>
+  <div class="mobile-section" id="ms-storno" style="padding:12px"><div class="card-title" style="padding:4px 0 10px;color:#e74c3c">✕ Stornos</div><div id="ms-storno-list"></div></div>
 </div>
 
 <script>
