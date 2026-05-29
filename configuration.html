@@ -1948,17 +1948,17 @@ function renderSvcList(){
     var minP=vars.length?Math.min.apply(null,vars.map(function(v){return parseFloat(v.preis)||0;})):null;
     var ini=s.name.charAt(0).toUpperCase();
     return'<div class="svc-item" id="svc-item-'+s.id+'">'
-      +'<div class="svc-item-hdr" onclick="toggleItem(\''+s.id+'\',\'svc\')">'
-        +'<div class="svc-item-icon">'
+      +'<div class="svc-item-hdr">'
+        +'<div class="svc-item-icon" onclick="toggleItem(\''+s.id+'\',\'svc\')" style="cursor:pointer">'
           +'<span style="font-size:18px;font-weight:600;color:var(--tpl)">'+ini+'</span>'
         +'</div>'
-        +'<div style="flex:1;min-width:0">'
-          +'<div class="svc-item-name">'+esc(s.name)+'</div>'
+        +'<div style="flex:1;min-width:0" onclick="toggleItem(\''+s.id+'\',\'svc\')" style="cursor:pointer">'
+          +'<input class="svc-item-name" id="svc-hdr-name-'+s.id+'" value="'+esc(s.name)+'" onclick="event.stopPropagation()" style="border:none;outline:none;background:transparent;font-size:14px;font-weight:500;color:var(--td);width:100%;font-family:inherit;cursor:text;padding:0">'
           +(s.beschreibung?'<div class="svc-item-meta">'+esc(s.beschreibung)+'</div>':'')
         +'</div>'
         +(minP!==null?'<span style="font-size:12px;color:var(--tg);font-weight:500;margin-right:8px">ab '+minP+' €</span>':'')
-        +'<span class="badge '+(s.aktiv?'':'off')+'">'+(s.aktiv?'Aktiv':'Inaktiv')+'</span>'
-        +'<span class="chevron" id="chev-svc-'+s.id+'">⌄</span>'
+        +'<label class="toggle-sw" onclick="event.stopPropagation()" title="Im Widget aktiv" style="margin-right:6px"><input type="checkbox" id="svc-hdr-aktiv-'+s.id+'" '+(s.aktiv?'checked':'')+' onchange="svcHdrAktivChange(\''+s.id+'\')"><span class="slider"></span></label>'
+        +'<span class="chevron" id="chev-svc-'+s.id+'" onclick="toggleItem(\''+s.id+'\',\'svc\')" style="cursor:pointer">⌄</span>'
       +'</div>'
       +'<div class="item-body" id="body-svc-'+s.id+'">'+renderSvcBody(s,vars)+'</div>'
     +'</div>';
@@ -1966,14 +1966,9 @@ function renderSvcList(){
 }
 
 function renderSvcBody(s,vars){
-  return'<div style="display:flex;gap:10px;margin-bottom:12px;align-items:flex-end">'
-    +'<div class="field" style="flex:1"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="svc-f-name-'+s.id+'" value="'+esc(s.name)+'"></div>'
-    +'<div class="field" style="flex:2"><label>Beschreibung <span style="font-size:10px;color:var(--muted);font-weight:400">(optional)</span></label><input type="text" id="svc-f-desc-'+s.id+'" value="'+esc(s.beschreibung||'')+'"></div>'
-    +'<div style="padding-bottom:2px;display:flex;flex-direction:column;align-items:center;gap:3px">'
-      +'<label class="toggle-sw" title="Im Widget aktiv"><input type="checkbox" id="svc-f-aktiv-'+s.id+'" '+(s.aktiv?'checked':'')+' ><span class="slider"></span></label>'
-      +'<span style="font-size:9px;color:var(--muted)">Aktiv</span>'
+  return'<div style="margin-bottom:12px">'
+    +'<div class="field"><label>Beschreibung <span style="font-size:10px;color:var(--muted);font-weight:400">(optional)</span></label><input type="text" id="svc-f-desc-'+s.id+'" value="'+esc(s.beschreibung||'')+'" placeholder="Kurze Beschreibung des Services…"></div>'
     +'</div>'
-  +'</div>'
   +'<hr class="div">'
   +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Varianten</div>'
   +'<div class="var-header">'
@@ -2061,12 +2056,21 @@ function toggleItem(id,type){
   b.classList.toggle('open',!open);c.classList.toggle('open',!open);
 }
 
+async function svcHdrAktivChange(id){
+  var aktiv=document.getElementById('svc-hdr-aktiv-'+id).checked;
+  var item=servicesData.filter(function(i){return i.service.id===id;})[0];
+  if(!item)return;
+  await sb.from('services').update({aktiv:aktiv}).eq('id',id);
+  item.service.aktiv=aktiv;
+}
+
 async function saveSvcAll(id){
   var item=servicesData.filter(function(i){return i.service.id===id;})[0];
   if(!item)return;
-  var name=document.getElementById('svc-f-name-'+id).value.trim();
+  var name=(document.getElementById('svc-hdr-name-'+id)||{}).value||'';
+  name=name.trim();
   var desc=document.getElementById('svc-f-desc-'+id).value.trim();
-  var aktiv=document.getElementById('svc-f-aktiv-'+id).checked;
+  var aktiv=document.getElementById('svc-hdr-aktiv-'+id).checked;
   if(!name){toast('Name darf nicht leer sein','error');return;}
 
   // 1. Service speichern
@@ -2104,10 +2108,9 @@ async function saveSvcAll(id){
 
   // 3. Header aktualisieren
   item.service.name=name;item.service.beschreibung=desc;item.service.aktiv=aktiv;
-  var nameEl=document.querySelector('#svc-item-'+id+' .svc-item-name');if(nameEl)nameEl.textContent=name;
+  var nameHdrEl=document.getElementById('svc-hdr-name-'+id);if(nameHdrEl)nameHdrEl.value=name;
+  var aktHdrEl=document.getElementById('svc-hdr-aktiv-'+id);if(aktHdrEl)aktHdrEl.checked=aktiv;
   var metaEl=document.querySelector('#svc-item-'+id+' .svc-item-meta');if(metaEl)metaEl.textContent=desc;
-  var badgeEl=document.querySelector('#svc-item-'+id+' .badge');
-  if(badgeEl){badgeEl.textContent=aktiv?'Aktiv':'Inaktiv';badgeEl.className='badge '+(aktiv?'':'off');}
   var minP=item.varianten.length?Math.min.apply(null,item.varianten.map(function(v){return parseFloat(v.preis)||0;})):null;
   var preisBadge=document.querySelector('#svc-item-'+id+' .svc-item-hdr span[style*="color:var(--tg)"]');
   if(preisBadge&&minP!==null)preisBadge.textContent='ab '+minP+' €';
