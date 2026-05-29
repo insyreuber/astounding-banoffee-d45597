@@ -818,6 +818,8 @@ function updateErledigtVisual(id,done){
     tr.style.opacity=alreadyDone?'0.35':'1';
     tr.style.filter=alreadyDone?'grayscale(0.4)':'';
     tr.cells[tr.cells.length-1].innerHTML=aktionen;
+    // Linker Balken aktualisieren
+    if(tr.cells[0])tr.cells[0].style.borderLeft=alreadyDone?'3px solid #e5e5e5':'3px solid var(--tpl)';
   }
 
   // 2. Mobile Ticker-Karte ersetzen
