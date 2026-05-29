@@ -727,7 +727,7 @@ function renderStorno(rows,varianteMap,staffMap,serviceMap){
     '</div>';
   }
   var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Stornos erledigt</div>')+'</div>';
-  if(erledigt.length){html+='<div style="margin-top:14px"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500"><span>▶</span> Erledigt ('+erledigt.length+')</button><div style="display:none;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-top:8px">'+erledigt.map(function(b){return buildCard(b,true);}).join('')+'</div></div>';}
+  if(erledigt.length){html+='<div style="margin-top:14px;position:relative;z-index:0"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500"><span>▶</span> Erledigt ('+erledigt.length+')</button><div style="display:none;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-top:8px">'+erledigt.map(function(b){return buildCard(b,true);}).join('')+'</div></div>';}
   writeList('storno-list',html);
 }
 
@@ -881,7 +881,7 @@ function renderReminders(rows){
     '</div>';
   }
   var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Erinnerungen erledigt</div>')+'</div>';
-  if(erledigt.length){html+='<div style="margin-top:14px"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500"><span>▶</span> Erledigt ('+erledigt.length+')</button><div style="display:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:8px">'+erledigt.map(function(b){return buildCard(b,true);}).join('')+'</div></div>';}
+  if(erledigt.length){html+='<div style="margin-top:14px;position:relative;z-index:0"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500"><span>▶</span> Erledigt ('+erledigt.length+')</button><div style="display:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:8px">'+erledigt.map(function(b){return buildCard(b,true);}).join('')+'</div></div>';}
   writeList('reminder-list', html);
   // Countdown starten
   if(window._cdInterval)clearInterval(window._cdInterval);
@@ -926,7 +926,7 @@ function renderConfirm(rows){
     '</div>';
   }
   var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Bestätigungen erledigt</div>')+'</div>';
-  if(erledigt.length){html+='<div style="margin-top:14px"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500"><span>▶</span> Erledigt ('+erledigt.length+')</button><div style="display:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:8px">'+erledigt.map(function(b){return buildCard(b,true);}).join('')+'</div></div>';}
+  if(erledigt.length){html+='<div style="margin-top:14px;position:relative;z-index:0"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500"><span>▶</span> Erledigt ('+erledigt.length+')</button><div style="display:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:8px">'+erledigt.map(function(b){return buildCard(b,true);}).join('')+'</div></div>';}
   writeList('confirm-list', html);
 }
 
@@ -1311,8 +1311,14 @@ function mobileTab(tab){
   document.querySelectorAll('.mobile-nav-btn').forEach(function(b){b.classList.remove('active');});
   var s=document.getElementById('ms-'+tab);var b=document.getElementById('mn-'+tab);
   if(s)s.classList.add('active');if(b)b.classList.add('active');
-  // Zeige denselben Desktop-Div in der Mobile-Section
-
+  // Erledigt-Bereich beim Tab-Wechsel einklappen
+  document.querySelectorAll('#ms-'+tab+' [style*="display:grid"]').forEach(function(el){
+    if(el.previousElementSibling&&el.previousElementSibling.tagName==='BUTTON'){
+      el.style.display='none';
+      var sp=el.previousElementSibling.querySelector('span');
+      if(sp)sp.textContent='▶';
+    }
+  });
 }
 
 loadAll();
@@ -1362,15 +1368,15 @@ initKurzfristigSetting();
     </div>
   </div>
   <div class="mobile-section" id="ms-bestaetigung" style="padding:0 12px 12px;position:relative">
-    <div class="card-title" style="padding:4px 0 10px;position:absolute;top:0;left:12px;right:12px;z-index:2;background:transparent;pointer-events:none">✓ Terminbestätigung</div>
+    <div class="card-title" style="padding:4px 0 10px;position:absolute;top:0;left:12px;right:12px;z-index:3;background:transparent;pointer-events:none">✓ Terminbestätigung</div>
     <div style="overflow-y:auto;max-height:calc(100vh - 160px);scrollbar-width:none;-ms-overflow-style:none"><div id="confirm-list-m" style="padding-right:6px;padding-top:34px"></div></div>
   </div>
   <div class="mobile-section" id="ms-erinnerung" style="padding:0 12px 12px;position:relative">
-    <div class="card-title" style="padding:4px 0 10px;position:absolute;top:0;left:12px;right:12px;z-index:2;background:transparent;pointer-events:none">⏰ Terminerinnerung</div>
+    <div class="card-title" style="padding:4px 0 10px;position:absolute;top:0;left:12px;right:12px;z-index:3;background:transparent;pointer-events:none">⏰ Terminerinnerung</div>
     <div style="overflow-y:auto;max-height:calc(100vh - 160px);scrollbar-width:none;-ms-overflow-style:none"><div id="reminder-list-m" style="padding-right:6px;padding-top:34px"></div></div>
   </div>
   <div class="mobile-section" id="ms-storno" style="padding:0 12px 12px;position:relative">
-    <div class="card-title" style="padding:4px 0 10px;position:absolute;top:0;left:12px;right:12px;z-index:2;background:transparent;pointer-events:none;color:#e74c3c">✕ Stornos</div>
+    <div class="card-title" style="padding:4px 0 10px;position:absolute;top:0;left:12px;right:12px;z-index:3;background:transparent;pointer-events:none;color:#e74c3c">✕ Stornos</div>
     <div style="overflow-y:auto;max-height:calc(100vh - 160px);scrollbar-width:none;-ms-overflow-style:none"><div id="storno-list-m" style="padding-right:6px;padding-top:34px"></div></div>
   </div>
 </div>
