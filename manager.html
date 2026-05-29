@@ -1341,11 +1341,9 @@ initKurzfristigSetting();
       <span>Storno</span>
     </button>
   </nav>
-  <div class="mobile-section active" id="ms-live" style="padding:12px;position:relative">
-    <div style="position:relative;z-index:2;pointer-events:none">
-      <div class="card-title" style="padding:4px 0 10px;background:transparent"><span class="live-dot"></span> Live-Aktivitäten</div>
-    </div>
-    <div style="position:relative;z-index:1;margin-top:-34px;padding-top:34px;overflow-y:auto;max-height:calc(100vh - 160px);scrollbar-width:none;-ms-overflow-style:none"><div id="ticker-list-m" style="padding-right:6px"></div></div>
+  <div class="mobile-section active" id="ms-live" style="padding:12px;position:relative;overflow:hidden">
+    <div class="card-title" style="padding:4px 0 10px;position:sticky;top:0;z-index:2;background:var(--bg)"><span class="live-dot"></span> Live-Aktivitäten</div>
+    <div style="overflow-y:auto;max-height:calc(100vh - 160px);scrollbar-width:none;-ms-overflow-style:none;margin-top:-38px"><div id="ticker-list-m" style="padding-right:6px;padding-top:38px"></div></div>
   </div>
   <div class="mobile-section" id="ms-termine" style="padding:12px">
     <div class="card-title" style="padding:4px 0 10px">📅 Nächste Termine</div>
