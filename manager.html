@@ -1343,14 +1343,13 @@ initKurzfristigSetting();
       <span>Storno</span>
     </button>
   </nav>
-  <div class="mobile-section active" id="ms-live" style="padding:0;overflow-y:auto;max-height:calc(100vh - 160px)">
-    <div id="ticker-list-m" style="padding:0 12px 12px">
-      <div class="card-title" style="padding:14px 0 10px;position:sticky;top:0;background:var(--bg);z-index:2"><span class="live-dot"></span> Live-Aktivitäten</div>
-    </div>
+  <div class="mobile-section active" id="ms-live" style="padding:0 12px 12px;position:relative">
+    <div class="card-title" style="padding:4px 0 10px;position:absolute;top:0;left:12px;right:12px;z-index:2;background:transparent;pointer-events:none"><span class="live-dot"></span> Live-Aktivitäten</div>
+    <div style="overflow-y:auto;max-height:calc(100vh - 160px);scrollbar-width:none;-ms-overflow-style:none"><div id="ticker-list-m" style="padding-right:6px"></div></div>
   </div>
   <div class="mobile-section" id="ms-termine" style="padding:0;overflow-y:auto;max-height:calc(100vh - 160px);scrollbar-width:none;-ms-overflow-style:none">
     <div style="padding:0 12px 12px">
-      <div style="position:sticky;top:0;background:var(--bg);z-index:2;padding-top:14px;padding-bottom:6px">
+      <div style="position:sticky;top:0;background:var(--bg);z-index:2;padding:14px 0 8px">
         <div class="card-title" style="padding:0 0 6px">📅 Nächste Termine</div>
         <div style="display:flex;gap:6px">
           <button onclick="stepUpcomingFilter(0,true)" id="muf-alle" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid var(--tpl);font-size:11px;font-weight:600;cursor:pointer;background:var(--tpl);color:#fff;font-family:inherit">Alle</button>
@@ -1362,23 +1361,17 @@ initKurzfristigSetting();
       <div id="upcoming-list-m-wrap"><div id="upcoming-list-m" style="padding-right:6px"></div></div>
     </div>
   </div>
-  <div class="mobile-section" id="ms-bestaetigung" style="padding:0;overflow-y:auto;max-height:calc(100vh - 160px);scrollbar-width:none;-ms-overflow-style:none">
-    <div style="padding:0 12px 12px">
-      <div class="card-title" style="padding:14px 0 10px;position:sticky;top:0;background:var(--bg);z-index:2">✓ Terminbestätigung</div>
-      <div id="confirm-list-m" style="padding-right:6px"></div>
-    </div>
+  <div class="mobile-section" id="ms-bestaetigung" style="padding:0 12px 12px;position:relative">
+    <div class="card-title" style="padding:4px 0 10px;position:absolute;top:0;left:12px;right:12px;z-index:2;background:transparent;pointer-events:none">✓ Terminbestätigung</div>
+    <div style="overflow-y:auto;max-height:calc(100vh - 160px);scrollbar-width:none;-ms-overflow-style:none"><div id="confirm-list-m" style="padding-right:6px;padding-top:34px"></div></div>
   </div>
-  <div class="mobile-section" id="ms-erinnerung" style="padding:0;overflow-y:auto;max-height:calc(100vh - 160px);scrollbar-width:none;-ms-overflow-style:none">
-    <div style="padding:0 12px 12px">
-      <div class="card-title" style="padding:14px 0 10px;position:sticky;top:0;background:var(--bg);z-index:2">⏰ Terminerinnerung</div>
-      <div id="reminder-list-m" style="padding-right:6px"></div>
-    </div>
+  <div class="mobile-section" id="ms-erinnerung" style="padding:0 12px 12px;position:relative">
+    <div class="card-title" style="padding:4px 0 10px;position:absolute;top:0;left:12px;right:12px;z-index:2;background:transparent;pointer-events:none">⏰ Terminerinnerung</div>
+    <div style="overflow-y:auto;max-height:calc(100vh - 160px);scrollbar-width:none;-ms-overflow-style:none"><div id="reminder-list-m" style="padding-right:6px;padding-top:34px"></div></div>
   </div>
-  <div class="mobile-section" id="ms-storno" style="padding:0;overflow-y:auto;max-height:calc(100vh - 160px);scrollbar-width:none;-ms-overflow-style:none">
-    <div style="padding:0 12px 12px">
-      <div class="card-title" style="padding:14px 0 10px;position:sticky;top:0;background:var(--bg);z-index:2;color:#e74c3c">✕ Stornos</div>
-      <div id="storno-list-m" style="padding-right:6px"></div>
-    </div>
+  <div class="mobile-section" id="ms-storno" style="padding:0 12px 12px;position:relative">
+    <div class="card-title" style="padding:4px 0 10px;position:absolute;top:0;left:12px;right:12px;z-index:2;background:transparent;pointer-events:none;color:#e74c3c">✕ Stornos</div>
+    <div style="overflow-y:auto;max-height:calc(100vh - 160px);scrollbar-width:none;-ms-overflow-style:none"><div id="storno-list-m" style="padding-right:6px;padding-top:34px"></div></div>
   </div>
 </div>
 
