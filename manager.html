@@ -1273,7 +1273,7 @@ function renderMobileTickerCards(rows,varianteMap,staffMap,el){
     aktionen+=btn('Bestätigung',waLink(phone,msgBestaetigung),canBestaetigen,'#27ae60');
     aktionen+=btn('Erinnerung',waLink(phone,msgErinnerung),canErinnern,'#e67e22');
     aktionen+=btn('Storno',waLink(phone,msgStorno),canStorno,'#e74c3c');
-    aktionen+='<a href="'+bookingLink+'" target="_blank" style="background:#5a2d82;color:#fff;font-weight:700;box-shadow:0 0 8px #5a2d8299;border-radius:6px;padding:6px 8px;font-size:10px;text-decoration:none;flex-shrink:0">↗<\/a>';
+    aktionen+='<a href="'+bookingLink+'" target="_blank" style="background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);color:#fff;border-radius:8px;padding:6px 8px;text-decoration:none;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#5a2d82"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><\/a>';
     if(isKachelErledigt){
       aktionen+='<span style="margin-left:auto;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;font-size:12px;color:#16a34a;font-weight:600">✓<\/span>';
     }else{
