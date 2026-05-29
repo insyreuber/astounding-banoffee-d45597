@@ -671,7 +671,7 @@ function renderTicker(rows,varianteMap,staffMap){
     }
     aktionen+='</div>';
 
-    return'<tr style="'+(alreadyDone?'opacity:0.35;filter:grayscale(0.4)':'')+'">'
+    return'<tr id="bk-'+b.id+'" style="'+(alreadyDone?'opacity:0.35;filter:grayscale(0.4)':'')+'">'
       +'<td style="width:110px;border-radius:10px 0 0 10px;border-left:'+(alreadyDone?'3px solid #e5e5e5':'3px solid var(--tpl)')+'"><span class="badge '+type+'">'+typeLabel+'</span><div style="font-size:10px;color:var(--muted);margin-top:3px">'+esc(bookStr)+'</div></td>'
       +'<td style="font-weight:500">'+esc(b.customer_name||'–')+'</td>'
       +'<td style="color:var(--muted);font-family:monospace;font-size:13px"><a href="tel:'+esc(b.customer_phone||'')+'" style="color:var(--tpl);text-decoration:none;font-weight:500">'+esc(b.customer_phone||'–')+'</a></td>'
@@ -781,43 +781,71 @@ function _silentRefresh(){
 }
 
 function updateErledigtVisual(id,done){
-  // Kachel-Karten: div mit onclick="...Erledigt('id')"
-  document.querySelectorAll('[onclick*="\''+id+'\'"]').forEach(function(btn){
-    var card=btn.closest('[style*="border-radius:10px"]');
-    if(card){
-      if(done){
-        card.style.opacity='0.45';
-        card.style.filter='grayscale(0.3)';
-        card.style.animation='';
-        // Erledigt-Button austauschen
-        if(btn.tagName==='BUTTON'){
-          btn.outerHTML='<span style="position:absolute;top:8px;right:8px;font-size:11px;color:#bbb;font-weight:500">✓ Erledigt</span>';
+  if(!window._cache)return;
+  var c=window._cache;
+  var b=c.ticker.filter(function(x){return x.id===id;})[0];
+
+  // Desktop Ticker-Zeile
+  var tr=document.getElementById('bk-'+id);
+  if(tr&&b){
+    var varianteMap=c.varianteMap||{};
+    var staffMap=c.staffMap||{};
+    var erledigtIds=window._erledigtIds||[];
+    var alreadyDone=erledigtIds.indexOf(b.id)>=0;
+    var phone=b.customer_phone||'';
+    var canBestaetigen=!alreadyDone&&!!phone&&(window._confirmIds||[]).indexOf(b.id)>=0;
+    var canErinnern=!alreadyDone&&!!phone&&(window._reminderIds||[]).indexOf(b.id)>=0;
+    var canStorno=!alreadyDone&&!!phone&&(window._stornoIds||[]).indexOf(b.id)>=0;
+    var d=new Date(b.termin_start||b.created_at||new Date());
+    var termin=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'})+' um '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr';
+    var variante=varianteMap[b.service_variante_id];
+    var svcParent=variante&&variante.service_id?serviceMap[variante.service_id]||'':'';
+    var svcName=variante?[svcParent,variante.service_name].filter(Boolean).join(' · ')||'–':'–';
+    var bookingLink='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
+    var tplVars={name:b.customer_name||'',termin:termin,datum:d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'}),uhrzeit:d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr',service:svcName.replace(/<[^>]*>/g,''),buchungslink:bookingLink,salon:window.SALON_NAME||''};
+    var successUrl='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
+    function btn(label,href,active,color){
+      if(alreadyDone||!active)return'<span style="background:#f0f0f0;border:1px solid #e0e0e0;color:#c0c0c0;cursor:default;pointer-events:none;font-weight:500;border-radius:6px;padding:4px 9px;font-size:10px;white-space:nowrap;display:inline-block;">'+label+'</span>';
+      return'<a href="'+href+'" target="_blank" style="background:'+color+';border:1px solid '+color+';color:#fff;cursor:pointer;font-weight:700;box-shadow:0 0 10px '+color+',0 0 20px '+color+'66;border-radius:6px;padding:4px 9px;font-size:10px;white-space:nowrap;display:inline-block;text-decoration:none;">'+label+'</a>';
+    }
+    var aktionen='<div style="display:flex;gap:5px;align-items:center;width:100%">';
+    aktionen+=btn('Bestätigung',waLink(phone,applyTemplate('bestaetigung',tplVars)),canBestaetigen,'#27ae60');
+    aktionen+=btn('Erinnerung',waLink(phone,applyTemplate('erinnerung',tplVars)),canErinnern,'#e67e22');
+    aktionen+=btn('Storno',waLink(phone,applyTemplate('storno',tplVars)),canStorno,'#e74c3c');
+    aktionen+='<a href="'+successUrl+'" target="_blank" style="background:#5a2d82;border:1px solid #5a2d82;color:#fff;font-weight:700;box-shadow:0 0 10px #5a2d8299;border-radius:6px;padding:4px 9px;font-size:11px;white-space:nowrap;display:inline-block;text-decoration:none;">↗ Buchung</a>';
+    aktionen+=alreadyDone
+      ?'<span style="margin-left:auto;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;font-size:12px;color:#16a34a;font-weight:600">✓</span>'
+      :'<button onclick="tickerErledigt(\''+b.id+'\')" style="margin-left:auto;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:12px;color:#ccc;font-weight:600;cursor:pointer">✓</button>';
+    aktionen+='</div>';
+    tr.style.opacity=alreadyDone?'0.35':'1';
+    tr.style.filter=alreadyDone?'grayscale(0.4)':'';
+    tr.cells[tr.cells.length-1].innerHTML=aktionen;
+  }
+
+  // Mobile Karten — nur die betroffene Karte
+  var elM=document.getElementById('ticker-list-m');
+  if(elM&&b){
+    var mc=document.getElementById('mc-'+id);
+    if(mc){
+      var tmp=document.createElement('div');
+      tmp.innerHTML=renderOneMobileCard(b,c.varianteMap,c.staffMap);
+      if(tmp.firstChild)mc.parentNode.replaceChild(tmp.firstChild,mc);
+    }
+  }
+
+  // Kachel-Karten
+  ['confirm-list','reminder-list','storno-list'].forEach(function(listId){
+    ['','-m','-desktop'].forEach(function(sfx){
+      var card=document.getElementById('kcard-'+id+(sfx?sfx:''));
+      if(card){
+        card.style.opacity=done?'0.4':'1';
+        card.style.filter=done?'grayscale(0.3)':'';
+        var btn2=card.querySelector('[onclick*="Erledigt"]');
+        if(btn2&&done){
+          btn2.outerHTML='<span style="position:absolute;top:8px;right:8px;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;font-size:11px;color:#16a34a;font-weight:600">✓</span>';
         }
       }
-    }
-    // Ticker-Zeile: tr
-    var tr=btn.closest('tr');
-    if(tr){
-      tr.style.opacity=done?'0.35':'1';
-      tr.style.filter=done?'grayscale(0.4)':'';
-      // Haken-Button aktualisieren
-      if(btn.tagName==='BUTTON'){
-        btn.style.background=done?'#e8f5e9':'var(--bg)';
-        btn.style.borderColor=done?'#4ade80':'var(--border)';
-        btn.style.color=done?'#16a34a':'#ccc';
-      }
-    }
-    // Mobile-Karte
-    var mcard=btn.closest('[style*="border-radius:12px"]');
-    if(mcard&&!tr){
-      mcard.style.opacity=done?'0.4':'1';
-      mcard.style.filter=done?'grayscale(0.3)':'';
-      if(btn.tagName==='BUTTON'){
-        btn.style.background=done?'#e8f5e9':'var(--bg)';
-        btn.style.borderColor=done?'#4ade80':'var(--border)';
-        btn.style.color=done?'#16a34a':'#ccc';
-      }
-    }
+    });
   });
 }
 
@@ -1253,7 +1281,7 @@ function renderMobileTickerCards(rows,varianteMap,staffMap,el){
       aktionen+='<button onclick="tickerErledigt(\''+b.id+'\')" style="margin-left:auto;background:'+(isErledigt2?'#e8f5e9':'var(--bg)')+';border:1px solid '+(isErledigt2?'#4ade80':'var(--border)')+';border-radius:6px;padding:2px 8px;font-size:12px;color:'+(isErledigt2?'#16a34a':'#ccc')+';font-weight:600;cursor:pointer">✓<\/button>';
     }
     aktionen+='<\/div>';
-    return'<div style="background:#fff;border-radius:12px;margin-bottom:10px;border:1.5px solid '+(alreadyDone?'#e5e5e5':'var(--border)')+';border-left:3px solid '+(alreadyDone?'#e5e5e5':type==='cancel'?'#e74c3c':type==='move'?'#f39c12':'#27ae60')+';padding:10px 12px;'+(alreadyDone?'opacity:0.4;filter:grayscale(0.3)':'')+'">'+
+    return'<div id="mc-'+b.id+'" style="background:#fff;border-radius:12px;margin-bottom:10px;border:1.5px solid '+(alreadyDone?'#e5e5e5':'var(--border)')+';border-left:3px solid '+(alreadyDone?'#e5e5e5':type==='cancel'?'#e74c3c':type==='move'?'#f39c12':'#27ae60')+';padding:10px 12px;'+(alreadyDone?'opacity:0.4;filter:grayscale(0.3)':'')+'">'+
       '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">'+
         '<div><span class="badge '+type+'" style="font-size:10px">'+typeLabel+'<\/span><div style="font-size:9px;color:var(--muted);margin-top:1px">'+esc(bookStr)+'<\/div><\/div>'+
         '<span style="font-size:13px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(b.customer_name||'–')+'<\/span>'+
@@ -1266,6 +1294,12 @@ function renderMobileTickerCards(rows,varianteMap,staffMap,el){
   }).join('');
 }
 
+
+function renderOneMobileCard(b,varianteMap,staffMap){
+  var tmp=document.createElement('div');
+  renderMobileTickerCards([b],varianteMap,staffMap,tmp);
+  return tmp.innerHTML;
+}
 
 function mobileTab(tab){
   document.querySelectorAll('.mobile-section').forEach(function(s){s.classList.remove('active');});
