@@ -553,7 +553,7 @@ function renderUpcomingCalendar(events,varianteMap,staffMap,serviceMap){
       '<div class="upcoming-date">'+esc(dateStr)+timeTag+'<div id="'+cdId+'" data-target="'+d.getTime()+'" style="font-size:10px;font-weight:700;color:var(--tpl);margin-top:2px">⏱ …</div></div>'+
       '<div class="upcoming-info"><div class="upcoming-name">'+esc(b.customer_name||'Kunde')+'</div><div class="upcoming-service">'+esc(svcName)+'</div></div>'+
       '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;width:110px"><a href="#" onclick="openStaffOverlay(\''+esc(b.mitarbeiter_id||'')+'\');return false;" title="Profil ansehen" style="flex-shrink:0;text-decoration:none;cursor:pointer">'+renderAvatar(staffObj,36)+'</a><span class="upcoming-staff" style="color:var(--tg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(staffName)+'</span></div>'+
-      '<a href="'+successUrl+'" target="_blank" style="flex-shrink:0;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;background:#5a2d82;border:1px solid #5a2d82;color:#fff;font-weight:700;box-shadow:0 0 8px #5a2d8299;border-radius:6px;font-size:12px;text-decoration:none;">↗</a>'+
+      '<a href="'+successUrl+'" target="_blank" style="flex-shrink:0;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;background:#5a2d82;border:1px solid #5a2d82;color:#fff;box-shadow:0 0 8px #5a2d8299;border-radius:6px;text-decoration:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>'+
     '</div>';
   }).join('');
   // Mobile mirror
