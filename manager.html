@@ -1266,10 +1266,10 @@ function renderMobileTickerCards(rows,varianteMap,staffMap,el){
     var canErinnern=!alreadyDone&&!!phone&&(window._reminderIds||[]).indexOf(b.id)>=0;
     var canStorno=!alreadyDone&&!!phone&&(window._stornoIds||[]).indexOf(b.id)>=0;
     function btn(label,href,active,color){
-      if(alreadyDone||!active){return'<span style="background:#f0f0f0;border:1px solid #e0e0e0;color:#c0c0c0;font-weight:500;border-radius:6px;padding:6px 8px;font-size:10px;display:block;text-align:center;flex:1">'+label+'<\/span>';}
-      return'<a href="'+href+'" target="_blank" style="background:'+color+';border:1px solid '+color+';color:#fff;font-weight:700;box-shadow:0 0 10px '+color+',0 0 20px '+color+'66;border-radius:6px;padding:6px 8px;font-size:10px;display:block;text-align:center;text-decoration:none;flex:1">'+label+'<\/a>';
+      if(alreadyDone||!active){return'<span style="background:#f0f0f0;border:1px solid #e0e0e0;color:#c0c0c0;font-weight:500;border-radius:6px;padding:6px 4px;font-size:9px;display:block;text-align:center;flex:1">'+label+'<\/span>';}
+      return'<a href="'+href+'" target="_blank" style="background:'+color+';border:1px solid '+color+';color:#fff;font-weight:700;box-shadow:0 0 10px '+color+',0 0 20px '+color+'66;border-radius:6px;padding:6px 4px;font-size:9px;display:block;text-align:center;text-decoration:none;flex:1">'+label+'<\/a>';
     }
-    var aktionen='<div style="display:flex;gap:5px;align-items:center;margin-top:10px">';
+    var aktionen='<div style="display:flex;gap:4px;align-items:center;margin-top:10px">';
     aktionen+=btn('Bestätigung',waLink(phone,msgBestaetigung),canBestaetigen,'#27ae60');
     aktionen+=btn('Erinnerung',waLink(phone,msgErinnerung),canErinnern,'#e67e22');
     aktionen+=btn('Storno',waLink(phone,msgStorno),canStorno,'#e74c3c');
