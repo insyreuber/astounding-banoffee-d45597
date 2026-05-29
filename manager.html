@@ -15,7 +15,14 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{overflow-y:scroll}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-height:100vh;overflow-x:hidden}
-#ticker-list::-webkit-scrollbar{display:none}
+#ticker-list::-webkit-scrollbar,#ticker-list-m::-webkit-scrollbar,
+#upcoming-list::-webkit-scrollbar,#upcoming-list-m::-webkit-scrollbar,
+#confirm-list-desktop::-webkit-scrollbar,#confirm-list-m::-webkit-scrollbar,
+#reminder-list::-webkit-scrollbar,#reminder-list-m::-webkit-scrollbar,
+#storno-list::-webkit-scrollbar,#storno-list-m::-webkit-scrollbar{display:none}
+#ticker-list,#ticker-list-m,#upcoming-list,#upcoming-list-m,
+#confirm-list-desktop,#confirm-list-m,#reminder-list,#reminder-list-m,
+#storno-list,#storno-list-m{scrollbar-width:none;-ms-overflow-style:none}
 /* ── NAV — luxuriöser ── */
 .nav{
   background:linear-gradient(135deg,#3d1568 0%,#5a2d82 60%,#4a1f72 100%);
@@ -747,7 +754,6 @@ function erledigt(id){
   if(window._erledigtIds.indexOf(id)<0){window._erledigtIds.push(id);}
   saveErledigtIds();
   updateErledigtVisual(id,true);
-  _silentRefresh();
 }
 function stornoErledigt(id){erledigt(id);}
 function reminderErledigt(id){erledigt(id);}
@@ -758,7 +764,6 @@ function tickerErledigt(id){
   if(idx<0){window._erledigtIds.push(id);}else{window._erledigtIds.splice(idx,1);}
   saveErledigtIds();
   updateErledigtVisual(id,idx<0);
-  _silentRefresh();
 }
 
 // Aktualisiert Buttons/Logik ohne sichtbares Flackern — speichert Scroll-Positionen
