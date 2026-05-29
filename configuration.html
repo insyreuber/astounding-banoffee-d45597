@@ -2002,6 +2002,29 @@ function toggleDispOpt(svcId, key){
   if(cb)cb.checked=!on;
 }
 
+// Warenwirtschaft Preis-Eingabe
+function wwPreisKey(e,el){
+  // Nur Ziffern, Backspace, Delete, Tab, Pfeile erlauben
+  var allowed=[8,9,13,37,38,39,40,46];
+  if(allowed.indexOf(e.keyCode)>=0)return;
+  if(e.key>='0'&&e.key<='9')return;
+  e.preventDefault();
+}
+function wwPreisInput(el,svcId,varId){
+  // Nur Ziffern behalten
+  var raw=el.value.replace(/[^0-9]/g,'');
+  if(!raw){el.value='';localUpdateVar(svcId,varId,'preis',0);return;}
+  // Als Centbetrag behandeln: letzte 2 Stellen = Cent
+  var cents=parseInt(raw,10);
+  var euros=Math.floor(cents/100);
+  var centsRest=cents%100;
+  var formatted=euros+','+(centsRest<10?'0'+centsRest:centsRest);
+  // Cursor ans Ende
+  el.value=formatted;
+  var floatVal=cents/100;
+  localUpdateVar(svcId,varId,'preis',floatVal);
+}
+
 function mkVarRow(v,svcId,idx){
   var durVal=(v.dauer_minuten&&v.dauer_minuten<9000)?v.dauer_minuten:'';
   var preisVal=(v.preis!=null&&v.preis>0)?v.preis:'';
@@ -2029,7 +2052,7 @@ function mkVarRow(v,svcId,idx){
     +'<div class="var-field">'
       +'<label>Preis €</label>'
       +'<div class="var-field-row">'
-        +'<input data-field="preis" type="number" min="0" step="0.5" placeholder="0.00" value="'+preisVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis\',this.value)" style="flex:1">'
+        +'<input data-field="preis" type="text" inputmode="numeric" placeholder="0,00" value="'+(preisVal?String(preisVal).replace('.',','):'')+'" oninput="wwPreisInput(this,\''+svcId+'\',\''+v.id+'\')" onkeydown="wwPreisKey(event,this)" style="flex:1;text-align:right;font-variant-numeric:tabular-nums">'
         +'<label class="toggle-sw" title="Preis anzeigen" style="flex-shrink:0"><input data-field="preis_anzeigen" type="checkbox" '+(v.preis_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'
       +'</div>'
     +'</div>'
@@ -2105,7 +2128,7 @@ async function saveSvcAll(id){
     var svcName=gf('service_name').trim();
     var min=parseInt(gf('dauer_minuten'))||1;
     var dauerAnz=gfc('dauer_anzeigen');
-    var preis=parseFloat(gf('preis'))||0;
+    var preis=parseFloat((gf('preis')||'0').replace(',','.'))||0;
     var preisAnz=gfc('preis_anzeigen');
     var puffer=parseInt(gf('puffer_minuten'))||0;
     var pufferAkt=gfc('puffer_aktiv');
