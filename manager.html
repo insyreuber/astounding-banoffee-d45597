@@ -785,11 +785,9 @@ function updateErledigtVisual(id,done){
   var c=window._cache;
   var b=c.ticker.filter(function(x){return x.id===id;})[0];
 
-  // Desktop Ticker-Zeile
+  // 1. Desktop Ticker-Zeile — nur Aktionen-Spalte neu rendern
   var tr=document.getElementById('bk-'+id);
   if(tr&&b){
-    var varianteMap=c.varianteMap||{};
-    var staffMap=c.staffMap||{};
     var erledigtIds=window._erledigtIds||[];
     var alreadyDone=erledigtIds.indexOf(b.id)>=0;
     var phone=b.customer_phone||'';
@@ -798,20 +796,20 @@ function updateErledigtVisual(id,done){
     var canStorno=!alreadyDone&&!!phone&&(window._stornoIds||[]).indexOf(b.id)>=0;
     var d=new Date(b.termin_start||b.created_at||new Date());
     var termin=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'})+' um '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr';
-    var variante=varianteMap[b.service_variante_id];
-    var svcParent=variante&&variante.service_id?serviceMap[variante.service_id]||'':'';
+    var variante=c.varianteMap[b.service_variante_id];
+    var svcParent=variante&&variante.service_id?(serviceMap||{})[variante.service_id]||'':'';
     var svcName=variante?[svcParent,variante.service_name].filter(Boolean).join(' · ')||'–':'–';
     var bookingLink='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
     var tplVars={name:b.customer_name||'',termin:termin,datum:d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'}),uhrzeit:d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr',service:svcName.replace(/<[^>]*>/g,''),buchungslink:bookingLink,salon:window.SALON_NAME||''};
-    var successUrl='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
-    function btn(label,href,active,color){
+    var successUrl=bookingLink;
+    function btn2(label,href,active,color){
       if(alreadyDone||!active)return'<span style="background:#f0f0f0;border:1px solid #e0e0e0;color:#c0c0c0;cursor:default;pointer-events:none;font-weight:500;border-radius:6px;padding:4px 9px;font-size:10px;white-space:nowrap;display:inline-block;">'+label+'</span>';
       return'<a href="'+href+'" target="_blank" style="background:'+color+';border:1px solid '+color+';color:#fff;cursor:pointer;font-weight:700;box-shadow:0 0 10px '+color+',0 0 20px '+color+'66;border-radius:6px;padding:4px 9px;font-size:10px;white-space:nowrap;display:inline-block;text-decoration:none;">'+label+'</a>';
     }
     var aktionen='<div style="display:flex;gap:5px;align-items:center;width:100%">';
-    aktionen+=btn('Bestätigung',waLink(phone,applyTemplate('bestaetigung',tplVars)),canBestaetigen,'#27ae60');
-    aktionen+=btn('Erinnerung',waLink(phone,applyTemplate('erinnerung',tplVars)),canErinnern,'#e67e22');
-    aktionen+=btn('Storno',waLink(phone,applyTemplate('storno',tplVars)),canStorno,'#e74c3c');
+    aktionen+=btn2('Bestätigung',waLink(phone,applyTemplate('bestaetigung',tplVars)),canBestaetigen,'#27ae60');
+    aktionen+=btn2('Erinnerung',waLink(phone,applyTemplate('erinnerung',tplVars)),canErinnern,'#e67e22');
+    aktionen+=btn2('Storno',waLink(phone,applyTemplate('storno',tplVars)),canStorno,'#e74c3c');
     aktionen+='<a href="'+successUrl+'" target="_blank" style="background:#5a2d82;border:1px solid #5a2d82;color:#fff;font-weight:700;box-shadow:0 0 10px #5a2d8299;border-radius:6px;padding:4px 9px;font-size:11px;white-space:nowrap;display:inline-block;text-decoration:none;">↗ Buchung</a>';
     aktionen+=alreadyDone
       ?'<span style="margin-left:auto;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;font-size:12px;color:#16a34a;font-weight:600">✓</span>'
@@ -822,30 +820,29 @@ function updateErledigtVisual(id,done){
     tr.cells[tr.cells.length-1].innerHTML=aktionen;
   }
 
-  // Mobile Karten — nur die betroffene Karte
-  var elM=document.getElementById('ticker-list-m');
-  if(elM&&b){
-    var mc=document.getElementById('mc-'+id);
-    if(mc){
-      var tmp=document.createElement('div');
-      tmp.innerHTML=renderOneMobileCard(b,c.varianteMap,c.staffMap);
-      if(tmp.firstChild)mc.parentNode.replaceChild(tmp.firstChild,mc);
-    }
+  // 2. Mobile Ticker-Karte ersetzen
+  var mc=document.getElementById('mc-'+id);
+  if(mc&&b){
+    var tmp=document.createElement('div');
+    renderMobileTickerCards([b],c.varianteMap,c.staffMap,tmp);
+    if(tmp.firstChild)mc.parentNode.replaceChild(tmp.firstChild,mc);
   }
 
-  // Kachel-Karten
-  ['confirm-list','reminder-list','storno-list'].forEach(function(listId){
-    ['','-m','-desktop'].forEach(function(sfx){
-      var card=document.getElementById('kcard-'+id+(sfx?sfx:''));
-      if(card){
-        card.style.opacity=done?'0.4':'1';
-        card.style.filter=done?'grayscale(0.3)':'';
-        var btn2=card.querySelector('[onclick*="Erledigt"]');
-        if(btn2&&done){
-          btn2.outerHTML='<span style="position:absolute;top:8px;right:8px;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;font-size:11px;color:#16a34a;font-weight:600">✓</span>';
-        }
-      }
-    });
+  // 3. Kachel-Karten — per onclick-Attribut finden
+  document.querySelectorAll('[onclick*="\''+id+'\'"]').forEach(function(el){
+    var card=el.closest('[style*="border-radius:10px"]');
+    if(!card)return;
+    if(done){
+      card.style.opacity='0.45';
+      card.style.filter='grayscale(0.3)';
+      card.style.animation='none';
+      var erlBtn=card.querySelector('button[onclick*="Erledigt"]');
+      if(erlBtn)erlBtn.outerHTML='<span style="position:absolute;top:8px;right:8px;font-size:11px;color:#bbb;font-weight:500">✓ Erledigt</span>';
+    } else {
+      card.style.opacity='1';
+      card.style.filter='';
+      card.style.animation='';
+    }
   });
 }
 
