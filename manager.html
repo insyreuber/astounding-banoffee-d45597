@@ -531,7 +531,8 @@ function renderUpcomingCalendar(events,varianteMap,staffMap,serviceMap){
     if(elM)elM.innerHTML=empty;
     return;
   }
-  el.innerHTML=filtered.map(function(b){
+  el.innerHTML=filtered.map(function(b,i){
+    var firstStyle=i===0?'margin-top:60px;':'';
     var d=new Date(b.termin_start);
     var dateStr=d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
     var variante=varianteMap[b.service_variante_id];
@@ -553,7 +554,7 @@ function renderUpcomingCalendar(events,varianteMap,staffMap,serviceMap){
       timeTag='<span style="display:inline-block;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:#e67e22;color:#fff;border-radius:4px;padding:1px 6px;margin-left:5px;vertical-align:middle">Morgen</span>';
     }
     var cdId='ucd-'+b.id;
-    return'<div class="upcoming-row">'+
+    return'<div class="upcoming-row" style="'+firstStyle+'">'+
       '<div class="upcoming-date">'+esc(dateStr)+timeTag+'<div id="'+cdId+'" data-target="'+d.getTime()+'" style="font-size:10px;font-weight:700;color:var(--tpl);margin-top:2px">⏱ …</div></div>'+
       '<div class="upcoming-info"><div class="upcoming-name">'+esc(b.customer_name||'Kunde')+'</div><div class="upcoming-service">'+esc(svcName)+'</div></div>'+
       '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;width:110px"><a href="#" onclick="openStaffOverlay(\''+esc(b.mitarbeiter_id||'')+'\');return false;" title="Profil ansehen" style="flex-shrink:0;text-decoration:none;cursor:pointer">'+renderAvatar(staffObj,36)+'</a><span class="upcoming-staff" style="color:var(--tg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(staffName)+'</span></div>'+
@@ -725,7 +726,7 @@ function renderStorno(rows,varianteMap,staffMap,serviceMap){
       (phone&&!isErledigt?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:100%;justify-content:center;background:#e74c3c;box-shadow:0 0 12px rgba(231,76,60,.5),0 0 24px rgba(231,76,60,.25)"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg> Storno bestätigen</a>':'')+
     '</div>';
   }
-  var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Stornos erledigt</div>')+'</div>';
+  var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-top:34px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Stornos erledigt</div>')+'</div>';
   if(erledigt.length){html+='<div style="margin-top:14px"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500"><span>▶</span> Erledigt ('+erledigt.length+')</button><div style="display:none;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-top:8px">'+erledigt.map(function(b){return buildCard(b,true);}).join('')+'</div></div>';}
   writeList('storno-list',html);
 }
@@ -879,7 +880,7 @@ function renderReminders(rows){
         :'<a href="tel:'+phone+'" style="font-size:10px;color:#bbb;text-decoration:none">'+(phone?esc(phone):'Keine Nummer')+'</a>')+
     '</div>';
   }
-  var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Erinnerungen erledigt</div>')+'</div>';
+  var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:34px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Erinnerungen erledigt</div>')+'</div>';
   if(erledigt.length){html+='<div style="margin-top:14px"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500"><span>▶</span> Erledigt ('+erledigt.length+')</button><div style="display:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:8px">'+erledigt.map(function(b){return buildCard(b,true);}).join('')+'</div></div>';}
   writeList('reminder-list', html);
   // Countdown starten
@@ -924,7 +925,7 @@ function renderConfirm(rows){
         :'<a href="tel:'+phone+'" style="font-size:10px;color:#bbb;text-decoration:none">'+(phone?esc(phone):'Keine Telefonnummer hinterlegt')+'</a>')+
     '</div>';
   }
-  var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Bestätigungen erledigt</div>')+'</div>';
+  var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:34px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Bestätigungen erledigt</div>')+'</div>';
   if(erledigt.length){html+='<div style="margin-top:14px"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'grid\':\'none\';this.querySelector(\'span\').textContent=this.nextElementSibling.style.display===\'none\'?\'▶\':\'▼\'" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:4px 0;font-weight:500"><span>▶</span> Erledigt ('+erledigt.length+')</button><div style="display:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:8px">'+erledigt.map(function(b){return buildCard(b,true);}).join('')+'</div></div>';}
   writeList('confirm-list', html);
 }
@@ -1356,19 +1357,19 @@ initKurzfristigSetting();
         <button onclick="stepUpcomingFilter(3,true)" id="muf-uebermorgen" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid var(--muted);font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:var(--muted);font-family:inherit">+2</button>
       </div>
     </div>
-    <div id="upcoming-list-m-wrap" style="overflow-y:auto;max-height:calc(100vh - 220px);scrollbar-width:none;-ms-overflow-style:none"><div id="upcoming-list-m" style="padding-right:6px;padding-top:60px"><div class="loading">Wird geladen…</div></div></div>
+    <div id="upcoming-list-m-wrap" style="overflow-y:auto;max-height:calc(100vh - 220px);scrollbar-width:none;-ms-overflow-style:none"><div id="upcoming-list-m" style="padding-right:6px"><div class="loading" style="margin-top:60px">Wird geladen…</div></div></div>
   </div>
   <div class="mobile-section" id="ms-bestaetigung" style="padding:0 12px 12px;position:relative">
     <div class="card-title" style="padding:4px 0 10px;position:absolute;top:0;left:12px;right:12px;z-index:2;background:transparent;pointer-events:none">✓ Terminbestätigung</div>
-    <div style="overflow-y:auto;max-height:calc(100vh - 160px);scrollbar-width:none;-ms-overflow-style:none"><div id="confirm-list-m" style="padding-right:6px;padding-top:34px"></div></div>
+    <div style="overflow-y:auto;max-height:calc(100vh - 160px);scrollbar-width:none;-ms-overflow-style:none"><div id="confirm-list-m" style="padding-right:6px"></div></div>
   </div>
   <div class="mobile-section" id="ms-erinnerung" style="padding:0 12px 12px;position:relative">
     <div class="card-title" style="padding:4px 0 10px;position:absolute;top:0;left:12px;right:12px;z-index:2;background:transparent;pointer-events:none">⏰ Terminerinnerung</div>
-    <div style="overflow-y:auto;max-height:calc(100vh - 160px);scrollbar-width:none;-ms-overflow-style:none"><div id="reminder-list-m" style="padding-right:6px;padding-top:34px"></div></div>
+    <div style="overflow-y:auto;max-height:calc(100vh - 160px);scrollbar-width:none;-ms-overflow-style:none"><div id="reminder-list-m" style="padding-right:6px"></div></div>
   </div>
   <div class="mobile-section" id="ms-storno" style="padding:0 12px 12px;position:relative">
     <div class="card-title" style="padding:4px 0 10px;position:absolute;top:0;left:12px;right:12px;z-index:2;background:transparent;pointer-events:none;color:#e74c3c">✕ Stornos</div>
-    <div style="overflow-y:auto;max-height:calc(100vh - 160px);scrollbar-width:none;-ms-overflow-style:none"><div id="storno-list-m" style="padding-right:6px;padding-top:34px"></div></div>
+    <div style="overflow-y:auto;max-height:calc(100vh - 160px);scrollbar-width:none;-ms-overflow-style:none"><div id="storno-list-m" style="padding-right:6px"></div></div>
   </div>
 </div>
 
