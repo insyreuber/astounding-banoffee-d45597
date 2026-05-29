@@ -771,7 +771,7 @@ function _silentRefresh(){
   if(!window._cache)return;
   var scrolls={};
   var ids=['ticker-list','ticker-list-m','confirm-list-desktop','confirm-list-m','reminder-list','reminder-list-m','storno-list','storno-list-m'];
-  ids.forEach(function(id){var el=document.getElementById(id);if(el){scrolls[id]=el.scrollTop;el.style.overflow='hidden';}});
+  ids.forEach(function(id){var el=document.getElementById(id);if(el){scrolls[id]=el.scrollTop;}});
   var c=window._cache;
   renderTicker(c.ticker,c.varianteMap,c.staffMap);
   renderConfirm(c.confirms);
