@@ -746,7 +746,7 @@ function erledigt(id){
   if(!window._erledigtIds)window._erledigtIds=[];
   if(window._erledigtIds.indexOf(id)<0){window._erledigtIds.push(id);}
   saveErledigtIds();
-  renderFromCache();
+  updateErledigtVisual(id,true);
 }
 function stornoErledigt(id){erledigt(id);}
 function reminderErledigt(id){erledigt(id);}
@@ -756,7 +756,48 @@ function tickerErledigt(id){
   var idx=window._erledigtIds.indexOf(id);
   if(idx<0){window._erledigtIds.push(id);}else{window._erledigtIds.splice(idx,1);}
   saveErledigtIds();
-  renderFromCache();
+  updateErledigtVisual(id,idx<0);
+}
+
+function updateErledigtVisual(id,done){
+  // Kachel-Karten: div mit onclick="...Erledigt('id')"
+  document.querySelectorAll('[onclick*="\''+id+'\'"]').forEach(function(btn){
+    var card=btn.closest('[style*="border-radius:10px"]');
+    if(card){
+      if(done){
+        card.style.opacity='0.45';
+        card.style.filter='grayscale(0.3)';
+        card.style.animation='';
+        // Erledigt-Button austauschen
+        if(btn.tagName==='BUTTON'){
+          btn.outerHTML='<span style="position:absolute;top:8px;right:8px;font-size:11px;color:#bbb;font-weight:500">✓ Erledigt</span>';
+        }
+      }
+    }
+    // Ticker-Zeile: tr
+    var tr=btn.closest('tr');
+    if(tr){
+      tr.style.opacity=done?'0.35':'1';
+      tr.style.filter=done?'grayscale(0.4)':'';
+      // Haken-Button aktualisieren
+      if(btn.tagName==='BUTTON'){
+        btn.style.background=done?'#e8f5e9':'var(--bg)';
+        btn.style.borderColor=done?'#4ade80':'var(--border)';
+        btn.style.color=done?'#16a34a':'#ccc';
+      }
+    }
+    // Mobile-Karte
+    var mcard=btn.closest('[style*="border-radius:12px"]');
+    if(mcard&&!tr){
+      mcard.style.opacity=done?'0.4':'1';
+      mcard.style.filter=done?'grayscale(0.3)':'';
+      if(btn.tagName==='BUTTON'){
+        btn.style.background=done?'#e8f5e9':'var(--bg)';
+        btn.style.borderColor=done?'#4ade80':'var(--border)';
+        btn.style.color=done?'#16a34a':'#ccc';
+      }
+    }
+  });
 }
 
 function renderReminders(rows){
