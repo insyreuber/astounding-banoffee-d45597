@@ -552,6 +552,22 @@ function renderUpcomingCalendar(events,varianteMap,staffMap,serviceMap){
   // Mobile mirror
   var elM=document.getElementById('upcoming-list-m');
   if(elM)elM.innerHTML=el.innerHTML;
+  // Countdown starten falls noch nicht läuft
+  if(!window._cdInterval){
+    window._cdInterval=setInterval(function(){
+      document.querySelectorAll('[id^="cd-"][data-target],[id^="ucd-"][data-target]').forEach(function(el){
+        var diff=parseInt(el.getAttribute('data-target'))-Date.now();
+        if(diff<=0){el.textContent='⏱ Jetzt';el.style.color='#e74c3c';el.style.animation='cdFlash 1s ease-in-out infinite';return;}
+        var h=Math.floor(diff/3600000);
+        var m=Math.floor((diff%3600000)/60000);
+        var s=Math.floor((diff%60000)/1000);
+        var txt=h>0?(h+'h '+String(m).padStart(2,'0')+'m'):(m+'m '+String(s).padStart(2,'0')+'s');
+        el.textContent='⏱ noch '+txt;
+        el.style.color=diff<3600000?'#e74c3c':diff<7200000?'#e67e22':'var(--tpl)';
+        el.style.animation=diff<3600000?'cdFlash 1s ease-in-out infinite':'';
+      });
+    },1000);
+  }
 }
 
 function renderAvatar(staffObj,size){
