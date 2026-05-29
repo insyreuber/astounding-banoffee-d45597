@@ -1240,7 +1240,8 @@ function renderMobileTickerCards(rows,varianteMap,staffMap,el){
   if(!rows||!rows.length){el.innerHTML='<div class="loading">Keine Aktivitäten<\/div>';return;}
   varianteMap=varianteMap||{};staffMap=staffMap||{};
   var erledigtIds=(window._erledigtIds||[]);
-  el.innerHTML=rows.map(function(b){
+  el.innerHTML=rows.map(function(b,i){
+    var firstTop=i===0?'margin-top:34px;':'';
     var type=b.status==='cancelled'?'cancel':b.status==='rescheduled'?'move':'in';
     var typeLabel=type==='cancel'?'Storno':type==='move'?'Verschoben':'Eingang';
     var d=new Date(b.termin_start||b.created_at||new Date());
@@ -1284,7 +1285,7 @@ function renderMobileTickerCards(rows,varianteMap,staffMap,el){
       aktionen+='<button onclick="tickerErledigt(\''+b.id+'\')" style="margin-left:auto;background:'+(isErledigt2?'#e8f5e9':'var(--bg)')+';border:1px solid '+(isErledigt2?'#4ade80':'var(--border)')+';border-radius:6px;padding:2px 8px;font-size:12px;color:'+(isErledigt2?'#16a34a':'#ccc')+';font-weight:600;cursor:pointer">✓<\/button>';
     }
     aktionen+='<\/div>';
-    return'<div id="mc-'+b.id+'" style="background:#fff;border-radius:12px;margin-bottom:10px;border:1.5px solid '+(alreadyDone?'#e5e5e5':'var(--border)')+';border-left:3px solid '+(alreadyDone?'#e5e5e5':type==='cancel'?'#e74c3c':type==='move'?'#f39c12':'#27ae60')+';padding:10px 12px;'+(alreadyDone?'opacity:0.4;filter:grayscale(0.3)':'')+'">'+
+    return'<div id="mc-'+b.id+'" style="'+firstTop+'background:#fff;border-radius:12px;margin-bottom:10px;border:1.5px solid '+(alreadyDone?'#e5e5e5':'var(--border)')+';border-left:3px solid '+(alreadyDone?'#e5e5e5':type==='cancel'?'#e74c3c':type==='move'?'#f39c12':'#27ae60')+';padding:10px 12px;'+(alreadyDone?'opacity:0.4;filter:grayscale(0.3)':'')+'">'+
       '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">'+
         '<div><span class="badge '+type+'" style="font-size:10px">'+typeLabel+'<\/span><div style="font-size:9px;color:var(--muted);margin-top:1px">'+esc(bookStr)+'<\/div><\/div>'+
         '<span style="font-size:13px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(b.customer_name||'–')+'<\/span>'+
@@ -1342,8 +1343,8 @@ initKurzfristigSetting();
     </button>
   </nav>
   <div class="mobile-section active" id="ms-live" style="padding:12px;position:relative">
-    <div class="card-title" style="padding:4px 0 10px;position:absolute;top:12px;left:12px;right:12px;z-index:2;background:transparent"><span class="live-dot"></span> Live-Aktivitäten</div>
-    <div style="overflow-y:auto;max-height:calc(100vh - 160px);scrollbar-width:none;-ms-overflow-style:none;padding-top:34px"><div id="ticker-list-m" style="padding-right:6px"></div></div>
+    <div class="card-title" style="padding:4px 0 10px;position:absolute;top:12px;left:12px;right:12px;z-index:2;background:transparent;pointer-events:none"><span class="live-dot"></span> Live-Aktivitäten</div>
+    <div style="overflow-y:auto;max-height:calc(100vh - 160px);scrollbar-width:none;-ms-overflow-style:none"><div id="ticker-list-m" style="padding-right:6px"></div></div>
   </div>
   <div class="mobile-section" id="ms-termine" style="padding:12px">
     <div class="card-title" style="padding:4px 0 10px">📅 Nächste Termine</div>
