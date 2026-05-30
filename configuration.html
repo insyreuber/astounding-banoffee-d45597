@@ -1073,6 +1073,12 @@ function switchTab(n){
     if(openLink)openLink.href=fullUrl;
     var mobileLink=document.getElementById('booking-mobile-link');
     if(mobileLink)mobileLink.href=fullUrl;
+    // Mobile: header knapp unter Nav positionieren
+    if(window.innerWidth<=768){
+      var nav=document.querySelector('.nav');
+      var hdr=document.querySelector('#panel-buchungsseite>div:first-child');
+      if(nav&&hdr)hdr.style.marginTop=nav.offsetHeight+'px';
+    }
     loadLiveTicker();
   }
   if(n==='profil')buildProfilToggles();
