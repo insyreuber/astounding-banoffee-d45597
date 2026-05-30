@@ -270,7 +270,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   #slot-raster-btns button svg { width: 72px !important; height: 72px !important; display: block !important; margin: 0 auto 6px !important; }
 @media(max-width:768px){
     #panel-buchungsseite{width:100%!important;margin-left:0!important;}
-    #panel-buchungsseite>div:first-child{margin-top:56px}
+    #panel-buchungsseite>div:first-child{margin-top:var(--nav-h,52px)}
   }
 
   /* Nav: Akkordion auf Mobile */
@@ -4203,6 +4203,11 @@ function renderProfilContent(id){
 }
 // ══════════════════════════════════════════════
 // ══════════════════════════════════════════════
+// Mobile: Nav-Höhe als CSS Variable setzen
+(function(){
+  function setNavH(){var nav=document.querySelector('.nav');if(nav)document.documentElement.style.setProperty('--nav-h',nav.offsetHeight+'px');}
+  setNavH();window.addEventListener('resize',setNavH);
+})();
 init();
 </script>
 </body>
