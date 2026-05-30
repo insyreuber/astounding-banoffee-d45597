@@ -121,18 +121,9 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .item-body.open{display:block}
 
 /* ── VARIANTEN (service edit) ── */
-.var-header{display:none}
-.var-row{background:#faf8fc;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;position:relative;margin-bottom:8px}
-.var-row-del{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;padding:2px 4px;border-radius:4px}
-.var-row-del:hover{color:#e74c3c;background:#fef2f2}
-.var-field{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
-.var-field:last-child{margin-bottom:0}
-.var-field label{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
-.var-field-row{display:flex;align-items:center;gap:8px}
-.var-field input[type="number"],.var-field input[type="text"]{border:1.5px solid var(--border);border-radius:7px;outline:none;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--td);background:#fff;width:100%;transition:border-color .2s}
-.var-field input:focus{border-color:var(--tpl);box-shadow:0 0 0 3px rgba(90,45,130,.1)}
-.var-puffer-wrap{display:none}
-.var-puffer-wrap.open{display:block}.var-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.var-header{display:grid;grid-template-columns:2fr 1.2fr 1.2fr 1.2fr 28px;gap:8px;padding:0 12px;margin-bottom:4px}
+.var-col-lbl{font-size:10px;color:var(--muted);text-align:center;letter-spacing:.05em}
+.var-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
 .var-row{display:grid;grid-template-columns:2fr 1.2fr 1.2fr 1.2fr 28px;gap:8px;align-items:center;background:#faf8fc;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px}
 /* Jede Gruppe = Input + Toggle nebeneinander */
 .var-group{display:flex;align-items:center;gap:5px;background:var(--white);border:1.5px solid var(--border);border-radius:6px;padding:0 6px 0 0;overflow:hidden;min-width:0}
@@ -277,7 +268,10 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   #slot-raster-btns { flex-direction: row !important; gap: 8px !important; }
   #slot-raster-btns button { padding: 10px 6px !important; min-width: 0 !important; flex: 1 !important; }
   #slot-raster-btns button svg { width: 72px !important; height: 72px !important; display: block !important; margin: 0 auto 6px !important; }
-  #panel-buchungsseite{width:100%!important;margin-left:0!important;}
+@media(max-width:768px){
+    #panel-buchungsseite{width:100%!important;margin-left:0!important;}
+    #panel-buchungsseite>div:first-child{margin-top:56px}
+  }
 
   /* Nav: Akkordion auf Mobile */
   .nav{flex-direction:column;padding:0;gap:0;width:100%;}
@@ -658,22 +652,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 
 
   <!-- ════ BUCHUNGSSEITE ════ -->
-  <div class="tab-panel" id="panel-buchungsseite" style="padding:0;margin-top:-28px;width:100vw;position:relative;left:50%;transform:translateX(-50%)">
-    <!-- Header -->
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--white);border:1.5px solid var(--border);border-radius:12px;margin-bottom:10px">
-      <div style="display:flex;align-items:center;gap:8px">
-        <div id="bs-panel-dot" style="width:8px;height:8px;border-radius:50%;background:#27ae60;flex-shrink:0"></div>
-        <span id="bs-panel-label" style="font-size:12px;font-weight:500;color:var(--td)">Online</span>
-        <label class="toggle-sw" onclick="event.stopPropagation()" style="margin-left:4px"><input type="checkbox" id="bs-panel-toggle" onchange="bsPanelToggle()"><span class="slider"></span></label>
-      </div>
-      <a id="booking-open-link" href="#" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:var(--tpl);color:#fff;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        Buchungsseite öffnen
-      </a>
-    </div>
-    <!-- Buchungsseite volle Breite -->
-    <iframe id="booking-iframe" src="" style="width:100%;height:85vh;border:1.5px solid var(--border);border-radius:12px;display:block" scrolling="yes"></iframe>
-  </div><div class="tab-panel" id="panel-buchungsseite" style="padding:0;margin-top:-28px">
+  <div class="tab-panel" id="panel-buchungsseite" style="padding:0;margin-top:-28px">
     <!-- Header -->
     <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--white);border:1.5px solid var(--border);border-radius:12px;margin-bottom:12px">
       <div style="display:flex;align-items:center;gap:8px">
@@ -1639,6 +1618,7 @@ async function saveProfil(silent){
   update.instagram_url   = null;
   update.website_url     = null;
   update.google_maps_url = gv('f-google-maps')||null;
+  if(window._pData)window._pData.google_maps_url=update.google_maps_url;
 
   // Hours — only save if hours-cols is in DOM
   if(document.getElementById('hours-cols')){
@@ -1972,17 +1952,17 @@ function renderSvcList(){
     var minP=vars.length?Math.min.apply(null,vars.map(function(v){return parseFloat(v.preis)||0;})):null;
     var ini=s.name.charAt(0).toUpperCase();
     return'<div class="svc-item" id="svc-item-'+s.id+'">'
-      +'<div class="svc-item-hdr">'
-        +'<div class="svc-item-icon" onclick="toggleItem(\''+s.id+'\',\'svc\')" style="cursor:pointer">'
+      +'<div class="svc-item-hdr" onclick="toggleItem(\''+s.id+'\',\'svc\')">'
+        +'<div class="svc-item-icon">'
           +'<span style="font-size:18px;font-weight:600;color:var(--tpl)">'+ini+'</span>'
         +'</div>'
-        +'<div style="flex:1;min-width:0" onclick="toggleItem(\''+s.id+'\',\'svc\')" style="cursor:pointer">'
-          +'<input class="svc-item-name" id="svc-hdr-name-'+s.id+'" value="'+esc(s.name)+'" onclick="event.stopPropagation()" style="border:none;outline:none;background:transparent;font-size:14px;font-weight:500;color:var(--td);width:100%;font-family:inherit;cursor:text;padding:0">'
+        +'<div style="flex:1;min-width:0">'
+          +'<div class="svc-item-name">'+esc(s.name)+'</div>'
           +(s.beschreibung?'<div class="svc-item-meta">'+esc(s.beschreibung)+'</div>':'')
         +'</div>'
         +(minP!==null?'<span style="font-size:12px;color:var(--tg);font-weight:500;margin-right:8px">ab '+minP+' €</span>':'')
-        +'<label class="toggle-sw" onclick="event.stopPropagation()" title="Im Widget aktiv" style="margin-right:6px"><input type="checkbox" id="svc-hdr-aktiv-'+s.id+'" '+(s.aktiv?'checked':'')+' onchange="svcHdrAktivChange(\''+s.id+'\')"><span class="slider"></span></label>'
-        +'<span class="chevron" id="chev-svc-'+s.id+'" onclick="toggleItem(\''+s.id+'\',\'svc\')" style="cursor:pointer">⌄</span>'
+        +'<span class="badge '+(s.aktiv?'':'off')+'">'+(s.aktiv?'Aktiv':'Inaktiv')+'</span>'
+        +'<span class="chevron" id="chev-svc-'+s.id+'">⌄</span>'
       +'</div>'
       +'<div class="item-body" id="body-svc-'+s.id+'">'+renderSvcBody(s,vars)+'</div>'
     +'</div>';
@@ -1990,12 +1970,24 @@ function renderSvcList(){
 }
 
 function renderSvcBody(s,vars){
-  return'<div style="margin-bottom:12px">'
-    +'<div class="field"><label>Beschreibung <span style="font-size:10px;color:var(--muted);font-weight:400">(optional)</span></label><input type="text" id="svc-f-desc-'+s.id+'" value="'+esc(s.beschreibung||'')+'" placeholder="Kurze Beschreibung des Services…"></div>'
+  return'<div style="display:flex;gap:10px;margin-bottom:12px;align-items:flex-end">'
+    +'<div class="field" style="flex:1"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="svc-f-name-'+s.id+'" value="'+esc(s.name)+'"></div>'
+    +'<div class="field" style="flex:2"><label>Beschreibung <span style="font-size:10px;color:var(--muted);font-weight:400">(optional)</span></label><input type="text" id="svc-f-desc-'+s.id+'" value="'+esc(s.beschreibung||'')+'"></div>'
+    +'<div style="padding-bottom:2px;display:flex;flex-direction:column;align-items:center;gap:3px">'
+      +'<label class="toggle-sw" title="Im Widget aktiv"><input type="checkbox" id="svc-f-aktiv-'+s.id+'" '+(s.aktiv?'checked':'')+' ><span class="slider"></span></label>'
+      +'<span style="font-size:9px;color:var(--muted)">Aktiv</span>'
     +'</div>'
+  +'</div>'
   +'<hr class="div">'
   +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Varianten</div>'
-  +'<div class="var-list" id="varlist-'+s.id+'" style="display:flex;flex-direction:column;gap:10px">'
+  +'<div class="var-header">'
+    +'<span class="var-col-lbl">Name <span style="font-weight:400;opacity:.6">(opt.)</span></span>'
+    +'<span class="var-col-lbl">Dauer Min <span style="color:var(--tg)">*</span></span>'
+    +'<span class="var-col-lbl">Preis €</span>'
+    +'<span class="var-col-lbl">Puffer Min</span>'
+    +'<span></span>'
+  +'</div>'
+  +'<div class="var-list" id="varlist-'+s.id+'">'
     +(vars.map(function(v,i){return mkVarRow(v,s.id,i);}).join('')||'<div style="font-size:12px;color:var(--muted);padding:6px 0">Noch keine Varianten</div>')
   +'</div>'
   +'<div style="display:flex;gap:8px;align-items:center">'
@@ -2017,70 +2009,34 @@ function toggleDispOpt(svcId, key){
   if(cb)cb.checked=!on;
 }
 
-// Warenwirtschaft Preis-Eingabe
-function wwPreisKey(e,el){
-  // Nur Ziffern, Backspace, Delete, Tab, Pfeile erlauben
-  var allowed=[8,9,13,37,38,39,40,46];
-  if(allowed.indexOf(e.keyCode)>=0)return;
-  if(e.key>='0'&&e.key<='9')return;
-  e.preventDefault();
-}
-function wwPreisInput(el,svcId,varId){
-  // Nur Ziffern behalten
-  var raw=el.value.replace(/[^0-9]/g,'');
-  if(!raw){el.value='';localUpdateVar(svcId,varId,'preis',0);return;}
-  // Als Centbetrag behandeln: letzte 2 Stellen = Cent
-  var cents=parseInt(raw,10);
-  var euros=Math.floor(cents/100);
-  var centsRest=cents%100;
-  var formatted=euros+','+(centsRest<10?'0'+centsRest:centsRest);
-  // Cursor ans Ende
-  el.value=formatted;
-  var floatVal=cents/100;
-  localUpdateVar(svcId,varId,'preis',floatVal);
-}
-
 function mkVarRow(v,svcId,idx){
   var durVal=(v.dauer_minuten&&v.dauer_minuten<9000)?v.dauer_minuten:'';
   var preisVal=(v.preis!=null&&v.preis>0)?v.preis:'';
-  var pufferOpen=v.puffer_minuten>0||v.puffer_aktiv?'open':'';
-  var pid='puf-'+v.id;
+  var isFirst=(idx===0);
   return'<div class="var-row" id="var-'+v.id+'">'
-    +(idx>0?'<button class="var-row-del" onclick="deleteVar(\''+v.id+'\',\''+svcId+'\')">✕</button>':'')
-    // Dauer + Puffer fusioniert
-    +'<div class="var-field">'
-      +'<label>Dauer <span style="color:var(--tg)">*</span></label>'
-      +'<div class="var-field-row" style="gap:6px">'
-        +'<input data-field="dauer_minuten" type="number" min="5" step="5" placeholder="Min" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value)" style="flex:1">'
-        +'<button onclick="var w=document.getElementById(\''+pid+'\');w.classList.toggle(\'open\');this.style.background=w.classList.contains(\'open\')?\'var(--tpp)\':\'var(--bg)\';this.style.color=w.classList.contains(\'open\')?\'var(--tpl)\':\'var(--muted)\'" title="Puffer hinzufügen" style="flex-shrink:0;background:var(--bg);border:1.5px solid var(--border);border-radius:7px;width:32px;height:36px;font-size:15px;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;'+(pufferOpen?'background:var(--tpp);color:var(--tpl)':'')+'">+</button>'
-        +'<label class="toggle-sw" title="Dauer anzeigen" style="flex-shrink:0"><input data-field="dauer_anzeigen" type="checkbox" '+(v.dauer_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'
-      +'</div>'
-      // Puffer — versteckt, gleicher Toggle
-      +'<div class="var-puffer-wrap '+pufferOpen+'" id="'+pid+'" style="margin-top:6px">'
-        +'<div style="display:flex;align-items:center;gap:6px">'
-          +'<span style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap">Puffer</span>'
-          +'<input data-field="puffer_minuten" type="number" min="0" placeholder="0 Min" value="'+(v.puffer_minuten||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'puffer_minuten\',this.value)" style="flex:1;border:1.5px solid var(--border);border-radius:7px;outline:none;padding:6px 10px;font-size:12px;font-family:inherit;color:var(--td);background:#fff">'
-        +'</div>'
-      +'</div>'
+    // Name der Variante
+    +'<div class="var-group">'
+      +'<input data-field="service_name" type="text" placeholder="z.B. Fade, Rasur…" value="'+(v.service_name||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'service_name\',this.value)" style="border:none;outline:none;padding:6px;font-size:12px;font-family:inherit;color:var(--td);background:transparent;width:100%;min-width:0">'
     +'</div>'
-    // Preis
-    +'<div class="var-field">'
-      +'<label>Preis €</label>'
-      +'<div class="var-field-row">'
-        +'<input data-field="preis" type="text" inputmode="numeric" placeholder="0,00" value="'+(preisVal?String(preisVal).replace('.',','):'')+'" oninput="wwPreisInput(this,\''+svcId+'\',\''+v.id+'\')" onkeydown="wwPreisKey(event,this)" style="flex:1;text-align:right;font-variant-numeric:tabular-nums">'
-        +'<label class="toggle-sw" title="Preis anzeigen" style="flex-shrink:0"><input data-field="preis_anzeigen" type="checkbox" '+(v.preis_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'
-      +'</div>'
+    // Gruppe 1: Dauer + Toggle "Dauer anzeigen"
+    +'<div class="var-group">'
+      +'<input data-field="dauer_minuten" type="number" min="5" step="5" placeholder="Min" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value)">'
+      +'<label class="toggle-sw" title="Dauer anzeigen"><input data-field="dauer_anzeigen" type="checkbox" '+(v.dauer_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'
     +'</div>'
-    // Name (optional)
-    +'<div class="var-field">'
-      +'<label>Name <span style="font-weight:400;opacity:.6">(optional)</span></label>'
-      +'<input data-field="service_name" type="text" placeholder="z.B. Fade, Klassisch…" value="'+(v.service_name||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'service_name\',this.value)">'
+    // Gruppe 2: Preis + Toggle "Preis anzeigen"
+    +'<div class="var-group">'
+      +'<input data-field="preis" type="number" min="0" step="0.5" placeholder="€" value="'+preisVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis\',this.value)">'
+      +'<label class="toggle-sw" title="Preis anzeigen"><input data-field="preis_anzeigen" type="checkbox" '+(v.preis_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'
     +'</div>'
-    // Beschreibung (optional)
-    +'<div class="var-field">'
-      +'<label>Beschreibung <span style="font-weight:400;opacity:.6">(optional)</span></label>'
-      +'<input data-field="bezeichnung" type="text" placeholder="Kurze Beschreibung…" value="'+(v.bezeichnung||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'bezeichnung\',this.value)">'
+    // Gruppe 3: Puffer + Toggle "Puffer aktiv"
+    +'<div class="var-group">'
+      +'<input data-field="puffer_minuten" type="number" min="0" placeholder="Puffer" value="'+(v.puffer_minuten||0)+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'puffer_minuten\',this.value)">'
+      +'<label class="toggle-sw" title="Puffer aktiv"><input data-field="puffer_aktiv" type="checkbox" '+(v.puffer_aktiv?'checked':'')+' ><span class="slider"></span></label>'
     +'</div>'
+    +(isFirst
+      ?'<div style="width:28px;height:28px;flex-shrink:0"></div>'
+      :'<button class="var-del" onclick="deleteVar(\''+v.id+'\',\''+svcId+'\')">✕</button>'
+    )
   +'</div>';
 }
 
@@ -2109,21 +2065,12 @@ function toggleItem(id,type){
   b.classList.toggle('open',!open);c.classList.toggle('open',!open);
 }
 
-async function svcHdrAktivChange(id){
-  var aktiv=document.getElementById('svc-hdr-aktiv-'+id).checked;
-  var item=servicesData.filter(function(i){return i.service.id===id;})[0];
-  if(!item)return;
-  await sb.from('services').update({aktiv:aktiv}).eq('id',id);
-  item.service.aktiv=aktiv;
-}
-
 async function saveSvcAll(id){
   var item=servicesData.filter(function(i){return i.service.id===id;})[0];
   if(!item)return;
-  var name=(document.getElementById('svc-hdr-name-'+id)||{}).value||'';
-  name=name.trim();
+  var name=document.getElementById('svc-f-name-'+id).value.trim();
   var desc=document.getElementById('svc-f-desc-'+id).value.trim();
-  var aktiv=document.getElementById('svc-hdr-aktiv-'+id).checked;
+  var aktiv=document.getElementById('svc-f-aktiv-'+id).checked;
   if(!name){toast('Name darf nicht leer sein','error');return;}
 
   // 1. Service speichern
@@ -2138,32 +2085,33 @@ async function saveSvcAll(id){
   for(var i=0;i<varRows.length;i++){
     var row=varRows[i];
     var vid=row.id.replace('var-','');
-    function gf(field){var el=row.querySelector('[data-field="'+field+'"]');return el?el.value:'';}
-    function gfc(field){var el=row.querySelector('[data-field="'+field+'"]');return el?el.checked:false;}
-    var svcName=gf('service_name').trim();
-    var min=parseInt(gf('dauer_minuten'))||1;
-    var dauerAnz=gfc('dauer_anzeigen');
-    var preis=parseFloat((gf('preis')||'0').replace(',','.'))||0;
-    var preisAnz=gfc('preis_anzeigen');
-    var puffer=parseInt(gf('puffer_minuten'))||0;
-    var pufferAkt=gfc('puffer_aktiv');
-    var bezeichnung=gf('bezeichnung').trim();
-    var updatePayload={service_name:svcName,dauer_minuten:min,preis:preis,puffer_minuten:puffer,puffer_aktiv:pufferAkt,bezeichnung:bezeichnung,dauer_anzeigen:dauerAnz,preis_anzeigen:preisAnz};
+    var groups=row.querySelectorAll('.var-group');
+    if(groups.length<4){errs.push('Zeile '+i+': Gruppen fehlen');continue;}
+    var svcName=groups[0].querySelector('input[type="text"]').value.trim();
+    var min=parseInt(groups[1].querySelector('input[type="number"]').value)||1;
+    var dauerAnz=groups[1].querySelector('input[type="checkbox"]').checked;
+    var preis=parseFloat(groups[2].querySelector('input[type="number"]').value)||0;
+    var preisAnz=groups[2].querySelector('input[type="checkbox"]').checked;
+    var puffer=parseInt(groups[3].querySelector('input[type="number"]').value)||0;
+    var pufferAkt=groups[3].querySelector('input[type="checkbox"]').checked;
+
+    var updatePayload={service_name:svcName,dauer_minuten:min, preis:preis, puffer_minuten:puffer, puffer_aktiv:pufferAkt};
     var vRes=await sb.from('service_varianten').update(updatePayload).eq('id',vid);
     if(vRes.error){
       errs.push('Variante '+vid.slice(0,6)+': '+vRes.error.message);
     } else {
       item.varianten.forEach(function(v){
-        if(v.id===vid){v.service_name=svcName;v.dauer_minuten=min;v.preis=preis;v.puffer_minuten=puffer;v.puffer_aktiv=pufferAkt;v.bezeichnung=bezeichnung;}
+        if(v.id===vid){v.service_name=svcName;v.dauer_minuten=min;v.preis=preis;v.puffer_minuten=puffer;v.puffer_aktiv=pufferAkt;}
       });
     }
   }
 
   // 3. Header aktualisieren
   item.service.name=name;item.service.beschreibung=desc;item.service.aktiv=aktiv;
-  var nameHdrEl=document.getElementById('svc-hdr-name-'+id);if(nameHdrEl)nameHdrEl.value=name;
-  var aktHdrEl=document.getElementById('svc-hdr-aktiv-'+id);if(aktHdrEl)aktHdrEl.checked=aktiv;
+  var nameEl=document.querySelector('#svc-item-'+id+' .svc-item-name');if(nameEl)nameEl.textContent=name;
   var metaEl=document.querySelector('#svc-item-'+id+' .svc-item-meta');if(metaEl)metaEl.textContent=desc;
+  var badgeEl=document.querySelector('#svc-item-'+id+' .badge');
+  if(badgeEl){badgeEl.textContent=aktiv?'Aktiv':'Inaktiv';badgeEl.className='badge '+(aktiv?'':'off');}
   var minP=item.varianten.length?Math.min.apply(null,item.varianten.map(function(v){return parseFloat(v.preis)||0;})):null;
   var preisBadge=document.querySelector('#svc-item-'+id+' .svc-item-hdr span[style*="color:var(--tg)"]');
   if(preisBadge&&minP!==null)preisBadge.textContent='ab '+minP+' €';
