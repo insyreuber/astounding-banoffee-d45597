@@ -1987,8 +1987,9 @@ function renderSvcBody(s,vars){
   +'</div>'
   +'<hr class="div">'
   +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Varianten</div>'
-  +'<div class="var-header">'
+  +'<div class="var-header" style="grid-template-columns:1.5fr 2fr 1.2fr 1.2fr 1.2fr 28px">'
     +'<span class="var-col-lbl">Name <span style="font-weight:400;opacity:.6">(opt.)</span></span>'
+    +'<span class="var-col-lbl">Beschreibung <span style="font-weight:400;opacity:.6">(opt.)</span></span>'
     +'<span class="var-col-lbl">Dauer Min <span style="color:var(--tg)">*</span></span>'
     +'<span class="var-col-lbl">Preis €</span>'
     +'<span class="var-col-lbl">Puffer Min</span>'
@@ -2020,7 +2021,7 @@ function mkVarRow(v,svcId,idx){
   var durVal=(v.dauer_minuten&&v.dauer_minuten<9000)?v.dauer_minuten:'';
   var preisVal=(v.preis!=null&&v.preis>0)?v.preis:'';
   var isFirst=(idx===0);
-  return'<div class="var-row" id="var-'+v.id+'">'
+  return'<div class="var-row" id="var-'+v.id+'" style="grid-template-columns:1.5fr 2fr 1.2fr 1.2fr 1.2fr 28px">'
     // Name der Variante
     +'<div class="var-group">'
       +'<input data-field="service_name" type="text" placeholder="z.B. Fade, Rasur…" value="'+(v.service_name||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'service_name\',this.value)" style="border:none;outline:none;padding:6px;font-size:12px;font-family:inherit;color:var(--td);background:transparent;width:100%;min-width:0">'
