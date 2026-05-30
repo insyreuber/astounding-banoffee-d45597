@@ -4205,8 +4205,14 @@ function renderProfilContent(id){
 // ══════════════════════════════════════════════
 // Mobile: Nav-Höhe als CSS Variable setzen
 (function(){
-  function setNavH(){var nav=document.querySelector('.nav');if(nav)document.documentElement.style.setProperty('--nav-h',nav.offsetHeight+'px');}
-  setNavH();window.addEventListener('resize',setNavH);
+  function setNavH(){
+    var nav=document.querySelector('.nav');
+    var el=document.querySelector('#panel-buchungsseite>div:first-child');
+    if(nav&&el&&window.innerWidth<=768)el.style.marginTop=nav.offsetHeight+'px';
+    else if(el)el.style.marginTop='';
+  }
+  setTimeout(setNavH,50);
+  window.addEventListener('resize',setNavH);
 })();
 init();
 </script>
