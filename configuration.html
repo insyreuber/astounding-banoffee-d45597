@@ -2025,6 +2025,10 @@ function mkVarRow(v,svcId,idx){
     +'<div class="var-group">'
       +'<input data-field="service_name" type="text" placeholder="z.B. Fade, Rasur…" value="'+(v.service_name||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'service_name\',this.value)" style="border:none;outline:none;padding:6px;font-size:12px;font-family:inherit;color:var(--td);background:transparent;width:100%;min-width:0">'
     +'</div>'
+    // Beschreibung der Variante
+    +'<div class="var-group">'
+      +'<input data-field="beschreibung" type="text" placeholder="Beschreibung (optional)" value="'+(v.beschreibung||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'beschreibung\',this.value)" style="border:none;outline:none;padding:6px;font-size:12px;font-family:inherit;color:var(--td);background:transparent;width:100%;min-width:0">'
+    +'</div>'
     // Gruppe 1: Dauer + Toggle "Dauer anzeigen"
     +'<div class="var-group">'
       +'<input data-field="dauer_minuten" type="number" min="5" step="5" placeholder="Min" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value)">'
@@ -2093,22 +2097,23 @@ async function saveSvcAll(id){
     var row=varRows[i];
     var vid=row.id.replace('var-','');
     var groups=row.querySelectorAll('.var-group');
-    if(groups.length<4){errs.push('Zeile '+i+': Gruppen fehlen');continue;}
+    if(groups.length<5){errs.push('Zeile '+i+': Gruppen fehlen');continue;}
     var svcName=groups[0].querySelector('input[type="text"]').value.trim();
-    var min=parseInt(groups[1].querySelector('input[type="number"]').value)||1;
-    var dauerAnz=groups[1].querySelector('input[type="checkbox"]').checked;
-    var preis=parseFloat(groups[2].querySelector('input[type="number"]').value)||0;
-    var preisAnz=groups[2].querySelector('input[type="checkbox"]').checked;
-    var puffer=parseInt(groups[3].querySelector('input[type="number"]').value)||0;
-    var pufferAkt=groups[3].querySelector('input[type="checkbox"]').checked;
+    var beschreibung=groups[1].querySelector('input[type="text"]').value.trim();
+    var min=parseInt(groups[2].querySelector('input[type="number"]').value)||1;
+    var dauerAnz=groups[2].querySelector('input[type="checkbox"]').checked;
+    var preis=parseFloat(groups[3].querySelector('input[type="number"]').value)||0;
+    var preisAnz=groups[3].querySelector('input[type="checkbox"]').checked;
+    var puffer=parseInt(groups[4].querySelector('input[type="number"]').value)||0;
+    var pufferAkt=groups[4].querySelector('input[type="checkbox"]').checked;
 
-    var updatePayload={service_name:svcName,dauer_minuten:min, preis:preis, puffer_minuten:puffer, puffer_aktiv:pufferAkt};
+    var updatePayload={service_name:svcName,beschreibung:beschreibung,dauer_minuten:min,preis:preis,puffer_minuten:puffer,puffer_aktiv:pufferAkt};
     var vRes=await sb.from('service_varianten').update(updatePayload).eq('id',vid);
     if(vRes.error){
       errs.push('Variante '+vid.slice(0,6)+': '+vRes.error.message);
     } else {
       item.varianten.forEach(function(v){
-        if(v.id===vid){v.service_name=svcName;v.dauer_minuten=min;v.preis=preis;v.puffer_minuten=puffer;v.puffer_aktiv=pufferAkt;}
+        if(v.id===vid){v.service_name=svcName;v.beschreibung=beschreibung;v.dauer_minuten=min;v.preis=preis;v.puffer_minuten=puffer;v.puffer_aktiv=pufferAkt;}
       });
     }
   }
@@ -2196,6 +2201,10 @@ function addModalVar(defaults){
       '<input type="text" placeholder="z.B. 60 Min" value="'+(d.name||'')+'" style="font-size:14px;padding:8px 10px;border:1.5px solid var(--border);border-radius:7px;width:100%;box-sizing:border-box;min-height:40px;color:var(--td);font-family:inherit;outline:none;">'+
     '</div>'+
     '<div style="display:flex;flex-direction:column;gap:3px">'+
+      '<label style="font-size:10px;color:var(--muted);font-weight:500">Beschreibung <span style="font-weight:400;opacity:.7">(optional)</span></label>'+
+      '<input type="text" placeholder="z.B. Ideal für Entspannung" value="'+(d.beschreibung||'')+'" style="font-size:14px;padding:8px 10px;border:1.5px solid var(--border);border-radius:7px;width:100%;box-sizing:border-box;min-height:40px;color:var(--td);font-family:inherit;outline:none;">'+
+    '</div>'+
+    '<div style="display:flex;flex-direction:column;gap:3px">'+
       '<label style="font-size:10px;color:var(--muted);font-weight:500">Dauer Min <span style="color:var(--tg)">*</span></label>'+
       '<div class="var-group" style="min-height:40px">'+
         '<input type="number" min="5" step="5" placeholder="Min" value="'+(d.dauer_minuten||'')+'" style="text-align:center;font-size:14px">'+
@@ -2231,6 +2240,7 @@ function readModalVars(){
     if(min>0){
       result.push({
         name:texts[0]?texts[0].value.trim():'',
+        beschreibung:texts[1]?texts[1].value.trim():'',
         dauer_minuten:min,
         preis:parseFloat(nums[1]?nums[1].value:0)||0,
         puffer_minuten:parseInt(nums[2]?nums[2].value:0)||0,
