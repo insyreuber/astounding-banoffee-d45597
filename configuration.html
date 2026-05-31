@@ -340,14 +340,8 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   /* Varianten: Stack */
   .var-header{display:none}
   .mvar-header{display:none}
-  .var-row{grid-template-columns:1fr !important;gap:6px;}
+  .var-row{grid-template-columns:1fr !important;gap:10px;}
   .mvar-row{grid-template-columns:1fr !important;gap:6px !important;}
-  .var-group::before{font-size:10px;color:var(--muted);padding:0 8px;white-space:nowrap;flex-shrink:0;}
-  .var-row .var-group:nth-child(1)::before{content:'Name'}
-  .var-row .var-group:nth-child(2)::before{content:'Beschreibung'}
-  .var-row .var-group:nth-child(3)::before{content:'Min'}
-  .var-row .var-group:nth-child(4)::before{content:'Preis €'}
-  .var-row .var-group:nth-child(5)::before{content:'Puffer'}
 
   /* Team sidebar volle Breite */
   .ma-layout{grid-template-columns:1fr !important;flex-direction:column}
@@ -2068,22 +2062,25 @@ function mkVarRow(v,svcId,idx){
         +'<input data-field="beschreibung" type="text" placeholder="optional" value="'+(v.beschreibung||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'beschreibung\',this.value)" style="border:none;outline:none;padding:6px;font-family:inherit;color:var(--td);background:transparent;width:100%;min-width:0">'
       +'</div>'
     +'</div>'
-    // Min + Preis + Puffer nebeneinander (schmal)
-    +'<div style="display:flex;flex-direction:column;gap:3px;min-width:0">'
-      +'<span class="var-row-lbl" style="font-size:10px;color:var(--muted);font-weight:500">Min · € · Puffer</span>'
-      +'<div style="display:flex;gap:4px;align-items:center">'
-        +'<div class="var-group" style="flex:1;min-width:0">'
-          +'<input data-field="dauer_minuten" type="number" min="5" step="5" placeholder="Min" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value)" style="min-width:0;text-align:center">'
-          +'<label class="toggle-sw" title="Dauer anzeigen"><input data-field="dauer_anzeigen" type="checkbox" '+(v.dauer_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'
-        +'</div>'
-        +'<div class="var-group" style="flex:1;min-width:0">'
-          +'<input data-field="preis" type="number" min="0" step="0.5" placeholder="€" value="'+preisVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis\',this.value)" style="min-width:0;text-align:center">'
-          +'<label class="toggle-sw" title="Preis anzeigen"><input data-field="preis_anzeigen" type="checkbox" '+(v.preis_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'
-        +'</div>'
-        +'<div class="var-group" style="flex:1;min-width:0">'
-          +'<input data-field="puffer_minuten" type="number" min="0" placeholder="Puf" value="'+(v.puffer_minuten||0)+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'puffer_minuten\',this.value)" style="min-width:0;text-align:center">'
-          +'<label class="toggle-sw" title="Puffer aktiv"><input data-field="puffer_aktiv" type="checkbox" '+(v.puffer_aktiv?'checked':'')+' ><span class="slider"></span></label>'
-        +'</div>'
+    // Min + Preis + Puffer — Label oben, Input, Toggle darunter
+    +'<div style="display:flex;gap:6px;min-width:0">'
+      // Min
+      +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;min-width:0">'
+        +'<span style="font-size:10px;color:var(--muted);font-weight:500;white-space:nowrap">Min</span>'
+        +'<input data-field="dauer_minuten" type="number" min="5" step="5" placeholder="—" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value)" style="width:100%;min-width:0;text-align:center;border:1.5px solid var(--border);border-radius:6px;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);outline:none">'
+        +'<label class="toggle-sw" title="Dauer anzeigen" style="margin-top:2px"><input data-field="dauer_anzeigen" type="checkbox" '+(v.dauer_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'
+      +'</div>'
+      // Preis
+      +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;min-width:0">'
+        +'<span style="font-size:10px;color:var(--muted);font-weight:500;white-space:nowrap">Preis €</span>'
+        +'<input data-field="preis" type="number" min="0" step="0.5" placeholder="—" value="'+preisVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis\',this.value)" style="width:100%;min-width:0;text-align:center;border:1.5px solid var(--border);border-radius:6px;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);outline:none">'
+        +'<label class="toggle-sw" title="Preis anzeigen" style="margin-top:2px"><input data-field="preis_anzeigen" type="checkbox" '+(v.preis_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'
+      +'</div>'
+      // Puffer
+      +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;min-width:0">'
+        +'<span style="font-size:10px;color:var(--muted);font-weight:500;white-space:nowrap">Puffer</span>'
+        +'<input data-field="puffer_minuten" type="number" min="0" placeholder="—" value="'+(v.puffer_minuten||0)+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'puffer_minuten\',this.value)" style="width:100%;min-width:0;text-align:center;border:1.5px solid var(--border);border-radius:6px;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);outline:none">'
+        +'<label class="toggle-sw" title="Puffer aktiv" style="margin-top:2px"><input data-field="puffer_aktiv" type="checkbox" '+(v.puffer_aktiv?'checked':'')+' ><span class="slider"></span></label>'
       +'</div>'
     +'</div>'
     +(isFirst
