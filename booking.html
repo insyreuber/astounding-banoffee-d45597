@@ -362,6 +362,10 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
   /* Header kompakter */
   .hd-name{font-size:16px}
   .hd-chip{font-size:12px}
+  /* Große Wochenansicht auf Mobile ausblenden */
+  #hd-hours-all{display:none!important}
+  /* Kleines Pill auf Mobile einblenden */
+  #hours-pill{display:block!important}
 }
 </style>
 </head>
@@ -416,6 +420,12 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
         </div>
       </div>
       <div id="hd-hours-rows" style="display:flex;flex-wrap:wrap;gap:2px"></div>
+    </div>
+    <!-- Kleines Öffnungszeiten-Pill — nur Mobile -->
+    <div id="hours-pill" onclick="window.toggleHours()" style="display:none;flex-shrink:0;cursor:pointer;background:rgba(255,255,255,.1);border-radius:8px;padding:7px 11px;position:relative">
+      <div id="hd-hours-status" style="font-size:10px;font-weight:600;color:#4ade80;margin-bottom:2px">Geöffnet</div>
+      <div id="today-hours-label" style="font-size:12px;color:#fff;font-weight:500">– ▾</div>
+      <div id="hours-drop" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:#3a1060;border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:8px;min-width:180px;z-index:99;box-shadow:0 8px 24px rgba(0,0,0,.3)"></div>
     </div>
   </div>
 </div>
