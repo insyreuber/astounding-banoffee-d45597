@@ -1967,6 +1967,26 @@ async function loadServices(){
   renderSvcList();
 }
 
+function buildVarPreviewChips(vars){
+  if(!vars||!vars.length)return'<span style="font-size:10px;color:var(--muted);font-style:italic">Noch keine Varianten</span>';
+  return vars.map(function(v){
+    var label='';
+    if(v.service_name)label+=v.service_name+' · ';
+    label+=(v.dauer_minuten||v.min||0)+' Min';
+    var preis=parseFloat(v.preis)||0;
+    if(preis)label+=' · '+preis.toFixed(2).replace('.',',')+' '+(v.waehrung||'€');
+    if(v.bezeichnung)label+=' · '+v.bezeichnung;
+    return'<span style="display:inline-flex;align-items:center;padding:4px 10px;border-radius:8px;font-size:11px;border:1.5px solid #e8e0f0;background:#fff;color:var(--td);font-weight:400;white-space:nowrap">'+esc(label)+'</span>';
+  }).join('');
+}
+
+function updateVarPreview(svcId){
+  var el=document.getElementById('svc-var-preview-'+svcId);
+  if(!el)return;
+  var item=servicesData.filter(function(i){return i.service.id===svcId;})[0];
+  if(item)el.innerHTML=buildVarPreviewChips(item.varianten);
+}
+
 function renderSvcList(){
   // Invalidate SVC_MAP so it rebuilds with fresh data
   window.SVC_MAP=null;
@@ -1982,6 +2002,7 @@ function renderSvcList(){
         +'<div style="flex:1;min-width:0">'
           +'<div class="svc-item-name">'+esc(s.name)+'</div>'
           +(s.beschreibung?'<div class="svc-item-meta">'+esc(s.beschreibung)+'</div>':'')
+          +'<div id="svc-var-preview-'+s.id+'" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:7px">'+buildVarPreviewChips(vars)+'</div>'
         +'</div>'
         +(minP!==null?'<span style="font-size:12px;color:var(--tg);font-weight:500;margin-right:8px">ab '+minP+' €</span>':'')
         +'<span class="badge '+(s.aktiv?'':'off')+'">'+(s.aktiv?'Aktiv':'Inaktiv')+'</span>'
@@ -2206,6 +2227,7 @@ async function saveSvcAll(id){
   var preisBadge=document.querySelector('#svc-item-'+id+' .svc-item-hdr span[style*="color:var(--tg)"]');
   if(preisBadge&&minP!==null)preisBadge.textContent='ab '+minP+' €';
 
+  updateVarPreview(id);
   if(errs.length)toast('Fehler: '+errs.join(' · '),'error');
   else toast('Gespeichert ✓','success');
 }
@@ -2232,6 +2254,7 @@ async function addVariante(svcId){
   if(item)item.varianten.push(v);
   var vl=document.getElementById('varlist-'+svcId);
   if(vl){var old=vl.querySelector('[style*="color:var(--muted)"]');if(old)old.remove();vl.insertAdjacentHTML('beforeend',mkVarRow(v,svcId,item?item.varianten.length-1:1));}
+  updateVarPreview(svcId);
   toast('Variante hinzugefügt — bitte Felder ausfüllen und speichern','success');
 }
 
@@ -2241,6 +2264,7 @@ async function deleteVar(varId,svcId){
   if(res.error){toast('Fehler: '+res.error.message,'error');return;}
   servicesData.forEach(function(i){if(i.service.id===svcId)i.varianten=i.varianten.filter(function(v){return v.id!==varId;});});
   var el=document.getElementById('var-'+varId);if(el)el.remove();
+  updateVarPreview(svcId);
   toast('Variante gelöscht','success');
 }
 
