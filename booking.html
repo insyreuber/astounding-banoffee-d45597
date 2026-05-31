@@ -362,6 +362,7 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
   /* Header kompakter */
   .hd-name{font-size:16px}
   .hd-chip{font-size:12px}
+  .acc-current{font-size:16px}
   /* Große Wochenansicht auf Mobile ausblenden */
   #hd-hours-all{display:none!important}
   /* Kleines Pill auf Mobile einblenden */
@@ -884,7 +885,12 @@ function mkSvcCards(){
           +'background:'+(isSel?'var(--tp)':allowed?'#fff':'#f5f3f8')+';'
           +'color:'+(isSel?'#fff':allowed?'var(--td)':'#c0b8cc')+';'
           +'font-weight:'+(isSel?'600':'400')+';">';
-        varHtml+=(v.service_name?v.service_name+' · ':'')+v.min+' Min'+(v.preis?' · '+v.preis+' €':'');
+        var dispMin=(v.puffer_minuten>0)?(v.min+v.puffer_minuten):v.min;
+        varHtml+=(v.service_name?v.service_name+' · ':'');
+        if(v.dauer_anzeigen!==false)varHtml+=(dispMin||v.min||'?')+' Min';
+        if(v.dauer_anzeigen!==false&&v.preis_anzeigen!==false&&v.preis)varHtml+=' · ';
+        if(v.preis_anzeigen!==false&&v.preis)varHtml+=v.preis+' €';
+        if(v.bezeichnung)varHtml+=(v.dauer_anzeigen!==false||v.preis_anzeigen!==false?' · ':'')+v.bezeichnung;
         if(v.bezeichnung)varHtml+=' · '+v.bezeichnung;
         if(!allowed)varHtml+=' <span style="font-size:9px;opacity:0.5">·</span>';
         varHtml+='</div>';
@@ -1665,10 +1671,12 @@ async function loadServices(salonId){
             id:v.id,
             service_name:v.service_name||'',
             bezeichnung:v.bezeichnung||'',
-            min:v.dauer_minuten,
+            min:parseInt(v.dauer_minuten)||0,
+            dauer_anzeigen:v.dauer_anzeigen!==false,
             preis:parseFloat(v.preis)||0,
+            preis_anzeigen:v.preis_anzeigen!==false,
             puffer_aktiv:v.puffer_aktiv,
-            puffer_minuten:v.puffer_minuten||0
+            puffer_minuten:parseInt(v.puffer_minuten)||0
           });
         });
       }
