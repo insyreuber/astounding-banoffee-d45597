@@ -360,7 +360,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   /* Service Header: Preis + Aktiv auf gleiche Höhe wie Name */
   .svc-item-hdr{align-items:flex-start !important}
   .svc-item-hdr > span[style*="color:var(--tg)"]{margin-top:2px !important;font-size:16px !important}
-  .svc-item-hdr > .badge{margin-top:2px !important}
+  .svc-item-hdr > .badge{margin-top:-2px !important}
   .svc-item-name{font-size:16px !important}
   .svc-item-meta{font-size:16px !important}
   .badge{font-size:16px !important;padding:4px 12px !important}
@@ -2148,7 +2148,7 @@ function mkVarRow(v,svcId,idx){
         +'</div>'
         // Toggle mit "Anzeigen" Label
         +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding-bottom:3px">'
-          +'<span style="font-size:10px;color:var(--muted);font-weight:500">Anzeigen</span>'
+          +'<span style="font-size:10px;color:var(--muted);font-weight:500;white-space:nowrap;text-align:center">Dauer<br>anzeigen</span>'
           +'<label class="toggle-sw"><input data-field="dauer_anzeigen" type="checkbox" '+(v.dauer_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'
         +'</div>'
         +'<input data-field="puffer_aktiv" type="checkbox" '+(v.puffer_aktiv?'checked':'')+' style="display:none">'
