@@ -3950,11 +3950,11 @@ function renderProfilContent(id){
             '<input type="url" id="f-google-maps" placeholder="https://maps.google.com/?q=..." value="'+(d.google_maps_url||'')+'">'+
           '</div>'+
         '</div>'+
-        '<div style="display:grid;grid-template-columns:0.3fr 0.7fr 0.7fr;gap:12px;width:100%;box-sizing:border-box">'+
-          '<div class="field" style="margin-bottom:0"><label>Vorwahl</label><input type="text" id="f-area-code" placeholder="02262" value="'+(d.area_code||'')+'"></div>'+
-          '<div class="field" style="margin-bottom:0"><label>Telefon</label><input type="text" id="f-phone-number" placeholder="12131243" value="'+(d.phone_number||'')+'"></div>'+
-          '<div class="field" style="margin-bottom:0"><label>Handy</label><input type="text" id="f-mobile" placeholder="+49 151 …" value="'+(d.mobile_url||'')+'"></div>'+
+        '<div style="display:grid;grid-template-columns:0.3fr 0.7fr;gap:12px;margin-bottom:12px;width:100%;box-sizing:border-box">'+
+          '<div class="field" style="margin-bottom:0"><label>Vorwahl</label><input type="text" id="f-area-code" placeholder="02262" value="'+(d.area_code||'')+'" style="min-width:0;width:100%"></div>'+
+          '<div class="field" style="margin-bottom:0"><label>Telefon</label><input type="text" id="f-phone-number" placeholder="12131243" value="'+(d.phone_number||'')+'" style="min-width:0;width:100%"></div>'+
         '</div>'+
+        '<div class="field" style="margin-bottom:0"><label>Handy</label><input type="text" id="f-mobile" placeholder="+49 151 …" value="'+(d.mobile_url||'')+'"></div>'+
       '</div>'+
       '<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
   }
