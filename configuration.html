@@ -1942,6 +1942,11 @@ async function loadFeatureSettings(){
 async function saveFeatureSettings(){
   if(!SALON_ID)return;
   var curFs=(_pData&&_pData.feature_settings)||{};
+  // Slider direkt aus DOM lesen falls verfügbar, sonst aus _pData
+  var vEl=document.getElementById('booking-vorlauf');
+  var hEl=document.getElementById('booking-horizont');
+  var vorlauf=vEl?parseInt(vEl.value):(curFs.booking_vorlauf!=null?curFs.booking_vorlauf:2);
+  var horizont=hEl?HORIZONT_VALS[parseInt(hEl.value)-1]:(curFs.booking_horizont!=null?curFs.booking_horizont:4);
   var settings={
     whatsapp_on:document.getElementById('feat-whatsapp-on').checked,
     termine_on:document.getElementById('feat-termine-on')?document.getElementById('feat-termine-on').checked:true,
@@ -1950,7 +1955,10 @@ async function saveFeatureSettings(){
     followup_timing:document.getElementById('followup-timing').value,
     followup_aktiv:document.getElementById('followup-aktiv').checked,
     slot_interval:curFs.slot_interval||15,
+    booking_vorlauf:vorlauf,
+    booking_horizont:horizont,
   };
+  if(window._pData)window._pData.feature_settings=Object.assign({},curFs,settings);
   await sb.from('kunden_profile').update({feature_settings:settings}).eq('id',SALON_ID);
 }
 async function loadServices(){
@@ -2002,7 +2010,10 @@ function renderSvcList(){
         +'<div style="flex:1;min-width:0">'
           +'<div class="svc-item-name">'+esc(s.name)+'</div>'
           +(s.beschreibung?'<div class="svc-item-meta">'+esc(s.beschreibung)+'</div>':'')
-          +'<div id="svc-var-preview-'+s.id+'" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:7px">'+buildVarPreviewChips(vars)+'</div>'
+          +'<div id="svc-var-preview-'+s.id+'" style="margin-top:10px;background:#0a1929;border-radius:12px;padding:12px 14px;position:relative;overflow:hidden">'+
+            '<div style="font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:10px">Vorschau Buchungswidget</div>'+
+            buildVarPreviewChips(vars)+
+          '</div>'
         +'</div>'
         +(minP!==null?'<span style="font-size:12px;color:var(--tg);font-weight:500;margin-right:8px">ab '+minP+' €</span>':'')
         +'<span class="badge '+(s.aktiv?'':'off')+'">'+(s.aktiv?'Aktiv':'Inaktiv')+'</span>'
