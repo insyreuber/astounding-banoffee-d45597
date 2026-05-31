@@ -2040,25 +2040,30 @@ function mkVarRow(v,svcId,idx){
   var preisVal=(v.preis!=null&&v.preis>0)?v.preis:'';
   var isFirst=(idx===0);
   return'<div class="var-row" id="var-'+v.id+'" style="grid-template-columns:1fr 1.5fr 2fr 28px;gap:8px">'
-    // Min + Puffer (fusioniert) + Preis
-    +'<div style="display:flex;gap:6px;min-width:0;align-items:flex-end">'
+    // Min + Puffer + Preis (alle in einer Spalte, Preis darunter)
+    +'<div style="display:flex;flex-direction:column;gap:6px;min-width:0">'
       // Min + Puffer Fusion
-      +'<div style="display:flex;flex-direction:column;gap:3px;flex:2;min-width:0">'
-        +'<span style="font-size:10px;color:var(--muted);font-weight:500;white-space:nowrap">Min + Puffer</span>'
+      +'<div style="display:flex;flex-direction:column;gap:3px">'
+        +'<span style="font-size:10px;color:var(--muted);font-weight:500;white-space:nowrap">Min + Puffer = Gesamt</span>'
         +'<div style="display:flex;align-items:center;border:1.5px solid var(--tpl);border-radius:6px;overflow:hidden;background:rgba(90,45,130,.12)">'
-          +'<input data-field="dauer_minuten" type="number" min="5" step="5" placeholder="—" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value)" style="flex:1;min-width:0;text-align:center;border:none;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:transparent;outline:none">'
+          +'<input data-field="dauer_minuten" type="number" min="5" step="5" placeholder="—" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value);updateVarTotal(\''+v.id+'\')" style="flex:1;min-width:0;text-align:center;border:none;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:transparent;outline:none">'
           +'<span style="font-size:13px;font-weight:700;color:var(--tpl);padding:0 2px;flex-shrink:0;line-height:1">+</span>'
-          +'<input data-field="puffer_minuten" type="number" min="0" placeholder="—" value="'+(v.puffer_minuten||0)+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'puffer_minuten\',this.value)" style="flex:1;min-width:0;text-align:center;border:none;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:#fff;outline:none;border-radius:0 4px 4px 0">'
+          +'<input data-field="puffer_minuten" type="number" min="0" placeholder="—" value="'+(v.puffer_minuten||0)+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'puffer_minuten\',this.value);updateVarTotal(\''+v.id+'\')" style="flex:1;min-width:0;text-align:center;border:none;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:#fff;outline:none;border-radius:0 4px 4px 0">'
+          +'<span style="font-size:11px;font-weight:600;color:var(--tpl);padding:0 4px;flex-shrink:0;line-height:1">=</span>'
+          +'<span id="vartotal-'+v.id+'" style="flex:0 0 32px;text-align:center;font-size:11px;font-weight:700;color:var(--tpl);background:rgba(90,45,130,.08);height:100%;display:flex;align-items:center;justify-content:center;padding:6px 2px">'
+            +((parseInt(durVal)||0)+(v.puffer_minuten||0)||'—')
+          +'</span>'
         +'</div>'
         +'<label class="toggle-sw" title="Dauer anzeigen" style="margin-top:3px;align-self:center"><input data-field="dauer_anzeigen" type="checkbox" '+(v.dauer_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'
-        // puffer_aktiv hidden — tied to dauer_anzeigen toggle visually
         +'<input data-field="puffer_aktiv" type="checkbox" '+(v.puffer_aktiv?'checked':'')+' style="display:none">'
       +'</div>'
-      // Preis
-      +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;min-width:0">'
+      // Preis — darunter
+      +'<div style="display:flex;flex-direction:column;gap:3px">'
         +'<span style="font-size:10px;color:var(--muted);font-weight:500;white-space:nowrap">Preis €</span>'
-        +'<input data-field="preis" type="number" min="0" step="0.5" placeholder="—" value="'+preisVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis\',this.value)" style="width:100%;min-width:0;text-align:center;border:1.5px solid var(--border);border-radius:6px;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);outline:none">'
-        +'<label class="toggle-sw" title="Preis anzeigen" style="margin-top:2px"><input data-field="preis_anzeigen" type="checkbox" '+(v.preis_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'
+        +'<div style="display:flex;align-items:center;gap:6px">'
+          +'<input data-field="preis" type="number" min="0" step="0.5" placeholder="—" value="'+preisVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis\',this.value)" style="flex:1;min-width:0;text-align:center;border:1.5px solid var(--border);border-radius:6px;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);outline:none">'
+          +'<label class="toggle-sw" title="Preis anzeigen"><input data-field="preis_anzeigen" type="checkbox" '+(v.preis_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'
+        +'</div>'
       +'</div>'
     +'</div>'
     // Name
@@ -2080,6 +2085,16 @@ function mkVarRow(v,svcId,idx){
       :'<button class="var-del" onclick="deleteVar(\''+v.id+'\',\''+svcId+'\')">✕</button>'
     )
   +'</div>';
+}
+
+// Gesamt-Anzeige (Min+Puffer) live aktualisieren
+function updateVarTotal(varId){
+  var row=document.getElementById('var-'+varId);
+  if(!row)return;
+  var min=parseInt((row.querySelector('[data-field="dauer_minuten"]')||{}).value)||0;
+  var puf=parseInt((row.querySelector('[data-field="puffer_minuten"]')||{}).value)||0;
+  var el=document.getElementById('vartotal-'+varId);
+  if(el)el.textContent=(min+puf)||'—';
 }
 
 // Lokalen State updaten + ab-Preis im Header aktualisieren (kein Supabase-Call)
