@@ -94,7 +94,7 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .acc-body{overflow:hidden;max-height:0;opacity:0;transition:max-height .3s ease,opacity .2s,margin .2s}
 .acc-body.open{overflow:visible}
 .acc-body.open{max-height:2000px;opacity:1;margin-top:10px;overflow:visible}
-.staff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(234px,1fr));gap:7px;max-width:100%}
+.staff-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
 .stf{border:1.5px solid #d4c8e8;border-radius:8px;padding:10px 11px;display:flex;align-items:center;gap:9px;cursor:pointer;background:#fff;position:relative;overflow:visible;box-shadow:0 2px 8px rgba(74,28,107,.09),0 1px 3px rgba(74,28,107,.07);transition:border-color .15s,box-shadow .15s,transform .15s;z-index:1}
 .stf:hover{z-index:3}
 .stf:hover{border-color:var(--tpl);box-shadow:0 4px 12px rgba(74,28,107,.12);transform:translateY(-1px)}
@@ -266,7 +266,7 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
   .svc-grid{grid-template-columns:1fr}
 
   /* Team: 1 Spalte */
-  .staff-grid{grid-template-columns:1fr;max-width:100%}
+  .staff-grid{grid-template-columns:1fr}
 
   /* Kalender + Summary untereinander */
   .cal-sum-row{grid-template-columns:1fr}
@@ -362,10 +362,6 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
   /* Header kompakter */
   .hd-name{font-size:16px}
   .hd-chip{font-size:12px}
-  /* Großes Öffnungszeiten-Element auf Mobile ausblenden */
-  #hd-hours-all{display:none!important}
-  /* Kleines Pill auf Mobile einblenden */
-  #hours-pill{display:block!important}
 }
 </style>
 </head>
@@ -411,7 +407,6 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
       </div>
     </div>
     <!-- Öffnungszeiten alle Tage rechts -->
-    <!-- Öffnungszeiten alle Tage rechts — nur Desktop -->
     <div id="hd-hours-all" style="flex-shrink:0;background:rgba(255,255,255,.08);border-radius:10px;padding:10px 14px;min-width:180px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
         <div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:600" id="hd-hours-week-label">Diese Woche</div>
@@ -421,12 +416,6 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
         </div>
       </div>
       <div id="hd-hours-rows" style="display:flex;flex-wrap:wrap;gap:2px"></div>
-    </div>
-    <!-- Kleines Öffnungszeiten-Pill — nur Mobile -->
-    <div id="hours-pill" onclick="window.toggleHours()" style="display:none;flex-shrink:0;cursor:pointer;background:rgba(255,255,255,.1);border-radius:8px;padding:7px 11px;position:relative">
-      <div id="hd-hours-status" style="font-size:10px;font-weight:600;color:#4ade80;margin-bottom:2px">Geöffnet</div>
-      <div id="today-hours-label" style="font-size:12px;color:#fff;font-weight:500">– ▾</div>
-      <div id="hours-drop" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:#3a1060;border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:8px;min-width:180px;z-index:99;box-shadow:0 8px 24px rgba(0,0,0,.3)"></div>
     </div>
   </div>
 </div>
@@ -493,13 +482,6 @@ function totalMinuten(){
   return st.services.reduce(function(sum,s){
     var v=fvar(s.varId);
     return sum+(v?v.min:0);
-  },0);
-}
-function totalKalenderMinuten(){
-  // Kalender-Dauer = Anzeigedauer + Puffer (für Google Kalender Block)
-  return st.services.reduce(function(sum,s){
-    var v=fvar(s.varId);
-    return sum+(v?(v.min+(v.puffer_minuten||0)):0);
   },0);
 }
 function totalPreis(){
@@ -705,7 +687,6 @@ function availSlots(){
   }
 
   var totalMin=totalMinuten();
-  var totalKalMin=totalKalenderMinuten(); // inkl. Puffer — für Slot-Blockierung
 
   // Alle Slots innerhalb der Öffnungszeiten — multi-slot aware
   var openSlots=BASE_SLOTS.filter(function(s){
@@ -735,23 +716,23 @@ function availSlots(){
       if(slotDate<_cutoff)isPast=true;
     }
     if(isPast)return{time:s,busy:false,closed:true,past:true};
-    // Zu nah an Schließzeit — Kalender-Dauer (inkl. Puffer) muss reinpassen
+    // Zu nah an Schließzeit — Termin würde nicht reinpassen (multi-slot aware)
     var fitsInSlot=false;
-    if(totalKalMin>0){
+    if(totalMin>0){
       if(azSlots.length){
         fitsInSlot=azSlots.some(function(r){
           var rs=parseInt(r.start.split(':')[0])*60+parseInt(r.start.split(':')[1]);
           var re=parseInt(r.end.split(':')[0])*60+parseInt(r.end.split(':')[1]);
-          return slotMin>=rs&&slotMin+totalKalMin<=re;
+          return slotMin>=rs&&slotMin+totalMin<=re;
         });
       } else {
-        fitsInSlot=slotMin+totalKalMin<=endMin;
+        fitsInSlot=slotMin+totalMin<=endMin;
       }
       if(!fitsInSlot)return{time:s,busy:false,closed:true};
     }
-    // Buchung würde belegte Slots überschneiden — inkl. Puffer prüfen
+    // Buchung würde belegte Slots überschneiden
     if(busySlots&&busySlots.length){
-      for(var m=0;m<totalKalMin;m+=15){
+      for(var m=0;m<totalMin;m+=15){
         var checkMin=slotMin+m;
         var hh=('0'+Math.floor(checkMin/60)).slice(-2);
         var mm=('0'+(checkMin%60)).slice(-2);
@@ -798,14 +779,13 @@ window.pickDay=function(k){
           raw.busy.forEach(function(b){
             var start=new Date(b.start);
             var end=new Date(b.end);
-            // Abrunden auf 15-Min-Raster für Start
-            var startMin=Math.floor((start.getHours()*60+start.getMinutes())/15)*15;
-            // Aufrunden auf 15-Min-Raster für End
-            var endMin=Math.ceil((end.getHours()*60+end.getMinutes())/15)*15;
-            for(var m=startMin;m<endMin;m+=15){
-              var hh=('0'+Math.floor(m/60)).slice(-2);
-              var mm=('0'+(m%60)).slice(-2);
-              busySlots.push(hh+':'+mm);
+            var cur=new Date(start);
+            while(cur<end){
+              var hh=('0'+cur.getHours()).slice(-2);
+              var mm=cur.getMinutes();
+              var mmRounded=mm<15?'00':mm<30?'15':mm<45?'30':'45';
+              busySlots.push(hh+':'+mmRounded);
+              cur.setMinutes(cur.getMinutes()+15);
             }
           });
         }
@@ -894,9 +874,7 @@ function mkSvcCards(){
           +'background:'+(isSel?'var(--tp)':allowed?'#fff':'#f5f3f8')+';'
           +'color:'+(isSel?'#fff':allowed?'var(--td)':'#c0b8cc')+';'
           +'font-weight:'+(isSel?'600':'400')+';">';
-        var dispMin=(v.puffer_minuten>0)?(v.min+v.puffer_minuten):v.min;
-        varHtml+=(v.service_name?v.service_name+' · ':'')+(dispMin||v.min||'?')+' Min'+(v.preis?' · '+v.preis+' €':'');
-        if(v.bezeichnung)varHtml+=' · '+v.bezeichnung;
+        varHtml+=(v.service_name?v.service_name+' · ':'')+v.min+' Min'+(v.preis?' · '+v.preis+' €':'');
         if(!allowed)varHtml+=' <span style="font-size:9px;opacity:0.5">·</span>';
         varHtml+='</div>';
       });
@@ -1076,7 +1054,7 @@ function mkSumCard(){
     st.services.forEach(function(s){
       var svc=fsvc(s.svcId);
       var v=fvar(s.varId);
-      if(svc){var dispMinS=(v&&v.puffer_minuten>0)?(v.min+v.puffer_minuten):(v?v.min:0);rows+=row(svc.name,v?(v.service_name?v.service_name+' · ':'')+dispMinS+' Min'+(v.preis?' · '+v.preis+' \u20ac':''):'— Variante wählen');}
+      if(svc)rows+=row(svc.name,v?(v.service_name?v.service_name+' · ':'')+v.min+' Min'+(v.preis?' · '+v.preis+' \u20ac':''):'— Variante wählen');
     });
   } else {
     rows+=row('Service',null);
@@ -1237,34 +1215,15 @@ window.submitBooking=async function(){
     var svc=fsvc(s.svcId);
     var v=fvar(s.varId);
     var min=v?v.min:0;
-    var puf=v?v.puffer_minuten||0:0;
     return{
       service_id:s.svcId,
       service_name:svc?svc.name:'',
       variante_id:s.varId,
       variante_name:v?v.service_name:'',
       dauer_minuten:min,
-      puffer_minuten:puf,
-      kalender_minuten:min+puf,
-      dauer_label:puf>0?'Dauer: '+min+' Min, Puffer: '+puf+' Min':'Dauer: '+min+' Min',
       preis:v?v.preis:0
     };
   });
-
-  // Beschreibungs-Label für Google Kalender
-  var dauerTotal=totalMinuten();
-  var pufferTotal=st.services.reduce(function(sum,s){var v=fvar(s.varId);return sum+(v?v.puffer_minuten||0:0);},0);
-  var dauerLabel=pufferTotal>0
-    ?'Dauer: '+dauerTotal+' Min, Puffer: '+pufferTotal+' Min'
-    :'Dauer: '+dauerTotal+' Min';
-
-  // Fertige Kalender-Beschreibung — n8n übernimmt 1:1
-  var svcLines=services.map(function(s){
-    return'Service: '+s.service_name+'\nVariante: '+(s.variante_name||'—')+'\n'+s.dauer_label;
-  }).join('\n\n');
-  var calendarDescription='Kunde: '+st.name.trim()
-    +'\nTelefon: '+normPhone(st.phone)
-    +'\n\n'+svcLines;
 
   var payload={
     salon_id:salonId,
@@ -1272,11 +1231,7 @@ window.submitBooking=async function(){
     date:dateFormatted,
     time:st.slot,
     datetime:timeISO,
-    duration_minutes:totalKalenderMinuten(),
-    display_duration_minutes:totalMinuten(),
-    puffer_minuten:pufferTotal,
-    dauer_label:dauerLabel,
-    description:calendarDescription,
+    duration_minutes:totalMinuten(),
     services:services,
     customer_name:st.name.trim(),
     customer_phone:normPhone(st.phone),
@@ -1696,11 +1651,10 @@ async function loadServices(salonId){
           VARIANTEN[v.service_id].push({
             id:v.id,
             service_name:v.service_name||'',
-            bezeichnung:v.bezeichnung||'',
-            min:parseInt(v.dauer_minuten)||0,
+            min:v.dauer_minuten,
             preis:parseFloat(v.preis)||0,
             puffer_aktiv:v.puffer_aktiv,
-            puffer_minuten:parseInt(v.puffer_minuten)||0
+            puffer_minuten:v.puffer_minuten||0
           });
         });
       }
