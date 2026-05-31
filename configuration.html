@@ -295,6 +295,20 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   #profil-toggles button{font-size:11px !important;padding:6px 12px !important;}
 
   /* Adresse & Kontakt — Felder bleiben nebeneinander auf Mobile */
+  @media (max-width: 768px) {
+    /* PLZ (0.3fr Spalte) — input max 30% der Zeile */
+    #f-plz, #f-house, #f-area-code {
+      width: 100% !important;
+      min-width: 0 !important;
+      font-size: 16px !important;
+    }
+    /* Alle Adress-Grid-Inputs kein min-width overflow */
+    #profil-content .field input {
+      min-width: 0 !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+  }
 
   /* Öffnungszeiten — Zeile kompakter, selects kleiner */
   .hours-col{padding:7px 10px !important;gap:8px !important;}
@@ -3923,12 +3937,12 @@ function renderProfilContent(id){
         '<div class="card-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Adresse &amp; Kontakt</div>'+
         '<div class="field" style="margin-bottom:12px"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="f-brand" placeholder="z.B. Wellness Store" value="'+(d.brand_name||d.name||'')+'"></div>'+
         '<div style="display:grid;grid-template-columns:0.3fr 0.7fr;gap:12px;margin-bottom:12px;width:100%;box-sizing:border-box">'+
-          '<div class="field" style="margin-bottom:0"><label>PLZ</label><input type="text" id="f-plz" placeholder="51674" value="'+(d.postal_code||'')+'"></div>'+
-          '<div class="field" style="margin-bottom:0"><label>Stadt</label><input type="text" id="f-city" placeholder="Wiehl" value="'+(d.city||'')+'"></div>'+
+          '<div class="field" style="margin-bottom:0"><label>PLZ</label><input type="text" id="f-plz" placeholder="51674" value="'+(d.postal_code||'')+'" style="min-width:0;width:100%"></div>'+
+          '<div class="field" style="margin-bottom:0"><label>Stadt</label><input type="text" id="f-city" placeholder="Wiehl" value="'+(d.city||'')+'" style="min-width:0;width:100%"></div>'+
         '</div>'+
         '<div style="display:grid;grid-template-columns:0.7fr 0.3fr;gap:12px;margin-bottom:12px;width:100%;box-sizing:border-box">'+
-          '<div class="field" style="margin-bottom:0"><label>Straße</label><input type="text" id="f-street" placeholder="Fritz-Raue Strasse" value="'+(d.street||'')+'"></div>'+
-          '<div class="field" style="margin-bottom:0"><label>Hausnummer</label><input type="text" id="f-house" placeholder="1" value="'+(d.house_number||'')+'"></div>'+
+          '<div class="field" style="margin-bottom:0"><label>Straße</label><input type="text" id="f-street" placeholder="Fritz-Raue Strasse" value="'+(d.street||'')+'" style="min-width:0;width:100%"></div>'+
+          '<div class="field" style="margin-bottom:0"><label>Hausnummer</label><input type="text" id="f-house" placeholder="1" value="'+(d.house_number||'')+'" style="min-width:0;width:100%"></div>'+
         '</div>'+
         '<div style="margin-bottom:12px">'+
           '<div class="field" style="margin-bottom:0">'+
