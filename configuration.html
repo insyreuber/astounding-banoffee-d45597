@@ -123,8 +123,9 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 /* ── VARIANTEN (service edit) ── */
 .var-header{display:grid;grid-template-columns:2fr 1.2fr 1.2fr 1.2fr 28px;gap:8px;padding:0 12px;margin-bottom:4px}
 .var-col-lbl{font-size:10px;color:var(--muted);text-align:center;letter-spacing:.05em}
-.var-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
-.var-row{display:grid;grid-template-columns:2fr 1.2fr 1.2fr 1.2fr 28px;gap:8px;align-items:center;background:#faf8fc;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px}
+.var-list{display:flex;flex-direction:column;gap:0;margin-bottom:12px}
+.var-row:last-child{border-bottom:none}
+.var-row{display:grid;grid-template-columns:2fr 1.2fr 1.2fr 1.2fr 28px;gap:8px;align-items:center;background:transparent;border:none;border-radius:0;padding:6px 0;border-bottom:1px solid var(--border)}
 /* Jede Gruppe = Input + Toggle nebeneinander */
 .var-group{display:flex;align-items:center;gap:5px;background:var(--white);border:1.5px solid var(--border);border-radius:6px;padding:0 6px 0 0;overflow:hidden;min-width:0}
 .var-group input[type="number"]{border:1.5px solid var(--border);border-radius:6px;outline:none;padding:6px 6px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);width:100%;text-align:center;min-width:40px;box-shadow:0 1px 3px rgba(74,28,107,.06);transition:border-color .2s,box-shadow .2s}
@@ -2000,13 +2001,15 @@ function renderSvcList(){
 }
 
 function renderSvcBody(s,vars){
-  return'<div style="display:flex;gap:10px;margin-bottom:12px;align-items:flex-end">'
-    +'<div class="field" style="flex:1"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="svc-f-name-'+s.id+'" value="'+esc(s.name)+'"></div>'
-    +'<div class="field" style="flex:2"><label>Beschreibung <span style="font-size:10px;color:var(--muted);font-weight:400">(optional)</span></label><input type="text" id="svc-f-desc-'+s.id+'" value="'+esc(s.beschreibung||'')+'"></div>'
-    +'<div style="padding-bottom:2px;display:flex;flex-direction:column;align-items:center;gap:3px">'
-      +'<label class="toggle-sw" title="Im Widget aktiv"><input type="checkbox" id="svc-f-aktiv-'+s.id+'" '+(s.aktiv?'checked':'')+' ><span class="slider"></span></label>'
-      +'<span style="font-size:9px;color:var(--muted)">Aktiv</span>'
+  return'<div style="margin-bottom:12px">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px">'
+      +'<div class="field" style="flex:1;margin-bottom:0"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="svc-f-name-'+s.id+'" value="'+esc(s.name)+'"></div>'
+      +'<div style="padding-bottom:2px;display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0">'
+        +'<label class="toggle-sw" title="Im Widget aktiv"><input type="checkbox" id="svc-f-aktiv-'+s.id+'" '+(s.aktiv?'checked':'')+' ><span class="slider"></span></label>'
+        +'<span style="font-size:9px;color:var(--muted)">Aktiv</span>'
+      +'</div>'
     +'</div>'
+    +'<div class="field" style="margin-bottom:0"><label>Beschreibung <span style="font-size:10px;color:var(--muted);font-weight:400">(optional)</span></label><input type="text" id="svc-f-desc-'+s.id+'" value="'+esc(s.beschreibung||'')+'"></div>'
   +'</div>'
   +'<hr class="div">'
   +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Varianten</div>'
