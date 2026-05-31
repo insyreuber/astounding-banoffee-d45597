@@ -3786,7 +3786,6 @@ var PTABS = [
   {id:'zeiten',    label:'Öffnungszeiten',    req:true},
   {id:'service',   label:'Service',           req:true},
   {id:'team',      label:'Team',              req:true},
-  {id:'whatsapp',  label:'WhatsApp Templates',req:false, wa:true},
   {id:'sonstiges', label:'Sonstiges',         req:false},
 ];
 
@@ -3844,7 +3843,6 @@ function updateProfilStatus(){
       team:     '⚠ Füge mindestens ein <strong>Teammitglied</strong> hinzu.'
     },
     yellow:{
-      whatsapp: '💬 Tipp: Aktiviere <strong>WhatsApp Automatic</strong> für automatische Bestätigungen & Erinnerungen.',
       sonstiges:'✦ Optional: Ergänze <strong>Links & eine Notiz</strong> für deinen Auftritt.'
     }
   };
@@ -4096,47 +4094,6 @@ function renderProfilContent(id){
     renderSvcList();
   }
 
-  else if(id==='whatsapp'){
-    var fs=(window._pData&&window._pData.feature_settings)||{};
-    var tplB=fs.wa_template_bestaetigung||'Hallo {{name}}!\nDein Termin am {{termin}} ist bestätigt. Bis dann!\n\nDein Link zur Buchung: {{buchungslink}}\npowered by insy-reception';
-    var tplE=fs.wa_template_erinnerung||'Hallo {{name}}!\nErinnerung: Dein Termin ist am {{termin}}. Wir freuen uns auf dich!\n\nDein Link zur Buchung: {{buchungslink}}\npowered by insy-reception';
-    var tplS=fs.wa_template_storno||'Hallo {{name}}!\nWir haben deine Stornierung für den {{termin}} erhalten und bestätigen diese hiermit.\n\nFalls du einen neuen Termin buchen möchtest:\n{{buchungslink}}\npowered by insy-reception';
-    var chips='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">'
-      +['{{name}}','{{termin}}','{{datum}}','{{uhrzeit}}','{{service}}','{{buchungslink}}','{{salon}}'].map(function(v){
-        return'<span onclick="insertTplVar(this.textContent)" style="background:var(--tpp);color:var(--tpl);border:1px solid var(--border);border-radius:99px;padding:2px 10px;font-size:11px;cursor:pointer;font-family:DM Mono,monospace">'+v+'</span>';
-      }).join('')+'</div>';
-    wrap.innerHTML=
-      '<div class="card">'+
-        '<div class="card-title"><svg width="13" height="13" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.962-1.424A9.953 9.953 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> WhatsApp Templates</div>'+
-        '<div style="font-size:11px;color:var(--muted);margin-bottom:14px">Verwende <code>{{variable}}</code> Platzhalter — klicke zum Einfügen:</div>'+
-        chips+
-        // Tabs
-        '<div style="display:flex;gap:6px;margin-bottom:14px" id="wa-tpl-tabs">'+
-          '<button onclick="switchWaTpl(\'bestaetigung\')" id="wa-tab-bestaetigung" class="btn btn-sm" style="background:var(--tp);color:#fff">Bestätigung</button>'+
-          '<button onclick="switchWaTpl(\'erinnerung\')" id="wa-tab-erinnerung" class="btn btn-sm btn-ghost">Erinnerung</button>'+
-          '<button onclick="switchWaTpl(\'storno\')" id="wa-tab-storno" class="btn btn-sm btn-ghost">Storno</button>'+
-        '</div>'+
-        '<div id="wa-tpl-bestaetigung">'+
-          '<div class="field" style="margin-bottom:10px"><label>Bestätigungs-Nachricht</label><textarea id="tpl-bestaetigung" rows="6" style="font-family:DM Mono,monospace;font-size:13px">'+esc(tplB)+'</textarea></div>'+
-          '<div style="background:var(--bg);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--td);white-space:pre-wrap;font-family:DM Mono,monospace;border:1px solid var(--border)" id="preview-bestaetigung"></div>'+
-        '</div>'+
-        '<div id="wa-tpl-erinnerung" style="display:none">'+
-          '<div class="field" style="margin-bottom:10px"><label>Erinnerungs-Nachricht</label><textarea id="tpl-erinnerung" rows="6" style="font-family:DM Mono,monospace;font-size:13px">'+esc(tplE)+'</textarea></div>'+
-          '<div style="background:var(--bg);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--td);white-space:pre-wrap;font-family:DM Mono,monospace;border:1px solid var(--border)" id="preview-erinnerung"></div>'+
-        '</div>'+
-        '<div id="wa-tpl-storno" style="display:none">'+
-          '<div class="field" style="margin-bottom:10px"><label>Storno-Nachricht</label><textarea id="tpl-storno" rows="6" style="font-family:DM Mono,monospace;font-size:13px">'+esc(tplS)+'</textarea></div>'+
-          '<div style="background:var(--bg);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--td);white-space:pre-wrap;font-family:DM Mono,monospace;border:1px solid var(--border)" id="preview-storno"></div>'+
-        '</div>'+
-      '</div>'+
-      '<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px"><button class="btn btn-primary" onclick="saveWaTemplates()">Speichern</button></div>';
-    window._waTplActive='bestaetigung';
-    updateWaPreview('bestaetigung');
-    document.getElementById('tpl-bestaetigung').oninput=function(){updateWaPreview('bestaetigung');};
-    document.getElementById('tpl-erinnerung').oninput=function(){updateWaPreview('erinnerung');};
-    document.getElementById('tpl-storno').oninput=function(){updateWaPreview('storno');};
-  }
-
   else if(id==='team'){
     wrap.innerHTML=
       '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'+
@@ -4146,53 +4103,6 @@ function renderProfilContent(id){
     renderStaffSidebar();
   }
 }
-function switchWaTpl(type){
-  window._waTplActive=type;
-  ['bestaetigung','erinnerung','storno'].forEach(function(t){
-    var panel=document.getElementById('wa-tpl-'+t);
-    var btn=document.getElementById('wa-tab-'+t);
-    if(panel)panel.style.display=t===type?'block':'none';
-    if(btn){btn.style.background=t===type?'var(--tp)':'';btn.style.color=t===type?'#fff':'';}
-    if(btn)btn.className='btn btn-sm '+(t===type?'':'btn-ghost');
-  });
-  updateWaPreview(type);
-}
-
-function updateWaPreview(type){
-  var ta=document.getElementById('tpl-'+type);
-  var prev=document.getElementById('preview-'+type);
-  if(!ta||!prev)return;
-  var demo={name:'Maria M.',termin:'Freitag, 06.06. um 14:00 Uhr',datum:'Freitag, 06.06.',uhrzeit:'14:00 Uhr',service:'Massage · 60 Min',buchungslink:'https://insy-reception.com/success?...',salon:window.SALON_NAME||'Wellness Store'};
-  var txt=ta.value.replace(/\{\{name\}\}/g,demo.name).replace(/\{\{termin\}\}/g,demo.termin).replace(/\{\{datum\}\}/g,demo.datum).replace(/\{\{uhrzeit\}\}/g,demo.uhrzeit).replace(/\{\{service\}\}/g,demo.service).replace(/\{\{buchungslink\}\}/g,demo.buchungslink).replace(/\{\{salon\}\}/g,demo.salon);
-  prev.textContent=txt;
-}
-
-function insertTplVar(v){
-  var type=window._waTplActive||'bestaetigung';
-  var ta=document.getElementById('tpl-'+type);
-  if(!ta)return;
-  var s=ta.selectionStart,e=ta.selectionEnd;
-  ta.value=ta.value.slice(0,s)+v+ta.value.slice(e);
-  ta.selectionStart=ta.selectionEnd=s+v.length;
-  ta.focus();
-  updateWaPreview(type);
-}
-
-async function saveWaTemplates(){
-  if(!SALON_ID)return;
-  var fs=(window._pData&&window._pData.feature_settings)||{};
-  var tB=document.getElementById('tpl-bestaetigung');
-  var tE=document.getElementById('tpl-erinnerung');
-  var tS=document.getElementById('tpl-storno');
-  if(tB)fs.wa_template_bestaetigung=tB.value;
-  if(tE)fs.wa_template_erinnerung=tE.value;
-  if(tS)fs.wa_template_storno=tS.value;
-  var res=await sb.from('kunden_profile').update({feature_settings:fs}).eq('id',SALON_ID);
-  if(res.error){toast('Fehler: '+res.error.message,'error');return;}
-  if(window._pData)window._pData.feature_settings=fs;
-  toast('Templates gespeichert ✓','success');
-}
-
 // ══════════════════════════════════════════════
 init();
 </script>
