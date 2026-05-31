@@ -1979,9 +1979,6 @@ function renderSvcList(){
     var ini=s.name.charAt(0).toUpperCase();
     return'<div class="svc-item" id="svc-item-'+s.id+'">'
       +'<div class="svc-item-hdr" onclick="toggleItem(\''+s.id+'\',\'svc\')">'
-        +'<div class="svc-item-icon">'
-          +'<span style="font-size:18px;font-weight:600;color:var(--tpl)">'+ini+'</span>'
-        +'</div>'
         +'<div style="flex:1;min-width:0">'
           +'<div class="svc-item-name">'+esc(s.name)+'</div>'
           +(s.beschreibung?'<div class="svc-item-meta">'+esc(s.beschreibung)+'</div>':'')
@@ -1998,7 +1995,7 @@ function renderSvcList(){
 function renderSvcBody(s,vars){
   return'<div style="margin-bottom:12px">'
     +'<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px">'
-      +'<div class="field" style="flex:1;margin-bottom:0"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="svc-f-name-'+s.id+'" value="'+esc(s.name)+'" style="background:rgba(90,45,130,.06);border-color:var(--tpl)"></div>'
+      +'<div class="field" style="flex:1;margin-bottom:0"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="svc-f-name-'+s.id+'" value="'+esc(s.name)+'" style="background:rgba(90,45,130,.12);border-color:var(--tpl)"></div>'
       +'<div style="padding-bottom:2px;display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0">'
         +'<label class="toggle-sw" title="Im Widget aktiv"><input type="checkbox" id="svc-f-aktiv-'+s.id+'" '+(s.aktiv?'checked':'')+' ><span class="slider"></span></label>'
         +'<span style="font-size:9px;color:var(--muted)">Aktiv</span>'
@@ -2047,7 +2044,7 @@ function mkVarRow(v,svcId,idx){
     +'<div style="display:flex;gap:6px;min-width:0">'
       +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;min-width:0">'
         +'<span style="font-size:10px;color:var(--muted);font-weight:500;white-space:nowrap">Min</span>'
-        +'<input data-field="dauer_minuten" type="number" min="5" step="5" placeholder="—" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value)" style="width:100%;min-width:0;text-align:center;border:1.5px solid var(--border);border-radius:6px;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:rgba(90,45,130,.06);outline:none">'
+        +'<input data-field="dauer_minuten" type="number" min="5" step="5" placeholder="—" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value)" style="width:100%;min-width:0;text-align:center;border:1.5px solid var(--tpl);border-radius:6px;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:rgba(90,45,130,.12);outline:none">'
         +'<label class="toggle-sw" title="Dauer anzeigen" style="margin-top:2px"><input data-field="dauer_anzeigen" type="checkbox" '+(v.dauer_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'
       +'</div>'
       +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;min-width:0">'
