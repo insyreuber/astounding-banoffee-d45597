@@ -1744,7 +1744,7 @@ async function saveProfil(silent){
     if(document.getElementById('hours-cols')) window._pData.arbeitszeiten=readHours('h-');
     if(document.getElementById('temp-entries-list')) window._pData.temp_arbeitszeiten=readTempEntries();
     if(document.getElementById('custom-links-list')) window._pData.custom_links=customLinks.slice();
-    // Slider-Werte sichern bevor loadProfil _pData überschreibt
+    // Slider-Werte und booking_active sichern bevor loadProfil _pData überschreibt
     var vEl=document.getElementById('booking-vorlauf');
     var hEl=document.getElementById('booking-horizont');
     if(!window._pData.feature_settings)window._pData.feature_settings={};
@@ -1753,12 +1753,15 @@ async function saveProfil(silent){
     buildProfilToggles();
     if(st){st.className='save-status saved';st.textContent='✓ Gespeichert';}
     toast('Profil gespeichert ✓','success');
-    // Nach loadProfil Slider-Werte wiederherstellen
+    // Nach loadProfil Werte wiederherstellen
     var _savedVorlauf=window._pData.feature_settings.booking_vorlauf;
     var _savedHorizont=window._pData.feature_settings.booking_horizont;
+    var _savedBookingActive=window._pData.booking_active;
     loadProfil().then(function(){
       if(_savedVorlauf!=null)window._pData.feature_settings.booking_vorlauf=_savedVorlauf;
       if(_savedHorizont!=null)window._pData.feature_settings.booking_horizont=_savedHorizont;
+      if(_savedBookingActive!==undefined)window._pData.booking_active=_savedBookingActive;
+      if(window._pData.feature_settings)window._pData.feature_settings.booking_active=_savedBookingActive!==false;
       buildProfilToggles();
     });
     setTimeout(function(){if(st){st.textContent='';st.className='save-status';}},2000);
@@ -2021,7 +2024,6 @@ async function saveFeatureSettings(){
     slot_interval:curFs.slot_interval||15,
     booking_vorlauf:vorlauf,
     booking_horizont:horizont,
-    booking_active:curFs.booking_active!==false,
   };
   if(window._pData)window._pData.feature_settings=Object.assign({},curFs,settings);
   await sb.from('kunden_profile').update({feature_settings:settings}).eq('id',SALON_ID);
@@ -3818,21 +3820,23 @@ function setStatusDot(dotId,labelId,ok,onLabel,offLabel){
 
 async function toggleBookingActive(){
   if(!SALON_ID)return;
-  var active=document.getElementById('dash-booking-active').checked;
-  // Speichern in eigenem Feld UND in feature_settings (booking.html liest aus feature_settings)
+  var tog=document.getElementById('dash-booking-active');
+  if(!tog)return;
+  var active=tog.checked;
   if(!window._pData)window._pData={};
-  if(!window._pData.feature_settings)window._pData.feature_settings={};
-  window._pData.feature_settings.booking_active=active;
   window._pData.booking_active=active;
-  await sb.from('kunden_profile').update({
-    booking_active:active,
-    feature_settings:window._pData.feature_settings
-  }).eq('id',SALON_ID);
+  var res=await sb.from('kunden_profile').update({booking_active:active}).eq('id',SALON_ID);
+  if(res.error){
+    toast('Fehler: '+res.error.message,'error');
+    console.error('toggleBookingActive error:',res.error);
+    return;
+  }
   var dot=document.getElementById('booking-status-dot');
   var lbl=document.getElementById('booking-status-label');
   if(dot)dot.style.background=active?'#27ae60':'#c0392b';
   if(lbl)lbl.textContent=active?'Buchungsseite Online':'Buchungsseite Offline';
   setStatusDot('dash-status-booking','dash-status-booking-label',active,'Online','Gesperrt');
+  updateBsPanelStatus(active);
   toast((active?'Buchungsseite aktiviert ✓':'Buchungsseite gesperrt'),'success');
 }
 
@@ -4123,7 +4127,7 @@ function renderProfilContent(id){
         '<div style="margin-bottom:12px">'+
           '<div class="field" style="margin-bottom:0">'+
             '<label>Google Maps Link <span style="font-size:10px;color:var(--muted);font-weight:400">— Kunden werden bei Klick auf die Adresse weitergeleitet</span></label>'+
-            '<input type="url" id="f-google-maps" placeholder="https://maps.google.com/?q=..." value="'+(d.google_maps_url||'')+'">'+
+            '<input type="text" id="f-google-maps" placeholder="https://maps.google.com/?q=..." value="'+(d.google_maps_url||'')+'">'+
           '</div>'+
         '</div>'+
         '<div style="display:grid;grid-template-columns:0.3fr 0.7fr;gap:12px;margin-bottom:12px;width:100%;box-sizing:border-box">'+
