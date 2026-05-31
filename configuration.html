@@ -2047,7 +2047,7 @@ function mkVarRow(v,svcId,idx){
     +'<div style="display:flex;gap:6px;min-width:0">'
       +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;min-width:0">'
         +'<span style="font-size:10px;color:var(--muted);font-weight:500;white-space:nowrap">Min</span>'
-        +'<input data-field="dauer_minuten" type="number" min="5" step="5" placeholder="—" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value)" style="width:100%;min-width:0;text-align:center;border:1.5px solid var(--border);border-radius:6px;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);outline:none">'
+        +'<input data-field="dauer_minuten" type="number" min="5" step="5" placeholder="—" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value)" style="width:100%;min-width:0;text-align:center;border:1.5px solid var(--border);border-radius:6px;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:rgba(90,45,130,.06);outline:none">'
         +'<label class="toggle-sw" title="Dauer anzeigen" style="margin-top:2px"><input data-field="dauer_anzeigen" type="checkbox" '+(v.dauer_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'
       +'</div>'
       +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;min-width:0">'
@@ -2064,8 +2064,8 @@ function mkVarRow(v,svcId,idx){
     // Name
     +'<div style="display:flex;flex-direction:column;gap:3px;min-width:0">'
       +'<span class="var-row-lbl" style="font-size:10px;color:var(--muted);font-weight:500">Name</span>'
-      +'<div class="var-group">'
-        +'<input data-field="service_name" type="text" placeholder="z.B. Fade, Rasur…" value="'+(v.service_name||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'service_name\',this.value)" style="border:none;outline:none;padding:6px;font-family:inherit;color:var(--td);background:transparent;width:100%;min-width:0">'
+      +'<div class="var-group" style="background:rgba(90,45,130,.06);border-color:var(--tpl)">'
+        +'<input data-field="service_name" type="text" placeholder="z.B. Fade, Rasur…" value="'+(v.service_name||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'service_name\',this.value)" style="border:none;outline:none;padding:6px;font-family:inherit;color:var(--td);background:rgba(90,45,130,.06);width:100%;min-width:0">'
       +'</div>'
     +'</div>'
     // Beschreibung
