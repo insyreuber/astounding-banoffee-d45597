@@ -423,14 +423,20 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   .save-bar{flex-direction:column;gap:8px;align-items:stretch}
   .save-bar .btn{width:100%;justify-content:center}
 
-  /* Formularfelder allgemein */
-  .frow{grid-template-columns:1fr !important}
-  .frow-2{grid-template-columns:1fr 1fr !important}
-  /* iOS Zoom Prevention */
-  .field input,.field textarea,.field select{font-size:16px !important;min-height:44px !important}
-  /* Mitarbeiter Modal: Anzeigename + Rolle untereinander */
-  #staff-modal .frow-2{grid-template-columns:1fr !important}
-  .hours-col select,.hours-col-sm select{font-size:14px !important;min-height:36px !important}
+  /* iOS Zoom Prevention — ALLE Inputs global 16px */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  .var-group input[type="number"],
+  .var-group input[type="text"] {
+    font-size: 16px !important;
+    min-height: 44px !important;
+  }
+  .hours-col select,
+  .hours-col-sm select {
+    font-size: 16px !important;
+    min-height: 36px !important;
+  }
 
   /* Timeline mobile */
   .tl-bottom-grid{grid-template-columns:1fr !important}
