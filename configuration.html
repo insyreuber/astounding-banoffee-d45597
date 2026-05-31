@@ -1237,8 +1237,10 @@ function updateTimelines(){
   var hEl=document.getElementById('booking-horizont');
   var vLbl=document.getElementById('vorlauf-label');
   var hLbl=document.getElementById('horizont-label');
-  if(vEl&&vLbl)vLbl.textContent=VORLAUF_LABELS[parseInt(vEl.value)]||'';
-  if(hEl&&hLbl)hLbl.textContent=HORIZONT_LABELS[parseInt(hEl.value)-1]||'';
+  var vIdx=vEl?parseInt(vEl.value):NaN;
+  var hIdx=hEl?parseInt(hEl.value):NaN;
+  if(vEl&&vLbl)vLbl.textContent=(!isNaN(vIdx)&&VORLAUF_LABELS[vIdx])?VORLAUF_LABELS[vIdx]:'';
+  if(hEl&&hLbl)hLbl.textContent=(!isNaN(hIdx)&&HORIZONT_LABELS[hIdx-1])?HORIZONT_LABELS[hIdx-1]:'';
   saveBookingTimelines();
 }
 
@@ -2019,6 +2021,7 @@ async function saveFeatureSettings(){
     slot_interval:curFs.slot_interval||15,
     booking_vorlauf:vorlauf,
     booking_horizont:horizont,
+    booking_active:curFs.booking_active!==false,
   };
   if(window._pData)window._pData.feature_settings=Object.assign({},curFs,settings);
   await sb.from('kunden_profile').update({feature_settings:settings}).eq('id',SALON_ID);
@@ -3816,8 +3819,15 @@ function setStatusDot(dotId,labelId,ok,onLabel,offLabel){
 async function toggleBookingActive(){
   if(!SALON_ID)return;
   var active=document.getElementById('dash-booking-active').checked;
-  await sb.from('kunden_profile').update({booking_active:active}).eq('id',SALON_ID);
-  if(window._pData)window._pData.booking_active=active;
+  // Speichern in eigenem Feld UND in feature_settings (booking.html liest aus feature_settings)
+  if(!window._pData)window._pData={};
+  if(!window._pData.feature_settings)window._pData.feature_settings={};
+  window._pData.feature_settings.booking_active=active;
+  window._pData.booking_active=active;
+  await sb.from('kunden_profile').update({
+    booking_active:active,
+    feature_settings:window._pData.feature_settings
+  }).eq('id',SALON_ID);
   var dot=document.getElementById('booking-status-dot');
   var lbl=document.getElementById('booking-status-label');
   if(dot)dot.style.background=active?'#27ae60':'#c0392b';
