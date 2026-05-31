@@ -1324,6 +1324,8 @@ function mobileTab(tab){
 
 loadAll();
 initKurzfristigSetting();
+// Auto-Refresh alle 60s — externe Änderungen (Stornos, neue Buchungen) werden erkannt
+setInterval(function(){if(!document.hidden)loadAll();},60000);
 </script>
 
 <!-- Mobile Only — auf Desktop komplett hidden -->
