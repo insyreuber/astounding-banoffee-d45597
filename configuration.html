@@ -1721,7 +1721,7 @@ async function saveProfil(silent){
     if(document.getElementById('hours-cols')) window._pData.arbeitszeiten=readHours('h-');
     if(document.getElementById('temp-entries-list')) window._pData.temp_arbeitszeiten=readTempEntries();
     if(document.getElementById('custom-links-list')) window._pData.custom_links=customLinks.slice();
-    // Slider-Werte in _pData sichern damit sie nach dem Render erhalten bleiben
+    // Slider-Werte sichern bevor loadProfil _pData überschreibt
     var vEl=document.getElementById('booking-vorlauf');
     var hEl=document.getElementById('booking-horizont');
     if(!window._pData.feature_settings)window._pData.feature_settings={};
@@ -1730,6 +1730,14 @@ async function saveProfil(silent){
     buildProfilToggles();
     if(st){st.className='save-status saved';st.textContent='✓ Gespeichert';}
     toast('Profil gespeichert ✓','success');
+    // Nach loadProfil Slider-Werte wiederherstellen
+    var _savedVorlauf=window._pData.feature_settings.booking_vorlauf;
+    var _savedHorizont=window._pData.feature_settings.booking_horizont;
+    loadProfil().then(function(){
+      if(_savedVorlauf!=null)window._pData.feature_settings.booking_vorlauf=_savedVorlauf;
+      if(_savedHorizont!=null)window._pData.feature_settings.booking_horizont=_savedHorizont;
+      buildProfilToggles();
+    });
     setTimeout(function(){if(st){st.textContent='';st.className='save-status';}},2000);
   }
 }
