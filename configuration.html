@@ -4239,13 +4239,13 @@ function renderProfilContent(id){
         '<div style="background:rgba(90,45,130,.03);border:1px solid rgba(90,45,130,.1);border-radius:12px;padding:14px;margin-bottom:20px">'+
           '<div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Variablen einfügen</div>'+
           '<div style="display:flex;flex-wrap:wrap;gap:6px">'+
-            '<button onclick="waInsertVar(\'{{name}}\')" style="background:rgba(52,152,219,.08);border:1px solid rgba(52,152,219,.25);color:#2980b9;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">{{name}}</button>'+
-            '<button onclick="waInsertVar(\'{{termin}}\')" style="background:rgba(243,156,18,.08);border:1px solid rgba(243,156,18,.25);color:#d68910;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">{{termin}}</button>'+
-            '<button onclick="waInsertVar(\'{{datum}}\')" style="background:rgba(243,156,18,.08);border:1px solid rgba(243,156,18,.25);color:#d68910;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">{{datum}}</button>'+
-            '<button onclick="waInsertVar(\'{{uhrzeit}}\')" style="background:rgba(243,156,18,.08);border:1px solid rgba(243,156,18,.25);color:#d68910;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">{{uhrzeit}}</button>'+
-            '<button onclick="waInsertVar(\'{{service}}\')" style="background:rgba(155,89,182,.08);border:1px solid rgba(155,89,182,.25);color:#7d3c98;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">{{service}}</button>'+
-            '<button onclick="waInsertVar(\'{{buchungslink}}\')" style="background:rgba(39,174,96,.08);border:1px solid rgba(39,174,96,.25);color:#1e8449;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">{{buchungslink}}</button>'+
-            '<button onclick="waInsertVar(\'{{salon}}\')" style="background:rgba(231,76,60,.08);border:1px solid rgba(231,76,60,.25);color:#c0392b;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">{{salon}}</button>'+
+            '<button onclick="waInsertVar(\'name\')" style="background:rgba(52,152,219,.08);border:1px solid rgba(52,152,219,.25);color:#2980b9;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">name</button>'+
+            '<button onclick="waInsertVar(\'termin\')" style="background:rgba(243,156,18,.08);border:1px solid rgba(243,156,18,.25);color:#d68910;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">termin</button>'+
+            '<button onclick="waInsertVar(\'datum\')" style="background:rgba(243,156,18,.08);border:1px solid rgba(243,156,18,.25);color:#d68910;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">datum</button>'+
+            '<button onclick="waInsertVar(\'uhrzeit\')" style="background:rgba(243,156,18,.08);border:1px solid rgba(243,156,18,.25);color:#d68910;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">uhrzeit</button>'+
+            '<button onclick="waInsertVar(\'service\')" style="background:rgba(155,89,182,.08);border:1px solid rgba(155,89,182,.25);color:#7d3c98;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">service</button>'+
+            '<button onclick="waInsertVar(\'buchungslink\')" style="background:rgba(39,174,96,.08);border:1px solid rgba(39,174,96,.25);color:#1e8449;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">buchungslink</button>'+
+            '<button onclick="waInsertVar(\'salon\')" style="background:rgba(231,76,60,.08);border:1px solid rgba(231,76,60,.25);color:#c0392b;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">salon</button>'+
           '</div>'+
           '<div style="font-size:10px;color:var(--muted);margin-top:8px;opacity:.7">Cursor im Textfeld positionieren, dann Variable klicken</div>'+
         '</div>'+
@@ -4254,7 +4254,7 @@ function renderProfilContent(id){
           '<button onclick="waSelectTab(\'erinnerung\')" id="wat-erinnerung" class="wa-tab-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Erinnerung</button>'+
           '<button onclick="waSelectTab(\'storno\')" id="wat-storno" class="wa-tab-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Storno</button>'+
         '</div>'+
-        '<textarea id="wa-template-editor" rows="7" style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px;font-size:13px;font-family:inherit;color:var(--td);background:#fff;outline:none;resize:vertical;line-height:1.7;margin-bottom:14px" placeholder="Nachricht eingeben..."></textarea>'+
+        '<div id="wa-template-editor" contenteditable="true" spellcheck="false" style="width:100%;min-height:120px;border:1.5px solid var(--border);border-radius:10px;padding:12px;font-size:13px;font-family:inherit;color:var(--td);background:#fff;outline:none;line-height:1.9;margin-bottom:14px;white-space:pre-wrap;word-break:break-word;cursor:text" oninput="waEditorInput()"></div>'+
         '<div style="background:#0a1929;border-radius:16px;padding:20px;position:relative;overflow:hidden">'+
           '<div style="font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:14px">Vorschau</div>'+
           '<div style="display:flex;align-items:flex-end;gap:8px">'+
@@ -4283,9 +4283,19 @@ function renderProfilContent(id){
 
     if(!document.getElementById('wa-tab-style')){
       var s=document.createElement('style');s.id='wa-tab-style';
-      s.textContent='.wa-tab-btn{padding:6px 14px;border-radius:8px;border:1.5px solid var(--border);background:#fff;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}.wa-tab-active{background:var(--tpl);color:#fff;border-color:var(--tpl)}';
+      s.textContent='.wa-tab-btn{padding:6px 14px;border-radius:8px;border:1.5px solid var(--border);background:#fff;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}.wa-tab-active{background:var(--tpl);color:#fff;border-color:var(--tpl)}'
+        +'.wa-pill{display:inline-block;border-radius:20px;padding:1px 9px;font-size:12px;font-weight:600;cursor:default;user-select:none;line-height:1.6}'
+        +'.wa-pill[data-var="name"]{background:rgba(52,152,219,.12);border:1px solid rgba(52,152,219,.3);color:#2980b9}'
+        +'.wa-pill[data-var="termin"],.wa-pill[data-var="datum"],.wa-pill[data-var="uhrzeit"]{background:rgba(243,156,18,.12);border:1px solid rgba(243,156,18,.3);color:#d68910}'
+        +'.wa-pill[data-var="service"]{background:rgba(155,89,182,.12);border:1px solid rgba(155,89,182,.3);color:#7d3c98}'
+        +'.wa-pill[data-var="buchungslink"]{background:rgba(39,174,96,.12);border:1px solid rgba(39,174,96,.3);color:#1e8449}'
+        +'.wa-pill[data-var="salon"]{background:rgba(231,76,60,.12);border:1px solid rgba(231,76,60,.3);color:#c0392b}';
       document.head.appendChild(s);
     }
+
+    // Variable labels ohne geschweifte Klammern
+    var WA_VAR_LABELS={name:'name',termin:'termin',datum:'datum',uhrzeit:'uhrzeit',service:'service',buchungslink:'buchungslink',salon:'salon'};
+
     var defaults={
       bestaetigung:'Hallo {{name}}!\nDein Termin am {{termin}} ist bestätigt. Wir freuen uns auf dich! 😊\n\nDein Buchungslink: {{buchungslink}}\n\npowered by insy-reception',
       erinnerung:'Hallo {{name}}!\n⏰ Erinnerung: Dein Termin ist am {{termin}}. Wir freuen uns auf dich!\n\nDein Buchungslink: {{buchungslink}}\n\npowered by insy-reception',
@@ -4299,9 +4309,7 @@ function renderProfilContent(id){
       storno:fs2.wa_template_storno||defaults.storno
     };
     window._waActiveTab='bestaetigung';
-    var editor=document.getElementById('wa-template-editor');
-    editor.value=window._waTemplates.bestaetigung;
-    editor.addEventListener('input',updateWaPreview);
+    waSetEditorContent(window._waTemplates.bestaetigung);
     updateWaPreview();
   }
 
@@ -4315,49 +4323,113 @@ function renderProfilContent(id){
   }
 }
 
+// ── WA PILL EDITOR ───────────────────────────────────────────
+var WA_VARS={
+  name:      {label:'name',      bg:'rgba(52,152,219,.12)', border:'rgba(52,152,219,.35)', color:'#2980b9'},
+  termin:    {label:'termin',    bg:'rgba(243,156,18,.12)', border:'rgba(243,156,18,.35)', color:'#d68910'},
+  datum:     {label:'datum',     bg:'rgba(243,156,18,.12)', border:'rgba(243,156,18,.35)', color:'#d68910'},
+  uhrzeit:   {label:'uhrzeit',   bg:'rgba(243,156,18,.12)', border:'rgba(243,156,18,.35)', color:'#d68910'},
+  service:   {label:'service',   bg:'rgba(155,89,182,.12)', border:'rgba(155,89,182,.35)', color:'#7d3c98'},
+  buchungslink:{label:'buchungslink',bg:'rgba(39,174,96,.12)',border:'rgba(39,174,96,.35)',color:'#1e8449'},
+  salon:     {label:'salon',     bg:'rgba(231,76,60,.12)',  border:'rgba(231,76,60,.35)',  color:'#c0392b'}
+};
+
+function waPillHtml(varName){
+  var v=WA_VARS[varName];if(!v)return'{{'+varName+'}}';
+  return'<span class="wa-pill" data-var="'+varName+'" contenteditable="false" style="background:'+v.bg+';border:1.5px solid '+v.border+';color:'+v.color+';border-radius:20px;padding:1px 9px;font-size:12px;font-weight:600;display:inline;cursor:default;user-select:none;line-height:1.8;white-space:nowrap">'+v.label+'</span>';
+}
+
+function waTextToHtml(text){
+  // Convert {{var}} → pill, \n → <br>
+  var escaped=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  escaped=escaped.replace(/\{\{(\w+)\}\}/g,function(_,name){
+    var v=WA_VARS[name];
+    if(!v)return'{{'+name+'}}';
+    return'<span class="wa-pill" data-var="'+name+'" contenteditable="false" style="background:'+v.bg+';border:1.5px solid '+v.border+';color:'+v.color+';border-radius:20px;padding:1px 9px;font-size:12px;font-weight:600;display:inline;cursor:default;user-select:none;line-height:1.8;white-space:nowrap">'+v.label+'</span>';
+  });
+  return escaped.replace(/\n/g,'<br>');
+}
+
+function waHtmlToText(html){
+  // Convert pills → {{var}}, <br> → \n, strip other tags
+  return html
+    .replace(/<span[^>]*data-var="(\w+)"[^>]*>.*?<\/span>/g,'{{$1}}')
+    .replace(/<br\s*\/?>/gi,'\n')
+    .replace(/<div>/gi,'\n')
+    .replace(/<\/div>/gi,'')
+    .replace(/<[^>]+>/g,'')
+    .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+}
+
+function waSetEditorContent(text){
+  var el=document.getElementById('wa-template-editor');
+  if(!el)return;
+  el.innerHTML=waTextToHtml(text);
+}
+
+function waEditorInput(){
+  updateWaPreview();
+}
+
 function waSelectTab(tab){
-  var editor=document.getElementById('wa-template-editor');
-  if(editor&&window._waTemplates&&window._waActiveTab)
-    window._waTemplates[window._waActiveTab]=editor.value;
+  var el=document.getElementById('wa-template-editor');
+  if(el&&window._waTemplates&&window._waActiveTab)
+    window._waTemplates[window._waActiveTab]=waHtmlToText(el.innerHTML);
   window._waActiveTab=tab;
   ['bestaetigung','erinnerung','storno'].forEach(function(t){
     var btn=document.getElementById('wat-'+t);
     if(btn)btn.classList.toggle('wa-tab-active',t===tab);
   });
-  if(editor&&window._waTemplates){editor.value=window._waTemplates[tab]||'';updateWaPreview();}
+  if(el&&window._waTemplates){waSetEditorContent(window._waTemplates[tab]||'');updateWaPreview();}
 }
 
-function waInsertVar(v){
-  var editor=document.getElementById('wa-template-editor');
-  if(!editor)return;
-  var start=editor.selectionStart,end=editor.selectionEnd;
-  editor.value=editor.value.slice(0,start)+v+editor.value.slice(end);
-  editor.selectionStart=editor.selectionEnd=start+v.length;
-  editor.focus();
-  if(window._waTemplates)window._waTemplates[window._waActiveTab||'bestaetigung']=editor.value;
+function waInsertVar(varName){
+  var el=document.getElementById('wa-template-editor');
+  if(!el)return;
+  el.focus();
+  var sel=window.getSelection();
+  if(sel&&sel.rangeCount){
+    var range=sel.getRangeAt(0);
+    range.deleteContents();
+    var pill=document.createElement('span');
+    pill.outerHTML; // dummy
+    var tmp=document.createElement('div');
+    tmp.innerHTML=waPillHtml(varName);
+    var node=tmp.firstChild;
+    range.insertNode(node);
+    // Move cursor after pill
+    range.setStartAfter(node);
+    range.setEndAfter(node);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  } else {
+    el.innerHTML+=waPillHtml(varName);
+  }
+  if(window._waTemplates)window._waTemplates[window._waActiveTab||'bestaetigung']=waHtmlToText(el.innerHTML);
   updateWaPreview();
 }
 
 function updateWaPreview(){
-  var editor=document.getElementById('wa-template-editor');
+  var el=document.getElementById('wa-template-editor');
   var prev=document.getElementById('wa-preview');
-  if(!editor||!prev)return;
-  var txt=editor.value;
+  if(!el||!prev)return;
+  var txt=waHtmlToText(el.innerHTML);
   if(window._waTemplates)window._waTemplates[window._waActiveTab||'bestaetigung']=txt;
-  txt=txt.replace(/\{\{name\}\}/g,'Maria Müller');
-  txt=txt.replace(/\{\{termin\}\}/g,'Montag, 02.06. um 14:00 Uhr');
-  txt=txt.replace(/\{\{datum\}\}/g,'Montag, 02.06.');
-  txt=txt.replace(/\{\{uhrzeit\}\}/g,'14:00 Uhr');
-  txt=txt.replace(/\{\{service\}\}/g,'Nageldesign · Lackieren');
-  txt=txt.replace(/\{\{buchungslink\}\}/g,'https://insy-reception.com/success?...');
-  txt=txt.replace(/\{\{salon\}\}/g,(window._pData&&(window._pData.brand_name||window._pData.name))||'Salon');
-  prev.textContent=txt;
+  var display=txt
+    .replace(/\{\{name\}\}/g,'Maria Müller')
+    .replace(/\{\{termin\}\}/g,'Montag, 02.06. um 14:00 Uhr')
+    .replace(/\{\{datum\}\}/g,'Montag, 02.06.')
+    .replace(/\{\{uhrzeit\}\}/g,'14:00 Uhr')
+    .replace(/\{\{service\}\}/g,'Nageldesign · Lackieren')
+    .replace(/\{\{buchungslink\}\}/g,'https://insy-reception.com/success?...')
+    .replace(/\{\{salon\}\}/g,(window._pData&&(window._pData.brand_name||window._pData.name))||'Salon');
+  prev.textContent=display;
 }
 
 async function saveWaTemplates(){
   if(!SALON_ID)return;
-  var editor=document.getElementById('wa-template-editor');
-  if(editor&&window._waTemplates)window._waTemplates[window._waActiveTab||'bestaetigung']=editor.value;
+  var el=document.getElementById('wa-template-editor');
+  if(el&&window._waTemplates)window._waTemplates[window._waActiveTab||'bestaetigung']=waHtmlToText(el.innerHTML);
   if(!window._pData)window._pData={};
   if(!window._pData.feature_settings)window._pData.feature_settings={};
   window._pData.feature_settings.wa_template_bestaetigung=window._waTemplates.bestaetigung;
