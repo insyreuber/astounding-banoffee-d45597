@@ -798,13 +798,14 @@ window.pickDay=function(k){
           raw.busy.forEach(function(b){
             var start=new Date(b.start);
             var end=new Date(b.end);
-            var cur=new Date(start);
-            while(cur<end){
-              var hh=('0'+cur.getHours()).slice(-2);
-              var mm=cur.getMinutes();
-              var mmRounded=mm<15?'00':mm<30?'15':mm<45?'30':'45';
-              busySlots.push(hh+':'+mmRounded);
-              cur.setMinutes(cur.getMinutes()+15);
+            // Abrunden auf 15-Min-Raster für Start
+            var startMin=Math.floor((start.getHours()*60+start.getMinutes())/15)*15;
+            // Aufrunden auf 15-Min-Raster für End
+            var endMin=Math.ceil((end.getHours()*60+end.getMinutes())/15)*15;
+            for(var m=startMin;m<endMin;m+=15){
+              var hh=('0'+Math.floor(m/60)).slice(-2);
+              var mm=('0'+(m%60)).slice(-2);
+              busySlots.push(hh+':'+mm);
             }
           });
         }
@@ -893,7 +894,8 @@ function mkSvcCards(){
           +'background:'+(isSel?'var(--tp)':allowed?'#fff':'#f5f3f8')+';'
           +'color:'+(isSel?'#fff':allowed?'var(--td)':'#c0b8cc')+';'
           +'font-weight:'+(isSel?'600':'400')+';">';
-        varHtml+=(v.service_name?v.service_name+' · ':'')+v.min+' Min'+(v.preis?' · '+v.preis+' €':'');
+        var dispMin=(v.puffer_minuten>0)?(v.min+v.puffer_minuten):v.min;
+        varHtml+=(v.service_name?v.service_name+' · ':'')+(dispMin||v.min||'?')+' Min'+(v.preis?' · '+v.preis+' €':'');
         if(v.bezeichnung)varHtml+=' · '+v.bezeichnung;
         if(!allowed)varHtml+=' <span style="font-size:9px;opacity:0.5">·</span>';
         varHtml+='</div>';
@@ -1074,7 +1076,7 @@ function mkSumCard(){
     st.services.forEach(function(s){
       var svc=fsvc(s.svcId);
       var v=fvar(s.varId);
-      if(svc)rows+=row(svc.name,v?(v.service_name?v.service_name+' · ':'')+v.min+' Min'+(v.preis?' · '+v.preis+' \u20ac':''):'— Variante wählen');
+      if(svc){var dispMinS=(v&&v.puffer_minuten>0)?(v.min+v.puffer_minuten):(v?v.min:0);rows+=row(svc.name,v?(v.service_name?v.service_name+' · ':'')+dispMinS+' Min'+(v.preis?' · '+v.preis+' \u20ac':''):'— Variante wählen');}
     });
   } else {
     rows+=row('Service',null);
@@ -1234,17 +1236,26 @@ window.submitBooking=async function(){
   var services=st.services.map(function(s){
     var svc=fsvc(s.svcId);
     var v=fvar(s.varId);
+    var min=v?v.min:0;
+    var puf=v?v.puffer_minuten||0:0;
     return{
       service_id:s.svcId,
       service_name:svc?svc.name:'',
       variante_id:s.varId,
       variante_name:v?v.service_name:'',
-      dauer_minuten:v?v.min:0,
-      puffer_minuten:v?v.puffer_minuten||0:0,
-      kalender_minuten:v?(v.min+(v.puffer_minuten||0)):0,
+      dauer_minuten:min,
+      puffer_minuten:puf,
+      kalender_minuten:min+puf,
       preis:v?v.preis:0
     };
   });
+
+  // Beschreibungs-Label für Google Kalender
+  var dauerTotal=totalMinuten();
+  var pufferTotal=st.services.reduce(function(sum,s){var v=fvar(s.varId);return sum+(v?v.puffer_minuten||0:0);},0);
+  var dauerLabel=pufferTotal>0
+    ?'Dauer: '+dauerTotal+' Min, Puffer: '+pufferTotal+' Min'
+    :'Dauer: '+dauerTotal+' Min';
 
   var payload={
     salon_id:salonId,
@@ -1254,6 +1265,8 @@ window.submitBooking=async function(){
     datetime:timeISO,
     duration_minutes:totalKalenderMinuten(),
     display_duration_minutes:totalMinuten(),
+    puffer_minuten:pufferTotal,
+    dauer_label:dauerLabel,
     services:services,
     customer_name:st.name.trim(),
     customer_phone:normPhone(st.phone),
@@ -1674,10 +1687,10 @@ async function loadServices(salonId){
             id:v.id,
             service_name:v.service_name||'',
             bezeichnung:v.bezeichnung||'',
-            min:v.dauer_minuten,
+            min:parseInt(v.dauer_minuten)||0,
             preis:parseFloat(v.preis)||0,
             puffer_aktiv:v.puffer_aktiv,
-            puffer_minuten:v.puffer_minuten||0
+            puffer_minuten:parseInt(v.puffer_minuten)||0
           });
         });
       }
