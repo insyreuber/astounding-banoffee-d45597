@@ -3935,6 +3935,12 @@ function renderProfilContent(id){
           '<div class="field" style="margin-bottom:0"><label>Straße</label><input type="text" id="f-street" placeholder="Fritz-Raue Strasse" value="'+(d.street||'')+'"></div>'+
           '<div class="field" style="margin-bottom:0"><label>Hausnummer</label><input type="text" id="f-house" placeholder="1" value="'+(d.house_number||'')+'"></div>'+
         '</div>'+
+        '<div style="margin-bottom:12px">'+
+          '<div class="field" style="margin-bottom:0">'+
+            '<label>Google Maps Link <span style="font-size:10px;color:var(--muted);font-weight:400">— Kunden werden bei Klick auf die Adresse weitergeleitet</span></label>'+
+            '<input type="url" id="f-google-maps" placeholder="https://maps.google.com/?q=..." value="'+(d.google_maps_url||'')+'">'+
+          '</div>'+
+        '</div>'+
         '<div style="display:grid;grid-template-columns:0.6fr 1fr 1fr;gap:12px">'+
           '<div class="field" style="margin-bottom:0"><label>Vorwahl</label><input type="text" id="f-area-code" placeholder="02262" value="'+(d.area_code||'')+'"></div>'+
           '<div class="field" style="margin-bottom:0"><label>Telefon</label><input type="text" id="f-phone-number" placeholder="12131243" value="'+(d.phone_number||'')+'"></div>'+
