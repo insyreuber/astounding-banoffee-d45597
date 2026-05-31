@@ -480,18 +480,19 @@ function stepUpcomingFilter(idxOrDir,isDirect){
     newIdx=Math.max(0,Math.min(_upcomingSteps.length-1,idx+idxOrDir));
   }
   _upcomingFilter=_upcomingSteps[newIdx];
-  var colors={'alle':'var(--tpl)','heute':'#e74c3c','morgen':'#e67e22','uebermorgen':'var(--muted)'};
+  var colors={'alle':'#C9A84C','heute':'#C9A84C','morgen':'#C9A84C','uebermorgen':'#C9A84C'};
   // Desktop label
   var lbl=document.getElementById('uf-label');
-  if(lbl){lbl.textContent=_upcomingLabels[_upcomingFilter];lbl.style.color=colors[_upcomingFilter];}
+  if(lbl){lbl.textContent=_upcomingLabels[_upcomingFilter];lbl.style.color='var(--tpl)';}
   // Mobile Buttons sync
   ['alle','heute','morgen','uebermorgen'].forEach(function(k){
     var mb=document.getElementById('muf-'+k);
     if(!mb)return;
     var active=k===_upcomingFilter;
-    mb.style.background=active?colors[k]:'#fff';
-    mb.style.color=active?'#fff':colors[k];
-    mb.style.borderColor=colors[k];
+    mb.style.background=active?'#C9A84C':'#4a1f72';
+    mb.style.color=active?'#1a0a2e':'#fff';
+    mb.style.borderColor='#C9A84C';
+    mb.style.boxShadow=active?'0 0 14px rgba(201,168,76,.5)':'0 0 8px rgba(201,168,76,.25)';
   });
   renderUpcomingCalendar(_upcomingAll,window._upcomingVarianteMap||{},window._upcomingStaffMap||{},window._upcomingServiceMap||{});
 }
@@ -1358,10 +1359,10 @@ initKurzfristigSetting();
       <div style="position:sticky;top:0;background:transparent;z-index:2;backdrop-filter:blur(0px)">
         <div class="card-title" style="padding:4px 0 10px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Nächste Termine</div>
         <div style="display:flex;gap:6px">
-          <button onclick="stepUpcomingFilter(0,true)" id="muf-alle" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid var(--tpl);font-size:11px;font-weight:600;cursor:pointer;background:var(--tpl);color:#fff;font-family:inherit">Alle</button>
-          <button onclick="stepUpcomingFilter(1,true)" id="muf-heute" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid #e74c3c;font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:#e74c3c;font-family:inherit">Heute</button>
-          <button onclick="stepUpcomingFilter(2,true)" id="muf-morgen" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid #e67e22;font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:#e67e22;font-family:inherit">Morgen</button>
-          <button onclick="stepUpcomingFilter(3,true)" id="muf-uebermorgen" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid var(--muted);font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:var(--muted);font-family:inherit">+2</button>
+          <button onclick="stepUpcomingFilter(0,true)" id="muf-alle" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid #C9A84C;font-size:11px;font-weight:600;cursor:pointer;background:#4a1f72;color:#fff;font-family:inherit;box-shadow:0 0 8px rgba(201,168,76,.25)">Alle</button>
+          <button onclick="stepUpcomingFilter(1,true)" id="muf-heute" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid #C9A84C;font-size:11px;font-weight:600;cursor:pointer;background:#4a1f72;color:#fff;font-family:inherit;box-shadow:0 0 8px rgba(201,168,76,.25)">Heute</button>
+          <button onclick="stepUpcomingFilter(2,true)" id="muf-morgen" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid #C9A84C;font-size:11px;font-weight:600;cursor:pointer;background:#4a1f72;color:#fff;font-family:inherit;box-shadow:0 0 8px rgba(201,168,76,.25)">Morgen</button>
+          <button onclick="stepUpcomingFilter(3,true)" id="muf-uebermorgen" style="flex:1;padding:6px 0;border-radius:8px;border:1.5px solid #C9A84C;font-size:11px;font-weight:600;cursor:pointer;background:#4a1f72;color:#fff;font-family:inherit;box-shadow:0 0 8px rgba(201,168,76,.25)">+2</button>
         </div>
       </div>
       <div id="upcoming-list-m-wrap"><div id="upcoming-list-m" style="padding-right:6px"></div></div>
