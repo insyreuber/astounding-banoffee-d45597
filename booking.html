@@ -1465,7 +1465,7 @@ async function loadSalonProfile(){
     var fs=data.feature_settings||{};
 
     // Buchungsseite gesperrt? — nur wenn explizit false gesetzt
-    var bookingActive = data.feature_settings&&data.feature_settings.booking_active===false ? false : true;
+    var bookingActive = data.booking_active===false ? false : true;
     if(bookingActive===false){
       var sName=data.brand_name||data.name||'Salon';
       var logo=data.logo_url||'';
