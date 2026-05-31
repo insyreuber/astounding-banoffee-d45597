@@ -495,6 +495,13 @@ function totalMinuten(){
     return sum+(v?v.min:0);
   },0);
 }
+function totalKalenderMinuten(){
+  // Kalender-Dauer = Anzeigedauer + Puffer (für Google Kalender Block)
+  return st.services.reduce(function(sum,s){
+    var v=fvar(s.varId);
+    return sum+(v?(v.min+(v.puffer_minuten||0)):0);
+  },0);
+}
 function totalPreis(){
   var t=st.services.reduce(function(sum,s){
     var v=fvar(s.varId);
@@ -698,6 +705,7 @@ function availSlots(){
   }
 
   var totalMin=totalMinuten();
+  var totalKalMin=totalKalenderMinuten(); // inkl. Puffer — für Slot-Blockierung
 
   // Alle Slots innerhalb der Öffnungszeiten — multi-slot aware
   var openSlots=BASE_SLOTS.filter(function(s){
@@ -727,23 +735,23 @@ function availSlots(){
       if(slotDate<_cutoff)isPast=true;
     }
     if(isPast)return{time:s,busy:false,closed:true,past:true};
-    // Zu nah an Schließzeit — Termin würde nicht reinpassen (multi-slot aware)
+    // Zu nah an Schließzeit — Kalender-Dauer (inkl. Puffer) muss reinpassen
     var fitsInSlot=false;
-    if(totalMin>0){
+    if(totalKalMin>0){
       if(azSlots.length){
         fitsInSlot=azSlots.some(function(r){
           var rs=parseInt(r.start.split(':')[0])*60+parseInt(r.start.split(':')[1]);
           var re=parseInt(r.end.split(':')[0])*60+parseInt(r.end.split(':')[1]);
-          return slotMin>=rs&&slotMin+totalMin<=re;
+          return slotMin>=rs&&slotMin+totalKalMin<=re;
         });
       } else {
-        fitsInSlot=slotMin+totalMin<=endMin;
+        fitsInSlot=slotMin+totalKalMin<=endMin;
       }
       if(!fitsInSlot)return{time:s,busy:false,closed:true};
     }
-    // Buchung würde belegte Slots überschneiden
+    // Buchung würde belegte Slots überschneiden — inkl. Puffer prüfen
     if(busySlots&&busySlots.length){
-      for(var m=0;m<totalMin;m+=15){
+      for(var m=0;m<totalKalMin;m+=15){
         var checkMin=slotMin+m;
         var hh=('0'+Math.floor(checkMin/60)).slice(-2);
         var mm=('0'+(checkMin%60)).slice(-2);
@@ -1232,6 +1240,8 @@ window.submitBooking=async function(){
       variante_id:s.varId,
       variante_name:v?v.service_name:'',
       dauer_minuten:v?v.min:0,
+      puffer_minuten:v?v.puffer_minuten||0:0,
+      kalender_minuten:v?(v.min+(v.puffer_minuten||0)):0,
       preis:v?v.preis:0
     };
   });
@@ -1242,7 +1252,8 @@ window.submitBooking=async function(){
     date:dateFormatted,
     time:st.slot,
     datetime:timeISO,
-    duration_minutes:totalMinuten(),
+    duration_minutes:totalKalenderMinuten(),
+    display_duration_minutes:totalMinuten(),
     services:services,
     customer_name:st.name.trim(),
     customer_phone:normPhone(st.phone),
