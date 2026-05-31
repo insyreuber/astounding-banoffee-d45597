@@ -2127,16 +2127,18 @@ async function saveSvcAll(id){
   for(var i=0;i<varRows.length;i++){
     var row=varRows[i];
     var vid=row.id.replace('var-','');
-    var groups=row.querySelectorAll('.var-group');
-    if(groups.length<5){errs.push('Zeile '+i+': Gruppen fehlen');continue;}
-    var svcName=groups[0].querySelector('input[type="text"]').value.trim();
-    var bezeichnung=groups[1].querySelector('input[type="text"]').value.trim();
-    var min=parseInt(groups[2].querySelector('input[type="number"]').value)||1;
-    var dauerAnz=groups[2].querySelector('input[type="checkbox"]').checked;
-    var preis=parseFloat(groups[3].querySelector('input[type="number"]').value)||0;
-    var preisAnz=groups[3].querySelector('input[type="checkbox"]').checked;
-    var puffer=parseInt(groups[4].querySelector('input[type="number"]').value)||0;
-    var pufferAkt=groups[4].querySelector('input[type="checkbox"]').checked;
+    function fld(f){var el=row.querySelector('[data-field="'+f+'"]');return el?el:null;}
+    function fldVal(f){var el=fld(f);return el?el.value:'';}
+    function fldChk(f){var el=fld(f);return el?el.checked:false;}
+
+    var svcName=fldVal('service_name').trim();
+    var bezeichnung=fldVal('bezeichnung').trim();
+    var min=parseInt(fldVal('dauer_minuten'))||1;
+    var dauerAnz=fldChk('dauer_anzeigen');
+    var preis=parseFloat(fldVal('preis'))||0;
+    var preisAnz=fldChk('preis_anzeigen');
+    var puffer=parseInt(fldVal('puffer_minuten'))||0;
+    var pufferAkt=fldChk('puffer_aktiv');
 
     var updatePayload={service_name:svcName,bezeichnung:bezeichnung,dauer_minuten:min,preis:preis,puffer_minuten:puffer,puffer_aktiv:pufferAkt};
     var vRes=await sb.from('service_varianten').update(updatePayload).eq('id',vid);
