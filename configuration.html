@@ -2016,8 +2016,7 @@ function renderSvcList(){
         +'<div style="flex:1;min-width:0">'
           +'<div class="svc-item-name">'+esc(s.name)+'</div>'
           +(s.beschreibung?'<div class="svc-item-meta">'+esc(s.beschreibung)+'</div>':'')
-          +'<div id="svc-var-preview-'+s.id+'" style="margin-top:10px;background:#0a1929;border-radius:12px;padding:12px 14px;position:relative;overflow:hidden">'+
-            '<div style="font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:10px">Vorschau Buchungswidget</div>'+
+          +'<div id="svc-var-preview-'+s.id+'" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:7px">'+
             buildVarPreviewChips(vars)+
           '</div>'
         +'</div>'
