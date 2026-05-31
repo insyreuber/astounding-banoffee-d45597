@@ -2037,12 +2037,13 @@ async function loadServices(){
 function buildVarPreviewChips(vars){
   if(!vars||!vars.length)return'<span style="font-size:10px;color:var(--muted);font-style:italic">Noch keine Varianten</span>';
   return vars.map(function(v){
-    var label='';
-    if(v.service_name)label+=v.service_name+' · ';
-    label+=(v.dauer_minuten||v.min||0)+' Min';
+    var parts=[];
+    if(v.service_name)parts.push(v.service_name);
+    if(v.dauer_anzeigen!==false)parts.push((parseInt(v.dauer_minuten)||v.min||0)+' Min');
     var preis=parseFloat(v.preis)||0;
-    if(preis)label+=' · '+preis.toFixed(2).replace('.',',')+' '+(v.waehrung||'€');
-    if(v.bezeichnung)label+=' · '+v.bezeichnung;
+    if(v.preis_anzeigen!==false&&preis)parts.push(preis.toFixed(2).replace('.',',')+' '+(v.waehrung||'€'));
+    if(v.bezeichnung)parts.push(v.bezeichnung);
+    var label=parts.join(' · ')||'—';
     return'<span style="display:inline-flex;align-items:center;padding:4px 10px;border-radius:8px;font-size:11px;border:1.5px solid #e8e0f0;background:#fff;color:var(--td);font-weight:400;white-space:nowrap">'+esc(label)+'</span>';
   }).join('');
 }
@@ -2149,7 +2150,7 @@ function mkVarRow(v,svcId,idx){
         // Toggle mit "Anzeigen" Label
         +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding-bottom:3px">'
           +'<span style="font-size:10px;color:var(--muted);font-weight:500;white-space:nowrap;text-align:center">Dauer<br>anzeigen</span>'
-          +'<label class="toggle-sw"><input data-field="dauer_anzeigen" type="checkbox" '+(v.dauer_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'
+          +'<label class="toggle-sw"><input data-field="dauer_anzeigen" type="checkbox" '+(v.dauer_anzeigen!==false?'checked':'')+' onchange="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_anzeigen\',this.checked);updateVarPreview(\''+svcId+'\')"><span class="slider"></span></label>'
         +'</div>'
         +'<input data-field="puffer_aktiv" type="checkbox" '+(v.puffer_aktiv?'checked':'')+' style="display:none">'
       +'</div>'
@@ -2167,7 +2168,7 @@ function mkVarRow(v,svcId,idx){
           +'</select>'
           +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px">'
             +'<span style="font-size:10px;color:var(--muted);font-weight:500">Anzeigen</span>'
-            +'<label class="toggle-sw"><input data-field="preis_anzeigen" type="checkbox" '+(v.preis_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'
+            +'<label class="toggle-sw"><input data-field="preis_anzeigen" type="checkbox" '+(v.preis_anzeigen!==false?'checked':'')+' onchange="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis_anzeigen\',this.checked);updateVarPreview(\''+svcId+'\')"><span class="slider"></span></label>'
           +'</div>'
         +'</div>'
       +'</div>'
