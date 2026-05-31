@@ -1246,6 +1246,7 @@ window.submitBooking=async function(){
       dauer_minuten:min,
       puffer_minuten:puf,
       kalender_minuten:min+puf,
+      dauer_label:puf>0?'Dauer: '+min+' Min, Puffer: '+puf+' Min':'Dauer: '+min+' Min',
       preis:v?v.preis:0
     };
   });
@@ -1257,6 +1258,14 @@ window.submitBooking=async function(){
     ?'Dauer: '+dauerTotal+' Min, Puffer: '+pufferTotal+' Min'
     :'Dauer: '+dauerTotal+' Min';
 
+  // Fertige Kalender-Beschreibung — n8n übernimmt 1:1
+  var svcLines=services.map(function(s){
+    return'Service: '+s.service_name+'\nVariante: '+(s.variante_name||'—')+'\n'+s.dauer_label;
+  }).join('\n\n');
+  var calendarDescription='Kunde: '+st.name.trim()
+    +'\nTelefon: '+normPhone(st.phone)
+    +'\n\n'+svcLines;
+
   var payload={
     salon_id:salonId,
     mitarbeiter_id:st.stf1==='any'?null:st.stf1,
@@ -1267,6 +1276,7 @@ window.submitBooking=async function(){
     display_duration_minutes:totalMinuten(),
     puffer_minuten:pufferTotal,
     dauer_label:dauerLabel,
+    description:calendarDescription,
     services:services,
     customer_name:st.name.trim(),
     customer_phone:normPhone(st.phone),
