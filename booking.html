@@ -893,7 +893,7 @@ function mkSvcCards(){
           +'background:'+(isSel?'var(--tp)':allowed?'#fff':'#f5f3f8')+';'
           +'color:'+(isSel?'#fff':allowed?'var(--td)':'#c0b8cc')+';'
           +'font-weight:'+(isSel?'600':'400')+';">';
-        varHtml+=(v.service_name?v.service_name+' · ':'')+v.min+' Min'+(v.preis?' · '+v.preis+' €':'');
+        varHtml+=(v.service_name?v.service_name+' · ':'')+(v.puffer_minuten?(v.min+(v.puffer_minuten||0)):v.min)+' Min'+(v.preis?' · '+v.preis+' €':'');
         if(v.bezeichnung)varHtml+=' · '+v.bezeichnung;
         if(!allowed)varHtml+=' <span style="font-size:9px;opacity:0.5">·</span>';
         varHtml+='</div>';
@@ -1074,7 +1074,7 @@ function mkSumCard(){
     st.services.forEach(function(s){
       var svc=fsvc(s.svcId);
       var v=fvar(s.varId);
-      if(svc)rows+=row(svc.name,v?(v.service_name?v.service_name+' · ':'')+v.min+' Min'+(v.preis?' · '+v.preis+' \u20ac':''):'— Variante wählen');
+      if(svc)rows+=row(svc.name,v?(v.service_name?v.service_name+' · ':'')+(v.puffer_minuten?(v.min+(v.puffer_minuten||0)):v.min)+' Min'+(v.preis?' · '+v.preis+' \u20ac':''):'— Variante wählen');
     });
   } else {
     rows+=row('Service',null);
