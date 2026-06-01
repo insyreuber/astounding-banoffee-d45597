@@ -923,7 +923,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
       <div style="font-size:11px;font-weight:600;color:var(--td)">Abweichende Zeiten pro Kalenderwoche</div>
       <button class="btn-add" onclick="addStaffTempEntry()" type="button">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Hinzufügen
       </button>
     </div>
@@ -4357,7 +4357,7 @@ function renderProfilContent(id){
 
     if(!document.getElementById('wa-tab-style')){
       var s=document.createElement('style');s.id='wa-tab-style';
-      s.textContent='.wa-tab-btn{padding:6px 14px;border-radius:8px;border:1.5px solid var(--border);background:#fff;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}.wa-tab-active{background:var(--tpl);color:#fff;border-color:var(--tpl)}'
+      s.textContent='.wa-tab-btn{padding:6px 14px;border-radius:8px;border:1.5px solid var(--tg);background:var(--tp);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .15s;opacity:0.55}.wa-tab-btn svg{stroke:#fff}.wa-tab-active{opacity:1}'
         +'.wa-pill{display:inline-block;border-radius:20px;padding:1px 9px;font-size:12px;font-weight:600;cursor:default;user-select:none;line-height:1.6}'
         +'.wa-pill[data-var="name"]{background:rgba(52,152,219,.12);border:1px solid rgba(52,152,219,.3);color:#2980b9}'
         +'.wa-pill[data-var="termin"],.wa-pill[data-var="datum"],.wa-pill[data-var="uhrzeit"]{background:rgba(243,156,18,.12);border:1px solid rgba(243,156,18,.3);color:#d68910}'
