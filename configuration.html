@@ -124,6 +124,8 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .var-header{display:grid;grid-template-columns:2fr 1.2fr 1.2fr 1.2fr 28px;gap:8px;padding:0 12px;margin-bottom:4px}
 .var-col-lbl{font-size:10px;color:var(--muted);text-align:center;letter-spacing:.05em}
 .var-list{display:flex;flex-direction:column;gap:0;margin-bottom:12px}
+.var-acc{background:var(--white);border:1.5px solid var(--border);border-radius:8px;margin-bottom:6px;overflow:visible;font-size:16px}
+.var-acc *:not(svg):not(path):not(circle):not(span.slider){font-size:16px !important}
 .var-row:last-child{border-bottom:none}
 .var-row{display:grid;grid-template-columns:2fr 1.2fr 1.2fr 1.2fr 28px;gap:8px;align-items:center;background:transparent;border:none;border-radius:0;padding:6px 0;border-bottom:1px solid var(--border)}
 /* Jede Gruppe = Input + Toggle nebeneinander */
@@ -2160,7 +2162,7 @@ function mkVarRow(v,svcId,idx){
   if(v.bezeichnung)previewParts.push(v.bezeichnung);
   var previewLabel=previewParts.join(' · ')||'Neue Variante';
 
-  return'<div class="var-acc" id="var-acc-'+v.id+'" style="border:1.5px solid #e8e0f0;border-radius:8px;margin-bottom:6px;overflow:visible">'
+  return'<div class="var-acc" id="var-acc-'+v.id+'">'
     // ── Akkordion Header ──
     +'<div onclick="toggleVarAcc(\''+v.id+'\')" style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;cursor:pointer;gap:8px;background:#faf8fc;border-radius:8px">'
       +'<div id="var-preview-'+v.id+'" style="flex:1;min-width:0">'
