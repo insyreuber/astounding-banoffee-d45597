@@ -76,6 +76,8 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .toggle-sw input:checked+.slider{background:#27ae60}
 .hours-col-closed{display:none}
 #slot-btn-15,#slot-btn-30,#slot-btn-60{background:var(--tp);color:#fff}
+/* NaN visuell unterdrücken */
+#vorlauf-label,#horizont-label{display:none !important}
 .hours-col:not(.aktiv){opacity:0.45;pointer-events:none}
 .hours-col:not(.aktiv) .toggle-sw{pointer-events:all;opacity:1}
 .hours-col-sm:not(.aktiv){opacity:0.45;pointer-events:none}
@@ -1317,8 +1319,8 @@ function updateTimelines(){
   var hLbl=document.getElementById('horizont-label');
   var vIdx=vEl?parseInt(vEl.value):NaN;
   var hIdx=hEl?parseInt(hEl.value):NaN;
-  if(vLbl&&!isNaN(vIdx)&&VORLAUF_LABELS[vIdx]){vLbl.textContent=VORLAUF_LABELS[vIdx];vLbl.style.visibility='visible';}else if(vLbl){vLbl.style.visibility='hidden';}
-  if(hLbl&&!isNaN(hIdx)&&HORIZONT_LABELS[hIdx-1]){hLbl.textContent=HORIZONT_LABELS[hIdx-1];hLbl.style.visibility='visible';}else if(hLbl){hLbl.style.visibility='hidden';}
+  if(vLbl&&!isNaN(vIdx)&&VORLAUF_LABELS[vIdx]){vLbl.textContent=VORLAUF_LABELS[vIdx];vLbl.style.display='block';}else if(vLbl){vLbl.style.display='none';}
+  if(hLbl&&!isNaN(hIdx)&&HORIZONT_LABELS[hIdx-1]){hLbl.textContent=HORIZONT_LABELS[hIdx-1];hLbl.style.display='block';}else if(hLbl){hLbl.style.display='none';}
   saveBookingTimelines();
 }
 
@@ -1327,8 +1329,11 @@ function saveBookingTimelines(){
   if(!window._pData.feature_settings)window._pData.feature_settings={};
   var vEl=document.getElementById('booking-vorlauf');
   var hEl=document.getElementById('booking-horizont');
-  if(vEl)window._pData.feature_settings.booking_vorlauf=parseInt(vEl.value);
-  if(hEl)window._pData.feature_settings.booking_horizont=HORIZONT_VALS[parseInt(hEl.value)-1];
+  var vVal=vEl?parseInt(vEl.value):NaN;
+  var hVal=hEl?parseInt(hEl.value):NaN;
+  var hIdx=isNaN(hVal)?-1:hVal-1;
+  if(!isNaN(vVal))window._pData.feature_settings.booking_vorlauf=vVal;
+  if(hIdx>=0&&HORIZONT_VALS[hIdx]!=null)window._pData.feature_settings.booking_horizont=HORIZONT_VALS[hIdx];
   sb.from('kunden_profile').update({feature_settings:window._pData.feature_settings}).eq('id',SALON_ID)
     .then(function(r){if(r.error)console.error('Timelines save error:',r.error);});
 }
@@ -4297,7 +4302,7 @@ function renderProfilContent(id){
           +'<div style="font-size:11px;color:var(--muted);margin-bottom:14px">Wie kurzfristig dürfen Kunden noch buchen?</div>'
           +'<div style="position:relative;height:36px;margin-bottom:6px">'
             +'<div style="position:absolute;top:14px;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--tp),rgba(90,45,130,0.15));border-radius:99px"></div>'
-            +'<input type="range" id="booking-vorlauf" min="0" max="8" step="1" value="'+((_pData&&_pData.feature_settings&&_pData.feature_settings.booking_vorlauf!=null)?_pData.feature_settings.booking_vorlauf:2)+'" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px">'
+            +'<input type="range" id="booking-vorlauf" min="0" max="8" step="1" value="'+(function(){var fs=_pData&&_pData.feature_settings;var v=fs&&fs.booking_vorlauf;return(v!=null&&!isNaN(v))?v:2;}())+'" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px">'
           +'</div>'
           +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:4px">'
             +'<span>Sofort</span><span>1h</span><span>2h</span><span>4h</span><span>8h</span><span>12h</span><span>1 Tag</span><span>2 Tage</span><span>3 Tage</span>'
@@ -4310,7 +4315,7 @@ function renderProfilContent(id){
           +'<div style="font-size:11px;color:var(--muted);margin-bottom:14px">Wie weit im Voraus können Kunden buchen?</div>'
           +'<div style="position:relative;height:36px;margin-bottom:6px">'
             +'<div style="position:absolute;top:14px;left:0;right:0;height:6px;background:linear-gradient(90deg,rgba(90,45,130,0.15),var(--tp));border-radius:99px"></div>'
-            +'<input type="range" id="booking-horizont" min="1" max="7" step="1" value="'+(function(){var fs=_pData&&_pData.feature_settings;if(fs&&fs.booking_horizont!=null){var idx=HORIZONT_VALS.indexOf(fs.booking_horizont);return idx>=0?idx+1:4;}return 4;}())+'" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px">'
+            +'<input type="range" id="booking-horizont" min="1" max="7" step="1" value="'+(function(){var fs=_pData&&_pData.feature_settings;if(fs&&fs.booking_horizont!=null&&!isNaN(fs.booking_horizont)){var idx=HORIZONT_VALS.indexOf(fs.booking_horizont);return idx>=0?idx+1:4;}return 4;}())+'" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px">'
           +'</div>'
           +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:4px">'
             +'<span>1 Woche</span><span>2 W.</span><span>3 W.</span><span>4 W.</span><span>6 W.</span><span>8 W.</span><span>12 W.</span>'
