@@ -1657,17 +1657,20 @@ async function loadProfil(){
     if(fs.booking_horizont==null||isNaN(fs.booking_horizont))fs.booking_horizont=4;
     if(fs.slot_interval==null||isNaN(fs.slot_interval))fs.slot_interval=15;
   }
-  // NaN dauerhaft per MutationObserver entfernen
-  var _nanObs=new MutationObserver(function(){
-    document.querySelectorAll('*').forEach(function(el){
-      if(el.childNodes.length===1&&el.childNodes[0].nodeType===3&&el.childNodes[0].textContent.trim()==='NaN'){
-        el.style.display='none';
-      }
-    });
-  });
-  _nanObs.observe(document.body,{childList:true,subtree:true,characterData:true});
+  // NaN-Elemente nach dem Laden verstecken
+  hideNaN();
+  setTimeout(hideNaN,100);
+  setTimeout(hideNaN,500);
+  setTimeout(hideNaN,1500);
 }
 
+function hideNaN(){
+  document.querySelectorAll('div,span,p,h1,h2,h3,h4').forEach(function(el){
+    if(el.childNodes.length===1&&el.childNodes[0].nodeType===3&&el.childNodes[0].textContent.trim()==='NaN'){
+      el.style.visibility='hidden';el.style.height='0';el.style.overflow='hidden';el.style.margin='0';el.style.padding='0';
+    }
+  });
+}
 
 // ── EIGENE LINKS ─────────────────────────────────────────────
 var customLinks = [];
@@ -4249,13 +4252,8 @@ function selectProfil(id){
   _pActive=id;
   _ptActivate(id);
   renderProfilContent(id);
-  setTimeout(function(){
-    document.querySelectorAll('*').forEach(function(el){
-      if(el.childNodes.length===1&&el.childNodes[0].nodeType===3&&el.childNodes[0].textContent.trim()==='NaN'){
-        el.style.display='none';
-      }
-    });
-  },400);
+  setTimeout(hideNaN,100);
+  setTimeout(hideNaN,400);
 }
 
 function renderProfilContent(id){
