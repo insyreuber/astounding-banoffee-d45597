@@ -2122,7 +2122,7 @@ function renderSvcBody(s,vars){
         +'<span style="font-size:9px;color:var(--muted)">Aktiv</span>'
       +'</div>'
     +'</div>'
-    +'<div class="field" style="margin-bottom:0"><label>Beschreibung <span style="font-size:10px;color:var(--muted);font-weight:400">(optional)</span></label><input type="text" id="svc-f-desc-'+s.id+'" value="'+esc(s.beschreibung||'')+'"></div>'
+    +'<div class="field" style="margin-bottom:0"><label>Beschreibung <span style="font-size:10px;color:var(--muted);font-weight:400">(optional)</span></label><textarea id="svc-f-desc-'+s.id+'" rows="2" style="width:100%;border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;font-size:13px;font-family:inherit;color:var(--td);background:#fff;resize:vertical;outline:none">'+esc(s.beschreibung||'')+'</textarea></div>'
   +'</div>'
   +'<hr class="div">'
   +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Varianten</div>'
@@ -2220,7 +2220,7 @@ function mkVarRow(v,svcId,idx){
     +'<div style="display:flex;flex-direction:column;gap:3px;min-width:0">'
       +'<span class="var-row-lbl" style="font-size:10px;color:var(--muted);font-weight:500">Beschreibung</span>'
       +'<div class="var-group">'
-        +'<input data-field="bezeichnung" type="text" placeholder="" value="'+(v.bezeichnung||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'bezeichnung\',this.value);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="border:none;outline:none;padding:6px;font-family:inherit;color:var(--td);background:transparent;width:100%;min-width:0">'
+        +'<textarea data-field="bezeichnung" rows="2" placeholder="" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'bezeichnung\',this.value);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="border:none;outline:none;padding:6px;font-family:inherit;color:var(--td);background:transparent;width:100%;min-width:0;resize:none">'+esc(v.bezeichnung||'')+'</textarea>'
       +'</div>'
     +'</div>'
     +(isFirst
