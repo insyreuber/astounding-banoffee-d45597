@@ -71,24 +71,32 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 /* ── TOGGLE ── */
 .toggle-sw{position:relative;width:34px;height:18px;flex-shrink:0;display:inline-block}
 .toggle-sw input{opacity:0;width:0;height:0;position:absolute}
-.toggle-sw .slider{position:absolute;inset:0;background:#ddd;border-radius:99px;cursor:pointer;transition:.2s}
+.toggle-sw .slider{position:absolute;inset:0;background:rgba(255,255,255,.3);border-radius:99px;cursor:pointer;transition:.2s}
 .toggle-sw .slider:before{content:'';position:absolute;width:12px;height:12px;border-radius:50%;background:#fff;left:3px;top:3px;transition:.2s}
-.toggle-sw input:checked+.slider{background:var(--tp)}
+.toggle-sw input:checked+.slider{background:#27ae60}
+.hours-col-closed{display:none}
+#slot-btn-15,#slot-btn-30,#slot-btn-60{background:var(--tp);color:#fff}
+#slot-raster-btns + div, #slot-raster-btns ~ *:not([style*="letter-spacing"]){}
+.hours-col:not(.aktiv){opacity:0.45;pointer-events:none}
+.hours-col:not(.aktiv) .toggle-sw{pointer-events:all;opacity:1}
+.hours-col-sm:not(.aktiv){opacity:0.45;pointer-events:none}
+.hours-col-sm:not(.aktiv) .toggle-sw{pointer-events:all;opacity:1}
 #dash-booking-active:checked+.slider{background:var(--tg) !important}
 .toggle-sw input:checked+.slider:before{transform:translateX(16px)}
 
 /* ── ÖFFNUNGSZEITEN – SPALTEN ── */
 .hours-cols{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
 .hours-cols{display:flex;flex-direction:column;gap:6px}
-.hours-col{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:8px 14px;display:flex;flex-direction:row;align-items:center;gap:12px;transition:border-color .2s}
-.hours-col.aktiv{border-color:var(--tpl);background:var(--tpp)}
-.hours-col-day{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;width:24px;flex-shrink:0}
-.hours-col.aktiv .hours-col-day{color:var(--tpl)}
-.hours-col select{border:1.5px solid var(--border);border-radius:8px;padding:5px 8px;font-size:12px;font-family:'DM Mono',monospace;color:var(--td);outline:none;background:var(--white);cursor:pointer;appearance:none;-webkit-appearance:none;text-align-last:center}
-.hours-col select:focus{border-color:var(--tpl);box-shadow:0 0 0 2px var(--tpp)}
-.hours-col.aktiv select{background:var(--white)}
-.hours-col-sep{font-size:10px;color:var(--muted)}
-.hours-col-closed{font-size:10px;color:#c8bcd8;font-style:italic}
+.hours-col{background:var(--tp);border:1.5px solid var(--tg);border-radius:10px;padding:8px 14px;display:flex;flex-direction:row;align-items:center;gap:12px;transition:border-color .2s}
+.hours-col.aktiv{border-color:var(--tg);background:var(--tp)}
+.hours-col-day{font-size:11px;font-weight:600;color:rgba(255,255,255,.5);letter-spacing:.06em;text-transform:uppercase;width:24px;flex-shrink:0}
+.hours-col.aktiv .hours-col-day{color:#fff}
+.hours-col select{border:1.5px solid rgba(255,255,255,.25);border-radius:8px;padding:5px 8px;font-size:12px;font-family:'DM Mono',monospace;color:#fff;outline:none;background:rgba(255,255,255,.12);cursor:pointer;appearance:none;-webkit-appearance:none;text-align-last:center}
+.hours-col select option{color:var(--td);background:#fff}
+.hours-col select:focus{border-color:rgba(255,255,255,.5)}
+.hours-col.aktiv select{background:rgba(255,255,255,.12)}
+.hours-col-sep{font-size:10px;color:rgba(255,255,255,.5)}
+.hours-col-closed{font-size:10px;color:rgba(255,255,255,.35);font-style:italic}
 .hours-time-wrap{display:flex;flex-direction:row;align-items:center;gap:6px;flex:1}
 
 /* ── BUTTONS ── */
@@ -123,8 +131,13 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 /* ── VARIANTEN (service edit) ── */
 .var-header{display:grid;grid-template-columns:2fr 1.2fr 1.2fr 1.2fr 28px;gap:8px;padding:0 12px;margin-bottom:4px}
 .var-col-lbl{font-size:10px;color:var(--muted);text-align:center;letter-spacing:.05em}
-.var-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
-.var-row{display:grid;grid-template-columns:2fr 1.2fr 1.2fr 1.2fr 28px;gap:8px;align-items:center;background:#faf8fc;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px}
+.btn-add{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--tp);color:#fff;border:1.5px solid var(--tg);border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:opacity .15s;width:100%;justify-content:center}
+.btn-add:hover{opacity:0.85}
+.btn-add svg{stroke:#fff}
+.var-acc{background:var(--white);border:1.5px solid var(--border);border-radius:8px;margin-bottom:6px;overflow:visible;font-size:16px}
+.var-acc *:not(svg):not(path):not(circle):not(span.slider){font-size:16px !important}
+.var-row:last-child{border-bottom:none}
+.var-row{display:grid;grid-template-columns:2fr 1.2fr 1.2fr 1.2fr 28px;gap:8px;align-items:center;background:transparent;border:none;border-radius:0;padding:6px 0;border-bottom:1px solid var(--border)}
 /* Jede Gruppe = Input + Toggle nebeneinander */
 .var-group{display:flex;align-items:center;gap:5px;background:var(--white);border:1.5px solid var(--border);border-radius:6px;padding:0 6px 0 0;overflow:hidden;min-width:0}
 .var-group input[type="number"]{border:1.5px solid var(--border);border-radius:6px;outline:none;padding:6px 6px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);width:100%;text-align:center;min-width:40px;box-shadow:0 1px 3px rgba(74,28,107,.06);transition:border-color .2s,box-shadow .2s}
@@ -148,7 +161,9 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .staff-action{flex:1;padding:7px;font-size:10px;font-weight:500;color:var(--muted);cursor:pointer;text-align:center;transition:all .15s;background:none;border:none;font-family:inherit}
 .staff-action:hover{background:var(--tpp);color:var(--tpl)}
 .staff-action+.staff-action{border-left:1px solid var(--border)}
-.staff-add-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:9px;border:1.5px dashed var(--border);border-radius:10px;font-size:11px;color:var(--muted);cursor:pointer;background:none;font-family:inherit;width:100%;transition:all .15s}
+.staff-add-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 16px;border:1.5px solid var(--tg);border-radius:10px;font-size:13px;color:#fff;cursor:pointer;background:var(--tp);font-family:inherit;width:100%;transition:opacity .15s;font-weight:500}
+.staff-add-btn:hover{opacity:0.85}
+.staff-add-btn svg{stroke:#fff}
 .staff-add-btn:hover{border-color:var(--tpl);color:var(--tpl);background:var(--tpp)}
 
 /* ── AUTH OVERLAY ── */
@@ -218,12 +233,13 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 
 /* Mitarbeiter hours cols (smaller) */
 .hours-cols-sm{display:flex;flex-direction:column;gap:6px}
-.hours-col-sm{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:7px 10px;display:flex;flex-direction:row;align-items:center;gap:8px;transition:border-color .2s}
-.hours-col-sm.aktiv{border-color:var(--tpl);background:var(--tpp)}
-.hours-col-sm-day{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;width:22px;flex-shrink:0}
-.hours-col-sm.aktiv .hours-col-sm-day{color:var(--tpl)}
-.hours-col-sm select{border:1.5px solid var(--border);border-radius:6px;padding:4px 4px;font-size:11px;font-family:'DM Mono',monospace;color:var(--td);outline:none;background:var(--white);cursor:pointer;appearance:none;-webkit-appearance:none;text-align-last:center;box-shadow:0 1px 3px rgba(74,28,107,.06);transition:border-color .2s,box-shadow .2s}
-.hours-col-sm select:focus{border-color:var(--tpl)}
+.hours-col-sm{background:var(--tp);border:1.5px solid var(--tg);border-radius:8px;padding:7px 10px;display:flex;flex-direction:row;align-items:center;gap:8px;transition:border-color .2s}
+.hours-col-sm.aktiv{border-color:var(--tg);background:var(--tp)}
+.hours-col-sm-day{font-size:10px;font-weight:600;color:rgba(255,255,255,.5);letter-spacing:.05em;text-transform:uppercase;width:22px;flex-shrink:0}
+.hours-col-sm.aktiv .hours-col-sm-day{color:#fff}
+.hours-col-sm select{border:1.5px solid rgba(255,255,255,.25);border-radius:6px;padding:4px 4px;font-size:11px;font-family:'DM Mono',monospace;color:#fff;outline:none;background:rgba(255,255,255,.12);cursor:pointer;appearance:none;-webkit-appearance:none;text-align-last:center;transition:border-color .2s}
+.hours-col-sm select option{color:var(--td);background:#fff}
+.hours-col-sm select:focus{border-color:rgba(255,255,255,.5)}
 .hours-col-sm input[type="time"]{border:1.5px solid var(--border);border-radius:5px;padding:4px 2px;font-size:10px;font-family:'DM Mono',monospace;color:var(--td);outline:none;background:var(--white);text-align:center}
 .hours-col-sm input[type="time"]:focus{border-color:var(--tpl)}
 
@@ -266,9 +282,25 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 /* ── MOBILE ── */
 @media (max-width: 768px) {
   #slot-raster-btns { flex-direction: row !important; gap: 8px !important; }
-  #slot-raster-btns button { padding: 10px 6px !important; min-width: 0 !important; flex: 1 !important; }
-  #slot-raster-btns button svg { width: 72px !important; height: 72px !important; display: block !important; margin: 0 auto 6px !important; }
-  #panel-buchungsseite{width:100%!important;margin-left:0!important;}
+  #slot-raster-btns button {
+    padding: 12px 6px !important;
+    min-width: 0 !important;
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    line-height: 1.3 !important;
+    overflow: hidden !important;
+  }
+  #slot-raster-btns button svg {
+    width: 80px !important;
+    height: 80px !important;
+    display: block !important;
+    margin: 0 auto !important;
+    flex-shrink: 0 !important;
+  }
 
   /* Nav: Akkordion auf Mobile */
   .nav{flex-direction:column;padding:0;gap:0;width:100%;}
@@ -295,29 +327,90 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   #profil-toggles{padding:10px 12px !important;gap:6px !important;margin-bottom:0 !important;}
   #profil-toggles button{font-size:11px !important;padding:6px 12px !important;}
 
-  /* Adresse & Kontakt — alle Felder untereinander */
-  #profil-content div[style*="grid-template-columns:2fr 0.6fr 1fr"],
-  #profil-content div[style*="grid-template-columns:2fr 0.5fr"],
-  #profil-content div[style*="grid-template-columns:0.6fr 1fr 1fr"]{
-    grid-template-columns:1fr !important;
+  /* Adresse & Kontakt — Felder bleiben nebeneinander auf Mobile */
+  @media (max-width: 768px) {
+    /* PLZ (0.3fr Spalte) — input max 30% der Zeile */
+    #f-plz, #f-house, #f-area-code {
+      width: 100% !important;
+      min-width: 0 !important;
+      font-size: 16px !important;
+    }
+    /* Alle Adress-Grid-Inputs kein min-width overflow */
+    #profil-content .field input {
+      min-width: 0 !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
   }
 
+  /* Alle Hinzufügen Buttons volle Breite + eigene Zeile */
+  .btn-add{width:100% !important;justify-content:center !important;display:flex !important}
+  .btn-add-wrap{flex-direction:column !important;align-items:stretch !important;gap:8px !important}
+
+  input[type=range]{color:transparent !important;font-size:0 !important;line-height:0 !important}
+input[type=range]::-webkit-slider-thumb{font-size:0 !important}
+input[type=range]::-moz-range-thumb{font-size:0 !important}
   /* Öffnungszeiten — Zeile kompakter, selects kleiner */
   .hours-col{padding:7px 10px !important;gap:8px !important;}
   .hours-slots-wrap{flex-direction:column !important;gap:4px !important;}
-  .hours-col select{font-size:11px !important;padding:4px 4px !important;}
+  .hours-col select{font-size:16px !important;padding:4px 4px !important;}
+  .hours-col-day{font-size:16px !important}
+  .hours-col-sm select{font-size:16px !important}
+  .hours-col-sm-day{font-size:16px !important}
   .hours-time-wrap{gap:4px !important;}
+
+  /* Öffnungszeiten Vorschau */
+  #az-acc-preview span{font-size:16px !important}
+  .hd-hour-row{font-size:16px !important}
+
+  /* Slot-Raster Buttons */
+  #slot-raster-btns button span{font-size:16px !important}
+  #slot-btn-15,#slot-btn-30,#slot-btn-60{background:var(--tp) !important;color:#fff !important}
+
+  /* Buchungsvorlauf & Buchungshorizont */
+  #vorlauf-label,#horizont-label{font-size:16px !important}
+  input[type="range"]{height:28px !important}
+
+  /* Temporäre Öffnungszeiten */
+  .week-plan-title{font-size:16px !important}
+  #temp-entries-list *{font-size:16px !important}
+  #temp-entries-list input,#temp-entries-list select{font-size:16px !important}
+  #s-temp-list *{font-size:16px !important}
+
+  .custom-link-row{display:flex !important;flex-direction:column !important;gap:6px !important}
+  .custom-link-row input[style*="flex:0 0 120px"]{flex:unset !important;width:100% !important}
+  .custom-link-row,.custom-link-row input,.custom-link-row button{font-size:16px !important}
+  #staff-modal label,#staff-modal input,#staff-modal select,#staff-modal textarea,#staff-modal button,#staff-modal .modal-title{font-size:16px !important}
+
+  /* WhatsApp Templates */
+  .wa-tab-btn{font-size:16px !important}
+  #wa-template-editor{font-size:16px !important}
+  #wa-preview{font-size:16px !important}
+  .svc-item-hdr{align-items:flex-start !important}
+  .svc-item-hdr > span[style*="color:var(--tg)"]{margin-top:2px !important;font-size:16px !important}
+  .svc-item-hdr > .badge{margin-top:-2px !important}
+  .svc-item-name{font-size:16px !important}
+  .svc-item-meta{display:none !important}
+  .badge{font-size:16px !important;padding:4px 12px !important}
+  .svc-list .btn{font-size:16px !important}
+  .svc-var-preview span{font-size:16px !important}
+  #svc-list .btn-outline{font-size:16px !important}
+  /* Varianten in Service Body */
+  .var-row-lbl{font-size:16px !important}
+  .var-row input,.var-row select,.var-row span{font-size:16px !important}
+  /* Service Body Felder */
+  .item-body .field label{font-size:16px !important}
+  .item-body .field input{font-size:16px !important}
+  /* Hinzufügen + Speichern + Löschen Buttons im Service */
+  .item-body .btn{font-size:16px !important}
+  /* Varianten Kacheln Vorschau */
+  #svc-list [id^="svc-var-preview"] span{font-size:16px !important}
 
   /* Varianten: Stack */
   .var-header{display:none}
   .mvar-header{display:none}
-  .var-row{grid-template-columns:1fr !important;gap:6px;}
+  .var-row{grid-template-columns:1fr !important;gap:10px;}
   .mvar-row{grid-template-columns:1fr !important;gap:6px !important;}
-  .var-group::before{font-size:10px;color:var(--muted);padding:0 8px;white-space:nowrap;flex-shrink:0;}
-  .var-row .var-group:nth-child(1)::before{content:'Name'}
-  .var-row .var-group:nth-child(2)::before{content:'Min'}
-  .var-row .var-group:nth-child(3)::before{content:'Preis €'}
-  .var-row .var-group:nth-child(4)::before{content:'Puffer'}
 
   /* Team sidebar volle Breite */
   .ma-layout{grid-template-columns:1fr !important;flex-direction:column}
@@ -326,7 +419,11 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
   /* Staff actions: wrap + truncate */
   .staff-card-actions{flex-wrap:wrap}
-  .staff-action{font-size:9px;padding:6px 4px;min-width:0;flex:1 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .staff-action{font-size:16px;padding:6px 4px;min-width:0;flex:1 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .staff-role{font-size:16px}
+  .staff-name{font-size:16px}
+  .staff-add-btn{font-size:16px}
+  #profil-toggles button{font-size:16px !important}
 
   /* Kalender-verbunden text kürzen */
   .staff-card-body span[style*="max-width:130px"]{max-width:80px !important;display:inline-block}
@@ -336,11 +433,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   .mvar-row{grid-template-columns:1fr !important;gap:6px !important;}
   .var-group{min-width:0 !important;width:100% !important}
   .var-group input[type="text"],.var-group input[type="number"]{width:100% !important;min-width:0 !important;box-sizing:border-box !important}
-  .var-group::before{font-size:10px;color:var(--muted);padding:0 8px;white-space:nowrap;flex-shrink:0;}
-  .var-row .var-group:nth-child(1)::before{content:'Name'}
-  .var-row .var-group:nth-child(2)::before{content:'Min'}
-  .var-row .var-group:nth-child(3)::before{content:'Preis €'}
-  .var-row .var-group:nth-child(4)::before{content:'Puffer'}
+  .var-group::before{content:none !important;display:none !important}
 
   /* Modal: zentriert, kein Zoom-Problem */
   .modal{
@@ -392,14 +485,20 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   .save-bar{flex-direction:column;gap:8px;align-items:stretch}
   .save-bar .btn{width:100%;justify-content:center}
 
-  /* Formularfelder allgemein */
-  .frow{grid-template-columns:1fr !important}
-  .frow-2{grid-template-columns:1fr 1fr !important}
-  /* iOS Zoom Prevention */
-  .field input,.field textarea,.field select{font-size:16px !important;min-height:44px !important}
-  /* Mitarbeiter Modal: Anzeigename + Rolle untereinander */
-  #staff-modal .frow-2{grid-template-columns:1fr !important}
-  .hours-col select,.hours-col-sm select{font-size:14px !important;min-height:36px !important}
+  /* iOS Zoom Prevention — ALLE Inputs global 16px */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  .var-group input[type="number"],
+  .var-group input[type="text"] {
+    font-size: 16px !important;
+    min-height: 44px !important;
+  }
+  .hours-col select,
+  .hours-col-sm select {
+    font-size: 16px !important;
+    min-height: 36px !important;
+  }
 
   /* Timeline mobile */
   .tl-bottom-grid{grid-template-columns:1fr !important}
@@ -534,7 +633,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
     </div>
 
     <div id="profil-status-msg" style="font-size:12px;margin-top:10px;margin-bottom:16px;padding:2px 0;min-height:18px;"></div>
-    <div id="profil-content"></div>
+    <div id="profil-content" style="width:100%;overflow:hidden;box-sizing:border-box"></div>
   </div>
 
   <div class="tab-panel" id="panel-pakete">
@@ -649,21 +748,27 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 
 
   <!-- ════ BUCHUNGSSEITE ════ -->
-  <div class="tab-panel" id="panel-buchungsseite" style="padding:0;margin-top:-28px">
-    <!-- Header -->
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--white);border:1.5px solid var(--border);border-radius:12px;margin-bottom:12px">
-      <div style="display:flex;align-items:center;gap:8px">
-        <div id="bs-panel-dot" style="width:8px;height:8px;border-radius:50%;background:#27ae60;flex-shrink:0"></div>
-        <span id="bs-panel-label" style="font-size:12px;font-weight:500;color:var(--td)">Online</span>
-        <label class="toggle-sw toggle-sm" style="margin-left:4px"><input type="checkbox" id="bs-panel-toggle" onchange="bsPanelToggle()"><span class="slider"></span></label>
+  <div class="tab-panel" id="panel-buchungsseite" style="padding:0;position:relative;width:calc(100vw - 48px);margin-left:calc(-50vw + 50% + 24px);margin-top:-28px">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px 12px;background:var(--white);border:1.5px solid var(--border);border-radius:12px;margin:0 0 12px;box-shadow:0 2px 8px rgba(74,28,107,.05)">
+      <div>
+        <div class="sec-title">Live-Buchungsseite</div>
+        <div class="sec-sub">So sehen deine Kunden die Buchungsseite</div>
       </div>
-      <a id="booking-open-link" href="#" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;background:var(--tpl);color:#fff;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        Buchungsseite öffnen
-      </a>
+      <div style="display:flex;align-items:center;gap:12px">
+        <!-- Booking online/offline toggle -->
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px">
+          <div id="bs-panel-dot" style="width:8px;height:8px;border-radius:50%;background:#27ae60;flex-shrink:0"></div>
+          <span id="bs-panel-label" style="font-size:12px;font-weight:500;color:var(--td)">Online</span>
+          <label class="toggle-sw toggle-sm" style="margin-left:4px"><input type="checkbox" id="bs-panel-toggle" onchange="bsPanelToggle()"><span class="slider"></span></label>
+        </div>
+        <!-- Open in new tab icon -->
+        <a id="booking-open-link" href="#" target="_blank" title="In neuem Tab öffnen" style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;background:var(--bg);border:1.5px solid var(--border);color:var(--tpl);flex-shrink:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+      </div>
     </div>
-    <!-- Buchungsseite fullwidth -->
-    <iframe id="booking-iframe" src="" style="width:100%;height:85vh;border:1.5px solid var(--border);border-radius:12px;display:block" scrolling="yes"></iframe>
+    <!-- iframe -->
+    <iframe id="booking-iframe" src="" style="width:100%;height:80vh;border:1.5px solid var(--border);border-radius:12px;display:block" scrolling="yes"></iframe>
   </div>
 
   <!-- ════ RECHNUNGEN ════ -->
@@ -704,9 +809,9 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
       <span></span>
     </div>
     <div id="m-var-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"></div>
-    <button class="btn btn-sm btn-ghost" onclick="addModalVar()" type="button">
+    <button class="btn-add" onclick="addModalVar()" type="button">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      Variante hinzufügen
+      Hinzufügen
     </button>
   </div>
   <div class="modal-footer">
@@ -767,9 +872,9 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
     </div>
 
     <!-- Anzeigename & Rolle -->
-    <div class="frow frow-2" style="margin-bottom:12px">
-      <div class="field"><label>Anzeigename (im Buchungswidget) *</label><input type="text" id="s-display" placeholder="z.B. Niran T." required oninput="updateModalAvatar()"></div>
-      <div class="field"><label>Rolle / Berufsbezeichnung</label><input type="text" id="s-role" placeholder="z.B. Massagetherapeutin"></div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
+      <div class="field" style="margin-bottom:0"><label>Anzeigename (im Buchungswidget) *</label><input type="text" id="s-display" placeholder="z.B. Niran T." required oninput="updateModalAvatar()"></div>
+      <div class="field" style="margin-bottom:0"><label>Rolle / Berufsbezeichnung</label><input type="text" id="s-role" placeholder="z.B. Massagetherapeutin"></div>
     </div>
     <!-- Hidden name field — uses display name as fallback -->
     <input type="hidden" id="s-name">
@@ -829,11 +934,11 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
     </div>
 
     <!-- Temporäre Abweichungen pro Kalenderwoche -->
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px" class="btn-add-wrap">
       <div style="font-size:11px;font-weight:600;color:var(--td)">Abweichende Zeiten pro Kalenderwoche</div>
-      <button class="btn btn-sm btn-ghost" onclick="addStaffTempEntry()" type="button">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        KW hinzufügen
+      <button class="btn-add" onclick="addStaffTempEntry()" type="button">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Hinzufügen
       </button>
     </div>
     <div id="s-temp-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:4px"></div>
@@ -1063,13 +1168,11 @@ function switchTab(n){
     var iframe=document.getElementById('booking-iframe');
     var url='/booking?salon_id='+SALON_ID;
     var fullUrl='https://insy-reception.com/booking?salon_id='+SALON_ID;
-    if(iframe){iframe.src='';setTimeout(function(){iframe.src=url;if(window._scaleBsIframe)window._scaleBsIframe();},50);}
+    if(iframe){iframe.src='';setTimeout(function(){iframe.src=url;},50);}
     var urlBar=document.getElementById('booking-url-bar');
     if(urlBar)urlBar.textContent=fullUrl;
     var openLink=document.getElementById('booking-open-link');
     if(openLink)openLink.href=fullUrl;
-    var mobileLink=document.getElementById('booking-mobile-link');
-    if(mobileLink)mobileLink.href=fullUrl;
     loadLiveTicker();
   }
   if(n==='profil')buildProfilToggles();
@@ -1148,6 +1251,60 @@ function azPreview(az){
   }).join('<span style="color:var(--border);margin:0 4px">·</span>');
 }
 
+var _azWeekOffset=0;
+var _azWeekAz=null;
+var _azWeekTempAz=null;
+var _azTodayKey=(function(){var m={0:'sunday',1:'monday',2:'tuesday',3:'wednesday',4:'thursday',5:'friday',6:'saturday'};return m[new Date().getDay()];}());
+var AZ_DAY_ORDER=['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+var AZ_DAY_LABELS={monday:'Montag',tuesday:'Dienstag',wednesday:'Mittwoch',thursday:'Donnerstag',friday:'Freitag',saturday:'Samstag',sunday:'Sonntag'};
+
+function renderAzWeekWidget(az, tempAz){
+  _azWeekAz=az;
+  _azWeekTempAz=tempAz;
+  _azWeekOffset=0;
+  _renderAzWeekRows();
+}
+
+function azWeekNav(dir){
+  _azWeekOffset+=dir;
+  var lbl=document.getElementById('az-week-label');
+  if(lbl){
+    if(_azWeekOffset===0)lbl.textContent='Diese Woche';
+    else if(_azWeekOffset===1)lbl.textContent='Nächste Woche';
+    else if(_azWeekOffset===-1)lbl.textContent='Letzte Woche';
+    else lbl.textContent=(_azWeekOffset>0?'+':'')+_azWeekOffset+' Wochen';
+  }
+  _renderAzWeekRows();
+}
+
+function _renderAzWeekRows(){
+  var rowsEl=document.getElementById('az-week-rows');
+  if(!rowsEl||!_azWeekAz)return;
+  var now=new Date();
+  var dayOfWeek=now.getDay()===0?6:now.getDay()-1;
+  var monday=new Date(now);
+  monday.setDate(now.getDate()-dayOfWeek+_azWeekOffset*7);
+  rowsEl.style.display='grid';
+  rowsEl.style.gridTemplateColumns='repeat(7,1fr)';
+  rowsEl.style.gap='2px';
+  rowsEl.innerHTML=AZ_DAY_ORDER.map(function(k,idx){
+    var dayDate=new Date(monday);
+    dayDate.setDate(monday.getDate()+idx);
+    var isoW=getISOWeek(dayDate);
+    var tempArr=Array.isArray(_azWeekTempAz)?_azWeekTempAz:[];
+    var tempEntry=tempArr.filter(function(t){return t.kw===isoW.kw&&t.year===isoW.year;})[0]||null;
+    var d=tempEntry&&tempEntry.zeiten&&tempEntry.zeiten[k]?tempEntry.zeiten[k]:(_azWeekAz[k]||null);
+    var isToday=_azWeekOffset===0&&k===_azTodayKey;
+    var closed=!d||!d.aktiv;
+    var slots=closed?[]:_slotsFor(d);
+    var timeStr=closed?'—':slots.map(function(s){return s.start+'–'+s.end;}).join(', ');
+    return'<div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 4px;border-radius:7px;'+(isToday?'background:rgba(255,255,255,.15)':'')+'">'
+      +'<span style="font-size:9px;font-weight:600;'+(isToday?'color:#C9A84C':'color:rgba(255,255,255,.45)')+';letter-spacing:.05em;text-transform:uppercase">'+AZ_DAY_LABELS[k].slice(0,2)+'</span>'
+      +'<span style="font-size:9px;text-align:center;word-break:break-word;'+(closed?'color:rgba(255,255,255,.25)':isToday?'color:#fff;font-weight:600':'color:rgba(255,255,255,.65)')+'">'+timeStr+'</span>'
+      +'</div>';
+  }).join('');
+}
+
 
 
 var VORLAUF_LABELS=['Sofort buchbar','Mindestens 1 Stunde vorher','Mindestens 2 Stunden vorher','Mindestens 4 Stunden vorher','Mindestens 8 Stunden vorher','Mindestens 12 Stunden vorher','Mindestens 1 Tag vorher','Mindestens 2 Tage vorher','Mindestens 3 Tage vorher'];
@@ -1155,33 +1312,34 @@ var HORIZONT_LABELS=['Bis zu 1 Woche','Bis zu 2 Wochen','Bis zu 3 Wochen','Bis z
 var HORIZONT_VALS=[1,2,3,4,6,8,12];
 
 function updateTimelines(){
-  var vEl=document.getElementById('booking-vorlauf');
-  var hEl=document.getElementById('booking-horizont');
   saveBookingTimelines();
 }
 
-async function saveBookingTimelines(){
+function saveBookingTimelines(){
   if(!window._pData)return;
   if(!window._pData.feature_settings)window._pData.feature_settings={};
   var vEl=document.getElementById('booking-vorlauf');
   var hEl=document.getElementById('booking-horizont');
-  if(vEl)window._pData.feature_settings.booking_vorlauf=parseInt(vEl.value);
-  if(hEl)window._pData.feature_settings.booking_horizont=HORIZONT_VALS[parseInt(hEl.value)-1];
-  var fsSnapshot=JSON.parse(JSON.stringify(window._pData.feature_settings));
-  var res=await sb.from('kunden_profile').update({feature_settings:fsSnapshot}).eq('id',SALON_ID);
-  if(res.error){toast('Fehler beim Speichern','error');}
+  var vVal=vEl?parseInt(vEl.value):NaN;
+  var hVal=hEl?parseInt(hEl.value):NaN;
+  var hIdx=isNaN(hVal)?-1:hVal-1;
+  if(!isNaN(vVal))window._pData.feature_settings.booking_vorlauf=vVal;
+  if(hIdx>=0&&HORIZONT_VALS[hIdx]!=null)window._pData.feature_settings.booking_horizont=HORIZONT_VALS[hIdx];
+  sb.from('kunden_profile').update({feature_settings:window._pData.feature_settings}).eq('id',SALON_ID)
+    .then(function(r){if(r.error)console.error('Timelines save error:',r.error);});
 }
 
 function initTimelines(){
   var fs=(_pData&&_pData.feature_settings)||{};
   var vEl=document.getElementById('booking-vorlauf');
   var hEl=document.getElementById('booking-horizont');
-  if(vEl&&fs.booking_vorlauf!=null)vEl.value=fs.booking_vorlauf;
-  if(hEl&&fs.booking_horizont!=null){
-    var idx=HORIZONT_VALS.indexOf(fs.booking_horizont);
-    if(idx>=0)hEl.value=idx+1;
+  var vVal=parseInt(fs.booking_vorlauf);
+  var hVal=fs.booking_horizont;
+  if(vEl)vEl.value=(!isNaN(vVal)&&vVal>=0&&vVal<=8)?vVal:2;
+  if(hEl){
+    var idx=HORIZONT_VALS.indexOf(hVal);
+    hEl.value=(idx>=0)?idx+1:4;
   }
-  updateTimelines();
 }
 
 function highlightSlotRaster(min){
@@ -1189,16 +1347,14 @@ function highlightSlotRaster(min){
     var btn=document.getElementById('slot-btn-'+v);
     if(!btn)return;
     if(v===min){
-      btn.style.background='var(--tpp)';
-      btn.style.color='var(--tpl)';
-      btn.style.borderColor='var(--tpl)';
-      btn.style.borderWidth='2px';
-      btn.style.boxShadow='0 0 0 3px rgba(74,28,107,0.1)';
+      btn.style.background='var(--tp)';
+      btn.style.color='var(--td)';
+      btn.style.border='3px solid var(--tg)';
+      btn.style.boxShadow='0 0 0 3px rgba(201,168,76,0.35)';
     } else {
-      btn.style.background='';
-      btn.style.color='';
-      btn.style.borderColor='';
-      btn.style.borderWidth='';
+      btn.style.background='var(--tp)';
+      btn.style.color='var(--td)';
+      btn.style.border='1.5px solid rgba(255,255,255,.15)';
       btn.style.boxShadow='';
     }
   });
@@ -1214,7 +1370,7 @@ function setSlotRaster(min){
 }
 
 function initSlotRaster(){
-  var interval=(_pData&&_pData.feature_settings&&_pData.feature_settings.slot_interval)||15;
+  var interval=parseInt((_pData&&_pData.feature_settings&&_pData.feature_settings.slot_interval)||15)||15;
   highlightSlotRaster(interval);
 }
 
@@ -1254,7 +1410,7 @@ function buildSlotHtml(prefix,dayKey,slots,aktiv){
       +'<span style="font-size:10px;color:var(--muted)">–</span>'
       +'<select class="hz-end" onchange="syncHourSlot()">'+buildTimeOptions(sl.end||'18:00')+'</select>'
       +(si===0
-        ?'<button type="button" onclick="addHourSlot(\''+prefix+'\',\''+dayKey+'\')" title="Slot hinzufügen" style="background:var(--tpl);border:none;border-radius:5px;width:20px;height:20px;cursor:pointer;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">+</button>'
+        ?'<button type="button" onclick="addHourSlot(\''+prefix+'\',\''+dayKey+'\')" title="Slot hinzufügen" style="background:var(--tp);border:1.5px solid rgba(255,255,255,.25);border-radius:5px;width:28px;height:28px;cursor:pointer;font-size:14px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;font-weight:700">+</button>'
         :'<button type="button" onclick="removeHourSlot(\''+prefix+'\',\''+dayKey+'\','+si+')" title="Entfernen" style="background:#c0392b;border:none;border-radius:5px;width:20px;height:20px;cursor:pointer;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">×</button>'
       )
     +'</div>';
@@ -1494,8 +1650,28 @@ async function loadProfil(){
   var res=await sb.from('kunden_profile').select('*').eq('id',SALON_ID).single();
   if(res.error){toast('Profil nicht gefunden','error');return;}
   window._pData=res.data;
+  // NaN und fehlende Werte in feature_settings bereinigen
+  if(window._pData){
+    if(!window._pData.feature_settings)window._pData.feature_settings={};
+    var fs=window._pData.feature_settings;
+    if(fs.booking_vorlauf==null||isNaN(parseInt(fs.booking_vorlauf)))fs.booking_vorlauf=2;
+    if(fs.booking_horizont==null||isNaN(parseInt(fs.booking_horizont))||HORIZONT_VALS.indexOf(fs.booking_horizont)<0)fs.booking_horizont=4;
+    if(fs.slot_interval==null||isNaN(fs.slot_interval))fs.slot_interval=15;
+  }
+  // NaN-Elemente nach dem Laden verstecken
+  hideNaN();
+  setTimeout(hideNaN,100);
+  setTimeout(hideNaN,500);
+  setTimeout(hideNaN,1500);
 }
 
+function hideNaN(){
+  document.querySelectorAll('div,span,p,h1,h2,h3,h4').forEach(function(el){
+    if(el.childNodes.length===1&&el.childNodes[0].nodeType===3&&el.childNodes[0].textContent.trim()==='NaN'){
+      el.style.visibility='hidden';el.style.height='0';el.style.overflow='hidden';el.style.margin='0';el.style.padding='0';
+    }
+  });
+}
 
 // ── EIGENE LINKS ─────────────────────────────────────────────
 var customLinks = [];
@@ -1610,15 +1786,19 @@ async function saveProfil(silent){
   // Legacy-Felder leeren — Links laufen jetzt nur über custom_links
   update.instagram_url   = null;
   update.website_url     = null;
-  update.google_maps_url = gv('f-google-maps')||null;
+  if(gv('f-google-maps')!==null) update.google_maps_url = gv('f-google-maps')||null;
+  if(window._pData&&update.google_maps_url!==undefined)window._pData.google_maps_url=update.google_maps_url;
 
   // Hours — only save if hours-cols is in DOM
   if(document.getElementById('hours-cols')){
     update.arbeitszeiten = readHours('h-');
+    // Widget sofort aktualisieren
+    if(update.arbeitszeiten)renderAzWeekWidget(update.arbeitszeiten, window._pData&&window._pData.temp_arbeitszeiten||null);
   }
   // Temp entries — only save if rendered
   if(document.getElementById('temp-entries-list')){
     update.temp_arbeitszeiten = readTempEntries();
+    if(update.temp_arbeitszeiten)renderAzWeekWidget(window._pData&&window._pData.arbeitszeiten||_azWeekAz, update.temp_arbeitszeiten);
   }
   // Custom links — only save if in DOM
   if(document.getElementById('custom-links-list')){
@@ -1660,9 +1840,26 @@ async function saveProfil(silent){
     if(document.getElementById('hours-cols')) window._pData.arbeitszeiten=readHours('h-');
     if(document.getElementById('temp-entries-list')) window._pData.temp_arbeitszeiten=readTempEntries();
     if(document.getElementById('custom-links-list')) window._pData.custom_links=customLinks.slice();
+    // Slider-Werte und booking_active sichern bevor loadProfil _pData überschreibt
+    var vEl=document.getElementById('booking-vorlauf');
+    var hEl=document.getElementById('booking-horizont');
+    if(!window._pData.feature_settings)window._pData.feature_settings={};
+    if(vEl)window._pData.feature_settings.booking_vorlauf=parseInt(vEl.value);
+    if(hEl)window._pData.feature_settings.booking_horizont=HORIZONT_VALS[parseInt(hEl.value)-1];
     buildProfilToggles();
     if(st){st.className='save-status saved';st.textContent='✓ Gespeichert';}
     toast('Profil gespeichert ✓','success');
+    // Nach loadProfil Werte wiederherstellen
+    var _savedVorlauf=window._pData.feature_settings.booking_vorlauf;
+    var _savedHorizont=window._pData.feature_settings.booking_horizont;
+    var _savedBookingActive=window._pData.booking_active;
+    loadProfil().then(function(){
+      if(_savedVorlauf!=null)window._pData.feature_settings.booking_vorlauf=_savedVorlauf;
+      if(_savedHorizont!=null)window._pData.feature_settings.booking_horizont=_savedHorizont;
+      if(_savedBookingActive!==undefined)window._pData.booking_active=_savedBookingActive;
+      if(window._pData.feature_settings)window._pData.feature_settings.booking_active=_savedBookingActive!==false;
+      buildProfilToggles();
+    });
     setTimeout(function(){if(st){st.textContent='';st.className='save-status';}},2000);
   }
 }
@@ -1908,15 +2105,26 @@ async function loadFeatureSettings(){
 async function saveFeatureSettings(){
   if(!SALON_ID)return;
   var curFs=(_pData&&_pData.feature_settings)||{};
+  // Wenn Slider nicht im DOM — booking_vorlauf/horizont nicht anfassen
+  var vEl=document.getElementById('booking-vorlauf');
+  var hEl=document.getElementById('booking-horizont');
+  var vorlauf=curFs.booking_vorlauf!=null&&!isNaN(curFs.booking_vorlauf)?curFs.booking_vorlauf:2;
+  var horizont=curFs.booking_horizont!=null&&!isNaN(curFs.booking_horizont)?curFs.booking_horizont:4;
+  if(vEl){var vv=parseInt(vEl.value);if(!isNaN(vv))vorlauf=vv;}
+  if(hEl){var hv=parseInt(hEl.value);if(!isNaN(hv)&&HORIZONT_VALS[hv-1]!=null)horizont=HORIZONT_VALS[hv-1];}
   var settings={
-    whatsapp_on:document.getElementById('feat-whatsapp-on').checked,
-    termine_on:document.getElementById('feat-termine-on')?document.getElementById('feat-termine-on').checked:true,
-    reminder_timing:document.getElementById('reminder-timing').value,
-    reminder_aktiv:document.getElementById('reminder-aktiv').checked,
-    followup_timing:document.getElementById('followup-timing').value,
-    followup_aktiv:document.getElementById('followup-aktiv').checked,
+    whatsapp_on:document.getElementById('feat-whatsapp-on')?document.getElementById('feat-whatsapp-on').checked:curFs.whatsapp_on!==false,
+    termine_on:document.getElementById('feat-termine-on')?document.getElementById('feat-termine-on').checked:curFs.termine_on!==false,
+    reminder_timing:document.getElementById('reminder-timing')?document.getElementById('reminder-timing').value:curFs.reminder_timing||'24h',
+    reminder_aktiv:document.getElementById('reminder-aktiv')?document.getElementById('reminder-aktiv').checked:curFs.reminder_aktiv!==false,
+    followup_timing:document.getElementById('followup-timing')?document.getElementById('followup-timing').value:curFs.followup_timing||'48h',
+    followup_aktiv:document.getElementById('followup-aktiv')?document.getElementById('followup-aktiv').checked:curFs.followup_aktiv!==false,
     slot_interval:curFs.slot_interval||15,
+    booking_vorlauf:vorlauf,
+    booking_horizont:horizont,
+    booking_active:window._pData?window._pData.booking_active!==false:true,
   };
+  if(window._pData)window._pData.feature_settings=Object.assign({},curFs,settings);
   await sb.from('kunden_profile').update({feature_settings:settings}).eq('id',SALON_ID);
 }
 async function loadServices(){
@@ -1933,6 +2141,52 @@ async function loadServices(){
   renderSvcList();
 }
 
+function buildVarPreviewChips(vars){
+  if(!vars||!vars.length)return'<span style="font-size:10px;color:var(--muted);font-style:italic">Noch keine Varianten</span>';
+  return vars.map(function(v){
+    var parts=[];
+    if(v.service_name)parts.push(v.service_name);
+    if(v.dauer_anzeigen!==false)parts.push((parseInt(v.dauer_minuten)||v.min||0)+' Min');
+    var preis=parseFloat(v.preis)||0;
+    if(v.preis_anzeigen!==false&&preis)parts.push(preis.toFixed(2).replace('.',',')+' '+(v.waehrung||'€'));
+    if(v.bezeichnung)parts.push(v.bezeichnung);
+    var label=parts.join(' · ')||'—';
+    return'<span style="display:inline-flex;align-items:center;padding:4px 10px;border-radius:8px;font-size:11px;border:1.5px solid #e8e0f0;background:#fff;color:var(--td);font-weight:400;white-space:nowrap">'+esc(label)+'</span>';
+  }).join('');
+}
+
+function updateSingleVarPreview(svcId,varId){
+  var el=document.getElementById('var-preview-'+varId);
+  if(!el)return;
+  var row=document.getElementById('var-'+varId);
+  if(!row)return;
+  // Alles direkt aus DOM lesen
+  var name=(row.querySelector('[data-field="service_name"]')||{value:''}).value.trim();
+  var min=parseInt((row.querySelector('[data-field="dauer_minuten"]')||{value:'0'}).value)||0;
+  var dauerTog=row.querySelector('[data-field="dauer_anzeigen"]');
+  var dauerOn=dauerTog?dauerTog.checked:true;
+  var preisTog=row.querySelector('[data-field="preis_anzeigen"]');
+  var preisOn=preisTog?preisTog.checked:true;
+  var preisRaw=(row.querySelector('[data-field="preis"]')||{value:''}).value.replace(',','.').replace(/[^0-9.]/g,'');
+  var preis=parseFloat(preisRaw)||0;
+  var waehrung=(row.querySelector('[data-field="waehrung"]')||{value:'EUR'}).value||'EUR';
+  var bez=(row.querySelector('[data-field="bezeichnung"]')||{value:''}).value.trim();
+  var parts=[];
+  if(name)parts.push(name);
+  if(dauerOn&&min)parts.push(min+' Min');
+  if(preisOn&&preis)parts.push(preis.toFixed(2).replace('.',',')+' '+waehrung);
+  if(bez)parts.push(bez);
+  var label=parts.join(' · ')||'—';
+  el.innerHTML='<span style="display:inline-flex;align-items:center;padding:3px 10px;border-radius:8px;font-size:11px;border:1.5px solid #e8e0f0;background:#fff;color:var(--td);white-space:normal;word-break:break-word">'+esc(label)+'</span>';
+}
+
+function updateVarPreview(svcId){
+  // Update all individual var previews for this service
+  var item=servicesData.filter(function(i){return i.service.id===svcId;})[0];
+  if(!item)return;
+  item.varianten.forEach(function(v){updateSingleVarPreview(svcId,v.id);});
+}
+
 function renderSvcList(){
   // Invalidate SVC_MAP so it rebuilds with fresh data
   window.SVC_MAP=null;
@@ -1945,9 +2199,6 @@ function renderSvcList(){
     var ini=s.name.charAt(0).toUpperCase();
     return'<div class="svc-item" id="svc-item-'+s.id+'">'
       +'<div class="svc-item-hdr" onclick="toggleItem(\''+s.id+'\',\'svc\')">'
-        +'<div class="svc-item-icon">'
-          +'<span style="font-size:18px;font-weight:600;color:var(--tpl)">'+ini+'</span>'
-        +'</div>'
         +'<div style="flex:1;min-width:0">'
           +'<div class="svc-item-name">'+esc(s.name)+'</div>'
           +(s.beschreibung?'<div class="svc-item-meta">'+esc(s.beschreibung)+'</div>':'')
@@ -1962,29 +2213,24 @@ function renderSvcList(){
 }
 
 function renderSvcBody(s,vars){
-  return'<div style="display:flex;gap:10px;margin-bottom:12px;align-items:flex-end">'
-    +'<div class="field" style="flex:1"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="svc-f-name-'+s.id+'" value="'+esc(s.name)+'"></div>'
-    +'<div class="field" style="flex:2"><label>Beschreibung <span style="font-size:10px;color:var(--muted);font-weight:400">(optional)</span></label><input type="text" id="svc-f-desc-'+s.id+'" value="'+esc(s.beschreibung||'')+'"></div>'
-    +'<div style="padding-bottom:2px;display:flex;flex-direction:column;align-items:center;gap:3px">'
-      +'<label class="toggle-sw" title="Im Widget aktiv"><input type="checkbox" id="svc-f-aktiv-'+s.id+'" '+(s.aktiv?'checked':'')+' ><span class="slider"></span></label>'
-      +'<span style="font-size:9px;color:var(--muted)">Aktiv</span>'
+  return'<div style="margin-bottom:12px">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px">'
+      +'<div class="field" style="flex:1;margin-bottom:0"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="svc-f-name-'+s.id+'" value="'+esc(s.name)+'" style="background:rgba(90,45,130,.12);border-color:var(--tpl)"></div>'
+      +'<div style="padding-bottom:2px;display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0;margin-top:20px">'
+        +'<label class="toggle-sw" title="Im Widget aktiv"><input type="checkbox" id="svc-f-aktiv-'+s.id+'" '+(s.aktiv?'checked':'')+' ><span class="slider"></span></label>'
+        +'<span style="font-size:9px;color:var(--muted)">Aktiv</span>'
+      +'</div>'
     +'</div>'
+    +'<div class="field" style="margin-bottom:0"><label>Beschreibung <span style="font-size:10px;color:var(--muted);font-weight:400">(optional)</span></label><textarea id="svc-f-desc-'+s.id+'" rows="2" style="width:100%;border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;font-size:13px;font-family:inherit;color:var(--td);background:#fff;resize:vertical;outline:none">'+esc(s.beschreibung||'')+'</textarea></div>'
   +'</div>'
   +'<hr class="div">'
   +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Varianten</div>'
-  +'<div class="var-header">'
-    +'<span class="var-col-lbl">Name <span style="font-weight:400;opacity:.6">(opt.)</span></span>'
-    +'<span class="var-col-lbl">Dauer Min <span style="color:var(--tg)">*</span></span>'
-    +'<span class="var-col-lbl">Preis €</span>'
-    +'<span class="var-col-lbl">Puffer Min</span>'
-    +'<span></span>'
-  +'</div>'
   +'<div class="var-list" id="varlist-'+s.id+'">'
     +(vars.map(function(v,i){return mkVarRow(v,s.id,i);}).join('')||'<div style="font-size:12px;color:var(--muted);padding:6px 0">Noch keine Varianten</div>')
   +'</div>'
   +'<div style="display:flex;gap:8px;align-items:center">'
-    +'<button class="btn btn-sm btn-ghost" onclick="addVariante(\''+s.id+'\')">'
-      +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Variante hinzufügen'
+    +'<button class="btn-add" onclick="addVariante(\''+s.id+'\')">'
+      +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen'
     +'</button>'
     +'<button class="btn btn-sm btn-primary" onclick="saveSvcAll(\''+s.id+'\')" style="margin-left:auto">'
       +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>Speichern'
@@ -2005,31 +2251,122 @@ function mkVarRow(v,svcId,idx){
   var durVal=(v.dauer_minuten&&v.dauer_minuten<9000)?v.dauer_minuten:'';
   var preisVal=(v.preis!=null&&v.preis>0)?v.preis:'';
   var isFirst=(idx===0);
-  return'<div class="var-row" id="var-'+v.id+'">'
-    // Name der Variante
-    +'<div class="var-group">'
-      +'<input data-field="service_name" type="text" placeholder="z.B. Fade, Rasur…" value="'+(v.service_name||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'service_name\',this.value)" style="border:none;outline:none;padding:6px;font-size:12px;font-family:inherit;color:var(--td);background:transparent;width:100%;min-width:0">'
+  // Build preview chip
+  var previewParts=[];
+  if(v.service_name)previewParts.push(v.service_name);
+  if(v.dauer_anzeigen!==false&&(parseInt(durVal)||0))previewParts.push((parseInt(durVal)||0)+' Min');
+  if(v.preis_anzeigen!==false&&parseFloat(v.preis||0)>0)previewParts.push(parseFloat(v.preis||0).toFixed(2).replace('.',',')+' '+(v.waehrung||'€'));
+  if(v.bezeichnung)previewParts.push(v.bezeichnung);
+  var previewLabel=previewParts.join(' · ')||'Neue Variante';
+
+  return'<div class="var-acc" id="var-acc-'+v.id+'">'
+    // ── Akkordion Header ──
+    +'<div onclick="toggleVarAcc(\''+v.id+'\')" style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;cursor:pointer;gap:8px;background:var(--tpp);border-radius:8px">'
+      +'<div id="var-preview-'+v.id+'" style="flex:1;min-width:0">'
+        +'<span style="display:inline-flex;align-items:center;padding:3px 10px;border-radius:8px;font-size:11px;border:1.5px solid #e8e0f0;background:#fff;color:var(--td);white-space:normal;word-break:break-word">'+esc(previewLabel)+'</span>'
+      +'</div>'
+      +(isFirst
+        ?'<div style="width:28px;flex-shrink:0"></div>'
+        :'<button onclick="event.stopPropagation();deleteVar(\''+v.id+'\',\''+svcId+'\')" class="var-del" style="flex-shrink:0">✕</button>'
+      )
+      +'<span id="var-chev-'+v.id+'" style="font-size:16px;color:var(--tpl);transition:transform .2s;flex-shrink:0">⌄</span>'
     +'</div>'
-    // Gruppe 1: Dauer + Toggle "Dauer anzeigen"
-    +'<div class="var-group">'
-      +'<input data-field="dauer_minuten" type="number" min="5" step="5" placeholder="Min" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value)">'
-      +'<label class="toggle-sw" title="Dauer anzeigen"><input data-field="dauer_anzeigen" type="checkbox" '+(v.dauer_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'
+    // ── Akkordion Body — exakt altes var-row Grid ──
+    +'<div id="var-body-'+v.id+'" style="display:none;padding:8px 10px 10px;border-top:1.5px solid #e8e0f0">'
+      +'<div class="var-row" id="var-'+v.id+'" style="grid-template-columns:1fr 1.5fr 2fr;gap:8px">'
+        // Spalte 1: Min+Puffer+Toggle
+        +'<div style="display:flex;flex-direction:column;gap:6px;min-width:0">'
+          +'<div style="display:flex;align-items:flex-end;gap:8px">'
+            +'<div style="display:flex;flex-direction:column;gap:3px;width:50%">'
+              +'<span style="font-size:10px;color:var(--muted);font-weight:500;white-space:nowrap">Min + Puffer = Gesamt</span>'
+              +'<div style="display:flex;align-items:center;border:1.5px solid var(--tpl);border-radius:6px;overflow:hidden;background:rgba(90,45,130,.12)">'
+                +'<input data-field="dauer_minuten" type="number" min="5" step="5" placeholder="—" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value);updateVarTotal(\''+v.id+'\');updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="flex:1;min-width:0;text-align:center;border:none;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:transparent;outline:none">'
+                +'<span style="font-size:13px;font-weight:700;color:var(--tpl);padding:0 2px;flex-shrink:0">+</span>'
+                +'<input data-field="puffer_minuten" type="number" min="0" placeholder="—" value="'+(v.puffer_minuten||0)+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'puffer_minuten\',this.value);updateVarTotal(\''+v.id+'\');updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="flex:1;min-width:0;text-align:center;border:none;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:#fff;outline:none">'
+                +'<span style="font-size:11px;font-weight:600;color:var(--tpl);padding:0 4px;flex-shrink:0">=</span>'
+                +'<span id="vartotal-'+v.id+'" style="flex:0 0 38px;text-align:center;font-size:13px;font-weight:600;color:var(--tpl);display:flex;align-items:center;justify-content:center;padding:6px 2px">'
+                  +((parseInt(durVal)||0)+(v.puffer_minuten||0)||'—')
+                +'</span>'
+              +'</div>'
+            +'</div>'
+            +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding-bottom:3px">'
+              +'<span style="font-size:10px;color:var(--muted);font-weight:500;text-align:center">Dauer<br>anzeigen</span>'
+              +'<label class="toggle-sw"><input data-field="dauer_anzeigen" type="checkbox" '+(v.dauer_anzeigen!==false?'checked':'')+' onchange="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_anzeigen\',this.checked);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')"><span class="slider"></span></label>'
+            +'</div>'
+            +'<input data-field="puffer_aktiv" type="checkbox" '+(v.puffer_aktiv?'checked':'')+' style="display:none">'
+          +'</div>'
+          +'<div style="display:flex;flex-direction:column;gap:3px">'
+            +'<span style="font-size:10px;color:var(--muted);font-weight:500">Preis</span>'
+            +'<div style="display:flex;align-items:center;gap:6px">'
+              +'<input data-field="preis" type="text" inputmode="decimal" placeholder="0,00" value="'+(preisVal?String(preisVal).replace('.',','):'')+'" oninput="formatPreisInput(this);localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis\',parsePreisVal(this.value));updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="width:30%;min-width:60px;text-align:center;border:1.5px solid var(--border);border-radius:6px;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);outline:none">'
+              +'<select data-field="waehrung" onchange="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'waehrung\',this.value);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="border:1.5px solid var(--border);border-radius:6px;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);outline:none;cursor:pointer">'
+                +'<option value="EUR" '+((!v.waehrung||v.waehrung==='EUR')?'selected':'')+'>€ EUR</option>'
+                +'<option value="CHF" '+(v.waehrung==='CHF'?'selected':'')+'>₣ CHF</option>'
+                +'<option value="GBP" '+(v.waehrung==='GBP'?'selected':'')+'>£ GBP</option>'
+                +'<option value="USD" '+(v.waehrung==='USD'?'selected':'')+'>$ USD</option>'
+                +'<option value="TRY" '+(v.waehrung==='TRY'?'selected':'')+'>₺ TRY</option>'
+              +'</select>'
+              +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px">'
+                +'<span style="font-size:10px;color:var(--muted);font-weight:500">Anzeigen</span>'
+                +'<label class="toggle-sw"><input data-field="preis_anzeigen" type="checkbox" '+(v.preis_anzeigen!==false?'checked':'')+' onchange="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis_anzeigen\',this.checked);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')"><span class="slider"></span></label>'
+              +'</div>'
+            +'</div>'
+          +'</div>'
+        +'</div>'
+        // Spalte 2: Name
+        +'<div style="display:flex;flex-direction:column;gap:3px;min-width:0">'
+          +'<span class="var-row-lbl" style="font-size:10px;color:var(--muted);font-weight:500">Name</span>'
+          +'<div class="var-group">'
+            +'<input data-field="service_name" type="text" placeholder="z.B. Fade, Rasur…" value="'+esc(v.service_name||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'service_name\',this.value);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="border:none;outline:none;padding:6px;font-family:inherit;color:var(--td);background:transparent;width:100%;min-width:0">'
+          +'</div>'
+        +'</div>'
+        // Spalte 3: Beschreibung
+        +'<div style="display:flex;flex-direction:column;gap:3px;min-width:0">'
+          +'<span class="var-row-lbl" style="font-size:10px;color:var(--muted);font-weight:500">Beschreibung</span>'
+          +'<div class="var-group">'
+            +'<textarea data-field="bezeichnung" rows="2" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'bezeichnung\',this.value);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="border:none;outline:none;padding:6px;font-family:inherit;color:var(--td);background:transparent;width:100%;resize:none">'+esc(v.bezeichnung||'')+'</textarea>'
+          +'</div>'
+        +'</div>'
+      +'</div>'
     +'</div>'
-    // Gruppe 2: Preis + Toggle "Preis anzeigen"
-    +'<div class="var-group">'
-      +'<input data-field="preis" type="number" min="0" step="0.5" placeholder="€" value="'+preisVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis\',this.value)">'
-      +'<label class="toggle-sw" title="Preis anzeigen"><input data-field="preis_anzeigen" type="checkbox" '+(v.preis_anzeigen!==false?'checked':'')+' ><span class="slider"></span></label>'
-    +'</div>'
-    // Gruppe 3: Puffer + Toggle "Puffer aktiv"
-    +'<div class="var-group">'
-      +'<input data-field="puffer_minuten" type="number" min="0" placeholder="Puffer" value="'+(v.puffer_minuten||0)+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'puffer_minuten\',this.value)">'
-      +'<label class="toggle-sw" title="Puffer aktiv"><input data-field="puffer_aktiv" type="checkbox" '+(v.puffer_aktiv?'checked':'')+' ><span class="slider"></span></label>'
-    +'</div>'
-    +(isFirst
-      ?'<div style="width:28px;height:28px;flex-shrink:0"></div>'
-      :'<button class="var-del" onclick="deleteVar(\''+v.id+'\',\''+svcId+'\')">✕</button>'
-    )
   +'</div>';
+}
+
+function toggleVarAcc(varId){
+  var body=document.getElementById('var-body-'+varId);
+  var chev=document.getElementById('var-chev-'+varId);
+  if(!body)return;
+  var open=body.style.display==='block';
+  if(!open&&window.innerWidth<=768){
+    document.querySelectorAll('[id^="var-body-"]').forEach(function(el){el.style.display='none';});
+    document.querySelectorAll('[id^="var-chev-"]').forEach(function(el){el.style.transform='';});
+  }
+  body.style.display=open?'none':'block';
+  if(chev)chev.style.transform=open?'':'rotate(180deg)';
+}
+
+// Gesamt-Anzeige (Min+Puffer) live aktualisieren
+function updateVarTotal(varId){
+  var row=document.getElementById('var-'+varId);
+  if(!row)return;
+  var min=parseInt((row.querySelector('[data-field="dauer_minuten"]')||{}).value)||0;
+  var puf=parseInt((row.querySelector('[data-field="puffer_minuten"]')||{}).value)||0;
+  var el=document.getElementById('vartotal-'+varId);
+  if(el)el.textContent=(min+puf)||'—';
+}
+
+// Preis: Auto-Komma nach 2 Ziffern (wie Kassensystem)
+function formatPreisInput(el){
+  var raw=el.value.replace(/[^0-9]/g,'');
+  if(!raw){el.value='';return;}
+  var num=parseInt(raw,10);
+  var euros=Math.floor(num/100);
+  var cents=num%100;
+  el.value=euros+','+(cents<10?'0':'')+cents;
+}
+function parsePreisVal(str){
+  if(!str)return 0;
+  return parseFloat(str.replace(',','.'))||0;
 }
 
 // Lokalen State updaten + ab-Preis im Header aktualisieren (kein Supabase-Call)
@@ -2054,7 +2391,12 @@ function toggleItem(id,type){
   var b=document.getElementById('body-'+type+'-'+id);
   var c=document.getElementById('chev-'+type+'-'+id);
   var open=b.classList.contains('open');
-  b.classList.toggle('open',!open);c.classList.toggle('open',!open);
+  if(!open&&window.innerWidth<=768){
+    document.querySelectorAll('[id^="body-'+type+'-"]').forEach(function(el){el.classList.remove('open');});
+    document.querySelectorAll('[id^="chev-'+type+'-"]').forEach(function(el){el.classList.remove('open');});
+  }
+  b.classList.toggle('open',!open);
+  c.classList.toggle('open',!open);
 }
 
 async function saveSvcAll(id){
@@ -2077,23 +2419,26 @@ async function saveSvcAll(id){
   for(var i=0;i<varRows.length;i++){
     var row=varRows[i];
     var vid=row.id.replace('var-','');
-    var groups=row.querySelectorAll('.var-group');
-    if(groups.length<4){errs.push('Zeile '+i+': Gruppen fehlen');continue;}
-    var svcName=groups[0].querySelector('input[type="text"]').value.trim();
-    var min=parseInt(groups[1].querySelector('input[type="number"]').value)||1;
-    var dauerAnz=groups[1].querySelector('input[type="checkbox"]').checked;
-    var preis=parseFloat(groups[2].querySelector('input[type="number"]').value)||0;
-    var preisAnz=groups[2].querySelector('input[type="checkbox"]').checked;
-    var puffer=parseInt(groups[3].querySelector('input[type="number"]').value)||0;
-    var pufferAkt=groups[3].querySelector('input[type="checkbox"]').checked;
+    function fld(f){var el=row.querySelector('[data-field="'+f+'"]');return el?el:null;}
+    function fldVal(f){var el=fld(f);return el?el.value:'';}
+    function fldChk(f){var el=fld(f);return el?el.checked:false;}
 
-    var updatePayload={service_name:svcName,dauer_minuten:min, preis:preis, puffer_minuten:puffer, puffer_aktiv:pufferAkt};
+    var svcName=fldVal('service_name').trim();
+    var bezeichnung=fldVal('bezeichnung').trim();
+    var min=parseInt(fldVal('dauer_minuten'))||1;
+    var dauerAnz=fldChk('dauer_anzeigen');
+    var preis=parseFloat(fldVal('preis'))||0;
+    var preisAnz=fldChk('preis_anzeigen');
+    var puffer=parseInt(fldVal('puffer_minuten'))||0;
+    var pufferAkt=fldChk('puffer_aktiv');
+
+    var updatePayload={service_name:svcName,bezeichnung:bezeichnung,dauer_minuten:min,dauer_anzeigen:dauerAnz,preis:preis,preis_anzeigen:preisAnz,puffer_minuten:puffer,puffer_aktiv:pufferAkt};
     var vRes=await sb.from('service_varianten').update(updatePayload).eq('id',vid);
     if(vRes.error){
       errs.push('Variante '+vid.slice(0,6)+': '+vRes.error.message);
     } else {
       item.varianten.forEach(function(v){
-        if(v.id===vid){v.service_name=svcName;v.dauer_minuten=min;v.preis=preis;v.puffer_minuten=puffer;v.puffer_aktiv=pufferAkt;}
+        if(v.id===vid){v.service_name=svcName;v.bezeichnung=bezeichnung;v.dauer_minuten=min;v.dauer_anzeigen=dauerAnz;v.preis=preis;v.preis_anzeigen=preisAnz;v.puffer_minuten=puffer;v.puffer_aktiv=pufferAkt;}
       });
     }
   }
@@ -2108,6 +2453,7 @@ async function saveSvcAll(id){
   var preisBadge=document.querySelector('#svc-item-'+id+' .svc-item-hdr span[style*="color:var(--tg)"]');
   if(preisBadge&&minP!==null)preisBadge.textContent='ab '+minP+' €';
 
+  updateVarPreview(id);
   if(errs.length)toast('Fehler: '+errs.join(' · '),'error');
   else toast('Gespeichert ✓','success');
 }
@@ -2134,6 +2480,7 @@ async function addVariante(svcId){
   if(item)item.varianten.push(v);
   var vl=document.getElementById('varlist-'+svcId);
   if(vl){var old=vl.querySelector('[style*="color:var(--muted)"]');if(old)old.remove();vl.insertAdjacentHTML('beforeend',mkVarRow(v,svcId,item?item.varianten.length-1:1));}
+  updateVarPreview(svcId);
   toast('Variante hinzugefügt — bitte Felder ausfüllen und speichern','success');
 }
 
@@ -2143,6 +2490,7 @@ async function deleteVar(varId,svcId){
   if(res.error){toast('Fehler: '+res.error.message,'error');return;}
   servicesData.forEach(function(i){if(i.service.id===svcId)i.varianten=i.varianten.filter(function(v){return v.id!==varId;});});
   var el=document.getElementById('var-'+varId);if(el)el.remove();
+  updateVarPreview(svcId);
   toast('Variante gelöscht','success');
 }
 
@@ -2181,6 +2529,10 @@ function addModalVar(defaults){
       '<input type="text" placeholder="z.B. 60 Min" value="'+(d.name||'')+'" style="font-size:14px;padding:8px 10px;border:1.5px solid var(--border);border-radius:7px;width:100%;box-sizing:border-box;min-height:40px;color:var(--td);font-family:inherit;outline:none;">'+
     '</div>'+
     '<div style="display:flex;flex-direction:column;gap:3px">'+
+      '<label style="font-size:10px;color:var(--muted);font-weight:500">Beschreibung <span style="font-weight:400;opacity:.7">(optional)</span></label>'+
+      '<input type="text" placeholder="z.B. Ideal für Entspannung" value="'+(d.beschreibung||'')+'" style="font-size:14px;padding:8px 10px;border:1.5px solid var(--border);border-radius:7px;width:100%;box-sizing:border-box;min-height:40px;color:var(--td);font-family:inherit;outline:none;">'+
+    '</div>'+
+    '<div style="display:flex;flex-direction:column;gap:3px">'+
       '<label style="font-size:10px;color:var(--muted);font-weight:500">Dauer Min <span style="color:var(--tg)">*</span></label>'+
       '<div class="var-group" style="min-height:40px">'+
         '<input type="number" min="5" step="5" placeholder="Min" value="'+(d.dauer_minuten||'')+'" style="text-align:center;font-size:14px">'+
@@ -2216,6 +2568,7 @@ function readModalVars(){
     if(min>0){
       result.push({
         name:texts[0]?texts[0].value.trim():'',
+        bezeichnung:texts[1]?texts[1].value.trim():'',
         dauer_minuten:min,
         preis:parseFloat(nums[1]?nums[1].value:0)||0,
         puffer_minuten:parseInt(nums[2]?nums[2].value:0)||0,
@@ -2625,72 +2978,12 @@ function hexToRgba(hex,alpha){
   return'rgba('+r+','+g+','+b+','+alpha+')';
 }
 
-// ── WA TEMPLATES ──────────────────────────────────────────────
-function waSelectTab(tab){
-  var editor=document.getElementById('wa-template-editor');
-  // Aktuellen Wert im bisherigen Tab speichern
-  if(editor&&window._waTemplates&&window._waActiveTab)
-    window._waTemplates[window._waActiveTab]=editor.value;
-  // Tab wechseln
-  window._waActiveTab=tab;
-  ['bestaetigung','erinnerung','storno'].forEach(function(t){
-    var btn=document.getElementById('wat-'+t);
-    if(btn)btn.classList.toggle('wa-tab-active',t===tab);
-  });
-  // Neuen Tab-Inhalt laden
-  if(editor&&window._waTemplates){
-    editor.value=window._waTemplates[tab]||'';
-    updateWaPreview();
-  }
-}
-
-function waInsertVar(v){
-  var editor=document.getElementById('wa-template-editor');
-  if(!editor)return;
-  var start=editor.selectionStart,end=editor.selectionEnd;
-  editor.value=editor.value.slice(0,start)+v+editor.value.slice(end);
-  editor.selectionStart=editor.selectionEnd=start+v.length;
-  editor.focus();
-  if(window._waTemplates)window._waTemplates[window._waActiveTab||'bestaetigung']=editor.value;
-  updateWaPreview();
-}
-
-function updateWaPreview(){
-  var editor=document.getElementById('wa-template-editor');
-  var prev=document.getElementById('wa-preview');
-  if(!editor||!prev)return;
-  var txt=editor.value;
-  if(window._waTemplates)window._waTemplates[window._waActiveTab||'bestaetigung']=txt;
-  txt=txt.replace(/\{\{name\}\}/g,'Maria Müller');
-  txt=txt.replace(/\{\{termin\}\}/g,'Montag, 02.06. um 14:00 Uhr');
-  txt=txt.replace(/\{\{datum\}\}/g,'Montag, 02.06.');
-  txt=txt.replace(/\{\{uhrzeit\}\}/g,'14:00 Uhr');
-  txt=txt.replace(/\{\{service\}\}/g,'Nageldesign · Lackieren');
-  txt=txt.replace(/\{\{buchungslink\}\}/g,'https://insy-reception.com/success?...');
-  txt=txt.replace(/\{\{salon\}\}/g,(window._pData&&(window._pData.brand_name||window._pData.name))||'Salon');
-  prev.textContent=txt;
-}
-
-async function saveWaTemplates(){
-  if(!SALON_ID)return;
-  var editor=document.getElementById('wa-template-editor');
-  if(editor&&window._waTemplates)window._waTemplates[window._waActiveTab||'bestaetigung']=editor.value;
-  if(!window._pData)window._pData={};
-  if(!window._pData.feature_settings)window._pData.feature_settings={};
-  window._pData.feature_settings.wa_template_bestaetigung=window._waTemplates.bestaetigung;
-  window._pData.feature_settings.wa_template_erinnerung=window._waTemplates.erinnerung;
-  window._pData.feature_settings.wa_template_storno=window._waTemplates.storno;
-  var res=await sb.from('kunden_profile').update({feature_settings:window._pData.feature_settings}).eq('id',SALON_ID);
-  if(res.error){toast('Fehler beim Speichern','error');return;}
-  toast('Templates gespeichert ✓','success');
-}
-
 function renderStaffSidebar(){
   var sidebar=document.getElementById('staff-sidebar');
   if(!sidebar)return;
   if(!staffData.length){
     sidebar.innerHTML='<div style="font-size:12px;color:var(--muted);padding:12px 4px">Noch kein Team</div>';
-    sidebar.insertAdjacentHTML('beforeend','<button class="staff-add-btn" onclick="openStaffModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Hinzufügen</button>');
+    sidebar.insertAdjacentHTML('beforeend','<button class="staff-add-btn" onclick="openStaffModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>');
     return;
   }
   sidebar.innerHTML=staffData.map(function(item){
@@ -2701,7 +2994,7 @@ function renderStaffSidebar(){
     var isOnline=m.aktiv!==false;
     return'<div class="staff-card" id="staff-card-'+m.id+'" style="opacity:'+(isOnline?'1':'0.55')+'">'      +'<div style="height:3px;background:'+color+'"></div>'      +'<div class="staff-card-body">'        +renderAvatar(m,34)        +'<div style="min-width:0;flex:1">'          +'<div class="staff-name">'+esc(m.display_name||m.name)+'</div>'          +'<div class="staff-role">'+esc(m.role||'—')+'</div>'        +'</div>'      +'</div>'      +'<div class="staff-card-actions">'        +'<button class="staff-action" onclick="toggleStaffOnline(\''+m.id+'\','+isOnline+')" style="color:'+(isOnline?'#1e7a3c':'#c0392b')+'" title="Online/Offline">'+(isOnline?'● Online':'○ Offline')+'</button>'        +'<button class="staff-action" onclick="editStaff(\''+m.id+'\')" title="Bearbeiten">✎ Bearbeiten</button>'      +'</div>'    +'</div>';
   }).join('');
-  sidebar.insertAdjacentHTML('beforeend','<button class="staff-add-btn" onclick="openStaffModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Hinzufügen</button>');
+  sidebar.insertAdjacentHTML('beforeend','<button class="staff-add-btn" onclick="openStaffModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>');
 }
 
 // ── KALENDER PICKER ───────────────────────────────────────────
@@ -3210,8 +3503,8 @@ async function loadDashboard(){
 
   // Buchungsseite toggle
   var bookToggle=document.getElementById('dash-booking-active');
-  if(bookToggle)bookToggle.checked=d.feature_settings&&d.feature_settings.booking_active!==undefined?d.feature_settings.booking_active:true;
-  setStatusDot('dash-status-booking','dash-status-booking-label',d.feature_settings&&d.feature_settings.booking_active!==undefined?d.feature_settings.booking_active:true,'Online','Gesperrt');
+  if(bookToggle)bookToggle.checked=d.booking_active!==false;
+  setStatusDot('dash-status-booking','dash-status-booking-label',d.booking_active!==false,'Online','Gesperrt');
 
   // Google Kalender
   var gcalOk=!!(d.google_connected&&d.google_calendar_id);
@@ -3452,7 +3745,7 @@ function renderServicesChart(){
     var bw=Math.max(4,Math.round((e.count/maxC)*barMaxW));
     var name=(window.SVC_MAP&&SVC_MAP[e.id])?SVC_MAP[e.id]:'Unbekannt';
     name=name.length>22?name.slice(0,20)+'…':name;
-    var pct=Math.round(e.count/total*100);
+    var pct=total>0?Math.round(e.count/total*100):0;
     svg+='<text x="0" y="'+(y+14)+'" font-size="11" fill="#555" font-family="sans-serif">'+name+'</text>';
     svg+='<rect x="130" y="'+(y+2)+'" width="'+bw+'" height="20" rx="4" fill="'+(colors[i%colors.length])+'"/>';
     svg+='<text x="'+(130+bw+6)+'" y="'+(y+16)+'" font-size="11" fill="var(--tpl)" font-weight="600" font-family="sans-serif">'+e.count+' ('+pct+'%)</text>';
@@ -3464,7 +3757,7 @@ function renderServicesChart(){
   var topEl=document.getElementById('dash-top-svc');
   if(topEl&&entries.length){
     var topName=(window.SVC_MAP&&SVC_MAP[entries[0].id])?SVC_MAP[entries[0].id]:'—';
-    var topPct=Math.round(entries[0].count/total*100);
+    var topPct=total>0?Math.round(entries[0].count/total*100):0;
     topEl.textContent=topName+' ('+topPct+'%)';
   }
 }
@@ -3674,19 +3967,24 @@ function setStatusDot(dotId,labelId,ok,onLabel,offLabel){
 }
 
 async function toggleBookingActive(){
-  if(!SALON_ID){console.log('[TOGGLE] Kein SALON_ID');return;}
-  var active=document.getElementById('dash-booking-active').checked;
-  console.log('[TOGGLE] booking_active wird gesetzt auf:', active);
+  if(!SALON_ID)return;
+  var tog=document.getElementById('dash-booking-active');
+  if(!tog)return;
+  var active=tog.checked;
   if(!window._pData)window._pData={};
-  if(!window._pData.feature_settings)window._pData.feature_settings={};
-  window._pData.feature_settings.booking_active=active;
-  var res=await sb.from('kunden_profile').update({feature_settings:window._pData.feature_settings}).eq('id',SALON_ID);
-  console.log('[TOGGLE] Supabase Antwort:', res.error?res.error:'OK', 'Gespeichert:', JSON.stringify(window._pData.feature_settings));
+  window._pData.booking_active=active;
+  var res=await sb.from('kunden_profile').update({booking_active:active}).eq('id',SALON_ID);
+  if(res.error){
+    toast('Fehler: '+res.error.message,'error');
+    console.error('toggleBookingActive error:',res.error);
+    return;
+  }
   var dot=document.getElementById('booking-status-dot');
   var lbl=document.getElementById('booking-status-label');
   if(dot)dot.style.background=active?'#27ae60':'#c0392b';
   if(lbl)lbl.textContent=active?'Buchungsseite Online':'Buchungsseite Offline';
   setStatusDot('dash-status-booking','dash-status-booking-label',active,'Online','Gesperrt');
+  updateBsPanelStatus(active);
   toast((active?'Buchungsseite aktiviert ✓':'Buchungsseite gesperrt'),'success');
 }
 
@@ -3796,11 +4094,7 @@ var PCOL = {
 };
 
 function _ptColor(t){
-  if(t.wa){
-    // WhatsApp gesperrt bis Name + Öffnungszeiten + Service + Team gespeichert
-    var ok = _pSaved('adresse') && _pSaved('zeiten') && _pSaved('service') && _pSaved('team');
-    return ok ? 'yellow' : 'gray';
-  }
+  if(t.wa) return 'green';
   if(!t.req) return _pSaved(t.id) ? 'green' : 'yellow';
   return _pSaved(t.id) ? 'green' : 'red';
 }
@@ -3841,7 +4135,6 @@ function updateProfilStatus(){
       team:     '⚠ Füge mindestens ein <strong>Teammitglied</strong> hinzu.'
     },
     yellow:{
-      whatsapp: '💬 Tipp: Aktiviere <strong>WhatsApp Templates</strong> für automatische Bestätigungen & Erinnerungen.',
       sonstiges:'✦ Optional: Ergänze <strong>Links & eine Notiz</strong> für deinen Auftritt.'
     }
   };
@@ -3913,7 +4206,7 @@ function updateBsPanelStatus(active){
 
 function initBookingStatus(){
   var d=window._pData||{};
-  var active=d.feature_settings&&d.feature_settings.booking_active!==undefined?d.feature_settings.booking_active:true;
+  var active=d.booking_active!==false;
   var tog=document.getElementById('dash-booking-active');
   var dot=document.getElementById('booking-status-dot');
   var lbl=document.getElementById('booking-status-label');
@@ -3928,7 +4221,7 @@ function buildProfilToggles(){
   if(!wrap) return;
   wrap.innerHTML=PTABS.map(function(t){
     var c=_ptColor(t);
-    var locked=(t.wa && c==='gray');
+    var locked=false;
     return '<button id="ptgl-'+t.id+'" onclick="selectProfil(\''+t.id+'\')"'
       +' style="padding:7px 16px;border-radius:20px;font-size:12px;font-weight:600;font-family:inherit;'
       +'border:1.5px solid '+PCOL[c].border+';background:'+PCOL[c].dim+';color:'+PCOL[c].txt+';'
@@ -3960,6 +4253,8 @@ function selectProfil(id){
   _pActive=id;
   _ptActivate(id);
   renderProfilContent(id);
+  setTimeout(hideNaN,100);
+  setTimeout(hideNaN,400);
 }
 
 function renderProfilContent(id){
@@ -3970,26 +4265,26 @@ function renderProfilContent(id){
     wrap.innerHTML=
       '<div class="card">'+
         '<div class="card-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Adresse &amp; Kontakt</div>'+
-        '<div style="display:grid;grid-template-columns:2fr 0.6fr 1fr;gap:12px;margin-bottom:12px">'+
-          '<div class="field" style="margin-bottom:0"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="f-brand" placeholder="z.B. Wellness Store" value="'+(d.brand_name||d.name||'')+'"></div>'+
-          '<div class="field" style="margin-bottom:0"><label>PLZ</label><input type="text" id="f-plz" placeholder="51674" value="'+(d.postal_code||'')+'"></div>'+
-          '<div class="field" style="margin-bottom:0"><label>Stadt</label><input type="text" id="f-city" placeholder="Wiehl" value="'+(d.city||'')+'"></div>'+
+        '<div class="field" style="margin-bottom:12px"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="f-brand" placeholder="z.B. Wellness Store" value="'+(d.brand_name||d.name||'')+'"></div>'+
+        '<div style="display:grid;grid-template-columns:0.3fr 0.7fr;gap:12px;margin-bottom:12px;width:100%;box-sizing:border-box">'+
+          '<div class="field" style="margin-bottom:0"><label>PLZ</label><input type="text" id="f-plz" placeholder="51674" value="'+(d.postal_code||'')+'" style="min-width:0;width:100%"></div>'+
+          '<div class="field" style="margin-bottom:0"><label>Stadt</label><input type="text" id="f-city" placeholder="Wiehl" value="'+(d.city||'')+'" style="min-width:0;width:100%"></div>'+
         '</div>'+
-        '<div style="display:grid;grid-template-columns:2fr 0.5fr;gap:12px;margin-bottom:12px">'+
-          '<div class="field" style="margin-bottom:0"><label>Straße</label><input type="text" id="f-street" placeholder="Fritz-Raue Strasse" value="'+(d.street||'')+'"></div>'+
-          '<div class="field" style="margin-bottom:0"><label>Hausnummer</label><input type="text" id="f-house" placeholder="1" value="'+(d.house_number||'')+'"></div>'+
+        '<div style="display:grid;grid-template-columns:0.7fr 0.3fr;gap:12px;margin-bottom:12px;width:100%;box-sizing:border-box">'+
+          '<div class="field" style="margin-bottom:0"><label>Straße</label><input type="text" id="f-street" placeholder="Fritz-Raue Strasse" value="'+(d.street||'')+'" style="min-width:0;width:100%"></div>'+
+          '<div class="field" style="margin-bottom:0"><label>Hausnummer</label><input type="text" id="f-house" placeholder="1" value="'+(d.house_number||'')+'" style="min-width:0;width:100%"></div>'+
         '</div>'+
         '<div style="margin-bottom:12px">'+
           '<div class="field" style="margin-bottom:0">'+
             '<label>Google Maps Link <span style="font-size:10px;color:var(--muted);font-weight:400">— Kunden werden bei Klick auf die Adresse weitergeleitet</span></label>'+
-            '<input type="url" id="f-google-maps" placeholder="https://maps.google.com/?q=..." value="'+(d.google_maps_url||'')+'">'+
+            '<input type="text" id="f-google-maps" placeholder="https://maps.google.com/?q=..." value="'+(d.google_maps_url||'')+'">'+
           '</div>'+
         '</div>'+
-        '<div style="display:grid;grid-template-columns:0.6fr 1fr 1fr;gap:12px">'+
-          '<div class="field" style="margin-bottom:0"><label>Vorwahl</label><input type="text" id="f-area-code" placeholder="02262" value="'+(d.area_code||'')+'"></div>'+
-          '<div class="field" style="margin-bottom:0"><label>Telefon</label><input type="text" id="f-phone-number" placeholder="12131243" value="'+(d.phone_number||'')+'"></div>'+
-          '<div class="field" style="margin-bottom:0"><label>Handy</label><input type="text" id="f-mobile" placeholder="+49 151 …" value="'+(d.mobile_url||'')+'"></div>'+
+        '<div style="display:grid;grid-template-columns:0.3fr 0.7fr;gap:12px;margin-bottom:12px;width:100%;box-sizing:border-box">'+
+          '<div class="field" style="margin-bottom:0"><label>Vorwahl</label><input type="text" id="f-area-code" placeholder="02262" value="'+(d.area_code||'')+'" style="min-width:0;width:100%"></div>'+
+          '<div class="field" style="margin-bottom:0"><label>Telefon</label><input type="text" id="f-phone-number" placeholder="12131243" value="'+(d.phone_number||'')+'" style="min-width:0;width:100%"></div>'+
         '</div>'+
+        '<div class="field" style="margin-bottom:0"><label>Handy</label><input type="text" id="f-mobile" placeholder="+49 151 …" value="'+(d.mobile_url||'')+'"></div>'+
       '</div>'+
       '<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
   }
@@ -3998,64 +4293,54 @@ function renderProfilContent(id){
     wrap.innerHTML=
       '<div class="card">'+
         '<div id="az-acc" style="border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:4px">'
-        +'<div onclick="toggleAzAcc()" style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;cursor:pointer;background:var(--bg);">'
-          +'<div>'
-            +'<div class="card-title" style="margin-bottom:2px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Öffnungszeiten <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;margin-left:6px">mind. 1 Tag <span style="color:var(--tg)">*</span></span></div>'
-            +'<div id="az-acc-preview" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px"></div>'
+        +'<div onclick="toggleAzAcc()" style="cursor:pointer;position:relative;">'
+          +'<div id="az-week-widget" style="background:var(--tp);padding:10px 14px;width:100%">'
+            +'<div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:600;margin-bottom:8px">Öffnungszeiten</div>'
+            +'<div id="az-week-rows" style="display:flex;flex-wrap:wrap;gap:2px;justify-content:space-between"></div>'
           +'</div>'
-          +'<svg id="az-acc-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" style="transition:transform .2s;flex-shrink:0"><polyline points="6 9 12 15 18 9"/></svg>'
+          +'<svg id="az-acc-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" style="transition:transform .2s;position:absolute;top:50%;right:14px;transform:translateY(-50%)"><polyline points="6 9 12 15 18 9"/></svg>'
         +'</div>'
         +'<div id="az-acc-body" style="display:none;padding:12px 14px;border-top:1px solid var(--border)">'
           +'<div class="hours-cols" id="hours-cols"></div>'
         +'</div>'
       +'</div>'+
-        '<div style="margin:18px 0 12px">'
-          +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Slot-Raster</div>'
-          +'<div style="font-size:11px;color:var(--muted);margin-bottom:10px">Wie fein sollen Termine im Buchungswidget angezeigt werden?</div>'
-            +'<div id="slot-raster-btns" style="display:flex;gap:12px;flex-wrap:wrap">'
-            +'<button type="button" id="slot-btn-15" onclick="setSlotRaster(15)" class="btn" style="flex:1;min-width:90px;padding:12px 8px;text-align:center;line-height:1.3"><svg width="80" height="80" viewBox="-50 -50 100 100" style="display:block;margin:0 auto 6px"><path d="M0,0 L0,-44 A44,44 0 0,1 44,0 Z" fill="#4a1c6b" opacity="0.85"/><path d="M0,0 L44,0 A44,44 0 0,1 0,44 Z" fill="#4a1c6b" opacity="0.6"/><path d="M0,0 L0,44 A44,44 0 0,1 -44,0 Z" fill="#4a1c6b" opacity="0.35"/><path d="M0,0 L-44,0 A44,44 0 0,1 0,-44 Z" fill="#4a1c6b" opacity="0.12"/><line x1="0" y1="-46" x2="0" y2="46" stroke="#fff" stroke-width="1"/><line x1="-46" y1="0" x2="46" y2="0" stroke="#fff" stroke-width="1"/><line x1="0.0" y1="-44.0" x2="0.0" y2="-36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="22.0" y1="-38.1" x2="19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="38.1" y1="-22.0" x2="33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="44.0" y1="0.0" x2="36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="38.1" y1="22.0" x2="33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="22.0" y1="38.1" x2="19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="0.0" y1="44.0" x2="0.0" y2="36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-22.0" y1="38.1" x2="-19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-38.1" y1="22.0" x2="-33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-44.0" y1="0.0" x2="-36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-38.1" y1="-22.0" x2="-33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-22.0" y1="-38.1" x2="-19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><circle r="44" fill="none" stroke="#4a1c6b" stroke-width="1.5" opacity="0.4"/><circle r="3" fill="#fff"/></svg><span style="font-size:11px;font-weight:600">¼ Stunde</span><br><span style="font-size:10px;opacity:.6">09:00, 09:15…</span></button>'
-            +'<button type="button" id="slot-btn-30" onclick="setSlotRaster(30)" class="btn" style="flex:1;min-width:90px;padding:12px 8px;text-align:center;line-height:1.3"><svg width="80" height="80" viewBox="-50 -50 100 100" style="display:block;margin:0 auto 6px"><path d="M0,0 L0,-44 A44,44 0 0,1 0,44 Z" fill="#4a1c6b" opacity="0.8"/><path d="M0,0 L0,44 A44,44 0 0,1 0,-44 Z" fill="#4a1c6b" opacity="0.25"/><line x1="0" y1="-46" x2="0" y2="46" stroke="#fff" stroke-width="1"/><line x1="0.0" y1="-44.0" x2="0.0" y2="-36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="22.0" y1="-38.1" x2="19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="38.1" y1="-22.0" x2="33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="44.0" y1="0.0" x2="36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="38.1" y1="22.0" x2="33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="22.0" y1="38.1" x2="19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="0.0" y1="44.0" x2="0.0" y2="36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-22.0" y1="38.1" x2="-19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-38.1" y1="22.0" x2="-33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-44.0" y1="0.0" x2="-36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-38.1" y1="-22.0" x2="-33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-22.0" y1="-38.1" x2="-19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><circle r="44" fill="none" stroke="#4a1c6b" stroke-width="1.5" opacity="0.4"/><circle r="3" fill="#fff"/></svg><span style="font-size:11px;font-weight:600">½ Stunde</span><br><span style="font-size:10px;opacity:.6">09:00, 09:30…</span></button>'
-            +'<button type="button" id="slot-btn-60" onclick="setSlotRaster(60)" class="btn" style="flex:1;min-width:90px;padding:12px 8px;text-align:center;line-height:1.3"><svg width="80" height="80" viewBox="-50 -50 100 100" style="display:block;margin:0 auto 6px"><circle r="44" fill="#4a1c6b" opacity="0.75"/><line x1="0.0" y1="-44.0" x2="0.0" y2="-36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="22.0" y1="-38.1" x2="19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="38.1" y1="-22.0" x2="33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="44.0" y1="0.0" x2="36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="38.1" y1="22.0" x2="33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="22.0" y1="38.1" x2="19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="0.0" y1="44.0" x2="0.0" y2="36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-22.0" y1="38.1" x2="-19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-38.1" y1="22.0" x2="-33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-44.0" y1="0.0" x2="-36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-38.1" y1="-22.0" x2="-33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-22.0" y1="-38.1" x2="-19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><circle r="44" fill="none" stroke="#4a1c6b" stroke-width="1.5" opacity="0.4"/><circle r="3" fill="#fff"/></svg><span style="font-size:11px;font-weight:600">1 Stunde</span><br><span style="font-size:10px;opacity:.6">09:00, 10:00…</span></button>'
-            +'</div>'
-        +'</div>'+
         +'<div style="height:1px;background:var(--border);margin:20px 0"></div>'
         +'<div style="margin-bottom:20px">'
           +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:4px">Buchungsvorlauf</div>'
           +'<div style="font-size:11px;color:var(--muted);margin-bottom:14px">Wie kurzfristig dürfen Kunden noch buchen?</div>'
-          +'<div style="position:relative;height:36px;margin-bottom:6px">'
+          +'<div style="position:relative;height:36px;margin-bottom:6px;overflow:hidden;font-size:0">'
             +'<div style="position:absolute;top:14px;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--tp),rgba(90,45,130,0.15));border-radius:99px"></div>'
-            +'<input type="range" id="booking-vorlauf" min="0" max="8" step="1" value="2" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px">'
+            +'<input type="range" id="booking-vorlauf" min="0" max="8" step="1" aria-valuetext=" " value="'+(function(){var fs=_pData&&_pData.feature_settings;var v=parseInt(fs&&fs.booking_vorlauf);return(v>=0&&v<=8)?v:2;}())+'" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px">'
           +'</div>'
           +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:4px">'
             +'<span>Sofort</span><span>1h</span><span>2h</span><span>4h</span><span>8h</span><span>12h</span><span>1 Tag</span><span>2 Tage</span><span>3 Tage</span>'
           +'</div>'
-          +'<div style="display:none" id="vorlauf-label"></div>'
+          +''
         +'</div>'
         +'<div style="height:1px;background:var(--border);margin:0 0 20px"></div>'
         +'<div style="margin-bottom:16px">'
           +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:4px">Buchungshorizont</div>'
           +'<div style="font-size:11px;color:var(--muted);margin-bottom:14px">Wie weit im Voraus können Kunden buchen?</div>'
-          +'<div style="position:relative;height:36px;margin-bottom:6px">'
+          +'<div style="position:relative;height:36px;margin-bottom:6px;overflow:hidden;font-size:0">'
             +'<div style="position:absolute;top:14px;left:0;right:0;height:6px;background:linear-gradient(90deg,rgba(90,45,130,0.15),var(--tp));border-radius:99px"></div>'
-            +'<input type="range" id="booking-horizont" min="1" max="7" step="1" value="4" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px">'
+            +'<input type="range" id="booking-horizont" min="1" max="7" step="1" aria-valuetext=" " value="'+(function(){var fs=_pData&&_pData.feature_settings;if(fs&&fs.booking_horizont!=null&&!isNaN(fs.booking_horizont)){var idx=HORIZONT_VALS.indexOf(fs.booking_horizont);return idx>=0?idx+1:4;}return 4;}())+'" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px">'
           +'</div>'
           +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:4px">'
             +'<span>1 Woche</span><span>2 W.</span><span>3 W.</span><span>4 W.</span><span>6 W.</span><span>8 W.</span><span>12 W.</span>'
           +'</div>'
-          +'<div style="display:none" id="horizont-label"></div>'
+          +''
         +'</div>'+
         '<div style="height:1px;background:var(--border);margin:18px 0"></div>'+
-        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'+
+        '<div class="btn-add-wrap" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'+
           '<div class="card-title" style="margin-bottom:0">Temporäre Öffnungszeiten</div>'+
-          '<button class="btn btn-sm btn-outline" onclick="addTempEntry()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Kalenderwoche hinzufügen</button>'+
+          '<button class="btn-add" onclick="addTempEntry()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>'+
         '</div>'+
         '<div id="temp-entries-list" style="display:flex;flex-direction:column;gap:14px"></div>'+
         '<div id="temp-empty" style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0">Noch keine temporären Zeiten</div>'+
       '</div>'+
       '<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
     buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
-    var azPrev=document.getElementById('az-acc-preview');
-    if(azPrev)azPrev.innerHTML=azPreview(d.arbeitszeiten||null);
+    renderAzWeekWidget(d.arbeitszeiten||null, d.temp_arbeitszeiten||null);
     setTimeout(function(){initSlotRaster();initTimelines();},50);
     tempEntries=[];tempIdCounter=0;tempCalOffset={};
     if(d.temp_arbeitszeiten&&d.temp_arbeitszeiten.length){
@@ -4071,9 +4356,9 @@ function renderProfilContent(id){
         '<input type="text" id="f-note" placeholder="z.B. Keine Kartenzahlung möglich" maxlength="120" value="'+(d.note||'')+'"></div>'+
       '</div>'+
       '<div class="card">'+
-        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'+
+        '<div class="btn-add-wrap" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'+
           '<div class="card-title" style="margin-bottom:0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg> Eigene Links</div>'+
-          '<button type="button" class="btn btn-sm btn-ghost" onclick="addCustomLink()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>'+
+          '<button type="button" class="btn-add" onclick="addCustomLink()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>'+
         '</div>'+
         '<div id="custom-links-list" style="display:flex;flex-direction:column;gap:7px"></div>'+
         '<div id="custom-links-empty" style="font-size:11px;color:var(--muted);padding:8px 0 4px;text-align:center">Noch keine Links — klicke Hinzufügen</div>'+
@@ -4085,9 +4370,8 @@ function renderProfilContent(id){
 
   else if(id==='service'){
     wrap.innerHTML=
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'+
-
-        '<button class="btn btn-sm btn-outline" onclick="openSvcModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>'+
+      '<div class="btn-add-wrap" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'+
+        '<button class="btn-add" onclick="openSvcModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>'+
       '</div>'+
       '<div class="svc-list" id="svc-list"></div>';
     renderSvcList();
@@ -4105,38 +4389,33 @@ function renderProfilContent(id){
             '<div style="font-size:12px;color:var(--muted)">Eigene Nachrichten für jeden Anlass konfigurieren</div>'+
           '</div>'+
         '</div>'+
-        // Variablen — softer chips
         '<div style="background:rgba(90,45,130,.03);border:1px solid rgba(90,45,130,.1);border-radius:12px;padding:14px;margin-bottom:20px">'+
           '<div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Variablen einfügen</div>'+
           '<div style="display:flex;flex-wrap:wrap;gap:6px">'+
-            '<button onclick="waInsertVar(\'{{name}}\')" style="background:rgba(52,152,219,.08);border:1px solid rgba(52,152,219,.25);color:#2980b9;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.background=\'rgba(52,152,219,.16)\'" onmouseout="this.style.background=\'rgba(52,152,219,.08)\'">{{name}}</button>'+
-            '<button onclick="waInsertVar(\'{{termin}}\')" style="background:rgba(243,156,18,.08);border:1px solid rgba(243,156,18,.25);color:#d68910;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.background=\'rgba(243,156,18,.16)\'" onmouseout="this.style.background=\'rgba(243,156,18,.08)\'">{{termin}}</button>'+
-            '<button onclick="waInsertVar(\'{{datum}}\')" style="background:rgba(243,156,18,.08);border:1px solid rgba(243,156,18,.25);color:#d68910;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.background=\'rgba(243,156,18,.16)\'" onmouseout="this.style.background=\'rgba(243,156,18,.08)\'">{{datum}}</button>'+
-            '<button onclick="waInsertVar(\'{{uhrzeit}}\')" style="background:rgba(243,156,18,.08);border:1px solid rgba(243,156,18,.25);color:#d68910;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.background=\'rgba(243,156,18,.16)\'" onmouseout="this.style.background=\'rgba(243,156,18,.08)\'">{{uhrzeit}}</button>'+
-            '<button onclick="waInsertVar(\'{{service}}\')" style="background:rgba(155,89,182,.08);border:1px solid rgba(155,89,182,.25);color:#7d3c98;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.background=\'rgba(155,89,182,.16)\'" onmouseout="this.style.background=\'rgba(155,89,182,.08)\'">{{service}}</button>'+
-            '<button onclick="waInsertVar(\'{{buchungslink}}\')" style="background:rgba(39,174,96,.08);border:1px solid rgba(39,174,96,.25);color:#1e8449;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.background=\'rgba(39,174,96,.16)\'" onmouseout="this.style.background=\'rgba(39,174,96,.08)\'">{{buchungslink}}</button>'+
-            '<button onclick="waInsertVar(\'{{salon}}\')" style="background:rgba(231,76,60,.08);border:1px solid rgba(231,76,60,.25);color:#c0392b;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.background=\'rgba(231,76,60,.16)\'" onmouseout="this.style.background=\'rgba(231,76,60,.08)\'">{{salon}}</button>'+
+            '<button onclick="waInsertVar(\'name\')" style="background:rgba(52,152,219,.08);border:1px solid rgba(52,152,219,.25);color:#2980b9;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">name</button>'+
+            '<button onclick="waInsertVar(\'termin\')" style="background:rgba(243,156,18,.08);border:1px solid rgba(243,156,18,.25);color:#d68910;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">termin</button>'+
+            '<button onclick="waInsertVar(\'datum\')" style="background:rgba(243,156,18,.08);border:1px solid rgba(243,156,18,.25);color:#d68910;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">datum</button>'+
+            '<button onclick="waInsertVar(\'uhrzeit\')" style="background:rgba(243,156,18,.08);border:1px solid rgba(243,156,18,.25);color:#d68910;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">uhrzeit</button>'+
+            '<button onclick="waInsertVar(\'service\')" style="background:rgba(155,89,182,.08);border:1px solid rgba(155,89,182,.25);color:#7d3c98;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">service</button>'+
+            '<button onclick="waInsertVar(\'buchungslink\')" style="background:rgba(39,174,96,.08);border:1px solid rgba(39,174,96,.25);color:#1e8449;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">buchungslink</button>'+
+            '<button onclick="waInsertVar(\'salon\')" style="background:rgba(231,76,60,.08);border:1px solid rgba(231,76,60,.25);color:#c0392b;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">salon</button>'+
           '</div>'+
           '<div style="font-size:10px;color:var(--muted);margin-top:8px;opacity:.7">Cursor im Textfeld positionieren, dann Variable klicken</div>'+
         '</div>'+
-        // Template Tabs
         '<div style="display:flex;gap:6px;margin-bottom:16px">'+
-          '<button onclick="waSelectTab(\'bestaetigung\')" id="wat-bestaetigung" class="wa-tab-btn wa-tab-active">✓ Bestätigung</button>'+
-          '<button onclick="waSelectTab(\'erinnerung\')" id="wat-erinnerung" class="wa-tab-btn">⏰ Erinnerung</button>'+
-          '<button onclick="waSelectTab(\'storno\')" id="wat-storno" class="wa-tab-btn">✕ Storno</button>'+
+          '<button onclick="waSelectTab(\'bestaetigung\')" id="wat-bestaetigung" class="wa-tab-btn wa-tab-active"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Bestätigung</button>'+
+          '<button onclick="waSelectTab(\'erinnerung\')" id="wat-erinnerung" class="wa-tab-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Erinnerung</button>'+
+          '<button onclick="waSelectTab(\'storno\')" id="wat-storno" class="wa-tab-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Storno</button>'+
         '</div>'+
-        // Editor
-        '<textarea id="wa-template-editor" rows="7" style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px;font-size:13px;font-family:inherit;color:var(--td);background:#fff;outline:none;resize:vertical;line-height:1.7;margin-bottom:14px" placeholder="Nachricht eingeben..."></textarea>'+
-        // WhatsApp-style Vorschau
+        '<div id="wa-template-editor" contenteditable="true" spellcheck="false" style="width:100%;min-height:120px;border:1.5px solid var(--border);border-radius:10px;padding:12px;font-size:13px;font-family:inherit;color:var(--td);background:#fff;outline:none;line-height:1.9;margin-bottom:14px;white-space:pre-wrap;word-break:break-word;cursor:text" oninput="waEditorInput()"></div>'+
         '<div style="background:#0a1929;border-radius:16px;padding:20px;position:relative;overflow:hidden">'+
-          '<div style="position:absolute;inset:0;background:url(\'data:image/svg+xml,<svg xmlns=\\"http://www.w3.org/2000/svg\\" width=\\"60\\" height=\\"60\\"><rect width=\\"60\\" height=\\"60\\" fill=\\"none\\"/><path d=\\"M0 30 Q15 0 30 30 Q45 60 60 30\\" stroke=\\"rgba(255,255,255,.015)\\" fill=\\"none\\"/></svg>\');opacity:.5"></div>'+
-          '<div style="font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:14px;position:relative">Vorschau</div>'+
-          '<div style="display:flex;align-items:flex-end;gap:8px;position:relative">'+
+          '<div style="font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:14px">Vorschau</div>'+
+          '<div style="display:flex;align-items:flex-end;gap:8px">'+
             '<div style="width:28px;height:28px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-bottom:4px">'+
               '<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.072 22l4.948-1.348A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>'+
             '</div>'+
             '<div style="max-width:85%">'+
-              '<div style="background:#1f3a2e;border-radius:16px 16px 16px 4px;padding:12px 14px;position:relative">'+
+              '<div style="background:#1f3a2e;border-radius:16px 16px 16px 4px;padding:12px 14px">'+
                 '<div id="wa-preview" style="font-size:13px;color:#e8f5e2;white-space:pre-wrap;line-height:1.6;word-break:break-word"></div>'+
                 '<div style="display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:6px">'+
                   '<span style="font-size:10px;color:rgba(232,245,226,.4)">Jetzt</span>'+
@@ -4155,32 +4434,35 @@ function renderProfilContent(id){
         '</div>'+
       '</div>';
 
-    // CSS für Tabs
     if(!document.getElementById('wa-tab-style')){
       var s=document.createElement('style');s.id='wa-tab-style';
-      s.textContent='.wa-tab-btn{padding:6px 14px;border-radius:8px;border:1.5px solid var(--border);background:#fff;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}.wa-tab-active{background:var(--tpl);color:#fff;border-color:var(--tpl)}';
+      s.textContent='.wa-tab-btn{padding:6px 14px;border-radius:8px;border:1.5px solid var(--tg);background:var(--tp);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .15s;opacity:0.55}.wa-tab-btn svg{stroke:#fff}.wa-tab-active{opacity:1}'
+        +'.wa-pill{display:inline-block;border-radius:20px;padding:1px 9px;font-size:12px;font-weight:600;cursor:default;user-select:none;line-height:1.6}'
+        +'.wa-pill[data-var="name"]{background:rgba(52,152,219,.12);border:1px solid rgba(52,152,219,.3);color:#2980b9}'
+        +'.wa-pill[data-var="termin"],.wa-pill[data-var="datum"],.wa-pill[data-var="uhrzeit"]{background:rgba(243,156,18,.12);border:1px solid rgba(243,156,18,.3);color:#d68910}'
+        +'.wa-pill[data-var="service"]{background:rgba(155,89,182,.12);border:1px solid rgba(155,89,182,.3);color:#7d3c98}'
+        +'.wa-pill[data-var="buchungslink"]{background:rgba(39,174,96,.12);border:1px solid rgba(39,174,96,.3);color:#1e8449}'
+        +'.wa-pill[data-var="salon"]{background:rgba(231,76,60,.12);border:1px solid rgba(231,76,60,.3);color:#c0392b}';
       document.head.appendChild(s);
     }
 
-    // Standard-Templates
+    // Variable labels ohne geschweifte Klammern
+    var WA_VAR_LABELS={name:'name',termin:'termin',datum:'datum',uhrzeit:'uhrzeit',service:'service',buchungslink:'buchungslink',salon:'salon'};
+
     var defaults={
       bestaetigung:'Hallo {{name}}!\nDein Termin am {{termin}} ist bestätigt. Wir freuen uns auf dich! 😊\n\nDein Buchungslink: {{buchungslink}}\n\npowered by insy-reception',
       erinnerung:'Hallo {{name}}!\n⏰ Erinnerung: Dein Termin ist am {{termin}}. Wir freuen uns auf dich!\n\nDein Buchungslink: {{buchungslink}}\n\npowered by insy-reception',
       storno:'Hallo {{name}}!\nWir haben deine Stornierung für den {{termin}} erhalten und bestätigen diese hiermit.\n\nFalls du einen neuen Termin buchen möchtest:\n{{buchungslink}}\n\npowered by insy-reception'
     };
-
-    var d=window._pData||{};
-    var fs=d.feature_settings||{};
+    var d2=window._pData||{};
+    var fs2=d2.feature_settings||{};
     window._waTemplates={
-      bestaetigung:fs.wa_template_bestaetigung||defaults.bestaetigung,
-      erinnerung:fs.wa_template_erinnerung||defaults.erinnerung,
-      storno:fs.wa_template_storno||defaults.storno
+      bestaetigung:fs2.wa_template_bestaetigung||defaults.bestaetigung,
+      erinnerung:fs2.wa_template_erinnerung||defaults.erinnerung,
+      storno:fs2.wa_template_storno||defaults.storno
     };
     window._waActiveTab='bestaetigung';
-
-    var editor=document.getElementById('wa-template-editor');
-    editor.value=window._waTemplates.bestaetigung;
-    editor.addEventListener('input',updateWaPreview);
+    waSetEditorContent(window._waTemplates.bestaetigung);
     updateWaPreview();
   }
 
@@ -4193,7 +4475,124 @@ function renderProfilContent(id){
     renderStaffSidebar();
   }
 }
-// ══════════════════════════════════════════════
+
+// ── WA PILL EDITOR ───────────────────────────────────────────
+var WA_VARS={
+  name:      {label:'name',      bg:'rgba(52,152,219,.12)', border:'rgba(52,152,219,.35)', color:'#2980b9'},
+  termin:    {label:'termin',    bg:'rgba(243,156,18,.12)', border:'rgba(243,156,18,.35)', color:'#d68910'},
+  datum:     {label:'datum',     bg:'rgba(243,156,18,.12)', border:'rgba(243,156,18,.35)', color:'#d68910'},
+  uhrzeit:   {label:'uhrzeit',   bg:'rgba(243,156,18,.12)', border:'rgba(243,156,18,.35)', color:'#d68910'},
+  service:   {label:'service',   bg:'rgba(155,89,182,.12)', border:'rgba(155,89,182,.35)', color:'#7d3c98'},
+  buchungslink:{label:'buchungslink',bg:'rgba(39,174,96,.12)',border:'rgba(39,174,96,.35)',color:'#1e8449'},
+  salon:     {label:'salon',     bg:'rgba(231,76,60,.12)',  border:'rgba(231,76,60,.35)',  color:'#c0392b'}
+};
+
+function waPillHtml(varName){
+  var v=WA_VARS[varName];if(!v)return'{{'+varName+'}}';
+  return'<span class="wa-pill" data-var="'+varName+'" contenteditable="false" style="background:'+v.bg+';border:1.5px solid '+v.border+';color:'+v.color+';border-radius:20px;padding:1px 9px;font-size:12px;font-weight:600;display:inline;cursor:default;user-select:none;line-height:1.8;white-space:nowrap">'+v.label+'</span>';
+}
+
+function waTextToHtml(text){
+  // Convert {{var}} → pill, \n → <br>
+  var escaped=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  escaped=escaped.replace(/\{\{(\w+)\}\}/g,function(_,name){
+    var v=WA_VARS[name];
+    if(!v)return'{{'+name+'}}';
+    return'<span class="wa-pill" data-var="'+name+'" contenteditable="false" style="background:'+v.bg+';border:1.5px solid '+v.border+';color:'+v.color+';border-radius:20px;padding:1px 9px;font-size:12px;font-weight:600;display:inline;cursor:default;user-select:none;line-height:1.8;white-space:nowrap">'+v.label+'</span>';
+  });
+  return escaped.replace(/\n/g,'<br>');
+}
+
+function waHtmlToText(html){
+  // Convert pills → {{var}}, <br> → \n, strip other tags
+  return html
+    .replace(/<span[^>]*data-var="(\w+)"[^>]*>.*?<\/span>/g,'{{$1}}')
+    .replace(/<br\s*\/?>/gi,'\n')
+    .replace(/<div>/gi,'\n')
+    .replace(/<\/div>/gi,'')
+    .replace(/<[^>]+>/g,'')
+    .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+}
+
+function waSetEditorContent(text){
+  var el=document.getElementById('wa-template-editor');
+  if(!el)return;
+  el.innerHTML=waTextToHtml(text);
+}
+
+function waEditorInput(){
+  updateWaPreview();
+}
+
+function waSelectTab(tab){
+  var el=document.getElementById('wa-template-editor');
+  if(el&&window._waTemplates&&window._waActiveTab)
+    window._waTemplates[window._waActiveTab]=waHtmlToText(el.innerHTML);
+  window._waActiveTab=tab;
+  ['bestaetigung','erinnerung','storno'].forEach(function(t){
+    var btn=document.getElementById('wat-'+t);
+    if(btn)btn.classList.toggle('wa-tab-active',t===tab);
+  });
+  if(el&&window._waTemplates){waSetEditorContent(window._waTemplates[tab]||'');updateWaPreview();}
+}
+
+function waInsertVar(varName){
+  var el=document.getElementById('wa-template-editor');
+  if(!el)return;
+  el.focus();
+  var sel=window.getSelection();
+  if(sel&&sel.rangeCount){
+    var range=sel.getRangeAt(0);
+    range.deleteContents();
+    var pill=document.createElement('span');
+    pill.outerHTML; // dummy
+    var tmp=document.createElement('div');
+    tmp.innerHTML=waPillHtml(varName);
+    var node=tmp.firstChild;
+    range.insertNode(node);
+    // Move cursor after pill
+    range.setStartAfter(node);
+    range.setEndAfter(node);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  } else {
+    el.innerHTML+=waPillHtml(varName);
+  }
+  if(window._waTemplates)window._waTemplates[window._waActiveTab||'bestaetigung']=waHtmlToText(el.innerHTML);
+  updateWaPreview();
+}
+
+function updateWaPreview(){
+  var el=document.getElementById('wa-template-editor');
+  var prev=document.getElementById('wa-preview');
+  if(!el||!prev)return;
+  var txt=waHtmlToText(el.innerHTML);
+  if(window._waTemplates)window._waTemplates[window._waActiveTab||'bestaetigung']=txt;
+  var display=txt
+    .replace(/\{\{name\}\}/g,'Maria Müller')
+    .replace(/\{\{termin\}\}/g,'Montag, 02.06. um 14:00 Uhr')
+    .replace(/\{\{datum\}\}/g,'Montag, 02.06.')
+    .replace(/\{\{uhrzeit\}\}/g,'14:00 Uhr')
+    .replace(/\{\{service\}\}/g,'Nageldesign · Lackieren')
+    .replace(/\{\{buchungslink\}\}/g,'https://insy-reception.com/success?...')
+    .replace(/\{\{salon\}\}/g,(window._pData&&(window._pData.brand_name||window._pData.name))||'Salon');
+  prev.textContent=display;
+}
+
+async function saveWaTemplates(){
+  if(!SALON_ID)return;
+  var el=document.getElementById('wa-template-editor');
+  if(el&&window._waTemplates)window._waTemplates[window._waActiveTab||'bestaetigung']=waHtmlToText(el.innerHTML);
+  if(!window._pData)window._pData={};
+  if(!window._pData.feature_settings)window._pData.feature_settings={};
+  window._pData.feature_settings.wa_template_bestaetigung=window._waTemplates.bestaetigung;
+  window._pData.feature_settings.wa_template_erinnerung=window._waTemplates.erinnerung;
+  window._pData.feature_settings.wa_template_storno=window._waTemplates.storno;
+  var res=await sb.from('kunden_profile').update({feature_settings:window._pData.feature_settings}).eq('id',SALON_ID);
+  if(res.error){toast('Fehler beim Speichern','error');return;}
+  toast('Templates gespeichert ✓','success');
+}
+
 // ══════════════════════════════════════════════
 init();
 </script>
