@@ -1241,6 +1241,57 @@ function azPreview(az){
   }).join('<span style="color:var(--border);margin:0 4px">·</span>');
 }
 
+var _azWeekOffset=0;
+var _azWeekAz=null;
+var _azWeekTempAz=null;
+var _azTodayKey=(function(){var m={0:'sunday',1:'monday',2:'tuesday',3:'wednesday',4:'thursday',5:'friday',6:'saturday'};return m[new Date().getDay()];}());
+var AZ_DAY_ORDER=['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+var AZ_DAY_LABELS={monday:'Montag',tuesday:'Dienstag',wednesday:'Mittwoch',thursday:'Donnerstag',friday:'Freitag',saturday:'Samstag',sunday:'Sonntag'};
+
+function renderAzWeekWidget(az, tempAz){
+  _azWeekAz=az;
+  _azWeekTempAz=tempAz;
+  _azWeekOffset=0;
+  _renderAzWeekRows();
+}
+
+function azWeekNav(dir){
+  _azWeekOffset+=dir;
+  var lbl=document.getElementById('az-week-label');
+  if(lbl){
+    if(_azWeekOffset===0)lbl.textContent='Diese Woche';
+    else if(_azWeekOffset===1)lbl.textContent='Nächste Woche';
+    else if(_azWeekOffset===-1)lbl.textContent='Letzte Woche';
+    else lbl.textContent=(_azWeekOffset>0?'+':'')+_azWeekOffset+' Wochen';
+  }
+  _renderAzWeekRows();
+}
+
+function _renderAzWeekRows(){
+  var rowsEl=document.getElementById('az-week-rows');
+  if(!rowsEl||!_azWeekAz)return;
+  var now=new Date();
+  var dayOfWeek=now.getDay()===0?6:now.getDay()-1;
+  var monday=new Date(now);
+  monday.setDate(now.getDate()-dayOfWeek+_azWeekOffset*7);
+  rowsEl.innerHTML=AZ_DAY_ORDER.map(function(k,idx){
+    var dayDate=new Date(monday);
+    dayDate.setDate(monday.getDate()+idx);
+    var isoW=getISOWeek(dayDate);
+    var tempArr=Array.isArray(_azWeekTempAz)?_azWeekTempAz:[];
+    var tempEntry=tempArr.filter(function(t){return t.kw===isoW.kw&&t.year===isoW.year;})[0]||null;
+    var d=tempEntry&&tempEntry.zeiten&&tempEntry.zeiten[k]?tempEntry.zeiten[k]:(_azWeekAz[k]||null);
+    var isToday=_azWeekOffset===0&&k===_azTodayKey;
+    var closed=!d||!d.aktiv;
+    var slots=closed?[]:_slotsFor(d);
+    var timeStr=closed?'—':slots.map(function(s){return s.start+'–'+s.end;}).join(', ');
+    return'<div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 7px;border-radius:7px;'+(isToday?'background:rgba(255,255,255,.15)':'')+'">'
+      +'<span style="font-size:9px;font-weight:600;'+(isToday?'color:#C9A84C':'color:rgba(255,255,255,.45)')+';letter-spacing:.05em;text-transform:uppercase">'+AZ_DAY_LABELS[k].slice(0,2)+'</span>'
+      +'<span style="font-size:10px;white-space:nowrap;'+(closed?'color:rgba(255,255,255,.25)':isToday?'color:#fff;font-weight:600':'color:rgba(255,255,255,.65)')+'">'+timeStr+'</span>'
+      +'</div>';
+  }).join('');
+}
+
 
 
 var VORLAUF_LABELS=['Sofort buchbar','Mindestens 1 Stunde vorher','Mindestens 2 Stunden vorher','Mindestens 4 Stunden vorher','Mindestens 8 Stunden vorher','Mindestens 12 Stunden vorher','Mindestens 1 Tag vorher','Mindestens 2 Tage vorher','Mindestens 3 Tage vorher'];
@@ -1714,10 +1765,13 @@ async function saveProfil(silent){
   // Hours — only save if hours-cols is in DOM
   if(document.getElementById('hours-cols')){
     update.arbeitszeiten = readHours('h-');
+    // Widget sofort aktualisieren
+    if(update.arbeitszeiten)renderAzWeekWidget(update.arbeitszeiten, window._pData&&window._pData.temp_arbeitszeiten||null);
   }
   // Temp entries — only save if rendered
   if(document.getElementById('temp-entries-list')){
     update.temp_arbeitszeiten = readTempEntries();
+    if(update.temp_arbeitszeiten)renderAzWeekWidget(window._pData&&window._pData.arbeitszeiten||_azWeekAz, update.temp_arbeitszeiten);
   }
   // Custom links — only save if in DOM
   if(document.getElementById('custom-links-list')){
@@ -4210,7 +4264,16 @@ function renderProfilContent(id){
         +'<div onclick="toggleAzAcc()" style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;cursor:pointer;background:var(--bg);">'
           +'<div>'
             +'<div class="card-title" style="margin-bottom:2px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Öffnungszeiten <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;margin-left:6px">mind. 1 Tag <span style="color:var(--tg)">*</span></span></div>'
-            +'<div id="az-acc-preview" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px"></div>'
+            +'<div id="az-week-widget" style="background:var(--tp);border-radius:10px;padding:10px 14px;margin-top:8px">'
+              +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'
+                +'<div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:600" id="az-week-label">Diese Woche</div>'
+                +'<div style="display:flex;gap:4px">'
+                  +'<button onclick="azWeekNav(-1)" style="background:rgba(255,255,255,.1);border:none;border-radius:5px;color:#fff;font-size:11px;width:20px;height:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">‹</button>'
+                  +'<button onclick="azWeekNav(1)" style="background:rgba(255,255,255,.1);border:none;border-radius:5px;color:#fff;font-size:11px;width:20px;height:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">›</button>'
+                +'</div>'
+              +'</div>'
+              +'<div id="az-week-rows" style="display:flex;flex-wrap:wrap;gap:2px"></div>'
+            +'</div>'
           +'</div>'
           +'<svg id="az-acc-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" style="transition:transform .2s;flex-shrink:0"><polyline points="6 9 12 15 18 9"/></svg>'
         +'</div>'
@@ -4263,8 +4326,7 @@ function renderProfilContent(id){
       '</div>'+
       '<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
     buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
-    var azPrev=document.getElementById('az-acc-preview');
-    if(azPrev)azPrev.innerHTML=azPreview(d.arbeitszeiten||null);
+    renderAzWeekWidget(d.arbeitszeiten||null, d.temp_arbeitszeiten||null);
     setTimeout(function(){initSlotRaster();initTimelines();},50);
     tempEntries=[];tempIdCounter=0;tempCalOffset={};
     if(d.temp_arbeitszeiten&&d.temp_arbeitszeiten.length){
