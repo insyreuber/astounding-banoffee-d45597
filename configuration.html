@@ -1658,6 +1658,13 @@ async function loadProfil(){
   var res=await sb.from('kunden_profile').select('*').eq('id',SALON_ID).single();
   if(res.error){toast('Profil nicht gefunden','error');return;}
   window._pData=res.data;
+  // NaN-Werte in feature_settings bereinigen
+  if(window._pData&&window._pData.feature_settings){
+    var fs=window._pData.feature_settings;
+    if(fs.booking_vorlauf==null||isNaN(fs.booking_vorlauf))fs.booking_vorlauf=2;
+    if(fs.booking_horizont==null||isNaN(fs.booking_horizont))fs.booking_horizont=4;
+    if(fs.slot_interval==null||isNaN(fs.slot_interval))fs.slot_interval=15;
+  }
 }
 
 
