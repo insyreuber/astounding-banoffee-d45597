@@ -2126,14 +2126,6 @@ function renderSvcBody(s,vars){
   +'</div>'
   +'<hr class="div">'
   +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Varianten</div>'
-  +'<div class="var-header" style="grid-template-columns:1.5fr 2fr 1.2fr 1.2fr 1.2fr 28px">'
-    +'<span class="var-col-lbl">Name <span style="font-weight:400;opacity:.6">(opt.)</span></span>'
-    +'<span class="var-col-lbl">Beschreibung <span style="font-weight:400;opacity:.6">(opt.)</span></span>'
-    +'<span class="var-col-lbl">Dauer Min <span style="color:var(--tg)">*</span></span>'
-    +'<span class="var-col-lbl">Preis €</span>'
-    +'<span class="var-col-lbl">Puffer Min</span>'
-    +'<span></span>'
-  +'</div>'
   +'<div class="var-list" id="varlist-'+s.id+'">'
     +(vars.map(function(v,i){return mkVarRow(v,s.id,i);}).join('')||'<div style="font-size:12px;color:var(--muted);padding:6px 0">Noch keine Varianten</div>')
   +'</div>'
@@ -2160,74 +2152,90 @@ function mkVarRow(v,svcId,idx){
   var durVal=(v.dauer_minuten&&v.dauer_minuten<9000)?v.dauer_minuten:'';
   var preisVal=(v.preis!=null&&v.preis>0)?v.preis:'';
   var isFirst=(idx===0);
-  // Build preview chip for this single variant
+  // Build preview chip
   var previewParts=[];
   if(v.service_name)previewParts.push(v.service_name);
   if(v.dauer_anzeigen!==false&&(parseInt(durVal)||0))previewParts.push((parseInt(durVal)||0)+' Min');
   if(v.preis_anzeigen!==false&&parseFloat(v.preis||0)>0)previewParts.push(parseFloat(v.preis||0).toFixed(2).replace('.',',')+' '+(v.waehrung||'€'));
   if(v.bezeichnung)previewParts.push(v.bezeichnung);
-  var previewLabel=previewParts.join(' · ')||'—';
-  return'<div class="var-row" id="var-'+v.id+'" style="grid-template-columns:1fr 1.5fr 2fr 28px;gap:8px">'
-    +'<div style="display:flex;flex-direction:column;gap:6px;min-width:0">'
-      // ── Per-Variante Vorschau ──
-      +'<div id="var-preview-'+v.id+'" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:2px">'
+  var previewLabel=previewParts.join(' · ')||'Neue Variante';
+
+  return'<div class="var-acc" id="var-acc-'+v.id+'" style="border:1.5px solid #e8e0f0;border-radius:8px;margin-bottom:6px;overflow:visible">'
+    // ── Akkordion Header ──
+    +'<div onclick="toggleVarAcc(\''+v.id+'\')" style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;cursor:pointer;gap:8px;background:#faf8fc;border-radius:8px">'
+      +'<div id="var-preview-'+v.id+'" style="flex:1;min-width:0">'
         +'<span style="display:inline-flex;align-items:center;padding:3px 10px;border-radius:8px;font-size:11px;border:1.5px solid #e8e0f0;background:#fff;color:var(--td);white-space:normal;word-break:break-word">'+esc(previewLabel)+'</span>'
       +'</div>'
-      // Min + Puffer Fusion
-      +'<div style="display:flex;align-items:flex-end;gap:8px">'
-        +'<div style="display:flex;flex-direction:column;gap:3px;width:50%">'
-          +'<span style="font-size:10px;color:var(--muted);font-weight:500;white-space:nowrap">Min + Puffer = Gesamt</span>'
-          +'<div style="display:flex;align-items:center;border:1.5px solid var(--tpl);border-radius:6px;overflow:hidden;background:rgba(90,45,130,.12)">'
-            +'<input data-field="dauer_minuten" type="number" min="5" step="5" placeholder="—" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value);updateVarTotal(\''+v.id+'\');updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="flex:1;min-width:0;text-align:center;border:none;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:transparent;outline:none">'
-            +'<span style="font-size:13px;font-weight:700;color:var(--tpl);padding:0 2px;flex-shrink:0;line-height:1">+</span>'
-            +'<input data-field="puffer_minuten" type="number" min="0" placeholder="—" value="'+(v.puffer_minuten||0)+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'puffer_minuten\',this.value);updateVarTotal(\''+v.id+'\');updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="flex:1;min-width:0;text-align:center;border:none;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:#fff;outline:none">'
-            +'<span style="font-size:11px;font-weight:600;color:var(--tpl);padding:0 4px;flex-shrink:0;line-height:1">=</span>'
-            +'<span id="vartotal-'+v.id+'" style="flex:0 0 38px;text-align:center;font-size:13px;font-weight:600;color:var(--tpl);height:100%;display:flex;align-items:center;justify-content:center;padding:6px 2px">'
-              +((parseInt(durVal)||0)+(v.puffer_minuten||0)||'—')
-            +'</span>'
+      +(isFirst
+        ?'<div style="width:28px;flex-shrink:0"></div>'
+        :'<button onclick="event.stopPropagation();deleteVar(\''+v.id+'\',\''+svcId+'\')" class="var-del" style="flex-shrink:0">✕</button>'
+      )
+      +'<span id="var-chev-'+v.id+'" style="font-size:16px;color:var(--tpl);transition:transform .2s;flex-shrink:0">⌄</span>'
+    +'</div>'
+    // ── Akkordion Body ──
+    +'<div id="var-body-'+v.id+'" style="padding:10px;border-top:1.5px solid #e8e0f0;display:none">'
+      +'<div style="display:flex;flex-direction:column;gap:10px">'
+        // Name + Beschreibung
+        +'<div style="display:flex;gap:8px">'
+          +'<div style="flex:1;display:flex;flex-direction:column;gap:3px">'
+            +'<span style="font-size:10px;color:var(--muted);font-weight:500">Name</span>'
+            +'<div class="var-group"><input data-field="service_name" type="text" placeholder="z.B. Fade, Rasur…" value="'+esc(v.service_name||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'service_name\',this.value);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="border:none;outline:none;padding:6px;font-family:inherit;color:var(--td);background:transparent;width:100%"></div>'
+          +'</div>'
+          +'<div style="flex:1.5;display:flex;flex-direction:column;gap:3px">'
+            +'<span style="font-size:10px;color:var(--muted);font-weight:500">Beschreibung</span>'
+            +'<div class="var-group"><textarea data-field="bezeichnung" rows="2" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'bezeichnung\',this.value);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="border:none;outline:none;padding:6px;font-family:inherit;color:var(--td);background:transparent;width:100%;resize:none">'+esc(v.bezeichnung||'')+'</textarea></div>'
           +'</div>'
         +'</div>'
-        +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding-bottom:3px">'
-          +'<span style="font-size:10px;color:var(--muted);font-weight:500;white-space:nowrap;text-align:center">Dauer<br>anzeigen</span>'
-          +'<label class="toggle-sw"><input data-field="dauer_anzeigen" type="checkbox" '+(v.dauer_anzeigen!==false?'checked':'')+' onchange="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_anzeigen\',this.checked);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')"><span class="slider"></span></label>'
+        // Min + Puffer + Dauer-Toggle
+        +'<div style="display:flex;align-items:flex-end;gap:8px">'
+          +'<div style="display:flex;flex-direction:column;gap:3px;flex:1">'
+            +'<span style="font-size:10px;color:var(--muted);font-weight:500;white-space:nowrap">Min + Puffer = Gesamt</span>'
+            +'<div style="display:flex;align-items:center;border:1.5px solid var(--tpl);border-radius:6px;overflow:hidden;background:rgba(90,45,130,.12)">'
+              +'<input data-field="dauer_minuten" type="number" min="5" step="5" placeholder="—" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value);updateVarTotal(\''+v.id+'\');updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="flex:1;min-width:0;text-align:center;border:none;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:transparent;outline:none">'
+              +'<span style="font-size:13px;font-weight:700;color:var(--tpl);padding:0 2px;flex-shrink:0">+</span>'
+              +'<input data-field="puffer_minuten" type="number" min="0" placeholder="—" value="'+(v.puffer_minuten||0)+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'puffer_minuten\',this.value);updateVarTotal(\''+v.id+'\');updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="flex:1;min-width:0;text-align:center;border:none;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:#fff;outline:none">'
+              +'<span style="font-size:11px;font-weight:600;color:var(--tpl);padding:0 4px;flex-shrink:0">=</span>'
+              +'<span id="vartotal-'+v.id+'" style="flex:0 0 38px;text-align:center;font-size:13px;font-weight:600;color:var(--tpl);display:flex;align-items:center;justify-content:center;padding:6px 2px">'
+                +((parseInt(durVal)||0)+(v.puffer_minuten||0)||'—')
+              +'</span>'
+            +'</div>'
+          +'</div>'
+          +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding-bottom:3px">'
+            +'<span style="font-size:10px;color:var(--muted);font-weight:500;text-align:center">Dauer<br>anzeigen</span>'
+            +'<label class="toggle-sw"><input data-field="dauer_anzeigen" type="checkbox" '+(v.dauer_anzeigen!==false?'checked':'')+' onchange="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_anzeigen\',this.checked);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')"><span class="slider"></span></label>'
+          +'</div>'
+          +'<input data-field="puffer_aktiv" type="checkbox" '+(v.puffer_aktiv?'checked':'')+' style="display:none">'
         +'</div>'
-        +'<input data-field="puffer_aktiv" type="checkbox" '+(v.puffer_aktiv?'checked':'')+' style="display:none">'
-      +'</div>'
-      +'<div style="display:flex;flex-direction:column;gap:3px">'
-        +'<span style="font-size:10px;color:var(--muted);font-weight:500;white-space:nowrap">Preis</span>'
-        +'<div style="display:flex;align-items:center;gap:6px">'
-          +'<input data-field="preis" type="text" inputmode="decimal" placeholder="0,00" value="'+(preisVal?String(preisVal).replace('.',','):'') +'" oninput="formatPreisInput(this);localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis\',parsePreisVal(this.value));updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="width:30%;min-width:60px;text-align:center;border:1.5px solid var(--border);border-radius:6px;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);outline:none">'
-          +'<select data-field="waehrung" onchange="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'waehrung\',this.value);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="border:1.5px solid var(--border);border-radius:6px;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);outline:none;cursor:pointer">'
-            +'<option value="EUR" '+((!v.waehrung||v.waehrung==='EUR')?'selected':'')+'>€ EUR</option>'
-            +'<option value="CHF" '+(v.waehrung==='CHF'?'selected':'')+'>₣ CHF</option>'
-            +'<option value="GBP" '+(v.waehrung==='GBP'?'selected':'')+'>£ GBP</option>'
-            +'<option value="USD" '+(v.waehrung==='USD'?'selected':'')+'>$ USD</option>'
-            +'<option value="TRY" '+(v.waehrung==='TRY'?'selected':'')+'>₺ TRY</option>'
-          +'</select>'
-          +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px">'
-            +'<span style="font-size:10px;color:var(--muted);font-weight:500">Anzeigen</span>'
-            +'<label class="toggle-sw"><input data-field="preis_anzeigen" type="checkbox" '+(v.preis_anzeigen!==false?'checked':'')+' onchange="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis_anzeigen\',this.checked);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')"><span class="slider"></span></label>'
+        // Preis + Währung + Preis-Toggle
+        +'<div style="display:flex;flex-direction:column;gap:3px">'
+          +'<span style="font-size:10px;color:var(--muted);font-weight:500">Preis</span>'
+          +'<div style="display:flex;align-items:center;gap:6px">'
+            +'<input data-field="preis" type="text" inputmode="decimal" placeholder="0,00" value="'+(preisVal?String(preisVal).replace('.',','):'')+'" oninput="formatPreisInput(this);localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis\',parsePreisVal(this.value));updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="width:30%;min-width:60px;text-align:center;border:1.5px solid var(--border);border-radius:6px;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);outline:none">'
+            +'<select data-field="waehrung" onchange="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'waehrung\',this.value);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="border:1.5px solid var(--border);border-radius:6px;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);outline:none;cursor:pointer">'
+              +'<option value="EUR" '+((!v.waehrung||v.waehrung==='EUR')?'selected':'')+'>€ EUR</option>'
+              +'<option value="CHF" '+(v.waehrung==='CHF'?'selected':'')+'>₣ CHF</option>'
+              +'<option value="GBP" '+(v.waehrung==='GBP'?'selected':'')+'>£ GBP</option>'
+              +'<option value="USD" '+(v.waehrung==='USD'?'selected':'')+'>$ USD</option>'
+              +'<option value="TRY" '+(v.waehrung==='TRY'?'selected':'')+'>₺ TRY</option>'
+            +'</select>'
+            +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px">'
+              +'<span style="font-size:10px;color:var(--muted);font-weight:500">Anzeigen</span>'
+              +'<label class="toggle-sw"><input data-field="preis_anzeigen" type="checkbox" '+(v.preis_anzeigen!==false?'checked':'')+' onchange="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis_anzeigen\',this.checked);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')"><span class="slider"></span></label>'
+            +'</div>'
           +'</div>'
         +'</div>'
       +'</div>'
     +'</div>'
-    +'<div style="display:flex;flex-direction:column;gap:3px;min-width:0">'
-      +'<span class="var-row-lbl" style="font-size:10px;color:var(--muted);font-weight:500">Name</span>'
-      +'<div class="var-group">'
-        +'<input data-field="service_name" type="text" placeholder="z.B. Fade, Rasur…" value="'+(v.service_name||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'service_name\',this.value);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="border:none;outline:none;padding:6px;font-family:inherit;color:var(--td);background:transparent;width:100%;min-width:0">'
-      +'</div>'
-    +'</div>'
-    +'<div style="display:flex;flex-direction:column;gap:3px;min-width:0">'
-      +'<span class="var-row-lbl" style="font-size:10px;color:var(--muted);font-weight:500">Beschreibung</span>'
-      +'<div class="var-group">'
-        +'<textarea data-field="bezeichnung" rows="2" placeholder="" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'bezeichnung\',this.value);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="border:none;outline:none;padding:6px;font-family:inherit;color:var(--td);background:transparent;width:100%;min-width:0;resize:none">'+esc(v.bezeichnung||'')+'</textarea>'
-      +'</div>'
-    +'</div>'
-    +(isFirst
-      ?'<div style="width:28px;height:28px;flex-shrink:0"></div>'
-      :'<button class="var-del" onclick="deleteVar(\''+v.id+'\',\''+svcId+'\')">✕</button>'
-    )
   +'</div>';
+}
+
+function toggleVarAcc(varId){
+  var body=document.getElementById('var-body-'+varId);
+  var chev=document.getElementById('var-chev-'+varId);
+  if(!body)return;
+  var open=body.style.display==='block';
+  body.style.display=open?'none':'block';
+  if(chev)chev.style.transform=open?'':'rotate(180deg)';
 }
 
 // Gesamt-Anzeige (Min+Puffer) live aktualisieren
