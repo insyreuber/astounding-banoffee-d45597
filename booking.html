@@ -891,7 +891,6 @@ function mkSvcCards(){
         if(v.dauer_anzeigen!==false&&v.preis_anzeigen!==false&&v.preis)varHtml+=' · ';
         if(v.preis_anzeigen!==false&&v.preis)varHtml+=v.preis+' €';
         if(v.bezeichnung)varHtml+=(v.dauer_anzeigen!==false||v.preis_anzeigen!==false?' · ':'')+v.bezeichnung;
-        if(v.bezeichnung)varHtml+=' · '+v.bezeichnung;
         if(!allowed)varHtml+=' <span style="font-size:9px;opacity:0.5">·</span>';
         varHtml+='</div>';
       });
