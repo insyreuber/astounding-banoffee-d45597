@@ -76,8 +76,7 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .toggle-sw input:checked+.slider{background:#27ae60}
 .hours-col-closed{display:none}
 #slot-btn-15,#slot-btn-30,#slot-btn-60{background:var(--tp);color:#fff}
-/* NaN visuell unterdrücken */
-#vorlauf-label,#horizont-label{display:none !important}
+#slot-raster-btns + div, #slot-raster-btns ~ *:not([style*="letter-spacing"]){}
 .hours-col:not(.aktiv){opacity:0.45;pointer-events:none}
 .hours-col:not(.aktiv) .toggle-sw{pointer-events:all;opacity:1}
 .hours-col-sm:not(.aktiv){opacity:0.45;pointer-events:none}
@@ -1334,12 +1333,12 @@ function initTimelines(){
   var fs=(_pData&&_pData.feature_settings)||{};
   var vEl=document.getElementById('booking-vorlauf');
   var hEl=document.getElementById('booking-horizont');
-  var vVal=fs.booking_vorlauf;
+  var vVal=parseInt(fs.booking_vorlauf);
   var hVal=fs.booking_horizont;
-  if(vEl&&vVal!=null&&!isNaN(vVal))vEl.value=vVal;
-  if(hEl&&hVal!=null&&!isNaN(hVal)){
+  if(vEl)vEl.value=(!isNaN(vVal)&&vVal>=0&&vVal<=8)?vVal:2;
+  if(hEl){
     var idx=HORIZONT_VALS.indexOf(hVal);
-    if(idx>=0)hEl.value=idx+1;
+    hEl.value=(idx>=0)?idx+1:4;
   }
 }
 
@@ -3742,7 +3741,7 @@ function renderServicesChart(){
     var bw=Math.max(4,Math.round((e.count/maxC)*barMaxW));
     var name=(window.SVC_MAP&&SVC_MAP[e.id])?SVC_MAP[e.id]:'Unbekannt';
     name=name.length>22?name.slice(0,20)+'…':name;
-    var pct=Math.round(e.count/total*100);
+    var pct=total>0?Math.round(e.count/total*100):0;
     svg+='<text x="0" y="'+(y+14)+'" font-size="11" fill="#555" font-family="sans-serif">'+name+'</text>';
     svg+='<rect x="130" y="'+(y+2)+'" width="'+bw+'" height="20" rx="4" fill="'+(colors[i%colors.length])+'"/>';
     svg+='<text x="'+(130+bw+6)+'" y="'+(y+16)+'" font-size="11" fill="var(--tpl)" font-weight="600" font-family="sans-serif">'+e.count+' ('+pct+'%)</text>';
@@ -3754,7 +3753,7 @@ function renderServicesChart(){
   var topEl=document.getElementById('dash-top-svc');
   if(topEl&&entries.length){
     var topName=(window.SVC_MAP&&SVC_MAP[entries[0].id])?SVC_MAP[entries[0].id]:'—';
-    var topPct=Math.round(entries[0].count/total*100);
+    var topPct=total>0?Math.round(entries[0].count/total*100):0;
     topEl.textContent=topName+' ('+topPct+'%)';
   }
 }
@@ -4319,9 +4318,9 @@ function renderProfilContent(id){
         +'<div style="margin-bottom:20px">'
           +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:4px">Buchungsvorlauf</div>'
           +'<div style="font-size:11px;color:var(--muted);margin-bottom:14px">Wie kurzfristig dürfen Kunden noch buchen?</div>'
-          +'<div style="position:relative;height:36px;margin-bottom:6px">'
+          +'<div style="position:relative;height:36px;margin-bottom:6px;overflow:hidden;font-size:0">'
             +'<div style="position:absolute;top:14px;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--tp),rgba(90,45,130,0.15));border-radius:99px"></div>'
-            +'<input type="range" id="booking-vorlauf" min="0" max="8" step="1" value="'+(function(){var fs=_pData&&_pData.feature_settings;var v=fs&&fs.booking_vorlauf;return(v!=null&&!isNaN(v))?v:2;}())+'" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px">'
+            +'<input type="range" id="booking-vorlauf" min="0" max="8" step="1" value="'+(function(){var fs=_pData&&_pData.feature_settings;var v=parseInt(fs&&fs.booking_vorlauf);return(v>=0&&v<=8)?v:2;}())+'" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px;font-size:14px">'
           +'</div>'
           +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:4px">'
             +'<span>Sofort</span><span>1h</span><span>2h</span><span>4h</span><span>8h</span><span>12h</span><span>1 Tag</span><span>2 Tage</span><span>3 Tage</span>'
@@ -4332,9 +4331,9 @@ function renderProfilContent(id){
         +'<div style="margin-bottom:16px">'
           +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:4px">Buchungshorizont</div>'
           +'<div style="font-size:11px;color:var(--muted);margin-bottom:14px">Wie weit im Voraus können Kunden buchen?</div>'
-          +'<div style="position:relative;height:36px;margin-bottom:6px">'
+          +'<div style="position:relative;height:36px;margin-bottom:6px;overflow:hidden;font-size:0">'
             +'<div style="position:absolute;top:14px;left:0;right:0;height:6px;background:linear-gradient(90deg,rgba(90,45,130,0.15),var(--tp));border-radius:99px"></div>'
-            +'<input type="range" id="booking-horizont" min="1" max="7" step="1" value="'+(function(){var fs=_pData&&_pData.feature_settings;if(fs&&fs.booking_horizont!=null&&!isNaN(fs.booking_horizont)){var idx=HORIZONT_VALS.indexOf(fs.booking_horizont);return idx>=0?idx+1:4;}return 4;}())+'" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px">'
+            +'<input type="range" id="booking-horizont" min="1" max="7" step="1" value="'+(function(){var fs=_pData&&_pData.feature_settings;if(fs&&fs.booking_horizont!=null&&!isNaN(fs.booking_horizont)){var idx=HORIZONT_VALS.indexOf(fs.booking_horizont);return idx>=0?idx+1:4;}return 4;}())+'" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px;font-size:14px">'
           +'</div>'
           +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:4px">'
             +'<span>1 Woche</span><span>2 W.</span><span>3 W.</span><span>4 W.</span><span>6 W.</span><span>8 W.</span><span>12 W.</span>'
