@@ -292,6 +292,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
     justify-content: center !important;
     gap: 6px !important;
     line-height: 1.3 !important;
+    overflow: hidden !important;
   }
   #slot-raster-btns button svg {
     width: 80px !important;
@@ -299,10 +300,6 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
     display: block !important;
     margin: 0 auto !important;
     flex-shrink: 0 !important;
-  }
-  #slot-raster-btns button span {
-    display: block !important;
-    text-align: center !important;
   }
 
   /* Nav: Akkordion auf Mobile */
@@ -350,7 +347,9 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   .btn-add{width:100% !important;justify-content:center !important;display:flex !important}
   .btn-add-wrap{flex-direction:column !important;align-items:stretch !important;gap:8px !important}
 
-  input[type=range]{color:transparent !important;font-size:0 !important}
+  input[type=range]{color:transparent !important;font-size:0 !important;line-height:0 !important}
+input[type=range]::-webkit-slider-thumb{font-size:0 !important}
+input[type=range]::-moz-range-thumb{font-size:0 !important}
   /* Öffnungszeiten — Zeile kompakter, selects kleiner */
   .hours-col{padding:7px 10px !important;gap:8px !important;}
   .hours-slots-wrap{flex-direction:column !important;gap:4px !important;}
@@ -4321,7 +4320,7 @@ function renderProfilContent(id){
           +'<div style="font-size:11px;color:var(--muted);margin-bottom:14px">Wie kurzfristig dürfen Kunden noch buchen?</div>'
           +'<div style="position:relative;height:36px;margin-bottom:6px;overflow:hidden;font-size:0">'
             +'<div style="position:absolute;top:14px;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--tp),rgba(90,45,130,0.15));border-radius:99px"></div>'
-            +'<input type="range" id="booking-vorlauf" min="0" max="8" step="1" value="'+(function(){var fs=_pData&&_pData.feature_settings;var v=parseInt(fs&&fs.booking_vorlauf);return(v>=0&&v<=8)?v:2;}())+'" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px">'
+            +'<input type="range" id="booking-vorlauf" min="0" max="8" step="1" aria-valuetext=" " value="'+(function(){var fs=_pData&&_pData.feature_settings;var v=parseInt(fs&&fs.booking_vorlauf);return(v>=0&&v<=8)?v:2;}())+'" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px">'
           +'</div>'
           +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:4px">'
             +'<span>Sofort</span><span>1h</span><span>2h</span><span>4h</span><span>8h</span><span>12h</span><span>1 Tag</span><span>2 Tage</span><span>3 Tage</span>'
@@ -4334,7 +4333,7 @@ function renderProfilContent(id){
           +'<div style="font-size:11px;color:var(--muted);margin-bottom:14px">Wie weit im Voraus können Kunden buchen?</div>'
           +'<div style="position:relative;height:36px;margin-bottom:6px;overflow:hidden;font-size:0">'
             +'<div style="position:absolute;top:14px;left:0;right:0;height:6px;background:linear-gradient(90deg,rgba(90,45,130,0.15),var(--tp));border-radius:99px"></div>'
-            +'<input type="range" id="booking-horizont" min="1" max="7" step="1" value="'+(function(){var fs=_pData&&_pData.feature_settings;if(fs&&fs.booking_horizont!=null&&!isNaN(fs.booking_horizont)){var idx=HORIZONT_VALS.indexOf(fs.booking_horizont);return idx>=0?idx+1:4;}return 4;}())+'" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px">'
+            +'<input type="range" id="booking-horizont" min="1" max="7" step="1" aria-valuetext=" " value="'+(function(){var fs=_pData&&_pData.feature_settings;if(fs&&fs.booking_horizont!=null&&!isNaN(fs.booking_horizont)){var idx=HORIZONT_VALS.indexOf(fs.booking_horizont);return idx>=0?idx+1:4;}return 4;}())+'" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px">'
           +'</div>'
           +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:4px">'
             +'<span>1 Woche</span><span>2 W.</span><span>3 W.</span><span>4 W.</span><span>6 W.</span><span>8 W.</span><span>12 W.</span>'
