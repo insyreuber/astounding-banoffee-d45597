@@ -1693,8 +1693,8 @@ async function saveProfil(silent){
   // Legacy-Felder leeren — Links laufen jetzt nur über custom_links
   update.instagram_url   = null;
   update.website_url     = null;
-  update.google_maps_url = gv('f-google-maps')||null;
-  if(window._pData)window._pData.google_maps_url=update.google_maps_url;
+  if(gv('f-google-maps')!==null) update.google_maps_url = gv('f-google-maps')||null;
+  if(window._pData&&update.google_maps_url!==undefined)window._pData.google_maps_url=update.google_maps_url;
 
   // Hours — only save if hours-cols is in DOM
   if(document.getElementById('hours-cols')){
