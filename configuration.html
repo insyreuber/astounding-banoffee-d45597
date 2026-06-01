@@ -1657,6 +1657,14 @@ async function loadProfil(){
     if(fs.booking_horizont==null||isNaN(fs.booking_horizont))fs.booking_horizont=4;
     if(fs.slot_interval==null||isNaN(fs.slot_interval))fs.slot_interval=15;
   }
+  // NaN-Text im DOM global entfernen
+  setTimeout(function(){
+    document.querySelectorAll('*').forEach(function(el){
+      if(el.childNodes.length===1&&el.childNodes[0].nodeType===3&&el.childNodes[0].textContent.trim()==='NaN'){
+        el.style.display='none';
+      }
+    });
+  },200);
 }
 
 
@@ -4237,6 +4245,13 @@ function selectProfil(id){
   _pActive=id;
   _ptActivate(id);
   renderProfilContent(id);
+  setTimeout(function(){
+    document.querySelectorAll('*').forEach(function(el){
+      if(el.childNodes.length===1&&el.childNodes[0].nodeType===3&&el.childNodes[0].textContent.trim()==='NaN'){
+        el.style.display='none';
+      }
+    });
+  },400);
 }
 
 function renderProfilContent(id){
