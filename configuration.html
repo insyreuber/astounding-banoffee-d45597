@@ -1334,12 +1334,13 @@ function initTimelines(){
   var fs=(_pData&&_pData.feature_settings)||{};
   var vEl=document.getElementById('booking-vorlauf');
   var hEl=document.getElementById('booking-horizont');
-  if(vEl&&fs.booking_vorlauf!=null)vEl.value=fs.booking_vorlauf;
-  if(hEl&&fs.booking_horizont!=null){
-    var idx=HORIZONT_VALS.indexOf(fs.booking_horizont);
+  var vVal=fs.booking_vorlauf;
+  var hVal=fs.booking_horizont;
+  if(vEl&&vVal!=null&&!isNaN(vVal))vEl.value=vVal;
+  if(hEl&&hVal!=null&&!isNaN(hVal)){
+    var idx=HORIZONT_VALS.indexOf(hVal);
     if(idx>=0)hEl.value=idx+1;
   }
-  updateTimelines();
 }
 
 function highlightSlotRaster(min){
