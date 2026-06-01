@@ -367,7 +367,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   .svc-item-hdr > span[style*="color:var(--tg)"]{margin-top:2px !important;font-size:16px !important}
   .svc-item-hdr > .badge{margin-top:-2px !important}
   .svc-item-name{font-size:16px !important}
-  .svc-item-meta{font-size:16px !important}
+  .svc-item-meta{display:none !important}
   .badge{font-size:16px !important;padding:4px 12px !important}
   .svc-list .btn{font-size:16px !important}
   .svc-var-preview span{font-size:16px !important}
@@ -2164,7 +2164,7 @@ function mkVarRow(v,svcId,idx){
 
   return'<div class="var-acc" id="var-acc-'+v.id+'">'
     // ── Akkordion Header ──
-    +'<div onclick="toggleVarAcc(\''+v.id+'\')" style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;cursor:pointer;gap:8px;background:#faf8fc;border-radius:8px">'
+    +'<div onclick="toggleVarAcc(\''+v.id+'\')" style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;cursor:pointer;gap:8px;background:var(--tpp);border-radius:8px">'
       +'<div id="var-preview-'+v.id+'" style="flex:1;min-width:0">'
         +'<span style="display:inline-flex;align-items:center;padding:3px 10px;border-radius:8px;font-size:11px;border:1.5px solid #e8e0f0;background:#fff;color:var(--td);white-space:normal;word-break:break-word">'+esc(previewLabel)+'</span>'
       +'</div>'
