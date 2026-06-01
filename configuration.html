@@ -2104,8 +2104,9 @@ async function saveFeatureSettings(){
   // Slider direkt aus DOM lesen falls verfügbar, sonst aus _pData
   var vEl=document.getElementById('booking-vorlauf');
   var hEl=document.getElementById('booking-horizont');
-  var vorlauf=vEl?parseInt(vEl.value):(curFs.booking_vorlauf!=null?curFs.booking_vorlauf:2);
-  var horizont=hEl?HORIZONT_VALS[parseInt(hEl.value)-1]:(curFs.booking_horizont!=null?curFs.booking_horizont:4);
+  var vorlauf=vEl&&!isNaN(parseInt(vEl.value))?parseInt(vEl.value):(curFs.booking_vorlauf!=null&&!isNaN(curFs.booking_vorlauf)?curFs.booking_vorlauf:2);
+  var hRaw=hEl?parseInt(hEl.value):NaN;
+  var horizont=(!isNaN(hRaw)&&HORIZONT_VALS[hRaw-1]!=null)?HORIZONT_VALS[hRaw-1]:(curFs.booking_horizont!=null&&!isNaN(curFs.booking_horizont)?curFs.booking_horizont:4);
   var settings={
     whatsapp_on:document.getElementById('feat-whatsapp-on').checked,
     termine_on:document.getElementById('feat-termine-on')?document.getElementById('feat-termine-on').checked:true,
