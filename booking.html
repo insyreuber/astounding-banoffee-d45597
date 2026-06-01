@@ -879,12 +879,12 @@ function mkSvcCards(){
         var allowed=isVarAllowed(v.id);
         var clickable=allowed&&!blocked;
         varHtml+='<div onclick="event.stopPropagation();'+(clickable?'pickVar(\''+s.id+'\',\''+v.id+'\')':'')+'" style="'
-          +'padding:8px 12px;border-radius:8px;font-size:12px;min-height:36px;display:inline-flex;align-items:center;'
+          +'padding:8px 12px;border-radius:8px;font-size:12px;min-height:36px;display:inline-flex;align-items:center;flex-wrap:wrap;'
           +'cursor:'+(clickable?'pointer':'default')+';transition:all .15s;'
           +'border:1.5px solid '+(isSel?'var(--tp)':allowed?'#e8e0f0':'#ece8f0')+';'
           +'background:'+(isSel?'var(--tp)':allowed?'#fff':'#f5f3f8')+';'
           +'color:'+(isSel?'#fff':allowed?'var(--td)':'#c0b8cc')+';'
-          +'font-weight:'+(isSel?'600':'400')+';">';
+          +'font-weight:'+(isSel?'600':'400')+';white-space:normal;word-break:break-word;">';
         var dispMin=(v.puffer_minuten>0)?(v.min+v.puffer_minuten):v.min;
         varHtml+=(v.service_name?v.service_name+' · ':'');
         if(v.dauer_anzeigen!==false)varHtml+=(dispMin||v.min||'?')+' Min';
