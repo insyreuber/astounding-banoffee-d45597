@@ -1317,8 +1317,8 @@ function updateTimelines(){
   var hLbl=document.getElementById('horizont-label');
   var vIdx=vEl?parseInt(vEl.value):NaN;
   var hIdx=hEl?parseInt(hEl.value):NaN;
-  if(vLbl&&!isNaN(vIdx)&&VORLAUF_LABELS[vIdx])vLbl.textContent=VORLAUF_LABELS[vIdx];
-  if(hLbl&&!isNaN(hIdx)&&HORIZONT_LABELS[hIdx-1])hLbl.textContent=HORIZONT_LABELS[hIdx-1];
+  if(vLbl&&!isNaN(vIdx)&&VORLAUF_LABELS[vIdx]){vLbl.textContent=VORLAUF_LABELS[vIdx];vLbl.style.visibility='visible';}else if(vLbl){vLbl.style.visibility='hidden';}
+  if(hLbl&&!isNaN(hIdx)&&HORIZONT_LABELS[hIdx-1]){hLbl.textContent=HORIZONT_LABELS[hIdx-1];hLbl.style.visibility='visible';}else if(hLbl){hLbl.style.visibility='hidden';}
   saveBookingTimelines();
 }
 
