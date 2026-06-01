@@ -2240,6 +2240,10 @@ function toggleVarAcc(varId){
   var chev=document.getElementById('var-chev-'+varId);
   if(!body)return;
   var open=body.style.display==='block';
+  if(!open&&window.innerWidth<=768){
+    document.querySelectorAll('[id^="var-body-"]').forEach(function(el){el.style.display='none';});
+    document.querySelectorAll('[id^="var-chev-"]').forEach(function(el){el.style.transform='';});
+  }
   body.style.display=open?'none':'block';
   if(chev)chev.style.transform=open?'':'rotate(180deg)';
 }
@@ -2290,7 +2294,12 @@ function toggleItem(id,type){
   var b=document.getElementById('body-'+type+'-'+id);
   var c=document.getElementById('chev-'+type+'-'+id);
   var open=b.classList.contains('open');
-  b.classList.toggle('open',!open);c.classList.toggle('open',!open);
+  if(!open&&window.innerWidth<=768){
+    document.querySelectorAll('[id^="body-'+type+'-"]').forEach(function(el){el.classList.remove('open');});
+    document.querySelectorAll('[id^="chev-'+type+'-"]').forEach(function(el){el.classList.remove('open');});
+  }
+  b.classList.toggle('open',!open);
+  c.classList.toggle('open',!open);
 }
 
 async function saveSvcAll(id){
