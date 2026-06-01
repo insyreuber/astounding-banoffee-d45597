@@ -1650,12 +1650,11 @@ async function loadProfil(){
   var res=await sb.from('kunden_profile').select('*').eq('id',SALON_ID).single();
   if(res.error){toast('Profil nicht gefunden','error');return;}
   window._pData=res.data;
-  // NaN und fehlende Werte in feature_settings bereinigen
-  if(window._pData){
-    if(!window._pData.feature_settings)window._pData.feature_settings={};
+  // NaN-Werte in feature_settings bereinigen
+  if(window._pData&&window._pData.feature_settings){
     var fs=window._pData.feature_settings;
-    if(fs.booking_vorlauf==null||isNaN(parseInt(fs.booking_vorlauf)))fs.booking_vorlauf=2;
-    if(fs.booking_horizont==null||isNaN(parseInt(fs.booking_horizont))||HORIZONT_VALS.indexOf(fs.booking_horizont)<0)fs.booking_horizont=4;
+    if(fs.booking_vorlauf==null||isNaN(fs.booking_vorlauf))fs.booking_vorlauf=2;
+    if(fs.booking_horizont==null||isNaN(fs.booking_horizont))fs.booking_horizont=4;
     if(fs.slot_interval==null||isNaN(fs.slot_interval))fs.slot_interval=15;
   }
   // NaN-Elemente nach dem Laden verstecken
@@ -4304,8 +4303,42 @@ function renderProfilContent(id){
           +'<div class="hours-cols" id="hours-cols"></div>'
         +'</div>'
       +'</div>'+
+        '<div style="margin:18px 0 12px">'
+          +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Slot-Raster</div>'
+          +'<div style="font-size:11px;color:var(--muted);margin-bottom:10px">Wie fein sollen Termine im Buchungswidget angezeigt werden?</div>'
+            +'<div id="slot-raster-btns" style="display:flex;gap:12px;flex-wrap:wrap">'
+            +'<button type="button" id="slot-btn-15" onclick="setSlotRaster(15)" class="btn" style="flex:1;min-width:90px;padding:12px 8px;text-align:center;line-height:1.3;display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="80" height="80" viewBox="-50 -50 100 100" style="display:block;flex-shrink:0"><path d="M0,0 L0,-44 A44,44 0 0,1 44,0 Z" fill="#4a1c6b" opacity="0.85"/><path d="M0,0 L44,0 A44,44 0 0,1 0,44 Z" fill="#4a1c6b" opacity="0.6"/><path d="M0,0 L0,44 A44,44 0 0,1 -44,0 Z" fill="#4a1c6b" opacity="0.35"/><path d="M0,0 L-44,0 A44,44 0 0,1 0,-44 Z" fill="#4a1c6b" opacity="0.12"/><line x1="0" y1="-46" x2="0" y2="46" stroke="#fff" stroke-width="1"/><line x1="-46" y1="0" x2="46" y2="0" stroke="#fff" stroke-width="1"/><line x1="0.0" y1="-44.0" x2="0.0" y2="-36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="22.0" y1="-38.1" x2="19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="38.1" y1="-22.0" x2="33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="44.0" y1="0.0" x2="36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="38.1" y1="22.0" x2="33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="22.0" y1="38.1" x2="19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="0.0" y1="44.0" x2="0.0" y2="36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-22.0" y1="38.1" x2="-19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-38.1" y1="22.0" x2="-33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-44.0" y1="0.0" x2="-36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-38.1" y1="-22.0" x2="-33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-22.0" y1="-38.1" x2="-19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><circle r="44" fill="none" stroke="#4a1c6b" stroke-width="1.5" opacity="0.4"/><circle r="3" fill="#fff"/></svg><div style="display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:11px;font-weight:600;display:block">¼ Stunde</span><span style="font-size:10px;opacity:.6;display:block">09:00, 09:15…</span></div></button>'
+            +'<button type="button" id="slot-btn-30" onclick="setSlotRaster(30)" class="btn" style="flex:1;min-width:90px;padding:12px 8px;text-align:center;line-height:1.3;display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="80" height="80" viewBox="-50 -50 100 100" style="display:block;flex-shrink:0"><path d="M0,0 L0,-44 A44,44 0 0,1 0,44 Z" fill="#4a1c6b" opacity="0.8"/><path d="M0,0 L0,44 A44,44 0 0,1 0,-44 Z" fill="#4a1c6b" opacity="0.25"/><line x1="0" y1="-46" x2="0" y2="46" stroke="#fff" stroke-width="1"/><line x1="0.0" y1="-44.0" x2="0.0" y2="-36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="22.0" y1="-38.1" x2="19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="38.1" y1="-22.0" x2="33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="44.0" y1="0.0" x2="36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="38.1" y1="22.0" x2="33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="22.0" y1="38.1" x2="19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="0.0" y1="44.0" x2="0.0" y2="36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-22.0" y1="38.1" x2="-19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-38.1" y1="22.0" x2="-33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-44.0" y1="0.0" x2="-36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-38.1" y1="-22.0" x2="-33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-22.0" y1="-38.1" x2="-19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><circle r="44" fill="none" stroke="#4a1c6b" stroke-width="1.5" opacity="0.4"/><circle r="3" fill="#fff"/></svg><div style="display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:11px;font-weight:600;display:block">½ Stunde</span><span style="font-size:10px;opacity:.6;display:block">09:00, 09:30…</span></div></button>'
+            +'<button type="button" id="slot-btn-60" onclick="setSlotRaster(60)" class="btn" style="flex:1;min-width:90px;padding:12px 8px;text-align:center;line-height:1.3;display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="80" height="80" viewBox="-50 -50 100 100" style="display:block;flex-shrink:0"><circle r="44" fill="#4a1c6b" opacity="0.75"/><line x1="0.0" y1="-44.0" x2="0.0" y2="-36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="22.0" y1="-38.1" x2="19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="38.1" y1="-22.0" x2="33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="44.0" y1="0.0" x2="36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="38.1" y1="22.0" x2="33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="22.0" y1="38.1" x2="19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="0.0" y1="44.0" x2="0.0" y2="36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-22.0" y1="38.1" x2="-19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-38.1" y1="22.0" x2="-33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-44.0" y1="0.0" x2="-36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-38.1" y1="-22.0" x2="-33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-22.0" y1="-38.1" x2="-19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><circle r="44" fill="none" stroke="#4a1c6b" stroke-width="1.5" opacity="0.4"/><circle r="3" fill="#fff"/></svg><div style="display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:11px;font-weight:600;display:block">1 Stunde</span><span style="font-size:10px;opacity:.6;display:block">09:00, 10:00…</span></div></button>'
+            +'</div>'
+        +'</div>'+
         +'<div style="height:1px;background:var(--border);margin:20px 0"></div>'
-        +'<div style="height:1px;background:var(--border);margin:18px 0">'+'</div>'+
+        +'<div style="margin-bottom:20px">'
+          +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:4px">Buchungsvorlauf</div>'
+          +'<div style="font-size:11px;color:var(--muted);margin-bottom:14px">Wie kurzfristig dürfen Kunden noch buchen?</div>'
+          +'<div style="position:relative;height:36px;margin-bottom:6px;overflow:hidden;font-size:0">'
+            +'<div style="position:absolute;top:14px;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--tp),rgba(90,45,130,0.15));border-radius:99px"></div>'
+            +'<input type="range" id="booking-vorlauf" min="0" max="8" step="1" aria-valuetext=" " value="'+(function(){var fs=_pData&&_pData.feature_settings;var v=parseInt(fs&&fs.booking_vorlauf);return(v>=0&&v<=8)?v:2;}())+'" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px">'
+          +'</div>'
+          +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:4px">'
+            +'<span>Sofort</span><span>1h</span><span>2h</span><span>4h</span><span>8h</span><span>12h</span><span>1 Tag</span><span>2 Tage</span><span>3 Tage</span>'
+          +'</div>'
+          +''
+        +'</div>'
+        +'<div style="height:1px;background:var(--border);margin:0 0 20px"></div>'
+        +'<div style="margin-bottom:16px">'
+          +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:4px">Buchungshorizont</div>'
+          +'<div style="font-size:11px;color:var(--muted);margin-bottom:14px">Wie weit im Voraus können Kunden buchen?</div>'
+          +'<div style="position:relative;height:36px;margin-bottom:6px;overflow:hidden;font-size:0">'
+            +'<div style="position:absolute;top:14px;left:0;right:0;height:6px;background:linear-gradient(90deg,rgba(90,45,130,0.15),var(--tp));border-radius:99px"></div>'
+            +'<input type="range" id="booking-horizont" min="1" max="7" step="1" aria-valuetext=" " value="'+(function(){var fs=_pData&&_pData.feature_settings;if(fs&&fs.booking_horizont!=null&&!isNaN(fs.booking_horizont)){var idx=HORIZONT_VALS.indexOf(fs.booking_horizont);return idx>=0?idx+1:4;}return 4;}())+'" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px">'
+          +'</div>'
+          +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:4px">'
+            +'<span>1 Woche</span><span>2 W.</span><span>3 W.</span><span>4 W.</span><span>6 W.</span><span>8 W.</span><span>12 W.</span>'
+          +'</div>'
+          +''
+        +'</div>'+
+        '<div style="height:1px;background:var(--border);margin:18px 0"></div>'+
         '<div class="btn-add-wrap" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'+
           '<div class="card-title" style="margin-bottom:0">Temporäre Öffnungszeiten</div>'+
           '<button class="btn-add" onclick="addTempEntry()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>'+
