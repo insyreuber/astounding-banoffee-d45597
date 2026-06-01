@@ -2078,7 +2078,7 @@ function updateSingleVarPreview(svcId,varId){
   if(preisOn&&preis)parts.push(preis.toFixed(2).replace('.',',')+' '+waehrung);
   if(bez)parts.push(bez);
   var label=parts.join(' · ')||'—';
-  el.innerHTML='<span style="display:inline-flex;align-items:center;padding:3px 10px;border-radius:8px;font-size:11px;border:1.5px solid #e8e0f0;background:#fff;color:var(--td);white-space:nowrap">'+esc(label)+'</span>';
+  el.innerHTML='<span style="display:inline-flex;align-items:center;padding:3px 10px;border-radius:8px;font-size:11px;border:1.5px solid #e8e0f0;background:#fff;color:var(--td);white-space:normal;word-break:break-word">'+esc(label)+'</span>';
 }
 
 function updateVarPreview(svcId){
@@ -2171,7 +2171,7 @@ function mkVarRow(v,svcId,idx){
     +'<div style="display:flex;flex-direction:column;gap:6px;min-width:0">'
       // ── Per-Variante Vorschau ──
       +'<div id="var-preview-'+v.id+'" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:2px">'
-        +'<span style="display:inline-flex;align-items:center;padding:3px 10px;border-radius:8px;font-size:11px;border:1.5px solid #e8e0f0;background:#fff;color:var(--td);white-space:nowrap">'+esc(previewLabel)+'</span>'
+        +'<span style="display:inline-flex;align-items:center;padding:3px 10px;border-radius:8px;font-size:11px;border:1.5px solid #e8e0f0;background:#fff;color:var(--td);white-space:normal;word-break:break-word">'+esc(previewLabel)+'</span>'
       +'</div>'
       // Min + Puffer Fusion
       +'<div style="display:flex;align-items:flex-end;gap:8px">'
