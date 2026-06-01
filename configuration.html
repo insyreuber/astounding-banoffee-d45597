@@ -2056,11 +2056,32 @@ function buildVarPreviewChips(vars){
   }).join('');
 }
 
-function updateVarPreview(svcId){
-  var el=document.getElementById('svc-var-preview-'+svcId);
+function updateSingleVarPreview(svcId,varId){
+  var el=document.getElementById('var-preview-'+varId);
   if(!el)return;
+  var row=document.getElementById('var-'+varId);
+  if(!row)return;
+  var svcItem=servicesData.filter(function(i){return i.service.id===svcId;})[0];
+  var v=svcItem?svcItem.varianten.filter(function(x){return x.id===varId;})[0]:null;
+  if(!v)return;
+  var parts=[];
+  if(v.service_name)parts.push(v.service_name);
+  var min=parseInt((row.querySelector('[data-field="dauer_minuten"]')||{}).value)||0;
+  if(v.dauer_anzeigen!==false&&min)parts.push(min+' Min');
+  var preis=parseFloat((row.querySelector('[data-field="preis"]')||{}).value)||0;
+  var waehrung=(row.querySelector('[data-field="waehrung"]')||{value:'EUR'}).value||'EUR';
+  if(v.preis_anzeigen!==false&&preis)parts.push(preis.toFixed(2).replace('.',',')+' '+waehrung);
+  var bez=(row.querySelector('[data-field="bezeichnung"]')||{value:''}).value||'';
+  if(bez)parts.push(bez);
+  var label=parts.join(' · ')||'—';
+  el.innerHTML='<span style="display:inline-flex;align-items:center;padding:3px 10px;border-radius:8px;font-size:11px;border:1.5px solid #e8e0f0;background:#fff;color:var(--td);white-space:nowrap">'+esc(label)+'</span>';
+}
+
+function updateVarPreview(svcId){
+  // Update all individual var previews for this service
   var item=servicesData.filter(function(i){return i.service.id===svcId;})[0];
-  if(item)el.innerHTML=buildVarPreviewChips(item.varianten);
+  if(!item)return;
+  item.varianten.forEach(function(v){updateSingleVarPreview(svcId,v.id);});
 }
 
 function renderSvcList(){
@@ -2078,9 +2099,6 @@ function renderSvcList(){
         +'<div style="flex:1;min-width:0">'
           +'<div class="svc-item-name">'+esc(s.name)+'</div>'
           +(s.beschreibung?'<div class="svc-item-meta">'+esc(s.beschreibung)+'</div>':'')
-          +'<div id="svc-var-preview-'+s.id+'" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:7px">'+
-            buildVarPreviewChips(vars)+
-          '</div>'
         +'</div>'
         +(minP!==null?'<span style="font-size:12px;color:var(--tg);font-weight:500;margin-right:8px">ab '+minP+' €</span>':'')
         +'<span class="badge '+(s.aktiv?'':'off')+'">'+(s.aktiv?'Aktiv':'Inaktiv')+'</span>'
@@ -2138,36 +2156,44 @@ function mkVarRow(v,svcId,idx){
   var durVal=(v.dauer_minuten&&v.dauer_minuten<9000)?v.dauer_minuten:'';
   var preisVal=(v.preis!=null&&v.preis>0)?v.preis:'';
   var isFirst=(idx===0);
+  // Build preview chip for this single variant
+  var previewParts=[];
+  if(v.service_name)previewParts.push(v.service_name);
+  if(v.dauer_anzeigen!==false&&(parseInt(durVal)||0))previewParts.push((parseInt(durVal)||0)+' Min');
+  if(v.preis_anzeigen!==false&&parseFloat(v.preis||0)>0)previewParts.push(parseFloat(v.preis||0).toFixed(2).replace('.',',')+' '+(v.waehrung||'€'));
+  if(v.bezeichnung)previewParts.push(v.bezeichnung);
+  var previewLabel=previewParts.join(' · ')||'—';
   return'<div class="var-row" id="var-'+v.id+'" style="grid-template-columns:1fr 1.5fr 2fr 28px;gap:8px">'
-    // Min + Puffer + Preis (alle in einer Spalte, Preis darunter)
     +'<div style="display:flex;flex-direction:column;gap:6px;min-width:0">'
-      // Min + Puffer Fusion — 50% Breite, Toggle daneben
+      // ── Per-Variante Vorschau ──
+      +'<div id="var-preview-'+v.id+'" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:2px">'
+        +'<span style="display:inline-flex;align-items:center;padding:3px 10px;border-radius:8px;font-size:11px;border:1.5px solid #e8e0f0;background:#fff;color:var(--td);white-space:nowrap">'+esc(previewLabel)+'</span>'
+      +'</div>'
+      // Min + Puffer Fusion
       +'<div style="display:flex;align-items:flex-end;gap:8px">'
         +'<div style="display:flex;flex-direction:column;gap:3px;width:50%">'
           +'<span style="font-size:10px;color:var(--muted);font-weight:500;white-space:nowrap">Min + Puffer = Gesamt</span>'
           +'<div style="display:flex;align-items:center;border:1.5px solid var(--tpl);border-radius:6px;overflow:hidden;background:rgba(90,45,130,.12)">'
-            +'<input data-field="dauer_minuten" type="number" min="5" step="5" placeholder="—" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value);updateVarTotal(\''+v.id+'\');updateVarPreview(\''+svcId+'\')" style="flex:1;min-width:0;text-align:center;border:none;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:transparent;outline:none">'
+            +'<input data-field="dauer_minuten" type="number" min="5" step="5" placeholder="—" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value);updateVarTotal(\''+v.id+'\');updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="flex:1;min-width:0;text-align:center;border:none;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:transparent;outline:none">'
             +'<span style="font-size:13px;font-weight:700;color:var(--tpl);padding:0 2px;flex-shrink:0;line-height:1">+</span>'
-            +'<input data-field="puffer_minuten" type="number" min="0" placeholder="—" value="'+(v.puffer_minuten||0)+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'puffer_minuten\',this.value);updateVarTotal(\''+v.id+'\');updateVarPreview(\''+svcId+'\')" style="flex:1;min-width:0;text-align:center;border:none;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:#fff;outline:none">'
+            +'<input data-field="puffer_minuten" type="number" min="0" placeholder="—" value="'+(v.puffer_minuten||0)+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'puffer_minuten\',this.value);updateVarTotal(\''+v.id+'\');updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="flex:1;min-width:0;text-align:center;border:none;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:#fff;outline:none">'
             +'<span style="font-size:11px;font-weight:600;color:var(--tpl);padding:0 4px;flex-shrink:0;line-height:1">=</span>'
             +'<span id="vartotal-'+v.id+'" style="flex:0 0 38px;text-align:center;font-size:13px;font-weight:600;color:var(--tpl);height:100%;display:flex;align-items:center;justify-content:center;padding:6px 2px">'
               +((parseInt(durVal)||0)+(v.puffer_minuten||0)||'—')
             +'</span>'
           +'</div>'
         +'</div>'
-        // Toggle mit "Anzeigen" Label
         +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding-bottom:3px">'
           +'<span style="font-size:10px;color:var(--muted);font-weight:500;white-space:nowrap;text-align:center">Dauer<br>anzeigen</span>'
-          +'<label class="toggle-sw"><input data-field="dauer_anzeigen" type="checkbox" '+(v.dauer_anzeigen!==false?'checked':'')+' onchange="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_anzeigen\',this.checked);updateVarPreview(\''+svcId+'\')"><span class="slider"></span></label>'
+          +'<label class="toggle-sw"><input data-field="dauer_anzeigen" type="checkbox" '+(v.dauer_anzeigen!==false?'checked':'')+' onchange="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_anzeigen\',this.checked);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')"><span class="slider"></span></label>'
         +'</div>'
         +'<input data-field="puffer_aktiv" type="checkbox" '+(v.puffer_aktiv?'checked':'')+' style="display:none">'
       +'</div>'
-      // Preis — darunter
       +'<div style="display:flex;flex-direction:column;gap:3px">'
         +'<span style="font-size:10px;color:var(--muted);font-weight:500;white-space:nowrap">Preis</span>'
         +'<div style="display:flex;align-items:center;gap:6px">'
-          +'<input data-field="preis" type="text" inputmode="decimal" placeholder="0,00" value="'+(preisVal?String(preisVal).replace('.',','):'') +'" oninput="formatPreisInput(this);localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis\',parsePreisVal(this.value));updateVarPreview(\''+svcId+'\')" style="width:30%;min-width:60px;text-align:center;border:1.5px solid var(--border);border-radius:6px;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);outline:none">'
-          +'<select data-field="waehrung" onchange="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'waehrung\',this.value);updateVarPreview(\''+svcId+'\')" style="border:1.5px solid var(--border);border-radius:6px;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);outline:none;cursor:pointer">'
+          +'<input data-field="preis" type="text" inputmode="decimal" placeholder="0,00" value="'+(preisVal?String(preisVal).replace('.',','):'') +'" oninput="formatPreisInput(this);localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis\',parsePreisVal(this.value));updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="width:30%;min-width:60px;text-align:center;border:1.5px solid var(--border);border-radius:6px;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);outline:none">'
+          +'<select data-field="waehrung" onchange="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'waehrung\',this.value);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="border:1.5px solid var(--border);border-radius:6px;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);outline:none;cursor:pointer">'
             +'<option value="EUR" '+((!v.waehrung||v.waehrung==='EUR')?'selected':'')+'>€ EUR</option>'
             +'<option value="CHF" '+(v.waehrung==='CHF'?'selected':'')+'>₣ CHF</option>'
             +'<option value="GBP" '+(v.waehrung==='GBP'?'selected':'')+'>£ GBP</option>'
@@ -2176,23 +2202,21 @@ function mkVarRow(v,svcId,idx){
           +'</select>'
           +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px">'
             +'<span style="font-size:10px;color:var(--muted);font-weight:500">Anzeigen</span>'
-            +'<label class="toggle-sw"><input data-field="preis_anzeigen" type="checkbox" '+(v.preis_anzeigen!==false?'checked':'')+' onchange="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis_anzeigen\',this.checked);updateVarPreview(\''+svcId+'\')"><span class="slider"></span></label>'
+            +'<label class="toggle-sw"><input data-field="preis_anzeigen" type="checkbox" '+(v.preis_anzeigen!==false?'checked':'')+' onchange="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis_anzeigen\',this.checked);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')"><span class="slider"></span></label>'
           +'</div>'
         +'</div>'
       +'</div>'
     +'</div>'
-    // Name
     +'<div style="display:flex;flex-direction:column;gap:3px;min-width:0">'
       +'<span class="var-row-lbl" style="font-size:10px;color:var(--muted);font-weight:500">Name</span>'
       +'<div class="var-group">'
-        +'<input data-field="service_name" type="text" placeholder="z.B. Fade, Rasur…" value="'+(v.service_name||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'service_name\',this.value);updateVarPreview(\''+svcId+'\')" style="border:none;outline:none;padding:6px;font-family:inherit;color:var(--td);background:transparent;width:100%;min-width:0">'
+        +'<input data-field="service_name" type="text" placeholder="z.B. Fade, Rasur…" value="'+(v.service_name||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'service_name\',this.value);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="border:none;outline:none;padding:6px;font-family:inherit;color:var(--td);background:transparent;width:100%;min-width:0">'
       +'</div>'
     +'</div>'
-    // Beschreibung
     +'<div style="display:flex;flex-direction:column;gap:3px;min-width:0">'
       +'<span class="var-row-lbl" style="font-size:10px;color:var(--muted);font-weight:500">Beschreibung</span>'
       +'<div class="var-group">'
-        +'<input data-field="bezeichnung" type="text" placeholder="" value="'+(v.bezeichnung||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'bezeichnung\',this.value);updateVarPreview(\''+svcId+'\')" style="border:none;outline:none;padding:6px;font-family:inherit;color:var(--td);background:transparent;width:100%;min-width:0">'
+        +'<input data-field="bezeichnung" type="text" placeholder="" value="'+(v.bezeichnung||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'bezeichnung\',this.value);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="border:none;outline:none;padding:6px;font-family:inherit;color:var(--td);background:transparent;width:100%;min-width:0">'
       +'</div>'
     +'</div>'
     +(isFirst
