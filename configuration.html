@@ -80,15 +80,16 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 /* ── ÖFFNUNGSZEITEN – SPALTEN ── */
 .hours-cols{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
 .hours-cols{display:flex;flex-direction:column;gap:6px}
-.hours-col{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:8px 14px;display:flex;flex-direction:row;align-items:center;gap:12px;transition:border-color .2s}
-.hours-col.aktiv{border-color:var(--tpl);background:var(--tpp)}
-.hours-col-day{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;width:24px;flex-shrink:0}
-.hours-col.aktiv .hours-col-day{color:var(--tpl)}
-.hours-col select{border:1.5px solid var(--border);border-radius:8px;padding:5px 8px;font-size:12px;font-family:'DM Mono',monospace;color:var(--td);outline:none;background:var(--white);cursor:pointer;appearance:none;-webkit-appearance:none;text-align-last:center}
-.hours-col select:focus{border-color:var(--tpl);box-shadow:0 0 0 2px var(--tpp)}
-.hours-col.aktiv select{background:var(--white)}
-.hours-col-sep{font-size:10px;color:var(--muted)}
-.hours-col-closed{font-size:10px;color:#c8bcd8;font-style:italic}
+.hours-col{background:var(--tp);border:1.5px solid var(--tg);border-radius:10px;padding:8px 14px;display:flex;flex-direction:row;align-items:center;gap:12px;transition:border-color .2s}
+.hours-col.aktiv{border-color:var(--tg);background:var(--tp)}
+.hours-col-day{font-size:11px;font-weight:600;color:rgba(255,255,255,.5);letter-spacing:.06em;text-transform:uppercase;width:24px;flex-shrink:0}
+.hours-col.aktiv .hours-col-day{color:#fff}
+.hours-col select{border:1.5px solid var(--tg);border-radius:8px;padding:5px 8px;font-size:12px;font-family:'DM Mono',monospace;color:#fff;outline:none;background:rgba(255,255,255,.12);cursor:pointer;appearance:none;-webkit-appearance:none;text-align-last:center}
+.hours-col select option{color:var(--td);background:#fff}
+.hours-col select:focus{border-color:var(--tgl);box-shadow:0 0 0 2px rgba(201,168,76,.2)}
+.hours-col.aktiv select{background:rgba(255,255,255,.12)}
+.hours-col-sep{font-size:10px;color:rgba(255,255,255,.5)}
+.hours-col-closed{font-size:10px;color:rgba(255,255,255,.35);font-style:italic}
 .hours-time-wrap{display:flex;flex-direction:row;align-items:center;gap:6px;flex:1}
 
 /* ── BUTTONS ── */
@@ -225,12 +226,13 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 
 /* Mitarbeiter hours cols (smaller) */
 .hours-cols-sm{display:flex;flex-direction:column;gap:6px}
-.hours-col-sm{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:7px 10px;display:flex;flex-direction:row;align-items:center;gap:8px;transition:border-color .2s}
-.hours-col-sm.aktiv{border-color:var(--tpl);background:var(--tpp)}
-.hours-col-sm-day{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;width:22px;flex-shrink:0}
-.hours-col-sm.aktiv .hours-col-sm-day{color:var(--tpl)}
-.hours-col-sm select{border:1.5px solid var(--border);border-radius:6px;padding:4px 4px;font-size:11px;font-family:'DM Mono',monospace;color:var(--td);outline:none;background:var(--white);cursor:pointer;appearance:none;-webkit-appearance:none;text-align-last:center;box-shadow:0 1px 3px rgba(74,28,107,.06);transition:border-color .2s,box-shadow .2s}
-.hours-col-sm select:focus{border-color:var(--tpl)}
+.hours-col-sm{background:var(--tp);border:1.5px solid var(--tg);border-radius:8px;padding:7px 10px;display:flex;flex-direction:row;align-items:center;gap:8px;transition:border-color .2s}
+.hours-col-sm.aktiv{border-color:var(--tg);background:var(--tp)}
+.hours-col-sm-day{font-size:10px;font-weight:600;color:rgba(255,255,255,.5);letter-spacing:.05em;text-transform:uppercase;width:22px;flex-shrink:0}
+.hours-col-sm.aktiv .hours-col-sm-day{color:#fff}
+.hours-col-sm select{border:1.5px solid var(--tg);border-radius:6px;padding:4px 4px;font-size:11px;font-family:'DM Mono',monospace;color:#fff;outline:none;background:rgba(255,255,255,.12);cursor:pointer;appearance:none;-webkit-appearance:none;text-align-last:center;transition:border-color .2s}
+.hours-col-sm select option{color:var(--td);background:#fff}
+.hours-col-sm select:focus{border-color:var(--tgl)}
 .hours-col-sm input[type="time"]{border:1.5px solid var(--border);border-radius:5px;padding:4px 2px;font-size:10px;font-family:'DM Mono',monospace;color:var(--td);outline:none;background:var(--white);text-align:center}
 .hours-col-sm input[type="time"]:focus{border-color:var(--tpl)}
 
@@ -1406,7 +1408,7 @@ function buildSlotHtml(prefix,dayKey,slots,aktiv){
       +'<span style="font-size:10px;color:var(--muted)">–</span>'
       +'<select class="hz-end" onchange="syncHourSlot()">'+buildTimeOptions(sl.end||'18:00')+'</select>'
       +(si===0
-        ?'<button type="button" onclick="addHourSlot(\''+prefix+'\',\''+dayKey+'\')" title="Slot hinzufügen" style="background:var(--tpl);border:none;border-radius:5px;width:20px;height:20px;cursor:pointer;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">+</button>'
+        ?'<button type="button" onclick="addHourSlot(\''+prefix+'\',\''+dayKey+'\')" title="Slot hinzufügen" style="background:var(--tp);border:1.5px solid var(--tg);border-radius:5px;width:22px;height:22px;cursor:pointer;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;font-weight:700">+</button>'
         :'<button type="button" onclick="removeHourSlot(\''+prefix+'\',\''+dayKey+'\','+si+')" title="Entfernen" style="background:#c0392b;border:none;border-radius:5px;width:20px;height:20px;cursor:pointer;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">×</button>'
       )
     +'</div>';
