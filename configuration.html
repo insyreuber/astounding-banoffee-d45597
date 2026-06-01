@@ -73,7 +73,12 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .toggle-sw input{opacity:0;width:0;height:0;position:absolute}
 .toggle-sw .slider{position:absolute;inset:0;background:#ddd;border-radius:99px;cursor:pointer;transition:.2s}
 .toggle-sw .slider:before{content:'';position:absolute;width:12px;height:12px;border-radius:50%;background:#fff;left:3px;top:3px;transition:.2s}
-.toggle-sw input:checked+.slider{background:var(--tp)}
+.toggle-sw input:checked+.slider{background:var(--tp);outline:2px solid var(--tg);outline-offset:1px}
+.hours-col-closed{display:none}
+.hours-col:not(.aktiv){opacity:0.45;pointer-events:none}
+.hours-col:not(.aktiv) .toggle-sw{pointer-events:all;opacity:1}
+.hours-col-sm:not(.aktiv){opacity:0.45;pointer-events:none}
+.hours-col-sm:not(.aktiv) .toggle-sw{pointer-events:all;opacity:1}
 #dash-booking-active:checked+.slider{background:var(--tg) !important}
 .toggle-sw input:checked+.slider:before{transform:translateX(16px)}
 
