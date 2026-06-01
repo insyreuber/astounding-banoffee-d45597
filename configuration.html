@@ -1274,6 +1274,9 @@ function _renderAzWeekRows(){
   var dayOfWeek=now.getDay()===0?6:now.getDay()-1;
   var monday=new Date(now);
   monday.setDate(now.getDate()-dayOfWeek+_azWeekOffset*7);
+  rowsEl.style.display='grid';
+  rowsEl.style.gridTemplateColumns='repeat(7,1fr)';
+  rowsEl.style.gap='2px';
   rowsEl.innerHTML=AZ_DAY_ORDER.map(function(k,idx){
     var dayDate=new Date(monday);
     dayDate.setDate(monday.getDate()+idx);
@@ -1285,9 +1288,9 @@ function _renderAzWeekRows(){
     var closed=!d||!d.aktiv;
     var slots=closed?[]:_slotsFor(d);
     var timeStr=closed?'—':slots.map(function(s){return s.start+'–'+s.end;}).join(', ');
-    return'<div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 7px;border-radius:7px;'+(isToday?'background:rgba(255,255,255,.15)':'')+'">'
+    return'<div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 4px;border-radius:7px;'+(isToday?'background:rgba(255,255,255,.15)':'')+'">'
       +'<span style="font-size:9px;font-weight:600;'+(isToday?'color:#C9A84C':'color:rgba(255,255,255,.45)')+';letter-spacing:.05em;text-transform:uppercase">'+AZ_DAY_LABELS[k].slice(0,2)+'</span>'
-      +'<span style="font-size:10px;white-space:nowrap;'+(closed?'color:rgba(255,255,255,.25)':isToday?'color:#fff;font-weight:600':'color:rgba(255,255,255,.65)')+'">'+timeStr+'</span>'
+      +'<span style="font-size:9px;text-align:center;word-break:break-word;'+(closed?'color:rgba(255,255,255,.25)':isToday?'color:#fff;font-weight:600':'color:rgba(255,255,255,.65)')+'">'+timeStr+'</span>'
       +'</div>';
   }).join('');
 }
@@ -4264,15 +4267,9 @@ function renderProfilContent(id){
         +'<div onclick="toggleAzAcc()" style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;cursor:pointer;background:var(--bg);">'
           +'<div>'
             +'<div class="card-title" style="margin-bottom:2px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Öffnungszeiten <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;margin-left:6px">mind. 1 Tag <span style="color:var(--tg)">*</span></span></div>'
-            +'<div id="az-week-widget" style="background:var(--tp);border-radius:10px;padding:10px 14px;margin-top:8px">'
-              +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'
-                +'<div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:600" id="az-week-label">Diese Woche</div>'
-                +'<div style="display:flex;gap:4px">'
-                  +'<button onclick="azWeekNav(-1)" style="background:rgba(255,255,255,.1);border:none;border-radius:5px;color:#fff;font-size:11px;width:20px;height:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">‹</button>'
-                  +'<button onclick="azWeekNav(1)" style="background:rgba(255,255,255,.1);border:none;border-radius:5px;color:#fff;font-size:11px;width:20px;height:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">›</button>'
-                +'</div>'
-              +'</div>'
-              +'<div id="az-week-rows" style="display:flex;flex-wrap:wrap;gap:2px"></div>'
+            +'<div id="az-week-widget" style="background:var(--tp);border-radius:10px;padding:10px 14px;margin-top:8px;width:100%">'
+              +'<div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:600;margin-bottom:8px">Öffnungszeiten</div>'
+              +'<div id="az-week-rows" style="display:flex;flex-wrap:wrap;gap:2px;justify-content:space-between"></div>'
             +'</div>'
           +'</div>'
           +'<svg id="az-acc-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" style="transition:transform .2s;flex-shrink:0"><polyline points="6 9 12 15 18 9"/></svg>'
