@@ -359,6 +359,9 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   #temp-entries-list input,#temp-entries-list select{font-size:16px !important}
   #s-temp-list *{font-size:16px !important}
 
+  /* Staff Modal 16px */
+  #staff-modal label,#staff-modal input,#staff-modal select,#staff-modal textarea,#staff-modal button,#staff-modal .modal-title{font-size:16px !important}
+
   /* WhatsApp Templates */
   .wa-tab-btn{font-size:16px !important}
   #wa-template-editor{font-size:16px !important}
@@ -849,9 +852,9 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
     </div>
 
     <!-- Anzeigename & Rolle -->
-    <div class="frow frow-2" style="margin-bottom:12px">
-      <div class="field"><label>Anzeigename (im Buchungswidget) *</label><input type="text" id="s-display" placeholder="z.B. Niran T." required oninput="updateModalAvatar()"></div>
-      <div class="field"><label>Rolle / Berufsbezeichnung</label><input type="text" id="s-role" placeholder="z.B. Massagetherapeutin"></div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
+      <div class="field" style="margin-bottom:0"><label>Anzeigename (im Buchungswidget) *</label><input type="text" id="s-display" placeholder="z.B. Niran T." required oninput="updateModalAvatar()"></div>
+      <div class="field" style="margin-bottom:0"><label>Rolle / Berufsbezeichnung</label><input type="text" id="s-role" placeholder="z.B. Massagetherapeutin"></div>
     </div>
     <!-- Hidden name field — uses display name as fallback -->
     <input type="hidden" id="s-name">
@@ -2119,7 +2122,7 @@ function renderSvcBody(s,vars){
   return'<div style="margin-bottom:12px">'
     +'<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px">'
       +'<div class="field" style="flex:1;margin-bottom:0"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="svc-f-name-'+s.id+'" value="'+esc(s.name)+'" style="background:rgba(90,45,130,.12);border-color:var(--tpl)"></div>'
-      +'<div style="padding-bottom:2px;display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0">'
+      +'<div style="padding-bottom:2px;display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0;margin-top:20px">'
         +'<label class="toggle-sw" title="Im Widget aktiv"><input type="checkbox" id="svc-f-aktiv-'+s.id+'" '+(s.aktiv?'checked':'')+' ><span class="slider"></span></label>'
         +'<span style="font-size:9px;color:var(--muted)">Aktiv</span>'
       +'</div>'
