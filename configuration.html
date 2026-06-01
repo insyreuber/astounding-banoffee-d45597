@@ -797,7 +797,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
     <div id="m-var-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"></div>
     <button class="btn-add" onclick="addModalVar()" type="button">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      + Hinzufügen
+      Hinzufügen
     </button>
   </div>
   <div class="modal-footer">
@@ -924,7 +924,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
       <div style="font-size:11px;font-weight:600;color:var(--td)">Abweichende Zeiten pro Kalenderwoche</div>
       <button class="btn-add" onclick="addStaffTempEntry()" type="button">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        + Hinzufügen
+        Hinzufügen
       </button>
     </div>
     <div id="s-temp-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:4px"></div>
@@ -2142,7 +2142,7 @@ function renderSvcBody(s,vars){
   +'</div>'
   +'<div style="display:flex;gap:8px;align-items:center">'
     +'<button class="btn-add" onclick="addVariante(\''+s.id+'\')">'
-      +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>+ Hinzufügen'
+      +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen'
     +'</button>'
     +'<button class="btn btn-sm btn-primary" onclick="saveSvcAll(\''+s.id+'\')" style="margin-left:auto">'
       +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>Speichern'
@@ -2895,7 +2895,7 @@ function renderStaffSidebar(){
   if(!sidebar)return;
   if(!staffData.length){
     sidebar.innerHTML='<div style="font-size:12px;color:var(--muted);padding:12px 4px">Noch kein Team</div>';
-    sidebar.insertAdjacentHTML('beforeend','<button class="staff-add-btn" onclick="openStaffModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> + Hinzufügen</button>');
+    sidebar.insertAdjacentHTML('beforeend','<button class="staff-add-btn" onclick="openStaffModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>');
     return;
   }
   sidebar.innerHTML=staffData.map(function(item){
@@ -2906,7 +2906,7 @@ function renderStaffSidebar(){
     var isOnline=m.aktiv!==false;
     return'<div class="staff-card" id="staff-card-'+m.id+'" style="opacity:'+(isOnline?'1':'0.55')+'">'      +'<div style="height:3px;background:'+color+'"></div>'      +'<div class="staff-card-body">'        +renderAvatar(m,34)        +'<div style="min-width:0;flex:1">'          +'<div class="staff-name">'+esc(m.display_name||m.name)+'</div>'          +'<div class="staff-role">'+esc(m.role||'—')+'</div>'        +'</div>'      +'</div>'      +'<div class="staff-card-actions">'        +'<button class="staff-action" onclick="toggleStaffOnline(\''+m.id+'\','+isOnline+')" style="color:'+(isOnline?'#1e7a3c':'#c0392b')+'" title="Online/Offline">'+(isOnline?'● Online':'○ Offline')+'</button>'        +'<button class="staff-action" onclick="editStaff(\''+m.id+'\')" title="Bearbeiten">✎ Bearbeiten</button>'      +'</div>'    +'</div>';
   }).join('');
-  sidebar.insertAdjacentHTML('beforeend','<button class="staff-add-btn" onclick="openStaffModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> + Hinzufügen</button>');
+  sidebar.insertAdjacentHTML('beforeend','<button class="staff-add-btn" onclick="openStaffModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>');
 }
 
 // ── KALENDER PICKER ───────────────────────────────────────────
@@ -4252,7 +4252,7 @@ function renderProfilContent(id){
         '<div style="height:1px;background:var(--border);margin:18px 0"></div>'+
         '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'+
           '<div class="card-title" style="margin-bottom:0">Temporäre Öffnungszeiten</div>'+
-          '<button class="btn-add" onclick="addTempEntry()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> + Hinzufügen</button>'+
+          '<button class="btn-add" onclick="addTempEntry()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>'+
         '</div>'+
         '<div id="temp-entries-list" style="display:flex;flex-direction:column;gap:14px"></div>'+
         '<div id="temp-empty" style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0">Noch keine temporären Zeiten</div>'+
@@ -4278,7 +4278,7 @@ function renderProfilContent(id){
       '<div class="card">'+
         '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'+
           '<div class="card-title" style="margin-bottom:0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg> Eigene Links</div>'+
-          '<button type="button" class="btn-add" onclick="addCustomLink()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> + Hinzufügen</button>'+
+          '<button type="button" class="btn-add" onclick="addCustomLink()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>'+
         '</div>'+
         '<div id="custom-links-list" style="display:flex;flex-direction:column;gap:7px"></div>'+
         '<div id="custom-links-empty" style="font-size:11px;color:var(--muted);padding:8px 0 4px;text-align:center">Noch keine Links — klicke Hinzufügen</div>'+
