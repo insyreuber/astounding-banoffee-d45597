@@ -75,6 +75,7 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .toggle-sw .slider:before{content:'';position:absolute;width:12px;height:12px;border-radius:50%;background:#fff;left:3px;top:3px;transition:.2s}
 .toggle-sw input:checked+.slider{background:#27ae60}
 .hours-col-closed{display:none}
+#slot-btn-15,#slot-btn-30,#slot-btn-60{background:var(--tp);color:#fff}
 .hours-col:not(.aktiv){opacity:0.45;pointer-events:none}
 .hours-col:not(.aktiv) .toggle-sw{pointer-events:all;opacity:1}
 .hours-col-sm:not(.aktiv){opacity:0.45;pointer-events:none}
@@ -363,6 +364,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
   /* Slot-Raster Buttons */
   #slot-raster-btns button span{font-size:16px !important}
+  #slot-btn-15,#slot-btn-30,#slot-btn-60{background:var(--tp) !important;color:#fff !important}
 
   /* Buchungsvorlauf & Buchungshorizont */
   #vorlauf-label,#horizont-label{font-size:16px !important}
@@ -1348,16 +1350,16 @@ function highlightSlotRaster(min){
     var btn=document.getElementById('slot-btn-'+v);
     if(!btn)return;
     if(v===min){
-      btn.style.background='var(--tpp)';
-      btn.style.color='var(--tpl)';
-      btn.style.borderColor='var(--tpl)';
+      btn.style.background='var(--tp)';
+      btn.style.color='var(--td)';
+      btn.style.borderColor='var(--tg)';
       btn.style.borderWidth='2px';
-      btn.style.boxShadow='0 0 0 3px rgba(74,28,107,0.1)';
+      btn.style.boxShadow='0 0 0 3px rgba(201,168,76,0.2)';
     } else {
-      btn.style.background='';
-      btn.style.color='';
-      btn.style.borderColor='';
-      btn.style.borderWidth='';
+      btn.style.background='var(--tp)';
+      btn.style.color='var(--td)';
+      btn.style.borderColor='var(--border)';
+      btn.style.borderWidth='1.5px';
       btn.style.boxShadow='';
     }
   });
@@ -1413,7 +1415,7 @@ function buildSlotHtml(prefix,dayKey,slots,aktiv){
       +'<span style="font-size:10px;color:var(--muted)">–</span>'
       +'<select class="hz-end" onchange="syncHourSlot()">'+buildTimeOptions(sl.end||'18:00')+'</select>'
       +(si===0
-        ?'<button type="button" onclick="addHourSlot(\''+prefix+'\',\''+dayKey+'\')" title="Slot hinzufügen" style="background:var(--tp);border:1.5px solid var(--tg);border-radius:5px;width:22px;height:22px;cursor:pointer;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;font-weight:700">+</button>'
+        ?'<button type="button" onclick="addHourSlot(\''+prefix+'\',\''+dayKey+'\')" title="Slot hinzufügen" style="background:var(--tp);border:1.5px solid rgba(255,255,255,.25);border-radius:5px;width:28px;height:28px;cursor:pointer;font-size:14px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;font-weight:700">+</button>'
         :'<button type="button" onclick="removeHourSlot(\''+prefix+'\',\''+dayKey+'\','+si+')" title="Entfernen" style="background:#c0392b;border:none;border-radius:5px;width:20px;height:20px;cursor:pointer;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">×</button>'
       )
     +'</div>';
