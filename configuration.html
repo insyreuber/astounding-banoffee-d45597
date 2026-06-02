@@ -1347,13 +1347,9 @@ function highlightSlotRaster(min){
     var btn=document.getElementById('slot-btn-'+v);
     if(!btn)return;
     if(v===min){
-      btn.style.background='var(--tp)';
-      btn.style.color='#fff';
       btn.style.border='3px solid var(--tg)';
       btn.style.boxShadow='0 0 0 3px rgba(201,168,76,0.35)';
     } else {
-      btn.style.background='var(--tp)';
-      btn.style.color='#fff';
       btn.style.border='1.5px solid rgba(255,255,255,.15)';
       btn.style.boxShadow='';
     }
@@ -4303,6 +4299,15 @@ function renderProfilContent(id){
           +'<div class="hours-cols" id="hours-cols"></div>'
         +'</div>'
       +'</div>'+
+        '<div style="margin:18px 0 12px">'
+          +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Slot-Raster</div>'
+          +'<div style="font-size:11px;color:var(--muted);margin-bottom:10px">Wie fein sollen Termine im Buchungswidget angezeigt werden?</div>'
+          +'<div id="slot-raster-btns" style="display:flex;gap:12px;flex-wrap:wrap">'
+            +'<button type="button" id="slot-btn-15" onclick="setSlotRaster(15)" style="flex:1;min-width:90px;padding:12px 8px;text-align:center;border-radius:10px;border:1.5px solid rgba(255,255,255,.15);background:var(--tp);color:#fff;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="80" height="80" viewBox="-50 -50 100 100" style="display:block;flex-shrink:0"><path d="M0,0 L0,-44 A44,44 0 0,1 44,0 Z" fill="#fff" opacity="0.85"/><path d="M0,0 L44,0 A44,44 0 0,1 0,44 Z" fill="#fff" opacity="0.6"/><path d="M0,0 L0,44 A44,44 0 0,1 -44,0 Z" fill="#fff" opacity="0.35"/><path d="M0,0 L-44,0 A44,44 0 0,1 0,-44 Z" fill="#fff" opacity="0.12"/><line x1="0" y1="-46" x2="0" y2="46" stroke="#fff" stroke-width="1"/><line x1="-46" y1="0" x2="46" y2="0" stroke="#fff" stroke-width="1"/><circle r="44" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.4"/><circle r="3" fill="#fff"/></svg><span style="font-size:11px;font-weight:600;color:#fff">¼ Stunde</span><span style="font-size:10px;color:rgba(255,255,255,.6)">09:00, 09:15…</span></button>'
+            +'<button type="button" id="slot-btn-30" onclick="setSlotRaster(30)" style="flex:1;min-width:90px;padding:12px 8px;text-align:center;border-radius:10px;border:1.5px solid rgba(255,255,255,.15);background:var(--tp);color:#fff;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="80" height="80" viewBox="-50 -50 100 100" style="display:block;flex-shrink:0"><path d="M0,0 L0,-44 A44,44 0 0,1 0,44 Z" fill="#fff" opacity="0.8"/><path d="M0,0 L0,44 A44,44 0 0,1 0,-44 Z" fill="#fff" opacity="0.25"/><line x1="0" y1="-46" x2="0" y2="46" stroke="#fff" stroke-width="1"/><circle r="44" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.4"/><circle r="3" fill="#fff"/></svg><span style="font-size:11px;font-weight:600;color:#fff">½ Stunde</span><span style="font-size:10px;color:rgba(255,255,255,.6)">09:00, 09:30…</span></button>'
+            +'<button type="button" id="slot-btn-60" onclick="setSlotRaster(60)" style="flex:1;min-width:90px;padding:12px 8px;text-align:center;border-radius:10px;border:1.5px solid rgba(255,255,255,.15);background:var(--tp);color:#fff;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="80" height="80" viewBox="-50 -50 100 100" style="display:block;flex-shrink:0"><circle r="44" fill="#fff" opacity="0.75"/><circle r="44" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.4"/><circle r="3" fill="rgba(90,45,130,1)"/></svg><span style="font-size:11px;font-weight:600;color:#fff">1 Stunde</span><span style="font-size:10px;color:rgba(255,255,255,.6)">09:00, 10:00…</span></button>'
+          +'</div>'
+        +'</div>'+
         '<div style="height:1px;background:var(--border);margin:18px 0"></div>'+
         '<div class="btn-add-wrap" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'+
           '<div class="card-title" style="margin-bottom:0">Temporäre Öffnungszeiten</div>'+
