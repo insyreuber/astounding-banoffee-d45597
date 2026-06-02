@@ -74,8 +74,6 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .toggle-sw .slider{position:absolute;inset:0;background:rgba(255,255,255,.3);border-radius:99px;cursor:pointer;transition:.2s}
 .toggle-sw .slider:before{content:'';position:absolute;width:12px;height:12px;border-radius:50%;background:#fff;left:3px;top:3px;transition:.2s}
 .toggle-sw input:checked+.slider{background:#27ae60}
-input[type=range]{color:transparent!important;-webkit-text-fill-color:transparent!important;font-size:0!important}
-input[type=range]::-webkit-slider-thumb{font-size:0!important}
 .hours-col-closed{display:none}
 #slot-btn-15,#slot-btn-30,#slot-btn-60{background:var(--tp);color:#fff}
 #slot-raster-btns + div, #slot-raster-btns ~ *:not([style*="letter-spacing"]){}
@@ -349,7 +347,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   .btn-add{width:100% !important;justify-content:center !important;display:flex !important}
   .btn-add-wrap{flex-direction:column !important;align-items:stretch !important;gap:8px !important}
 
-  input[type=range]{color:transparent!important;font-size:0!important;line-height:0!important;-webkit-text-fill-color:transparent!important}
+  input[type=range]{color:transparent !important;font-size:0 !important;line-height:0 !important}
 input[type=range]::-webkit-slider-thumb{font-size:0 !important}
 input[type=range]::-moz-range-thumb{font-size:0 !important}
   /* Öffnungszeiten — Zeile kompakter, selects kleiner */
@@ -1300,7 +1298,6 @@ function _renderAzWeekRows(){
     var closed=!d||!d.aktiv;
     var slots=closed?[]:_slotsFor(d);
     var timeStr=closed?'—':slots.map(function(s){return s.start+'–'+s.end;}).join(', ');
-    if(timeStr.indexOf('NaN')>-1)console.error('NaN in timeStr! k='+k+' d='+JSON.stringify(d)+' slots='+JSON.stringify(slots));
     return'<div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 4px;border-radius:7px;'+(isToday?'background:rgba(255,255,255,.15)':'')+'">'
       +'<span style="font-size:9px;font-weight:600;'+(isToday?'color:#C9A84C':'color:rgba(255,255,255,.45)')+';letter-spacing:.05em;text-transform:uppercase">'+AZ_DAY_LABELS[k].slice(0,2)+'</span>'
       +'<span style="font-size:9px;text-align:center;word-break:break-word;'+(closed?'color:rgba(255,255,255,.25)':isToday?'color:#fff;font-weight:600':'color:rgba(255,255,255,.65)')+'">'+timeStr+'</span>'
@@ -1313,25 +1310,6 @@ function _renderAzWeekRows(){
 var VORLAUF_LABELS=['Sofort buchbar','Mindestens 1 Stunde vorher','Mindestens 2 Stunden vorher','Mindestens 4 Stunden vorher','Mindestens 8 Stunden vorher','Mindestens 12 Stunden vorher','Mindestens 1 Tag vorher','Mindestens 2 Tage vorher','Mindestens 3 Tage vorher'];
 var HORIZONT_LABELS=['Bis zu 1 Woche','Bis zu 2 Wochen','Bis zu 3 Wochen','Bis zu 4 Wochen','Bis zu 6 Wochen','Bis zu 8 Wochen','Bis zu 12 Wochen'];
 var HORIZONT_VALS=[1,2,3,4,6,8,12];
-
-function updateSliderUI(){
-  var v=document.getElementById('booking-vorlauf');
-  var h=document.getElementById('booking-horizont');
-  if(v){
-    var vPct=(v.value-v.min)/(v.max-v.min)*100;
-    var vThumb=document.getElementById('vorlauf-thumb');
-    var vTrack=document.getElementById('vorlauf-track');
-    if(vThumb)vThumb.style.left='calc('+vPct+'% - 0px)';
-    if(vTrack)vTrack.style.width=vPct+'%';
-  }
-  if(h){
-    var hPct=(h.value-h.min)/(h.max-h.min)*100;
-    var hThumb=document.getElementById('horizont-thumb');
-    var hTrack=document.getElementById('horizont-track');
-    if(hThumb)hThumb.style.left='calc('+hPct+'% - 0px)';
-    if(hTrack)hTrack.style.width=hPct+'%';
-  }
-}
 
 function updateTimelines(){
   saveBookingTimelines();
@@ -1687,11 +1665,9 @@ async function loadProfil(){
 }
 
 function hideNaN(){
-  document.querySelectorAll('div,span,p,h1,h2,h3,h4,td,li').forEach(function(el){
-    var txt=el.innerText||el.textContent||'';
-    if(txt.trim()==='NaN'||txt.trim()==='NaN\n'||txt==='NaN'){
-      var info='NaN gefunden!\ntag='+el.tagName+'\nid="'+el.id+'"\nclass="'+el.className+'"\nparentId="'+el.parentElement.id+'"\nparentClass="'+el.parentElement.className+'"';
-      alert(info);
+  document.querySelectorAll('div,span,p,h1,h2,h3,h4').forEach(function(el){
+    if(el.childNodes.length===1&&el.childNodes[0].nodeType===3&&el.childNodes[0].textContent.trim()==='NaN'){
+      el.style.visibility='hidden';el.style.height='0';el.style.overflow='hidden';el.style.margin='0';el.style.padding='0';
     }
   });
 }
@@ -4315,10 +4291,10 @@ function renderProfilContent(id){
   else if(id==='zeiten'){
     wrap.innerHTML=
       '<div class="card">'+
+        '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Öffnungszeiten</div>'+
         '<div id="az-acc" style="border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:4px">'
         +'<div onclick="toggleAzAcc()" style="cursor:pointer;position:relative;">'
           +'<div id="az-week-widget" style="background:var(--tp);padding:10px 14px;width:100%">'
-            +'<div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:600;margin-bottom:8px">Öffnungszeiten</div>'
             +'<div id="az-week-rows" style="display:flex;flex-wrap:wrap;gap:2px;justify-content:space-between"></div>'
           +'</div>'
           +'<svg id="az-acc-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" style="transition:transform .2s;position:absolute;top:50%;right:14px;transform:translateY(-50%)"><polyline points="6 9 12 15 18 9"/></svg>'
@@ -4340,12 +4316,9 @@ function renderProfilContent(id){
         +'<div style="margin-bottom:20px">'
           +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:4px">Buchungsvorlauf</div>'
           +'<div style="font-size:11px;color:var(--muted);margin-bottom:14px">Wie kurzfristig dürfen Kunden noch buchen?</div>'
-          +'<div style="position:relative;height:36px;margin-bottom:6px">'
-            +'<div style="position:absolute;top:14px;left:0;right:0;height:6px;background:rgba(90,45,130,0.15);border-radius:99px"></div>'
-            +'<div id="vorlauf-track" style="position:absolute;top:14px;left:0;height:6px;background:var(--tp);border-radius:99px;pointer-events:none"></div>'
-            +'<div id="vorlauf-thumb" style="position:absolute;top:8px;width:20px;height:20px;background:var(--tp);border-radius:50%;cursor:pointer;transform:translateX(-50%);box-shadow:0 1px 4px rgba(0,0,0,.3)"></div>'
-            +'<input type="range" id="booking-vorlauf" min="0" max="8" step="1" aria-hidden="true" role="presentation" value="'+(function(){var fs=_pData&&_pData.feature_settings;var v=parseInt(fs&&fs.booking_vorlauf);return(isNaN(v)||v<0||v>8)?2:v;}())+'" oninput="updateTimelines();updateSliderUI()" style="position:absolute;top:0;left:0;right:0;width:100%;height:36px;opacity:0.001;cursor:pointer;margin:0;padding:0;z-index:2">'
-          +'</div>'
+          +'<div style="position:relative;height:36px;margin-bottom:6px;overflow:hidden;font-size:0">'
+            +'<div style="position:absolute;top:14px;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--tp),rgba(90,45,130,0.15));border-radius:99px"></div>'
+            +'<input type="range" id="booking-vorlauf" min="0" max="8" step="1" aria-valuetext=" " value="'+(function(){var fs=_pData&&_pData.feature_settings;var v=parseInt(fs&&fs.booking_vorlauf);return(v>=0&&v<=8)?v:2;}())+'" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px">'
           +'</div>'
           +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:4px">'
             +'<span>Sofort</span><span>1h</span><span>2h</span><span>4h</span><span>8h</span><span>12h</span><span>1 Tag</span><span>2 Tage</span><span>3 Tage</span>'
@@ -4356,12 +4329,9 @@ function renderProfilContent(id){
         +'<div style="margin-bottom:16px">'
           +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:4px">Buchungshorizont</div>'
           +'<div style="font-size:11px;color:var(--muted);margin-bottom:14px">Wie weit im Voraus können Kunden buchen?</div>'
-          +'<div style="position:relative;height:36px;margin-bottom:6px">'
-            +'<div style="position:absolute;top:14px;left:0;right:0;height:6px;background:rgba(90,45,130,0.15);border-radius:99px"></div>'
-            +'<div id="horizont-track" style="position:absolute;top:14px;left:0;height:6px;background:var(--tp);border-radius:99px;pointer-events:none"></div>'
-            +'<div id="horizont-thumb" style="position:absolute;top:8px;width:20px;height:20px;background:var(--tp);border-radius:50%;cursor:pointer;transform:translateX(-50%);box-shadow:0 1px 4px rgba(0,0,0,.3)"></div>'
-            +'<input type="range" id="booking-horizont" min="1" max="7" step="1" aria-hidden="true" role="presentation" value="'+(function(){var fs=_pData&&_pData.feature_settings;if(fs&&fs.booking_horizont!=null&&!isNaN(fs.booking_horizont)){var idx=HORIZONT_VALS.indexOf(fs.booking_horizont);return idx>=0?idx+1:4;}return 4;}())+'" oninput="updateTimelines();updateSliderUI()" style="position:absolute;top:0;left:0;right:0;width:100%;height:36px;opacity:0.001;cursor:pointer;margin:0;padding:0;z-index:2">'
-          +'</div>'
+          +'<div style="position:relative;height:36px;margin-bottom:6px;overflow:hidden;font-size:0">'
+            +'<div style="position:absolute;top:14px;left:0;right:0;height:6px;background:linear-gradient(90deg,rgba(90,45,130,0.15),var(--tp));border-radius:99px"></div>'
+            +'<input type="range" id="booking-horizont" min="1" max="7" step="1" aria-valuetext=" " value="'+(function(){var fs=_pData&&_pData.feature_settings;if(fs&&fs.booking_horizont!=null&&!isNaN(fs.booking_horizont)){var idx=HORIZONT_VALS.indexOf(fs.booking_horizont);return idx>=0?idx+1:4;}return 4;}())+'" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px">'
           +'</div>'
           +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:4px">'
             +'<span>1 Woche</span><span>2 W.</span><span>3 W.</span><span>4 W.</span><span>6 W.</span><span>8 W.</span><span>12 W.</span>'
@@ -4377,25 +4347,9 @@ function renderProfilContent(id){
         '<div id="temp-empty" style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0">Noch keine temporären Zeiten</div>'+
       '</div>'+
       '<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
-    var azClean=d.arbeitszeiten?JSON.parse(JSON.stringify(d.arbeitszeiten)):null;
-    console.log('renderAzWeekWidget az=',JSON.stringify(azClean),'tempAz=',JSON.stringify(d.temp_arbeitszeiten));
     buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
-    renderAzWeekWidget(azClean, d.temp_arbeitszeiten||null);
-    setTimeout(function(){
-      var found=false;
-      document.querySelectorAll('*').forEach(function(el){
-        if(el.tagName==='SCRIPT'||el.tagName==='STYLE')return;
-        var txt=el.innerText||'';
-        if(txt.indexOf('NaN')>-1&&el.children.length===0){
-          console.error('NaN ELEMENT! tag='+el.tagName+' id="'+el.id+'" class="'+el.className+'" outerHTML='+el.outerHTML.slice(0,200));
-          found=true;
-        }
-      });
-      if(!found)console.log('NaN nicht in DOM-Elementen gefunden — kommt vielleicht von CSS oder Browser-Rendering');
-    },500);
-    setTimeout(hideNaN,200);
-    setTimeout(hideNaN,800);
-    setTimeout(function(){initSlotRaster();initTimelines();updateSliderUI();},50);
+    renderAzWeekWidget(d.arbeitszeiten||null, d.temp_arbeitszeiten||null);
+    setTimeout(function(){initSlotRaster();initTimelines();},50);
     tempEntries=[];tempIdCounter=0;tempCalOffset={};
     if(d.temp_arbeitszeiten&&d.temp_arbeitszeiten.length){
       d.temp_arbeitszeiten.forEach(function(t){addTempEntry(t);});
