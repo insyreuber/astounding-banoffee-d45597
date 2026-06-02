@@ -4379,6 +4379,18 @@ function renderProfilContent(id){
     console.log('renderAzWeekWidget az=',JSON.stringify(azClean),'tempAz=',JSON.stringify(d.temp_arbeitszeiten));
     buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
     renderAzWeekWidget(azClean, d.temp_arbeitszeiten||null);
+    setTimeout(function(){
+      document.querySelectorAll('input').forEach(function(el){
+        if(el.value&&String(el.value).indexOf('NaN')>-1){
+          console.error('INPUT MIT NaN! id='+el.id+' type='+el.type+' value='+el.value);
+        }
+      });
+      document.querySelectorAll('*').forEach(function(el){
+        if(el.children.length===0&&el.innerText&&el.innerText.trim().indexOf('NaN')>-1){
+          console.error('ELEMENT MIT NaN TEXT! tag='+el.tagName+' id='+el.id+' class='+el.className+' text='+el.innerText.trim());
+        }
+      });
+    },500);
     setTimeout(hideNaN,200);
     setTimeout(hideNaN,800);
     setTimeout(function(){initSlotRaster();initTimelines();updateSliderUI();},50);
