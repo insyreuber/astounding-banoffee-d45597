@@ -4064,12 +4064,15 @@ async function toggleBookingActive(){
 
 // Swipe zwischen Profil-Subs
 (function(){
-  var _sx=0,_sy=0;
+  var _sx=0,_sy=0,_startEl=null;
   document.addEventListener('touchstart',function(e){
     var t=e.touches[0];
     _sx=t.clientX;_sy=t.clientY;
+    _startEl=e.target;
   },{passive:true});
   document.addEventListener('touchend',function(e){
+    // Nicht auslösen wenn Touch auf der Bottom-Nav gestartet wurde
+    if(_startEl&&_startEl.closest('#profil-bottom-nav'))return;
     var wrap=document.getElementById('profil-content');
     if(!wrap)return;
     var t=e.changedTouches[0];
