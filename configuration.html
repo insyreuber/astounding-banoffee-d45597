@@ -4383,14 +4383,11 @@ function renderProfilContent(id){
   else if(id==='whatsapp'){
     wrap.innerHTML=
       '<div class="card">'+
-        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">'+
-          '<div style="width:38px;height:38px;border-radius:10px;background:#e8f8ee;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+
-            '<svg width="20" height="20" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.072 22l4.948-1.348A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>'+
-          '</div>'+
-          '<div>'+
-            '<div style="font-size:14px;font-weight:600;color:var(--td)">WhatsApp Templates</div>'+
-            '<div style="font-size:12px;color:var(--muted)">Eigene Nachrichten für jeden Anlass konfigurieren</div>'+
-          '</div>'+
+        '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">WhatsApp Templates</div>'+
+        '<div style="display:flex;gap:6px;margin-bottom:16px">'+
+          '<button onclick="waSelectTab(\'bestaetigung\')" id="wat-bestaetigung" class="wa-tab-btn wa-tab-active"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Bestätigung</button>'+
+          '<button onclick="waSelectTab(\'erinnerung\')" id="wat-erinnerung" class="wa-tab-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Erinnerung</button>'+
+          '<button onclick="waSelectTab(\'storno\')" id="wat-storno" class="wa-tab-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Storno</button>'+
         '</div>'+
         '<div style="background:rgba(90,45,130,.03);border:1px solid rgba(90,45,130,.1);border-radius:12px;padding:14px;margin-bottom:20px">'+
           '<div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Variablen einfügen</div>'+
@@ -4404,11 +4401,6 @@ function renderProfilContent(id){
             '<button onclick="waInsertVar(\'salon\')" style="background:rgba(231,76,60,.08);border:1px solid rgba(231,76,60,.25);color:#c0392b;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">salon</button>'+
           '</div>'+
           '<div style="font-size:10px;color:var(--muted);margin-top:8px;opacity:.7">Cursor im Textfeld positionieren, dann Variable klicken</div>'+
-        '</div>'+
-        '<div style="display:flex;gap:6px;margin-bottom:16px">'+
-          '<button onclick="waSelectTab(\'bestaetigung\')" id="wat-bestaetigung" class="wa-tab-btn wa-tab-active"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Bestätigung</button>'+
-          '<button onclick="waSelectTab(\'erinnerung\')" id="wat-erinnerung" class="wa-tab-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Erinnerung</button>'+
-          '<button onclick="waSelectTab(\'storno\')" id="wat-storno" class="wa-tab-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Storno</button>'+
         '</div>'+
         '<div id="wa-template-editor" contenteditable="true" spellcheck="false" style="width:100%;min-height:120px;border:1.5px solid var(--border);border-radius:10px;padding:12px;font-size:13px;font-family:inherit;color:var(--td);background:#fff;outline:none;line-height:1.9;margin-bottom:14px;white-space:pre-wrap;word-break:break-word;cursor:text" oninput="waEditorInput()"></div>'+
         '<div style="background:#0a1929;border-radius:16px;padding:20px;position:relative;overflow:hidden">'+
