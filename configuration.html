@@ -869,6 +869,13 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
       <div id="s-avatar-remove" style="display:none;margin-top:6px;text-align:center"><button type="button" onclick="removeAvatarPhoto()" style="background:none;border:none;font-size:10px;color:var(--muted);cursor:pointer;font-family:inherit">× Foto entfernen</button></div>
       <input type="hidden" id="s-color" value="#3498db">
       <input type="hidden" id="s-avatar-url" value="">
+      <!-- Mitarbeiter löschen -->
+      <div id="s-delete-wrap" style="display:none;margin-top:10px">
+        <button type="button" onclick="deleteCurrentStaff()" style="width:100%;padding:8px;border-radius:8px;border:1.5px solid var(--danger);background:transparent;color:var(--danger);font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-family:inherit" onmouseover="this.style.background='rgba(231,76,60,0.06)'" onmouseout="this.style.background='transparent'">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          Mitarbeiter löschen
+        </button>
+      </div>
     </div>
 
     <!-- Anzeigename & Rolle -->
@@ -945,14 +952,6 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
     <div id="s-temp-empty" style="font-size:12px;color:var(--muted);padding:6px 0 10px">Keine abweichenden KW-Zeiten</div>
 
     <input type="hidden" id="s-cal" value="">
-
-    <!-- Mitarbeiter löschen (nur im Edit-Modus) -->
-    <div id="s-delete-wrap" style="display:none;margin-top:8px;margin-bottom:4px">
-      <button type="button" onclick="deleteCurrentStaff()" style="width:100%;padding:9px;border-radius:8px;border:1.5px solid var(--danger);background:transparent;color:var(--danger);font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .15s;" onmouseover="this.style.background='rgba(231,76,60,0.06)'" onmouseout="this.style.background='transparent'">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-        Mitarbeiter löschen
-      </button>
-    </div>
 
   </div><!-- /s-main-view -->
 
@@ -1214,11 +1213,16 @@ function buildTimeOptions(selected){
 
 function toggleTempAcc(id){
   var body=document.getElementById('temp-body-'+id);
-  var chev=document.getElementById('temp-chev-'+id);
   if(!body)return;
   var open=body.style.display==='flex';
+  // Alle anderen schließen
+  tempEntries.forEach(function(e){
+    if(e.id!==id){
+      var b=document.getElementById('temp-body-'+e.id);
+      if(b)b.style.display='none';
+    }
+  });
   body.style.display=open?'none':'flex';
-  if(chev)chev.style.transform=open?'':'rotate(180deg)';
   if(!open){
     buildHoursCols(null,'temp-hcols-'+id,'te'+id+'-',false,true);
     var entry=tempEntries.filter(function(e){return e.id===id;})[0];
@@ -1228,11 +1232,16 @@ function toggleTempAcc(id){
 
 function toggleStAcc(id){
   var body=document.getElementById('st-body-'+id);
-  var chev=document.getElementById('st-chev-'+id);
   if(!body)return;
   var open=body.style.display==='flex';
+  // Alle anderen schließen
+  staffTempEntries.forEach(function(e){
+    if(e.id!==id){
+      var b=document.getElementById('st-body-'+e.id);
+      if(b)b.style.display='none';
+    }
+  });
   body.style.display=open?'none':'flex';
-  if(chev)chev.style.transform=open?'':'rotate(180deg)';
   if(!open){
     var entry=staffTempEntries.filter(function(e){return e.id===id;})[0];
     buildHoursCols(entry&&entry.zeiten?entry.zeiten:null,'st-hcols-'+id,'ste'+id+'-',true,true);
