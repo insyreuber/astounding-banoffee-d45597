@@ -17,8 +17,8 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 /* ── NAV ── */
 .nav{background:var(--tp);padding:0 24px;display:flex;align-items:center;border-bottom:1px solid rgba(255,255,255,.08)}
 .nav-brand{padding:14px 20px 14px 0;border-right:1px solid rgba(255,255,255,.1);margin-right:4px;flex-shrink:0}
-.nav-brand-menu{display:none!important}
-#nav-booking-status-mobile{display:none!important}
+.nav-brand-menu{display:none}
+#nav-booking-status-mobile{display:none}
 .nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:600;color:#fff;letter-spacing:.01em;text-transform:none;line-height:1}
 .nav-logo span{color:#C9A84C}
 .nav-title{font-size:13px;font-weight:500;color:rgba(255,255,255,.9)}
@@ -312,13 +312,13 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   }
 
   /* Nav: Akkordion auf Mobile */
-  .nav{flex-direction:column;padding:0;gap:0;width:100%;}
-  .nav-brand-row{display:flex!important;align-items:center;border-bottom:1px solid rgba(255,255,255,.1);width:100%}
-  .nav-brand{padding:12px 16px;cursor:pointer;border-right:none;margin-right:0;flex:1}
-  .nav-brand::after{content:none}
-  .nav-brand-menu{display:block!important}
-  #nav-booking-status-mobile{display:flex!important}
+  .nav{flex-direction:row;flex-wrap:wrap;padding:0;}
+  .nav-brand{padding:12px 16px;border-right:none;margin-right:0;border-bottom:1px solid rgba(255,255,255,.1);flex:1}
+  .nav-brand::after{content:none!important}
+  .nav-brand-menu{display:flex!important;align-items:center;border-bottom:1px solid rgba(255,255,255,.1)}
+  #nav-booking-status-mobile{display:flex!important;border-bottom:1px solid rgba(255,255,255,.1)}
   #nav-booking-status{display:none!important}
+  .nav-tabs{width:100%;order:3}
   .nav-logo{font-size:1.2rem !important;letter-spacing:.01em !important;text-transform:none !important}
 
   .nav-tabs{display:none;flex-direction:column;gap:0;border-bottom:1.5px solid rgba(255,255,255,.1);width:100%;}
@@ -357,10 +357,6 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   }
 
   #profil-toggles button{font-size:10px !important;padding:5px 10px !important}
-  #nav-booking-status-mobile{display:flex!important}
-  #nav-booking-status{display:none!important}
-  /* Mobile booking status label hidden */
-  #booking-status-label{display:none!important}
   /* Fixed bottom nav for profil subs */
   #profil-toggles{display:none!important}
   #profil-bottom-nav{display:flex!important}
@@ -611,18 +607,15 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 
 
 <nav class="nav">
-  <div style="display:flex;align-items:center;width:100%" class="nav-brand-row">
-    <div class="nav-brand" onclick="if(window.innerWidth<=768)document.querySelector('.nav-tabs').classList.toggle('open')" style="flex:1">
-      <div class="nav-logo">Insy <span style="color:var(--tg)">Reception</span></div>
-    </div>
-    <!-- Mobile: booking status same line as branding -->
-    <div id="nav-booking-status-mobile" style="display:none;align-items:center;gap:5px;padding:0 8px;flex-shrink:0">
-      <div id="booking-status-dot-m" style="width:6px;height:6px;border-radius:50%;background:#27ae60;flex-shrink:0;"></div>
-      <span id="booking-status-label-m" style="font-size:10px;font-weight:500;color:rgba(255,255,255,0.8);">Online</span>
-      <label class="toggle-sw"><input type="checkbox" id="dash-booking-active-m" onchange="syncBookingToggle(this)"><span class="slider"></span></label>
-    </div>
-    <div class="nav-brand-menu" style="padding:12px 16px;color:rgba(255,255,255,.7);font-size:20px;cursor:pointer;display:none" onclick="document.querySelector('.nav-tabs').classList.toggle('open')">☰</div>
+  <div class="nav-brand" onclick="if(window.innerWidth<=768)document.querySelector('.nav-tabs').classList.toggle('open')">
+    <div class="nav-logo">Insy <span style="color:var(--tg)">Reception</span></div>
   </div>
+  <div id="nav-booking-status-mobile" style="display:none;align-items:center;gap:5px;padding:0 8px;flex-shrink:0">
+    <div id="booking-status-dot-m" style="width:6px;height:6px;border-radius:50%;background:#27ae60;flex-shrink:0;"></div>
+    <span id="booking-status-label-m" style="font-size:10px;font-weight:500;color:rgba(255,255,255,0.8);">Online</span>
+    <label class="toggle-sw"><input type="checkbox" id="dash-booking-active-m" onchange="syncBookingToggle(this)"><span class="slider"></span></label>
+  </div>
+  <span class="nav-brand-menu" style="display:none;padding:12px 16px;color:rgba(255,255,255,.7);font-size:20px;cursor:pointer;flex-shrink:0" onclick="document.querySelector('.nav-tabs').classList.toggle('open')">☰</span>
   <div class="nav-tabs">
     <div class="nav-tab active" onclick="switchTab('profil')" id="tab-profil">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
