@@ -1748,11 +1748,11 @@ function renderCustomLinks(){
     return'<div class="cl-row" style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;">'
       +clIconsHtml(i,icon)
       +'<div class="custom-link-row" style="margin-top:6px">'
-                +'<input type="text" placeholder="Titel (optional)" value="'+esc(l.title||'')+'" oninput="customLinks['+i+'].title=this.value" style="flex:0 0 120px">'
+        +'<input type="text" placeholder="Titel (optional)" value="'+esc(l.title||'')+'" oninput="customLinks['+i+'].title=this.value" style="flex:0 0 120px">'
         +'<input type="text" class="cl-url-input" placeholder="'+ph+'" value="'+esc(l.url||'')+'" oninput="customLinks['+i+'].url=this.value">'
-        +'<button class="custom-link-del" onclick="removeCustomLink('+i+')" title="Entfernen">'
-          +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
-        +'</button>'
+      +'</div>'
+      +'<div style="display:flex;justify-content:flex-end;margin-top:6px">'
+        +'<button onclick="removeCustomLink('+i+')" style="background:none;border:1.5px solid #c0392b;border-radius:7px;cursor:pointer;font-size:12px;color:#c0392b;padding:4px 12px;font-family:inherit">Entfernen</button>'
       +'</div>'
     +'</div>';
   }).join('<div style="height:6px"></div>');
@@ -4353,14 +4353,14 @@ function renderProfilContent(id){
 
   else if(id==='sonstiges'){
     wrap.innerHTML=
-      '<div class="card">'+
-        '<div class="card-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> Bemerkung im Buchungswidget</div>'+
-        '<div class="field" style="margin-bottom:0"><label>Hinweis für Kunden <span style="font-size:10px;color:var(--muted);font-weight:400">(wird im Header angezeigt)</span></label>'+
+      '<div>'+
+        '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Bemerkung im Buchungswidget</div>'+
+        '<div class="field" style="margin-bottom:16px"><label>Hinweis für Kunden <span style="font-size:10px;color:var(--muted);font-weight:400">(wird im Header angezeigt)</span></label>'+
         '<input type="text" id="f-note" placeholder="z.B. Keine Kartenzahlung möglich" maxlength="120" value="'+(d.note||'')+'"></div>'+
       '</div>'+
-      '<div class="card">'+
+      '<div>'+
         '<div class="btn-add-wrap" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'+
-          '<div class="card-title" style="margin-bottom:0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg> Eigene Links</div>'+
+          '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg> Eigene Links</div>'+
           '<button type="button" class="btn-add" onclick="addCustomLink()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>'+
         '</div>'+
         '<div id="custom-links-list" style="display:flex;flex-direction:column;gap:7px"></div>'+
