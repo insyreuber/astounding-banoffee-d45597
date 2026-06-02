@@ -1665,11 +1665,11 @@ async function loadProfil(){
 }
 
 function hideNaN(){
-  document.querySelectorAll('div,span,p,h1,h2,h3,h4').forEach(function(el){
-    if(el.childNodes.length===1&&el.childNodes[0].nodeType===3&&el.childNodes[0].textContent.trim()==='NaN'){
-      var info='NaN gefunden: tag='+el.tagName+' id='+el.id+' class='+el.className+' parent='+el.parentElement.id+'/'+el.parentElement.className;
+  document.querySelectorAll('div,span,p,h1,h2,h3,h4,td,li').forEach(function(el){
+    var txt=el.innerText||el.textContent||'';
+    if(txt.trim()==='NaN'||txt.trim()==='NaN\n'||txt==='NaN'){
+      var info='NaN gefunden!\ntag='+el.tagName+'\nid="'+el.id+'"\nclass="'+el.className+'"\nparentId="'+el.parentElement.id+'"\nparentClass="'+el.parentElement.className+'"';
       alert(info);
-      el.style.visibility='hidden';el.style.height='0';el.style.overflow='hidden';el.style.margin='0';el.style.padding='0';
     }
   });
 }
@@ -4363,6 +4363,8 @@ function renderProfilContent(id){
     }
     buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
     renderAzWeekWidget(azClean, d.temp_arbeitszeiten||null);
+    setTimeout(hideNaN,200);
+    setTimeout(hideNaN,800);
     setTimeout(function(){initSlotRaster();initTimelines();},50);
     tempEntries=[];tempIdCounter=0;tempCalOffset={};
     if(d.temp_arbeitszeiten&&d.temp_arbeitszeiten.length){
