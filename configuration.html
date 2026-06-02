@@ -351,6 +351,39 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   }
 
   #profil-toggles button{font-size:10px !important;padding:5px 10px !important}
+  /* Progress bar offset */
+  #header-progress-wrap{top:52px!important}
+  /* Hide desktop profil-toggles on mobile, show bottom nav */
+  #profil-toggles{display:none!important}
+  #profil-bottom-nav{display:flex!important}
+  /* Mobile booking status label hidden (space) */
+  #booking-status-label{display:none!important}
+  /* Fixed bottom nav */
+  #profil-bottom-nav{
+    position:fixed;bottom:0;left:0;right:0;
+    background:linear-gradient(135deg,#3d1568 0%,#5a2d82 100%);
+    border-top:1px solid rgba(201,168,76,.3);
+    z-index:200;padding:6px 4px;
+    gap:2px;
+    box-shadow:0 -4px 20px rgba(0,0,0,.3);
+    overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+  }
+  #profil-bottom-nav::-webkit-scrollbar{display:none}
+  .profil-bnav-btn{
+    flex:0 0 auto;min-width:58px;
+    display:flex;flex-direction:column;align-items:center;gap:2px;
+    padding:6px 8px;border:1px solid transparent;background:none;
+    cursor:pointer;border-radius:10px;transition:all .2s;
+    font-family:inherit;color:rgba(255,255,255,.45);
+    font-size:9px;font-weight:600;letter-spacing:.04em;
+    scroll-snap-align:start;
+  }
+  .profil-bnav-btn svg{opacity:.5}
+  .profil-bnav-btn.active svg{opacity:1}
+  /* main padding bottom for fixed nav */
+  .main,.tab-panel{padding-bottom:80px!important}
   #profil-content .field[style*="max-width"]{max-width:100% !important}
   #profil-content div[style*="max-width"]{max-width:100% !important}
   /* Alle Hinzufügen Buttons volle Breite + eigene Zeile */
@@ -568,9 +601,20 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   <div class="auth-label" id="auth-label">Wird geladen…</div>
 </div>
 
+<!-- Progress bar at bottom of header -->
+<div id="header-progress-wrap" style="height:3px;background:rgba(255,255,255,0.1);position:fixed;top:48px;left:0;right:0;z-index:1000">
+  <div id="profil-progress-bar" style="height:100%;border-radius:0;background:linear-gradient(90deg,rgba(255,255,255,0.3),#C9A84C);width:0%;transition:width 0.6s ease;"></div>
+</div>
+
 <nav class="nav">
   <div class="nav-brand" onclick="if(window.innerWidth<=768)document.querySelector('.nav-tabs').classList.toggle('open')">
     <div class="nav-logo">Insy <span style="color:var(--tg)">Reception</span></div>
+  </div>
+  <!-- Booking status in header (desktop right, mobile between brand and menu) -->
+  <div id="nav-booking-status" style="display:flex;align-items:center;gap:6px;margin-left:auto;margin-right:12px">
+    <div id="booking-status-dot" style="width:7px;height:7px;border-radius:50%;background:#27ae60;flex-shrink:0;"></div>
+    <span id="booking-status-label" style="font-size:11px;font-weight:500;color:rgba(255,255,255,0.8);">Online</span>
+    <label class="toggle-sw"><input type="checkbox" id="dash-booking-active" onchange="toggleBookingActive()"><span class="slider"></span></label>
   </div>
   <div class="nav-tabs">
     <div class="nav-tab active" onclick="switchTab('profil')" id="tab-profil">
@@ -629,21 +673,8 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
       <div class="profil-loader-txt">Daten werden geladen…</div>
     </div>
     <div id="profil-toggles" style="display:none;gap:8px;flex-wrap:wrap;margin-bottom:0;padding:12px 16px;background:var(--tp);border:none;border-radius:12px 12px 0 0;min-height:44px;"></div>
-    <!-- Buchungsseite Online/Offline -->
-    <div id="booking-status-bar" style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px 12px;background:var(--tp);border-radius:0 0 12px 12px;margin-bottom:8px;border-top:1px solid rgba(255,255,255,0.12);">
-      <div style="display:flex;flex-direction:column;gap:6px;width:100%;">
-        <div style="display:flex;align-items:center;gap:8px;">
-          <div id="booking-status-dot" style="width:8px;height:8px;border-radius:50%;background:#27ae60;flex-shrink:0;"></div>
-          <span id="booking-status-label" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.85);">Buchungsseite Online</span>
-          <label class="toggle-sw" style="margin-left:4px;"><input type="checkbox" id="dash-booking-active" onchange="toggleBookingActive()"><span class="slider"></span></label>
-        </div>
-        <!-- Fortschrittsbalken -->
-        <div style="margin-top:2px;width:100%;height:4px;background:rgba(255,255,255,0.15);border-radius:99px;overflow:hidden;">
-          <div id="profil-progress-bar" style="height:100%;border-radius:99px;background:linear-gradient(90deg,#c0392b,#d4a000,#1e7a3c);width:0%;transition:width 0.6s ease;"></div>
-        </div>
-      </div>
-    </div>
-
+    <!-- Mobile fixed bottom nav for profil subs -->
+    <div id="profil-bottom-nav" style="display:none"></div>
     <div id="profil-status-msg" style="font-size:12px;margin-top:10px;margin-bottom:16px;padding:2px 0;min-height:18px;"></div>
     <div id="profil-content" style="width:100%;overflow:hidden;box-sizing:border-box"></div>
   </div>
@@ -4271,11 +4302,37 @@ function buildProfilToggles(){
       +'cursor:'+(locked?'not-allowed':'pointer')+';opacity:'+(locked?'0.4':'1')+';transition:all .2s;"'
       +(locked?' disabled':'')+'>'+t.label+'</button>';
   }).join('');
+  // Build mobile bottom nav
+  _buildProfilBottomNav();
   _ptActivate(_pActive);
   renderProfilContent(_pActive);
   setTimeout(updateProfilStatus, 100);
   initBookingStatus();
   updateProgressBar();
+}
+
+var _TAB_ICONS={
+  adresse:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+  zeiten:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+  service:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>',
+  team:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>',
+  whatsapp:'<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.962-1.424A9.953 9.953 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>',
+  sonstiges:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>'
+};
+
+function _buildProfilBottomNav(){
+  var nav=document.getElementById('profil-bottom-nav');
+  if(!nav)return;
+  nav.innerHTML=PTABS.map(function(t){
+    var c=_ptColor(t);
+    var col=PCOL[c];
+    var isActive=t.id===_pActive;
+    return'<button class="profil-bnav-btn'+(isActive?' active':'')+'" id="pbnav-'+t.id+'" onclick="selectProfil(\''+t.id+'\')" '
+      +'style="'+(isActive?'background:'+col.dim+';border-color:'+col.border+';color:'+col.txt+';':'')+'color:'+(isActive?col.txt:'rgba(255,255,255,.45)')+'">'+
+      _TAB_ICONS[t.id]+
+      '<span>'+t.label+'</span>'+
+    '</button>';
+  }).join('');
 }
 
 function _ptActivate(id){
@@ -4286,6 +4343,17 @@ function _ptActivate(id){
     pill.style.color='#fff';
     pill.style.borderColor=PCOL[c].border;
     pill.style.boxShadow=on?'0 3px 14px '+PCOL[c].glow:'none';
+  });
+  // Update bottom nav
+  PTABS.forEach(function(t){
+    var btn=document.getElementById('pbnav-'+t.id);if(!btn)return;
+    var c=_ptColor(t);var on=(t.id===id);
+    btn.classList.toggle('active',on);
+    btn.style.background=on?PCOL[c].dim:'';
+    btn.style.borderColor=on?PCOL[c].border:'transparent';
+    btn.style.color=on?PCOL[c].txt:'rgba(255,255,255,.45)';
+    // Scroll active button into view
+    if(on)btn.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
   });
 }
 
