@@ -623,10 +623,10 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
         <div style="display:flex;align-items:center;gap:8px;">
           <div id="booking-status-dot" style="width:8px;height:8px;border-radius:50%;background:#27ae60;flex-shrink:0;"></div>
           <span id="booking-status-label" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.85);">Buchungsseite Online</span>
+          <label class="toggle-sw" style="margin-left:4px;"><input type="checkbox" id="dash-booking-active" onchange="toggleBookingActive()"><span class="slider"></span></label>
         </div>
-        <label class="toggle-sw" style="margin-left:16px;"><input type="checkbox" id="dash-booking-active" onchange="toggleBookingActive()"><span class="slider"></span></label>
         <!-- Fortschrittsbalken -->
-        <div style="margin-top:6px;width:100%;height:4px;background:rgba(255,255,255,0.15);border-radius:99px;overflow:hidden;">
+        <div style="margin-top:2px;width:100%;height:4px;background:rgba(255,255,255,0.15);border-radius:99px;overflow:hidden;">
           <div id="profil-progress-bar" style="height:100%;border-radius:99px;background:linear-gradient(90deg,#c0392b,#d4a000,#1e7a3c);width:0%;transition:width 0.6s ease;"></div>
         </div>
       </div>
