@@ -351,6 +351,10 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   }
 
   #profil-toggles button{font-size:10px !important;padding:5px 10px !important}
+  #nav-booking-status-mobile{display:flex!important}
+  #nav-booking-status{display:none!important}
+  /* Mobile booking status label hidden */
+  #booking-status-label{display:none!important}
   /* Progress bar offset */
   #header-progress-wrap{top:52px!important}
   /* Hide desktop profil-toggles on mobile, show bottom nav */
@@ -603,18 +607,17 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 
 <!-- Progress bar at bottom of header -->
 <div id="header-progress-wrap" style="height:3px;background:rgba(255,255,255,0.1);position:fixed;top:48px;left:0;right:0;z-index:1000">
-  <div id="profil-progress-bar" style="height:100%;border-radius:0;background:linear-gradient(90deg,rgba(255,255,255,0.3),#C9A84C);width:0%;transition:width 0.6s ease;"></div>
+  <div id="profil-progress-bar" style="height:100%;border-radius:0;background:linear-gradient(90deg,rgba(255,255,255,0.15),#C9A84C);width:0%;transition:width 0.6s ease;"></div>
 </div>
 
 <nav class="nav">
   <div class="nav-brand" onclick="if(window.innerWidth<=768)document.querySelector('.nav-tabs').classList.toggle('open')">
     <div class="nav-logo">Insy <span style="color:var(--tg)">Reception</span></div>
   </div>
-  <!-- Booking status in header (desktop right, mobile between brand and menu) -->
-  <div id="nav-booking-status" style="display:flex;align-items:center;gap:6px;margin-left:auto;margin-right:12px">
-    <div id="booking-status-dot" style="width:7px;height:7px;border-radius:50%;background:#27ae60;flex-shrink:0;"></div>
-    <span id="booking-status-label" style="font-size:11px;font-weight:500;color:rgba(255,255,255,0.8);">Online</span>
-    <label class="toggle-sw"><input type="checkbox" id="dash-booking-active" onchange="toggleBookingActive()"><span class="slider"></span></label>
+  <!-- Mobile: booking status same line as branding -->
+  <div id="nav-booking-status-mobile" style="display:none;align-items:center;gap:5px;margin-left:auto;margin-right:8px">
+    <div id="booking-status-dot-m" style="width:6px;height:6px;border-radius:50%;background:#27ae60;flex-shrink:0;"></div>
+    <label class="toggle-sw"><input type="checkbox" id="dash-booking-active-m" onchange="syncBookingToggle(this)"><span class="slider"></span></label>
   </div>
   <div class="nav-tabs">
     <div class="nav-tab active" onclick="switchTab('profil')" id="tab-profil">
@@ -653,6 +656,12 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
     </div>
   </div>
   <div class="nav-right">
+    <!-- Booking status: visible on desktop in nav-right, on mobile via #nav-booking-status-mobile -->
+    <div id="nav-booking-status" style="display:flex;align-items:center;gap:6px;">
+      <div id="booking-status-dot" style="width:7px;height:7px;border-radius:50%;background:#27ae60;flex-shrink:0;"></div>
+      <span id="booking-status-label" style="font-size:11px;font-weight:500;color:rgba(255,255,255,0.8);">Online</span>
+      <label class="toggle-sw"><input type="checkbox" id="dash-booking-active" onchange="syncBookingToggle(this)"><span class="slider"></span></label>
+    </div>
     <a class="nav-booking-btn" id="nav-booking-btn-desktop" href="#" target="_blank">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
       Buchungsseite öffnen
@@ -4032,9 +4041,13 @@ async function toggleBookingActive(){
     return;
   }
   var dot=document.getElementById('booking-status-dot');
+  var dotM=document.getElementById('booking-status-dot-m');
   var lbl=document.getElementById('booking-status-label');
+  var togM=document.getElementById('dash-booking-active-m');
   if(dot)dot.style.background=active?'#27ae60':'#c0392b';
-  if(lbl)lbl.textContent=active?'Buchungsseite Online':'Buchungsseite Offline';
+  if(dotM)dotM.style.background=active?'#27ae60':'#c0392b';
+  if(togM)togM.checked=active;
+  if(lbl)lbl.textContent=active?'Online':'Offline';
   setStatusDot('dash-status-booking','dash-status-booking-label',active,'Online','Gesperrt');
   updateBsPanelStatus(active);
   toast((active?'Buchungsseite aktiviert ✓':'Buchungsseite gesperrt'),'success');
@@ -4278,15 +4291,27 @@ function updateBsPanelStatus(active){
   if(tog)tog.checked=active;
 }
 
+function syncBookingToggle(el){
+  var main=document.getElementById('dash-booking-active');
+  if(main&&main!==el)main.checked=el.checked;
+  var mob=document.getElementById('dash-booking-active-m');
+  if(mob&&mob!==el)mob.checked=el.checked;
+  toggleBookingActive();
+}
+
 function initBookingStatus(){
   var d=window._pData||{};
   var active=d.booking_active!==false;
   var tog=document.getElementById('dash-booking-active');
+  var togM=document.getElementById('dash-booking-active-m');
   var dot=document.getElementById('booking-status-dot');
+  var dotM=document.getElementById('booking-status-dot-m');
   var lbl=document.getElementById('booking-status-label');
   if(tog)tog.checked=active;
+  if(togM)togM.checked=active;
   if(dot)dot.style.background=active?'#27ae60':'#c0392b';
-  if(lbl)lbl.textContent=active?'Buchungsseite Online':'Buchungsseite Offline';
+  if(dotM)dotM.style.background=active?'#27ae60':'#c0392b';
+  if(lbl)lbl.textContent=active?'Online':'Offline';
   updateBsPanelStatus(active);
 }
 
