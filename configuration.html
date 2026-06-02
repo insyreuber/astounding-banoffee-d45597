@@ -287,23 +287,26 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 @media (max-width: 768px) {
   #slot-raster-btns { flex-direction: row !important; gap: 8px !important; }
   #slot-raster-btns button {
-    padding: 12px 6px !important;
+    padding: 10px 4px !important;
     min-width: 0 !important;
     flex: 1 !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 6px !important;
-    line-height: 1.3 !important;
+    gap: 4px !important;
     overflow: hidden !important;
   }
   #slot-raster-btns button svg {
-    width: 80px !important;
-    height: 80px !important;
+    width: 56px !important;
+    height: 56px !important;
     display: block !important;
     margin: 0 auto !important;
     flex-shrink: 0 !important;
+  }
+  #slot-raster-btns button span:last-child {
+    white-space: nowrap !important;
+    font-size: 9px !important;
   }
 
   /* Nav: Akkordion auf Mobile */
@@ -4178,7 +4181,7 @@ function updateProfilStatus(){
       return;
     }
   }
-  el.innerHTML='<span style="color:#1e7a3c">✓ Alles bereit — dein Salon ist vollständig eingerichtet und buchbar.</span>';
+  el.innerHTML='<span style="color:#1e7a3c">Alles bereit — dein Salon ist vollständig eingerichtet und buchbar.</span>';
 }
 
 
@@ -4313,7 +4316,7 @@ function renderProfilContent(id){
           +'<div id="az-week-widget" style="background:var(--tp);padding:10px 14px;width:100%">'
             +'<div id="az-week-rows" style="display:flex;flex-wrap:wrap;gap:2px;justify-content:space-between"></div>'
           +'</div>'
-          +'<svg id="az-acc-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" style="transition:transform .2s;position:absolute;top:50%;right:14px;transform:translateY(-50%)"><polyline points="6 9 12 15 18 9"/></svg>'
+          +'<svg id="az-acc-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="transparent" stroke-width="2.5" style="transition:transform .2s;position:absolute;top:50%;right:14px;transform:translateY(-50%)"><polyline points="6 9 12 15 18 9"/></svg>'
         +'</div>'
         +'<div id="az-acc-body" style="display:none;padding:12px 14px;border-top:1px solid var(--border)">'
           +'<div class="hours-cols" id="hours-cols"></div>'
