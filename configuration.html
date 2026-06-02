@@ -1297,7 +1297,11 @@ function _renderAzWeekRows(){
     var isToday=_azWeekOffset===0&&k===_azTodayKey;
     var closed=!d||!d.aktiv;
     var slots=closed?[]:_slotsFor(d);
-    var timeStr=closed?'—':slots.map(function(s){return s.start+'–'+s.end;}).join(', ');
+    var timeStr=closed?'—':slots.map(function(s){
+      var st=s.start&&s.start!=='NaN'?s.start:'09:00';
+      var en=s.end&&s.end!=='NaN'?s.end:'18:00';
+      return st+'–'+en;
+    }).join(', ');
     return'<div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 4px;border-radius:7px;'+(isToday?'background:rgba(255,255,255,.15)':'')+'">'
       +'<span style="font-size:9px;font-weight:600;'+(isToday?'color:#C9A84C':'color:rgba(255,255,255,.45)')+';letter-spacing:.05em;text-transform:uppercase">'+AZ_DAY_LABELS[k].slice(0,2)+'</span>'
       +'<span style="font-size:9px;text-align:center;word-break:break-word;'+(closed?'color:rgba(255,255,255,.25)':isToday?'color:#fff;font-weight:600':'color:rgba(255,255,255,.65)')+'">'+timeStr+'</span>'
