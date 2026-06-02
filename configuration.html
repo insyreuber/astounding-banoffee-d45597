@@ -4370,17 +4370,18 @@ function renderProfilContent(id){
   else if(id==='sonstiges'){
     wrap.innerHTML=
       '<div>'+
-        '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px;display:flex;align-items:center">Bemerkung im Buchungswidget<span class="help-tip" data-tip="Wird im Header des Buchungswidgets für Kunden angezeigt.">?</span></div>'+
-        '<div class="field" style="margin-bottom:16px"><label>Hinweis für Kunden <span style="font-size:10px;color:var(--muted);font-weight:400">(wird im Header angezeigt)</span></label>'+
-        '<input type="text" id="f-note" placeholder="z.B. Keine Kartenzahlung möglich" maxlength="120" value="'+(d.note||'')+'"></div>'+
-      '</div>'+
-      '<div>'+
         '<div class="btn-add-wrap" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'+
           '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg> Eigene Links</div>'+
           '<button type="button" class="btn-add" onclick="addCustomLink()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>'+
         '</div>'+
         '<div id="custom-links-list" style="display:flex;flex-direction:column;gap:7px"></div>'+
         '<div id="custom-links-empty" style="font-size:11px;color:var(--muted);padding:8px 0 4px;text-align:center">Noch keine Links — klicke Hinzufügen</div>'+
+      '</div>'+
+      '<div style="height:1px;background:var(--border);margin:20px 0"></div>'+
+      '<div>'+
+        '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px;display:flex;align-items:center">Bemerkung im Buchungswidget<span class="help-tip" data-tip="Wird im Header des Buchungswidgets für Kunden angezeigt.">?</span></div>'+
+        '<div class="field" style="margin-bottom:16px"><label>Hinweis für Kunden <span style="font-size:10px;color:var(--muted);font-weight:400">(wird im Header angezeigt)</span></label>'+
+        '<input type="text" id="f-note" placeholder="z.B. Keine Kartenzahlung möglich" maxlength="120" value="'+(d.note||'')+'"></div>'+
       '</div>'+
       '<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
     customLinks=Array.isArray(d.custom_links)?d.custom_links:[];
@@ -4389,6 +4390,7 @@ function renderProfilContent(id){
 
   else if(id==='service'){
     wrap.innerHTML=
+      '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:12px">Service</div>'+
       '<div class="btn-add-wrap" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'+
         '<button class="btn-add" onclick="openSvcModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>'+
       '</div>'+
@@ -4479,6 +4481,7 @@ function renderProfilContent(id){
 
   else if(id==='team'){
     wrap.innerHTML=
+      '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:12px">Profil</div>'+
       '<button class="btn-add" onclick="openStaffModal()" style="margin-bottom:14px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>'+
       '<div class="ma-sidebar" id="staff-sidebar"></div>';
     renderStaffSidebar();
