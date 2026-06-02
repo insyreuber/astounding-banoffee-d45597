@@ -1311,6 +1311,25 @@ var VORLAUF_LABELS=['Sofort buchbar','Mindestens 1 Stunde vorher','Mindestens 2 
 var HORIZONT_LABELS=['Bis zu 1 Woche','Bis zu 2 Wochen','Bis zu 3 Wochen','Bis zu 4 Wochen','Bis zu 6 Wochen','Bis zu 8 Wochen','Bis zu 12 Wochen'];
 var HORIZONT_VALS=[1,2,3,4,6,8,12];
 
+function updateSliderUI(){
+  var v=document.getElementById('booking-vorlauf');
+  var h=document.getElementById('booking-horizont');
+  if(v){
+    var vPct=(v.value-v.min)/(v.max-v.min)*100;
+    var vThumb=document.getElementById('vorlauf-thumb');
+    var vTrack=document.getElementById('vorlauf-track');
+    if(vThumb)vThumb.style.left='calc('+vPct+'% - 0px)';
+    if(vTrack)vTrack.style.width=vPct+'%';
+  }
+  if(h){
+    var hPct=(h.value-h.min)/(h.max-h.min)*100;
+    var hThumb=document.getElementById('horizont-thumb');
+    var hTrack=document.getElementById('horizont-track');
+    if(hThumb)hThumb.style.left='calc('+hPct+'% - 0px)';
+    if(hTrack)hTrack.style.width=hPct+'%';
+  }
+}
+
 function updateTimelines(){
   saveBookingTimelines();
 }
@@ -4318,9 +4337,12 @@ function renderProfilContent(id){
         +'<div style="margin-bottom:20px">'
           +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:4px">Buchungsvorlauf</div>'
           +'<div style="font-size:11px;color:var(--muted);margin-bottom:14px">Wie kurzfristig dürfen Kunden noch buchen?</div>'
-          +'<div style="position:relative;height:36px;margin-bottom:6px;clip:rect(0,9999px,36px,0)">'
-            +'<div style="position:absolute;top:14px;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--tp),rgba(90,45,130,0.15));border-radius:99px"></div>'
-            +'<input type="range" id="booking-vorlauf" min="0" max="8" step="1" value="'+(function(){var fs=_pData&&_pData.feature_settings;var v=parseInt(fs&&fs.booking_vorlauf);return(isNaN(v)||v<0||v>8)?2:v;}())+'" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px;color:transparent;font-size:0;line-height:0">'
+          +'<div style="position:relative;height:36px;margin-bottom:6px">'
+            +'<div style="position:absolute;top:14px;left:0;right:0;height:6px;background:rgba(90,45,130,0.15);border-radius:99px"></div>'
+            +'<div id="vorlauf-track" style="position:absolute;top:14px;left:0;height:6px;background:var(--tp);border-radius:99px;pointer-events:none"></div>'
+            +'<div id="vorlauf-thumb" style="position:absolute;top:8px;width:20px;height:20px;background:var(--tp);border-radius:50%;cursor:pointer;transform:translateX(-50%);box-shadow:0 1px 4px rgba(0,0,0,.3)"></div>'
+            +'<input type="range" id="booking-vorlauf" min="0" max="8" step="1" value="'+(function(){var fs=_pData&&_pData.feature_settings;var v=parseInt(fs&&fs.booking_vorlauf);return(isNaN(v)||v<0||v>8)?2:v;}())+'" oninput="updateTimelines();updateSliderUI()" style="position:absolute;top:0;left:0;right:0;width:100%;height:36px;opacity:0;cursor:pointer;margin:0;padding:0">'
+          +'</div>'
           +'</div>'
           +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:4px">'
             +'<span>Sofort</span><span>1h</span><span>2h</span><span>4h</span><span>8h</span><span>12h</span><span>1 Tag</span><span>2 Tage</span><span>3 Tage</span>'
@@ -4331,9 +4353,12 @@ function renderProfilContent(id){
         +'<div style="margin-bottom:16px">'
           +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:4px">Buchungshorizont</div>'
           +'<div style="font-size:11px;color:var(--muted);margin-bottom:14px">Wie weit im Voraus können Kunden buchen?</div>'
-          +'<div style="position:relative;height:36px;margin-bottom:6px;clip:rect(0,9999px,36px,0)">'
-            +'<div style="position:absolute;top:14px;left:0;right:0;height:6px;background:linear-gradient(90deg,rgba(90,45,130,0.15),var(--tp));border-radius:99px"></div>'
-            +'<input type="range" id="booking-horizont" min="1" max="7" step="1" value="'+(function(){var fs=_pData&&_pData.feature_settings;if(fs&&fs.booking_horizont!=null&&!isNaN(fs.booking_horizont)){var idx=HORIZONT_VALS.indexOf(fs.booking_horizont);return idx>=0?idx+1:4;}return 4;}())+'" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px;color:transparent;font-size:0;line-height:0">'
+          +'<div style="position:relative;height:36px;margin-bottom:6px">'
+            +'<div style="position:absolute;top:14px;left:0;right:0;height:6px;background:rgba(90,45,130,0.15);border-radius:99px"></div>'
+            +'<div id="horizont-track" style="position:absolute;top:14px;left:0;height:6px;background:var(--tp);border-radius:99px;pointer-events:none"></div>'
+            +'<div id="horizont-thumb" style="position:absolute;top:8px;width:20px;height:20px;background:var(--tp);border-radius:50%;cursor:pointer;transform:translateX(-50%);box-shadow:0 1px 4px rgba(0,0,0,.3)"></div>'
+            +'<input type="range" id="booking-horizont" min="1" max="7" step="1" value="'+(function(){var fs=_pData&&_pData.feature_settings;if(fs&&fs.booking_horizont!=null&&!isNaN(fs.booking_horizont)){var idx=HORIZONT_VALS.indexOf(fs.booking_horizont);return idx>=0?idx+1:4;}return 4;}())+'" oninput="updateTimelines();updateSliderUI()" style="position:absolute;top:0;left:0;right:0;width:100%;height:36px;opacity:0;cursor:pointer;margin:0;padding:0">'
+          +'</div>'
           +'</div>'
           +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:4px">'
             +'<span>1 Woche</span><span>2 W.</span><span>3 W.</span><span>4 W.</span><span>6 W.</span><span>8 W.</span><span>12 W.</span>'
@@ -4365,7 +4390,7 @@ function renderProfilContent(id){
     renderAzWeekWidget(azClean, d.temp_arbeitszeiten||null);
     setTimeout(hideNaN,200);
     setTimeout(hideNaN,800);
-    setTimeout(function(){initSlotRaster();initTimelines();},50);
+    setTimeout(function(){initSlotRaster();initTimelines();updateSliderUI();},50);
     tempEntries=[];tempIdCounter=0;tempCalOffset={};
     if(d.temp_arbeitszeiten&&d.temp_arbeitszeiten.length){
       d.temp_arbeitszeiten.forEach(function(t){addTempEntry(t);});
