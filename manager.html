@@ -452,6 +452,7 @@ async function loadAll(){
   window._lastConfirmData=confirms;
   renderStorno(stornos,varianteMap,staffMap,serviceMap);
   window._lastStornoData={rows:stornos,varianteMap:varianteMap,staffMap:staffMap,serviceMap:serviceMap};
+  setTimeout(updateNavBadges,300);
 
   // Mobile mirror — copy innerHTML to mobile sections
   setTimeout(function(){
@@ -1315,17 +1316,19 @@ function updateNavBadges(){
     if(count>0){b.textContent=count>99?'99+':count;b.style.display='flex';}
     else{b.style.display='none';}
   }
-  // Live: offene Aktionen (unconfirmed)
-  var liveCount=document.querySelectorAll('#ticker-list-m [data-status="pending"]').length
-    ||document.querySelectorAll('#ms-live .booking-card:not(.confirmed):not(.cancelled)').length||0;
-  // Termine: heutige + kommende unbestätigte
-  var termineCount=document.querySelectorAll('#ms-termine .booking-card').length||0;
-  // Bestätigung: wartend auf Bestätigung
-  var bestCount=document.querySelectorAll('#ms-bestaetigung .booking-card').length||0;
-  // Erinnerung: fällige Erinnerungen
-  var erinCount=document.querySelectorAll('#ms-erinnerung .booking-card').length||0;
-  // Storno: offene Stornos
-  var stornoCount=document.querySelectorAll('#ms-storno .booking-card').length||0;
+  var c=window._cache||{};
+  var erledigtIds=window._erledigtIds||[];
+  var stornoIds=window._stornoIds||[];
+  // Live: neue unbestätigte Buchungen im Ticker
+  var liveCount=(c.ticker||[]).length;
+  // Termine: bevorstehende Termine
+  var termineCount=(c.upcoming||[]).length;
+  // Bestätigung: offen (nicht erledigt)
+  var bestCount=(c.confirms||[]).filter(function(b){return erledigtIds.indexOf(b.id)<0;}).length;
+  // Erinnerung: offen
+  var erinCount=(c.reminders||[]).filter(function(b){return erledigtIds.indexOf(b.id)<0;}).length;
+  // Storno: offen
+  var stornoCount=(c.stornos||[]).filter(function(b){return stornoIds.indexOf(b.id)<0;}).length;
   setBadge('live',liveCount);
   setBadge('termine',termineCount);
   setBadge('bestaetigung',bestCount);
