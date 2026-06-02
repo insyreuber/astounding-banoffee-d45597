@@ -74,7 +74,9 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .toggle-sw .slider{position:absolute;inset:0;background:rgba(255,255,255,.3);border-radius:99px;cursor:pointer;transition:.2s}
 .toggle-sw .slider:before{content:'';position:absolute;width:12px;height:12px;border-radius:50%;background:#fff;left:3px;top:3px;transition:.2s}
 .toggle-sw input:checked+.slider{background:#27ae60}
-.hours-col-closed{display:none}
+.help-tip{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:var(--muted);color:#fff;font-size:9px;font-weight:700;cursor:default;flex-shrink:0;position:relative;margin-left:5px}
+.help-tip:hover::after{content:attr(data-tip);position:absolute;left:20px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.75);color:#fff;font-size:10px;font-weight:400;padding:5px 9px;border-radius:7px;white-space:nowrap;z-index:99;pointer-events:none;max-width:220px;white-space:normal;line-height:1.4}
+.help-tip:hover::before{content:'';position:absolute;left:15px;top:50%;transform:translateY(-50%);border:4px solid transparent;border-right-color:rgba(0,0,0,.75);z-index:99}
 #slot-btn-15,#slot-btn-30,#slot-btn-60{background:var(--tp);color:#fff}
 #slot-raster-btns + div, #slot-raster-btns ~ *:not([style*="letter-spacing"]){}
 .hours-col:not(.aktiv){opacity:0.45;pointer-events:none}
@@ -4307,8 +4309,7 @@ function renderProfilContent(id){
         +'</div>'
       +'</div>'+
         '<div style="margin:18px 0 12px">'
-          +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Slot-Raster</div>'
-          +'<div style="font-size:11px;color:var(--muted);margin-bottom:10px">Wie fein sollen Termine im Buchungswidget angezeigt werden?</div>'
+          +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px;display:flex;align-items:center">Slot-Raster<span class="help-tip" data-tip="Wie fein sollen Termine im Buchungswidget angezeigt werden?">?</span></div>'
           +'<div id="slot-raster-btns" style="display:flex;gap:12px;flex-wrap:wrap">'
             +'<button type="button" id="slot-btn-15" onclick="setSlotRaster(15)" style="flex:1;min-width:90px;padding:12px 8px;text-align:center;border-radius:10px;border:1.5px solid rgba(255,255,255,.15);background:var(--tp);color:#fff;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="80" height="80" viewBox="-50 -50 100 100" style="display:block;flex-shrink:0"><path d="M0,0 L0,-44 A44,44 0 0,1 44,0 Z" fill="#4a1c6b" opacity="0.85"/><path d="M0,0 L44,0 A44,44 0 0,1 0,44 Z" fill="#4a1c6b" opacity="0.6"/><path d="M0,0 L0,44 A44,44 0 0,1 -44,0 Z" fill="#4a1c6b" opacity="0.35"/><path d="M0,0 L-44,0 A44,44 0 0,1 0,-44 Z" fill="#4a1c6b" opacity="0.12"/><line x1="0" y1="-46" x2="0" y2="46" stroke="#fff" stroke-width="1"/><line x1="-46" y1="0" x2="46" y2="0" stroke="#fff" stroke-width="1"/><line x1="0.0" y1="-44.0" x2="0.0" y2="-36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="44.0" y1="0.0" x2="36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="0.0" y1="44.0" x2="0.0" y2="36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-44.0" y1="0.0" x2="-36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><circle r="44" fill="none" stroke="#4a1c6b" stroke-width="1.5" opacity="0.4"/><circle r="3" fill="#fff"/></svg><span style="font-size:11px;font-weight:600;color:#fff">¼ Stunde</span><span style="font-size:10px;color:rgba(255,255,255,.6)">09:00, 09:15…</span></button>'
             +'<button type="button" id="slot-btn-30" onclick="setSlotRaster(30)" style="flex:1;min-width:90px;padding:12px 8px;text-align:center;border-radius:10px;border:1.5px solid rgba(255,255,255,.15);background:var(--tp);color:#fff;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="80" height="80" viewBox="-50 -50 100 100" style="display:block;flex-shrink:0"><path d="M0,0 L0,-44 A44,44 0 0,1 0,44 Z" fill="#4a1c6b" opacity="0.8"/><path d="M0,0 L0,44 A44,44 0 0,1 0,-44 Z" fill="#4a1c6b" opacity="0.25"/><line x1="0" y1="-46" x2="0" y2="46" stroke="#fff" stroke-width="1"/><line x1="0.0" y1="-44.0" x2="0.0" y2="-36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="44.0" y1="0.0" x2="36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="0.0" y1="44.0" x2="0.0" y2="36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-44.0" y1="0.0" x2="-36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><circle r="44" fill="none" stroke="#4a1c6b" stroke-width="1.5" opacity="0.4"/><circle r="3" fill="#fff"/></svg><span style="font-size:11px;font-weight:600;color:#fff">½ Stunde</span><span style="font-size:10px;color:rgba(255,255,255,.6)">09:00, 09:30…</span></button>'
@@ -4317,8 +4318,7 @@ function renderProfilContent(id){
         +'</div>'+
         '<div style="height:1px;background:var(--border);margin:18px 0"></div>'+
         '<div style="margin-bottom:20px">'
-          +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:4px">Buchungsvorlauf</div>'
-          +'<div style="font-size:11px;color:var(--muted);margin-bottom:14px">Wie kurzfristig dürfen Kunden noch buchen?</div>'
+          +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:14px;display:flex;align-items:center">Buchungsvorlauf<span class="help-tip" data-tip="Wie kurzfristig dürfen Kunden noch buchen?">?</span></div>'
           +'<input type="range" id="booking-vorlauf" min="0" max="8" step="1" value="'+(function(){var fs=_pData&&_pData.feature_settings;var v=parseInt(fs&&fs.booking_vorlauf);return(!isNaN(v)&&v>=0&&v<=8)?v:2;}())+'" oninput="updateTimelines()" style="width:100%;accent-color:var(--tp);cursor:pointer;height:20px;display:block">'
           +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:4px">'
             +'<span>Sofort</span><span>1h</span><span>2h</span><span>4h</span><span>8h</span><span>12h</span><span>1 Tag</span><span>2 Tage</span><span>3 Tage</span>'
@@ -4326,8 +4326,7 @@ function renderProfilContent(id){
         +'</div>'
         +'<div style="height:1px;background:var(--border);margin:0 0 20px"></div>'
         +'<div style="margin-bottom:16px">'
-          +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:4px">Buchungshorizont</div>'
-          +'<div style="font-size:11px;color:var(--muted);margin-bottom:14px">Wie weit im Voraus können Kunden buchen?</div>'
+          +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:14px;display:flex;align-items:center">Buchungshorizont<span class="help-tip" data-tip="Wie weit im Voraus können Kunden buchen?">?</span></div>'
           +'<input type="range" id="booking-horizont" min="1" max="7" step="1" value="'+(function(){var fs=_pData&&_pData.feature_settings;if(fs&&fs.booking_horizont!=null&&!isNaN(fs.booking_horizont)){var idx=HORIZONT_VALS.indexOf(fs.booking_horizont);return idx>=0?idx+1:4;}return 4;}())+'" oninput="updateTimelines()" style="width:100%;accent-color:var(--tp);cursor:pointer;height:20px;display:block">'
           +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:4px">'
             +'<span>1 Woche</span><span>2 W.</span><span>3 W.</span><span>4 W.</span><span>6 W.</span><span>8 W.</span><span>12 W.</span>'
