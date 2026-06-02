@@ -350,7 +350,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
     }
   }
 
-  /* Adresse felder volle Breite auf mobile */
+  #profil-toggles button{font-size:10px !important;padding:5px 10px !important}
   #profil-content .field[style*="max-width"]{max-width:100% !important}
   #profil-content div[style*="max-width"]{max-width:100% !important}
   /* Alle Hinzufügen Buttons volle Breite + eigene Zeile */
@@ -4008,6 +4008,28 @@ async function toggleBookingActive(){
   updateBsPanelStatus(active);
   toast((active?'Buchungsseite aktiviert ✓':'Buchungsseite gesperrt'),'success');
 }
+
+// Swipe zwischen Profil-Subs
+(function(){
+  var _sx=0,_sy=0;
+  document.addEventListener('touchstart',function(e){
+    var t=e.touches[0];
+    _sx=t.clientX;_sy=t.clientY;
+  },{passive:true});
+  document.addEventListener('touchend',function(e){
+    var wrap=document.getElementById('profil-content');
+    if(!wrap)return;
+    var t=e.changedTouches[0];
+    var dx=t.clientX-_sx;
+    var dy=t.clientY-_sy;
+    if(Math.abs(dx)<40||Math.abs(dx)<Math.abs(dy)*1.5)return;
+    var ids=PTABS.map(function(t){return t.id;});
+    var cur=ids.indexOf(_pActive);
+    if(cur<0)return;
+    var next=dx<0?Math.min(cur+1,ids.length-1):Math.max(cur-1,0);
+    if(next!==cur)selectProfil(ids[next]);
+  },{passive:true});
+})();
 
 // ── INIT + AUTH ───────────────────────────────────────────────
 async function init(){
