@@ -616,6 +616,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
     <!-- Mobile: booking status same line as branding -->
     <div id="nav-booking-status-mobile" style="display:none;align-items:center;gap:5px;padding:0 8px;flex-shrink:0">
       <div id="booking-status-dot-m" style="width:6px;height:6px;border-radius:50%;background:#27ae60;flex-shrink:0;"></div>
+      <span id="booking-status-label-m" style="font-size:10px;font-weight:500;color:rgba(255,255,255,0.8);">Online</span>
       <label class="toggle-sw"><input type="checkbox" id="dash-booking-active-m" onchange="syncBookingToggle(this)"><span class="slider"></span></label>
     </div>
     <div class="nav-brand-menu" style="padding:12px 16px;color:rgba(255,255,255,.7);font-size:20px;cursor:pointer;display:none" onclick="document.querySelector('.nav-tabs').classList.toggle('open')">☰</div>
@@ -677,7 +678,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 
 <!-- Progress bar at bottom of header -->
 <div id="header-progress-wrap" style="height:3px;background:rgba(255,255,255,0.1);width:100%">
-  <div id="profil-progress-bar" style="height:100%;background:linear-gradient(90deg,rgba(255,255,255,0.4),#C9A84C);width:0%;transition:width 0.6s ease;"></div>
+  <div id="profil-progress-bar" style="height:100%;background:linear-gradient(90deg,rgba(255,255,255,0.4) 0%,#C9A84C 60%);width:0%;transition:width 0.6s ease;"></div>
 </div>
 
 <div class="main">
@@ -4049,11 +4050,13 @@ async function toggleBookingActive(){
   var dot=document.getElementById('booking-status-dot');
   var dotM=document.getElementById('booking-status-dot-m');
   var lbl=document.getElementById('booking-status-label');
+  var lblM=document.getElementById('booking-status-label-m');
   var togM=document.getElementById('dash-booking-active-m');
   if(dot)dot.style.background=active?'#27ae60':'#c0392b';
   if(dotM)dotM.style.background=active?'#27ae60':'#c0392b';
   if(togM)togM.checked=active;
   if(lbl)lbl.textContent=active?'Online':'Offline';
+  if(lblM)lblM.textContent=active?'Online':'Offline';
   setStatusDot('dash-status-booking','dash-status-booking-label',active,'Online','Gesperrt');
   updateBsPanelStatus(active);
   toast((active?'Buchungsseite aktiviert ✓':'Buchungsseite gesperrt'),'success');
@@ -4272,7 +4275,7 @@ function updateProgressBar(){
   var bar=document.getElementById('profil-progress-bar');
   if(!bar)return;
   bar.style.width=pct+'%';
-  bar.style.background='linear-gradient(90deg,rgba(255,255,255,0.4),#C9A84C)';
+  bar.style.background='linear-gradient(90deg,rgba(255,255,255,0.4) 0%,#C9A84C 60%)';
 }
 
 function bsPanelToggle(){
@@ -4310,11 +4313,13 @@ function initBookingStatus(){
   var dot=document.getElementById('booking-status-dot');
   var dotM=document.getElementById('booking-status-dot-m');
   var lbl=document.getElementById('booking-status-label');
+  var lblM=document.getElementById('booking-status-label-m');
   if(tog)tog.checked=active;
   if(togM)togM.checked=active;
   if(dot)dot.style.background=active?'#27ae60':'#c0392b';
   if(dotM)dotM.style.background=active?'#27ae60':'#c0392b';
   if(lbl)lbl.textContent=active?'Online':'Offline';
+  if(lblM)lblM.textContent=active?'Online':'Offline';
   updateBsPanelStatus(active);
 }
 
