@@ -359,9 +359,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   #nav-booking-status{display:none!important}
   /* Mobile booking status label hidden */
   #booking-status-label{display:none!important}
-  /* Progress bar offset */
-  #header-progress-wrap{top:52px!important}
-  /* Hide desktop profil-toggles on mobile, show bottom nav */
+  /* Fixed bottom nav for profil subs */
   #profil-toggles{display:none!important}
   #profil-bottom-nav{display:flex!important}
   /* Mobile booking status label hidden (space) */
@@ -609,10 +607,6 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   <div class="auth-label" id="auth-label">Wird geladen…</div>
 </div>
 
-<!-- Progress bar at bottom of header -->
-<div id="header-progress-wrap" style="height:3px;background:rgba(255,255,255,0.1);position:fixed;top:48px;left:0;right:0;z-index:1000">
-  <div id="profil-progress-bar" style="height:100%;border-radius:0;background:linear-gradient(90deg,rgba(255,255,255,0.15),#C9A84C);width:0%;transition:width 0.6s ease;"></div>
-</div>
 
 <nav class="nav">
   <div style="display:flex;align-items:center;width:100%" class="nav-brand-row">
@@ -680,6 +674,11 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 <a class="fab-booking" id="nav-booking-link" href="#" target="_blank" title="Buchungsseite öffnen">
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
 </a>
+
+<!-- Progress bar at bottom of header -->
+<div id="header-progress-wrap" style="height:3px;background:rgba(255,255,255,0.1);width:100%">
+  <div id="profil-progress-bar" style="height:100%;background:linear-gradient(90deg,rgba(255,255,255,0.4),#C9A84C);width:0%;transition:width 0.6s ease;"></div>
+</div>
 
 <div class="main">
 
@@ -4273,10 +4272,7 @@ function updateProgressBar(){
   var bar=document.getElementById('profil-progress-bar');
   if(!bar)return;
   bar.style.width=pct+'%';
-  // Color: red=0-40, yellow=40-80, green=80-100
-  if(pct>=80)bar.style.background='linear-gradient(90deg,#27ae60,#1e7a3c)';
-  else if(pct>=40)bar.style.background='linear-gradient(90deg,#d4a000,#27ae60)';
-  else bar.style.background='linear-gradient(90deg,#c0392b,#d4a000)';
+  bar.style.background='linear-gradient(90deg,rgba(255,255,255,0.4),#C9A84C)';
 }
 
 function bsPanelToggle(){
