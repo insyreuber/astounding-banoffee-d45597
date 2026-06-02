@@ -1348,12 +1348,12 @@ function highlightSlotRaster(min){
     if(!btn)return;
     if(v===min){
       btn.style.background='var(--tp)';
-      btn.style.color='var(--td)';
+      btn.style.color='#fff';
       btn.style.border='3px solid var(--tg)';
       btn.style.boxShadow='0 0 0 3px rgba(201,168,76,0.35)';
     } else {
       btn.style.background='var(--tp)';
-      btn.style.color='var(--td)';
+      btn.style.color='#fff';
       btn.style.border='1.5px solid rgba(255,255,255,.15)';
       btn.style.boxShadow='';
     }
@@ -4324,7 +4324,7 @@ function renderProfilContent(id){
       '<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
     buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
     renderAzWeekWidget(d.arbeitszeiten||null, d.temp_arbeitszeiten||null);
-    setTimeout(function(){initSlotRaster();initTimelines();},50);
+    setTimeout(function(){initSlotRaster();},50);
     tempEntries=[];tempIdCounter=0;tempCalOffset={};
     if(d.temp_arbeitszeiten&&d.temp_arbeitszeiten.length){
       d.temp_arbeitszeiten.forEach(function(t){addTempEntry(t);});
