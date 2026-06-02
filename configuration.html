@@ -4380,16 +4380,16 @@ function renderProfilContent(id){
     buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
     renderAzWeekWidget(azClean, d.temp_arbeitszeiten||null);
     setTimeout(function(){
-      document.querySelectorAll('input').forEach(function(el){
-        if(el.value&&String(el.value).indexOf('NaN')>-1){
-          console.error('INPUT MIT NaN! id='+el.id+' type='+el.type+' value='+el.value);
-        }
-      });
+      var found=false;
       document.querySelectorAll('*').forEach(function(el){
-        if(el.children.length===0&&el.innerText&&el.innerText.trim().indexOf('NaN')>-1){
-          console.error('ELEMENT MIT NaN TEXT! tag='+el.tagName+' id='+el.id+' class='+el.className+' text='+el.innerText.trim());
+        if(el.tagName==='SCRIPT'||el.tagName==='STYLE')return;
+        var txt=el.innerText||'';
+        if(txt.indexOf('NaN')>-1&&el.children.length===0){
+          console.error('NaN ELEMENT! tag='+el.tagName+' id="'+el.id+'" class="'+el.className+'" outerHTML='+el.outerHTML.slice(0,200));
+          found=true;
         }
       });
+      if(!found)console.log('NaN nicht in DOM-Elementen gefunden — kommt vielleicht von CSS oder Browser-Rendering');
     },500);
     setTimeout(hideNaN,200);
     setTimeout(hideNaN,800);
