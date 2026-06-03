@@ -119,6 +119,8 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .hours-col.aktiv select{background:rgba(255,255,255,.12)}
 .hours-col-sep{font-size:10px;color:rgba(255,255,255,.5)}
 .hours-col-closed{font-size:10px;color:rgba(255,255,255,.35);font-style:italic}
+/* Hide all accordion chevrons globally */
+.chevron,[id^="chev-"],[id^="var-chev-"],[id$="-chev"]{display:none!important;visibility:hidden!important}
 .hours-time-wrap{display:flex;flex-direction:row;align-items:center;gap:6px;flex:1}
 
 /* ── BUTTONS ── */
@@ -2369,7 +2371,7 @@ function mkVarRow(v,svcId,idx){
         ?'<div style="width:28px;flex-shrink:0"></div>'
         :'<button onclick="event.stopPropagation();deleteVar(\''+v.id+'\',\''+svcId+'\')" class="btn btn-sm btn-danger" style="flex-shrink:0;width:28px;height:28px;padding:0;justify-content:center">✕</button>'
       )
-      +'<span id="var-chev-'+v.id+'" style="font-size:16px;color:var(--tpl);transition:transform .2s;flex-shrink:0">⌄</span>'
+      +'<span id="var-chev-'+v.id+'" style="display:none;font-size:16px;color:var(--tpl);transition:transform .2s;flex-shrink:0">⌄</span>'
     +'</div>'
     // ── Akkordion Body — exakt altes var-row Grid ──
     +'<div id="var-body-'+v.id+'" style="display:none;padding:8px 10px 10px;border-top:1.5px solid #e8e0f0">'
