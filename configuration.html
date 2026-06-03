@@ -4183,8 +4183,8 @@ async function init(){
   // Alles laden, dann Profil aufbauen
   Promise.all([loadProfil(), loadServices(), loadStaff()])
     .then(function(){
-      if(_loader)_loader.style.display='none';
       buildProfilToggles();
+      renderProfilContent(_pActive);
       initBookingStatus();
     });
 }
