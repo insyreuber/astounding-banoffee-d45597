@@ -18,9 +18,9 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .nav{background:var(--tp);padding:0 24px;display:flex;align-items:center;border-bottom:1px solid rgba(255,255,255,.08)}
 .nav-brand{padding:14px 20px 14px 0;border-right:1px solid rgba(255,255,255,.1);margin-right:4px;flex-shrink:0}
 #profil-desktop-bar{display:none}
-#profil-desktop-bar.visible{display:flex}
+#profil-desktop-bar.visible{display:flex!important}
 #profil-bar-prev,#profil-bar-next{display:none}
-#profil-bar-prev.visible,#profil-bar-next.visible{display:flex}
+#profil-bar-prev.visible,#profil-bar-next.visible{display:flex!important}
 .main{padding-bottom:80px}
 #profil-desktop-bar .pdt-btn{
   flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;
@@ -857,12 +857,12 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 
 
 <!-- Desktop bottom bar - outside tab panels so always visible -->
-<div id="profil-desktop-bar" style="position:fixed;bottom:0;left:0;right:0;z-index:200;background:linear-gradient(135deg,#3d1568 0%,#5a2d82 100%);border-top:1px solid rgba(201,168,76,.3);box-shadow:0 -4px 20px rgba(0,0,0,.3);display:flex;align-items:center;padding:0">
+<div id="profil-desktop-bar" style="position:fixed;bottom:0;left:0;right:0;z-index:200;background:linear-gradient(135deg,#3d1568 0%,#5a2d82 100%);border-top:1px solid rgba(201,168,76,.3);box-shadow:0 -4px 20px rgba(0,0,0,.3);align-items:center;padding:0">
   <div id="profil-desktop-tabs" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 12px;overflow:hidden"></div>
 </div>
 <!-- Floating arrow buttons -->
-<button id="profil-bar-prev" onclick="profilBarStep(-1)" style="position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:199;width:52px;height:80px;background:rgba(74,28,107,0.75);border:none;border-radius:0 12px 12px 0;cursor:pointer;color:rgba(255,255,255,.7);font-size:42px;display:flex;align-items:center;justify-content:center;transition:all .2s;padding:0;backdrop-filter:blur(4px)" onmouseover="this.style.color='#C9A84C';this.style.background='rgba(74,28,107,0.95)'" onmouseout="this.style.color='rgba(255,255,255,.7)';this.style.background='rgba(74,28,107,0.75)'">&#8249;</button>
-<button id="profil-bar-next" onclick="profilBarStep(1)" style="position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:199;width:52px;height:80px;background:rgba(74,28,107,0.75);border:none;border-radius:12px 0 0 12px;cursor:pointer;color:rgba(255,255,255,.7);font-size:42px;display:flex;align-items:center;justify-content:center;transition:all .2s;padding:0;backdrop-filter:blur(4px)" onmouseover="this.style.color='#C9A84C';this.style.background='rgba(74,28,107,0.95)'" onmouseout="this.style.color='rgba(255,255,255,.7)';this.style.background='rgba(74,28,107,0.75)'">&#8250;</button>
+<button id="profil-bar-prev" onclick="profilBarStep(-1)" style="position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:199;width:52px;height:80px;background:rgba(74,28,107,0.75);border:none;border-radius:0 12px 12px 0;cursor:pointer;color:rgba(255,255,255,.7);font-size:42px;align-items:center;justify-content:center;transition:all .2s;padding:0;backdrop-filter:blur(4px)" onmouseover="this.style.color='#C9A84C';this.style.background='rgba(74,28,107,0.95)'" onmouseout="this.style.color='rgba(255,255,255,.7)';this.style.background='rgba(74,28,107,0.75)'">&#8249;</button>
+<button id="profil-bar-next" onclick="profilBarStep(1)" style="position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:199;width:52px;height:80px;background:rgba(74,28,107,0.75);border:none;border-radius:12px 0 0 12px;cursor:pointer;color:rgba(255,255,255,.7);font-size:42px;align-items:center;justify-content:center;transition:all .2s;padding:0;backdrop-filter:blur(4px)" onmouseover="this.style.color='#C9A84C';this.style.background='rgba(74,28,107,0.95)'" onmouseout="this.style.color='rgba(255,255,255,.7)';this.style.background='rgba(74,28,107,0.75)'">&#8250;</button>
 </div><!-- /main -->
 
 <!-- ── KALENDER PICKER MODAL ── -->
