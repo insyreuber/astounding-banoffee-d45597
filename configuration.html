@@ -17,8 +17,17 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 /* ── NAV ── */
 .nav{background:var(--tp);padding:0 24px;display:flex;align-items:center;border-bottom:1px solid rgba(255,255,255,.08)}
 .nav-brand{padding:14px 20px 14px 0;border-right:1px solid rgba(255,255,255,.1);margin-right:4px;flex-shrink:0}
-.nav-brand-menu{display:none}
-#nav-booking-status-mobile{display:none}
+#profil-desktop-bar{display:flex}
+#profil-desktop-bar .pdt-btn{
+  flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:8px 18px;border:1px solid transparent;background:none;
+  cursor:pointer;border-radius:10px;transition:all .2s;
+  font-family:inherit;color:rgba(255,255,255,.45);
+  font-size:11px;font-weight:600;letter-spacing:.04em;white-space:nowrap;
+}
+#profil-desktop-bar .pdt-btn svg{opacity:.5}
+#profil-desktop-bar .pdt-btn.active svg{opacity:1}
+.main{padding-bottom:72px}
 .nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:600;color:#fff;letter-spacing:.01em;text-transform:none;line-height:1}
 .nav-logo span{color:#C9A84C}
 .nav-title{font-size:13px;font-weight:500;color:rgba(255,255,255,.9)}
@@ -358,6 +367,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 
   #profil-toggles button{font-size:10px !important;padding:5px 10px !important}
   /* Fixed bottom nav for profil subs */
+  #profil-desktop-bar{display:none!important}
   #profil-toggles{display:none!important}
   #profil-bottom-nav{display:flex!important}
   /* Mobile booking status label hidden (space) */
@@ -687,6 +697,12 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
       <div class="profil-loader-txt">Daten werden geladen…</div>
     </div>
     <div id="profil-toggles" style="display:none;gap:8px;flex-wrap:wrap;margin-bottom:0;padding:12px 16px;background:var(--tp);border:none;border-radius:12px 12px 0 0;min-height:44px;"></div>
+    <!-- Desktop bottom bar with arrow navigation -->
+    <div id="profil-desktop-bar" style="position:fixed;bottom:0;left:0;right:0;z-index:200;background:linear-gradient(135deg,#3d1568 0%,#5a2d82 100%);border-top:1px solid rgba(201,168,76,.3);box-shadow:0 -4px 20px rgba(0,0,0,.3);align-items:center;padding:0">
+      <button id="profil-bar-prev" onclick="profilBarStep(-1)" style="flex-shrink:0;width:52px;height:100%;background:none;border:none;border-right:1px solid rgba(255,255,255,.1);cursor:pointer;color:rgba(255,255,255,.5);font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .2s;padding:0" onmouseover="this.style.color='#C9A84C';this.style.background='rgba(255,255,255,.05)'" onmouseout="this.style.color='rgba(255,255,255,.5)';this.style.background='none'">‹</button>
+      <div id="profil-desktop-tabs" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 12px;overflow:hidden"></div>
+      <button id="profil-bar-next" onclick="profilBarStep(1)" style="flex-shrink:0;width:52px;height:100%;background:none;border:none;border-left:1px solid rgba(255,255,255,.1);cursor:pointer;color:rgba(255,255,255,.5);font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .2s;padding:0" onmouseover="this.style.color='#C9A84C';this.style.background='rgba(255,255,255,.05)'" onmouseout="this.style.color='rgba(255,255,255,.5)';this.style.background='none'">›</button>
+    </div>
     <!-- Mobile fixed bottom nav for profil subs -->
     <div id="profil-bottom-nav" style="display:none"></div>
     <div id="profil-status-msg" style="font-size:12px;margin-top:10px;margin-bottom:16px;padding:2px 0;min-height:18px;"></div>
@@ -1051,7 +1067,8 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 
 <div class="toast" id="toast"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
 // Iframe resize by dragging handle
 (function(){
   var handle=null,iframe=null,startY=0,startH=0;
@@ -4338,6 +4355,8 @@ function buildProfilToggles(){
   }).join('');
   // Build mobile bottom nav
   _buildProfilBottomNav();
+  // Build desktop bottom bar
+  _buildProfilDesktopBar();
   _ptActivate(_pActive);
   renderProfilContent(_pActive);
   setTimeout(updateProfilStatus, 100);
@@ -4353,6 +4372,26 @@ var _TAB_ICONS={
   whatsapp:'<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.962-1.424A9.953 9.953 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>',
   sonstiges:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>'
 };
+
+function _buildProfilDesktopBar(){
+  var wrap=document.getElementById('profil-desktop-tabs');
+  if(!wrap)return;
+  wrap.innerHTML=PTABS.map(function(t){
+    var c=_ptColor(t);var col=PCOL[c];var on=(t.id===_pActive);
+    return'<button class="pdt-btn'+(on?' active':'')+'" id="pdtb-'+t.id+'" onclick="selectProfil(\''+t.id+'\')" '
+      +'style="'+(on?'background:'+col.dim+';border-color:'+col.border+';color:'+col.txt+';':'')+'color:'+(on?col.txt:'rgba(255,255,255,.45)')+'">'
+      +_TAB_ICONS[t.id]
+      +'<span>'+t.label+'</span>'
+    +'</button>';
+  }).join('');
+}
+
+function profilBarStep(dir){
+  var ids=PTABS.map(function(t){return t.id;});
+  var cur=ids.indexOf(_pActive);
+  var next=Math.max(0,Math.min(ids.length-1,cur+dir));
+  if(next!==cur)selectProfil(ids[next]);
+}
 
 function _buildProfilBottomNav(){
   var nav=document.getElementById('profil-bottom-nav');
@@ -4389,6 +4428,22 @@ function _ptActivate(id){
     // Scroll active button into view
     if(on)btn.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
   });
+  // Update desktop bar
+  PTABS.forEach(function(t){
+    var btn=document.getElementById('pdtb-'+t.id);if(!btn)return;
+    var c=_ptColor(t);var on=(t.id===id);
+    btn.classList.toggle('active',on);
+    btn.style.background=on?PCOL[c].dim:'';
+    btn.style.borderColor=on?PCOL[c].border:'transparent';
+    btn.style.color=on?PCOL[c].txt:'rgba(255,255,255,.45)';
+  });
+  // Arrow opacity
+  var ids=PTABS.map(function(t){return t.id;});
+  var cur=ids.indexOf(id);
+  var prev=document.getElementById('profil-bar-prev');
+  var nxt=document.getElementById('profil-bar-next');
+  if(prev)prev.style.opacity=cur===0?'0.2':'1';
+  if(nxt)nxt.style.opacity=cur===ids.length-1?'0.2':'1';
 }
 
 function selectProfil(id){
