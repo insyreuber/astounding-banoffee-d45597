@@ -1641,8 +1641,8 @@ function renderTempEntries(){
   empty.style.display='none';
   list.innerHTML=tempEntries.map(function(entry){
     return'<div id="temp-entry-'+entry.id+'" style="border:1.5px solid var(--border);border-radius:10px;overflow:hidden">'
-      +'<div onclick="toggleTempAcc('+entry.id+')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--tp);cursor:pointer;">'
-        +'<div style="font-size:12px;font-weight:500;color:#fff" id="temp-label-'+entry.id+'">'+kwLabel(entry.kw,entry.year)+'</div>'
+      +'<div onclick="toggleTempAcc('+entry.id+')" style="display:flex;align-items:center;justify-content:center;padding:10px 14px;background:var(--tp);cursor:pointer;">'
+        +'<div style="font-size:12px;font-weight:500;color:#fff;text-align:center" id="temp-label-'+entry.id+'">'+kwLabel(entry.kw,entry.year)+'</div>'
         +'<svg id="temp-chev-'+entry.id+'" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="transparent" stroke-width="2.5" style="transition:transform .2s"><polyline points="6 9 12 15 18 9"/></svg>'
       +'</div>'
       +'<div id="temp-body-'+entry.id+'" style="display:none;padding:14px;border-top:1px solid var(--border);flex-direction:column;gap:14px">'
@@ -2782,8 +2782,8 @@ function renderStaffTempEntries(){
   empty.style.display='none';
   list.innerHTML=staffTempEntries.map(function(entry){
     return'<div id="st-entry-'+entry.id+'" style="border:1.5px solid var(--border);border-radius:10px;overflow:hidden">'
-      +'<div onclick="toggleStAcc('+entry.id+')" style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--tp);cursor:pointer;">'
-        +'<div style="font-size:11px;font-weight:500;color:#fff" id="st-label-'+entry.id+'">'+kwLabel(entry.kw,entry.year)+'</div>'
+      +'<div onclick="toggleStAcc('+entry.id+')" style="display:flex;align-items:center;justify-content:center;padding:8px 12px;background:var(--tp);cursor:pointer;">'
+        +'<div style="font-size:11px;font-weight:500;color:#fff;text-align:center" id="st-label-'+entry.id+'">'+kwLabel(entry.kw,entry.year)+'</div>'
         +'<svg id="st-chev-'+entry.id+'" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="transparent" stroke-width="2.5" style="transition:transform .2s"><polyline points="6 9 12 15 18 9"/></svg>'
       +'</div>'
       +'<div id="st-body-'+entry.id+'" style="display:none;padding:12px;border-top:1px solid var(--border);flex-direction:column;gap:10px">'
@@ -4561,7 +4561,7 @@ function renderProfilContent(id){
       '<div style="height:1px;background:var(--border);margin:20px 0"></div>'+
       '<div>'+
         '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px;display:flex;align-items:center">Bemerkung im Buchungswidget<span class="help-tip" data-tip="Wird im Header des Buchungswidgets für Kunden angezeigt.">?</span></div>'+
-        '<div class="field" style="margin-bottom:16px"><label>Hinweis für Kunden <span style="font-size:10px;color:var(--muted);font-weight:400">(wird im Header angezeigt)</span></label>'+
+        '<div class="field" style="margin-bottom:16px">'+
         '<input type="text" id="f-note" placeholder="z.B. Keine Kartenzahlung möglich" maxlength="120" value="'+(d.note||'')+'"></div>'+
       '</div>'+
       '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:28px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
