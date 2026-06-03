@@ -390,6 +390,9 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   .main,.tab-panel{padding-bottom:80px!important}
   #profil-content .field[style*="max-width"]{max-width:100% !important;margin-left:0 !important}
   #profil-content div[style*="max-width"]{max-width:100% !important;margin-left:0 !important}
+  /* Adresse 2-col grid → single col on mobile */
+  #profil-content div[style*="grid-template-columns:1fr 1fr"]{display:block !important}
+  #profil-content div[style*="height:68px"]{display:none !important}
   /* Alle Hinzufügen Buttons volle Breite + eigene Zeile */
   .btn-add{width:100% !important;justify-content:center !important;display:flex !important}
   .btn-add-wrap{flex-direction:column !important;align-items:stretch !important;gap:8px !important}
@@ -4407,26 +4410,35 @@ function renderProfilContent(id){
     wrap.innerHTML=
       '<div>'+
         '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Adresse & Kontakt</div>'+
-        '<div class="field" style="margin-bottom:12px;max-width:40%"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="f-brand" placeholder="z.B. Wellness Store" value="'+(d.brand_name||d.name||'')+'"></div>'+
-        '<div style="display:grid;grid-template-columns:0.3fr 0.7fr;gap:12px;margin-bottom:12px;max-width:50%;box-sizing:border-box;margin-left:auto">'+
-          '<div class="field" style="margin-bottom:0"><label>PLZ</label><input type="text" id="f-plz" placeholder="51674" value="'+(d.postal_code||'')+'" style="min-width:0;width:100%"></div>'+
-          '<div class="field" style="margin-bottom:0"><label>Stadt</label><input type="text" id="f-city" placeholder="Wiehl" value="'+(d.city||'')+'" style="min-width:0;width:100%"></div>'+
-        '</div>'+
-        '<div style="display:grid;grid-template-columns:0.7fr 0.3fr;gap:12px;margin-bottom:12px;max-width:50%;box-sizing:border-box">'+
-          '<div class="field" style="margin-bottom:0"><label>Straße</label><input type="text" id="f-street" placeholder="Fritz-Raue Strasse" value="'+(d.street||'')+'" style="min-width:0;width:100%"></div>'+
-          '<div class="field" style="margin-bottom:0"><label>Hausnummer</label><input type="text" id="f-house" placeholder="1" value="'+(d.house_number||'')+'" style="min-width:0;width:100%"></div>'+
-        '</div>'+
-        '<div style="margin-bottom:12px;max-width:50%">'+
-          '<div class="field" style="margin-bottom:0">'+
-            '<label>Google Maps Link <span style="font-size:10px;color:var(--muted);font-weight:400">— Kunden werden bei Klick auf die Adresse weitergeleitet</span></label>'+
-            '<input type="text" id="f-google-maps" placeholder="https://maps.google.com/?q=..." value="'+(d.google_maps_url||'')+'">'+
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start">'+
+          // Linke Spalte: Name, Straße+Hausnummer, Google Maps
+          '<div>'+
+            '<div class="field" style="margin-bottom:12px;max-width:80%"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="f-brand" placeholder="z.B. Wellness Store" value="'+(d.brand_name||d.name||'')+'"></div>'+
+            '<div style="display:grid;grid-template-columns:0.7fr 0.3fr;gap:12px;margin-bottom:12px;max-width:80%">'+
+              '<div class="field" style="margin-bottom:0"><label>Straße</label><input type="text" id="f-street" placeholder="Fritz-Raue Strasse" value="'+(d.street||'')+'" style="min-width:0;width:100%"></div>'+
+              '<div class="field" style="margin-bottom:0"><label>Hausnummer</label><input type="text" id="f-house" placeholder="1" value="'+(d.house_number||'')+'" style="min-width:0;width:100%"></div>'+
+            '</div>'+
+            '<div style="margin-bottom:12px;max-width:80%">'+
+              '<div class="field" style="margin-bottom:0">'+
+                '<label>Google Maps Link <span style="font-size:10px;color:var(--muted);font-weight:400">— Kunden werden bei Klick auf die Adresse weitergeleitet</span></label>'+
+                '<input type="text" id="f-google-maps" placeholder="https://maps.google.com/?q=..." value="'+(d.google_maps_url||'')+'">'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+          // Rechte Spalte: PLZ+Stadt eine Zeile höher (kein spacer oben), dann Spacer für Straße+Google Maps, dann Vorwahl+Telefon 3 Zeilen höher
+          '<div>'+
+            '<div style="display:grid;grid-template-columns:0.3fr 0.7fr;gap:12px;margin-bottom:12px">'+
+              '<div class="field" style="margin-bottom:0"><label>PLZ</label><input type="text" id="f-plz" placeholder="51674" value="'+(d.postal_code||'')+'" style="min-width:0;width:100%"></div>'+
+              '<div class="field" style="margin-bottom:0"><label>Stadt</label><input type="text" id="f-city" placeholder="Wiehl" value="'+(d.city||'')+'" style="min-width:0;width:100%"></div>'+
+            '</div>'+
+            '<div style="height:68px"></div>'+
+            '<div style="display:grid;grid-template-columns:0.3fr 0.7fr;gap:12px;margin-bottom:12px">'+
+              '<div class="field" style="margin-bottom:0"><label>Vorwahl</label><input type="text" id="f-area-code" placeholder="02262" value="'+(d.area_code||'')+'" style="min-width:0;width:100%"></div>'+
+              '<div class="field" style="margin-bottom:0"><label>Telefon</label><input type="text" id="f-phone-number" placeholder="12131243" value="'+(d.phone_number||'')+'" style="min-width:0;width:100%"></div>'+
+            '</div>'+
+            '<div class="field" style="margin-bottom:0"><label>Handy</label><input type="text" id="f-mobile" placeholder="+49 151 …" value="'+(d.mobile_url||'')+'"></div>'+
           '</div>'+
         '</div>'+
-        '<div style="display:grid;grid-template-columns:0.3fr 0.7fr;gap:12px;margin-bottom:12px;max-width:50%;box-sizing:border-box;margin-left:auto">'+
-          '<div class="field" style="margin-bottom:0"><label>Vorwahl</label><input type="text" id="f-area-code" placeholder="02262" value="'+(d.area_code||'')+'" style="min-width:0;width:100%"></div>'+
-          '<div class="field" style="margin-bottom:0"><label>Telefon</label><input type="text" id="f-phone-number" placeholder="12131243" value="'+(d.phone_number||'')+'" style="min-width:0;width:100%"></div>'+
-        '</div>'+
-        '<div class="field" style="margin-bottom:0;max-width:50%;margin-left:auto"><label>Handy</label><input type="text" id="f-mobile" placeholder="+49 151 …" value="'+(d.mobile_url||'')+'"></div>'+
       '</div>'+
       '<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
   }
