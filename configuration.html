@@ -696,17 +696,14 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 
   <!-- ════ DASHBOARD ════ -->
   <div class="tab-panel active" id="panel-profil">
-    <div id="profil-loader" style="position:relative;padding:60px 20px;display:flex;">
-      <div class="profil-loader-txt">Daten werden geladen…</div>
-    </div>
-    <!-- Desktop bottom bar - tabs only, no arrows -->
+    <!-- Desktop bottom bar -->
     <div id="profil-desktop-bar" style="position:fixed;bottom:0;left:0;right:0;z-index:200;background:linear-gradient(135deg,#3d1568 0%,#5a2d82 100%);border-top:1px solid rgba(201,168,76,.3);box-shadow:0 -4px 20px rgba(0,0,0,.3);display:flex;align-items:center;padding:0">
       <div id="profil-desktop-tabs" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 12px;overflow:hidden"></div>
     </div>
-    <!-- Floating arrow buttons left/right, vertically centered -->
-    <button id="profil-bar-prev" onclick="profilBarStep(-1)" style="position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:199;width:52px;height:80px;background:rgba(74,28,107,0.75);border:none;border-radius:0 12px 12px 0;cursor:pointer;color:rgba(255,255,255,.7);font-size:42px;display:flex;align-items:center;justify-content:center;transition:all .2s;padding:0;backdrop-filter:blur(4px)" onmouseover="this.style.color='#C9A84C';this.style.background='rgba(74,28,107,0.95)'" onmouseout="this.style.color='rgba(255,255,255,.7)';this.style.background='rgba(74,28,107,0.75)'">‹</button>
-    <button id="profil-bar-next" onclick="profilBarStep(1)" style="position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:199;width:52px;height:80px;background:rgba(74,28,107,0.75);border:none;border-radius:12px 0 0 12px;cursor:pointer;color:rgba(255,255,255,.7);font-size:42px;display:flex;align-items:center;justify-content:center;transition:all .2s;padding:0;backdrop-filter:blur(4px)" onmouseover="this.style.color='#C9A84C';this.style.background='rgba(74,28,107,0.95)'" onmouseout="this.style.color='rgba(255,255,255,.7)';this.style.background='rgba(74,28,107,0.75)'">›</button>
-    <!-- Mobile fixed bottom nav for profil subs -->
+    <!-- Floating arrow buttons -->
+    <button id="profil-bar-prev" onclick="profilBarStep(-1)" style="position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:199;width:52px;height:80px;background:rgba(74,28,107,0.75);border:none;border-radius:0 12px 12px 0;cursor:pointer;color:rgba(255,255,255,.7);font-size:42px;display:flex;align-items:center;justify-content:center;transition:all .2s;padding:0;backdrop-filter:blur(4px)" onmouseover="this.style.color='#C9A84C';this.style.background='rgba(74,28,107,0.95)'" onmouseout="this.style.color='rgba(255,255,255,.7)';this.style.background='rgba(74,28,107,0.75)'">&#8249;</button>
+    <button id="profil-bar-next" onclick="profilBarStep(1)" style="position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:199;width:52px;height:80px;background:rgba(74,28,107,0.75);border:none;border-radius:12px 0 0 12px;cursor:pointer;color:rgba(255,255,255,.7);font-size:42px;display:flex;align-items:center;justify-content:center;transition:all .2s;padding:0;backdrop-filter:blur(4px)" onmouseover="this.style.color='#C9A84C';this.style.background='rgba(74,28,107,0.95)'" onmouseout="this.style.color='rgba(255,255,255,.7)';this.style.background='rgba(74,28,107,0.75)'">&#8250;</button>
+    <!-- Mobile fixed bottom nav -->
     <div id="profil-bottom-nav" style="display:none"></div>
     <div id="profil-status-msg" style="font-size:12px;margin-top:10px;margin-bottom:16px;padding:2px 0;min-height:18px;"></div>
     <div id="profil-content" style="width:100%;overflow:hidden;box-sizing:border-box"></div>
