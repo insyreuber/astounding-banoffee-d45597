@@ -126,7 +126,7 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .btn-primary{background:var(--tp);color:#fff;border:1.5px solid var(--tg)}.btn-primary:hover{background:var(--tpl);border-color:var(--tgl)}
 .btn-primary:disabled{background:var(--border);color:#aaa;cursor:not-allowed}
 .btn-outline{background:transparent;color:var(--tpl);border:1.5px solid var(--tpl)}.btn-outline:hover{background:var(--tpp)}
-.btn-danger{background:transparent;color:var(--danger);border:1.5px solid #f5c6c6}.btn-danger:hover{background:#fef2f2}
+.btn-danger{background:var(--danger);color:#fff;border:1.5px solid var(--danger)}.btn-danger:hover{background:#a93226;border-color:#a93226}
 .btn-sm{padding:6px 12px;font-size:12px}
 .btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border)}.btn-ghost:hover{border-color:var(--tpl);color:var(--tpl)}
 
@@ -167,8 +167,7 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .var-group input[type="number"]:focus,.var-group input[type="text"]:focus{outline:none;border-color:var(--tpl);box-shadow:0 0 0 3px rgba(90,45,130,.15)}
 .var-group:focus-within{border-color:var(--tpl)}
 .var-group .toggle-sw{flex-shrink:0}
-.var-del{width:28px;height:28px;border-radius:6px;border:1.5px solid #fde8e8;background:#fff5f5;color:#c0392b;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit;transition:all .15s}
-.var-del:hover{background:#fde8e8;border-color:#c0392b}
+.var-del{width:28px;height:28px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit;transition:all .15s}
 
 /* ── MITARBEITER TAB LAYOUT ── */
 .ma-layout{display:grid;grid-template-columns:200px 1fr;gap:14px;align-items:start}
@@ -896,7 +895,6 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   <div class="modal-footer">
     <button class="btn btn-ghost" onclick="closeSvcModal()">Abbrechen</button>
     <button class="btn btn-primary" onclick="saveNewService()" id="btn-svc-save">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
       Service anlegen
     </button>
   </div>
@@ -950,7 +948,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
       <input type="hidden" id="s-avatar-url" value="">
       <!-- Mitarbeiter löschen -->
       <div id="s-delete-wrap" style="display:none;margin-top:10px">
-        <button type="button" onclick="deleteCurrentStaff()" style="width:100%;padding:8px;border-radius:8px;border:1.5px solid var(--danger);background:transparent;color:var(--danger);font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-family:inherit" onmouseover="this.style.background='rgba(231,76,60,0.06)'" onmouseout="this.style.background='transparent'">
+        <button type="button" onclick="deleteCurrentStaff()" class="btn btn-sm btn-danger" style="width:100%">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
           Mitarbeiter löschen
         </button>
@@ -1065,7 +1063,6 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   <div class="modal-footer">
     <button class="btn btn-ghost" onclick="closeStaffModal()">Abbrechen</button>
     <button class="btn btn-primary" onclick="saveStaff()" id="btn-staff-save">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
       Speichern
     </button>
   </div>
@@ -1655,7 +1652,7 @@ function renderTempEntries(){
           +'<div class="hours-cols" id="temp-hcols-'+entry.id+'"></div>'
         +'</div>'
         +'<div style="display:flex;justify-content:flex-end">'
-          +'<button onclick="removeTempEntry('+entry.id+')" style="background:none;border:1.5px solid #c0392b;border-radius:7px;cursor:pointer;font-size:12px;color:#c0392b;padding:5px 12px;font-family:inherit">Entfernen</button>'
+          +'<button onclick="removeTempEntry('+entry.id+')" class="btn btn-sm btn-danger">Entfernen</button>'
         +'</div>'
       +'</div>'
     +'</div>';
@@ -1847,7 +1844,7 @@ function renderCustomLinks(){
         +'<input type="text" class="cl-url-input" placeholder="'+ph+'" value="'+esc(l.url||'')+'" oninput="customLinks['+i+'].url=this.value">'
       +'</div>'
       +'<div style="display:flex;justify-content:flex-end;margin-top:6px">'
-        +'<button onclick="removeCustomLink('+i+')" style="background:none;border:1.5px solid #c0392b;border-radius:7px;cursor:pointer;font-size:12px;color:#c0392b;padding:4px 12px;font-family:inherit">Entfernen</button>'
+        +'<button onclick="removeCustomLink('+i+')" class="btn btn-sm btn-danger">Entfernen</button>'
       +'</div>'
     +'</div>';
   }).join('<div style="height:6px"></div>');
@@ -2331,9 +2328,7 @@ function renderSvcBody(s,vars){
     +'<button class="btn-add" onclick="addVariante(\''+s.id+'\')">'
       +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen'
     +'</button>'
-    +'<button class="btn btn-sm btn-primary" onclick="saveSvcAll(\''+s.id+'\')" style="margin-left:auto">'
-      +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>Speichern'
-    +'</button>'
+    +'<button class="btn btn-sm btn-primary" onclick="saveSvcAll(\''+s.id+'\')" style="margin-left:auto">Speichern</button>'
     +'<button class="btn btn-sm btn-danger" onclick="deleteSvc(\''+s.id+'\')" >Service löschen</button>'
   +'</div>';
 }
@@ -2366,7 +2361,7 @@ function mkVarRow(v,svcId,idx){
       +'</div>'
       +(isFirst
         ?'<div style="width:28px;flex-shrink:0"></div>'
-        :'<button onclick="event.stopPropagation();deleteVar(\''+v.id+'\',\''+svcId+'\')" class="var-del" style="flex-shrink:0">✕</button>'
+        :'<button onclick="event.stopPropagation();deleteVar(\''+v.id+'\',\''+svcId+'\')" class="btn btn-sm btn-danger" style="flex-shrink:0;width:28px;height:28px;padding:0;justify-content:center">✕</button>'
       )
       +'<span id="var-chev-'+v.id+'" style="font-size:16px;color:var(--tpl);transition:transform .2s;flex-shrink:0">⌄</span>'
     +'</div>'
@@ -2798,7 +2793,7 @@ function renderStaffTempEntries(){
           +'<div class="hours-cols-sm" id="st-hcols-'+entry.id+'"></div>'
         +'</div>'
         +'<div style="display:flex;justify-content:flex-end">'
-          +'<button onclick="removeStaffTempEntry('+entry.id+')" style="background:none;border:1.5px solid #c0392b;border-radius:7px;cursor:pointer;font-size:12px;color:#c0392b;padding:5px 12px;font-family:inherit">Entfernen</button>'
+          +'<button onclick="removeStaffTempEntry('+entry.id+')" class="btn btn-sm btn-danger">Entfernen</button>'
         +'</div>'
       +'</div>'
     +'</div>';
@@ -4627,7 +4622,6 @@ function renderProfilContent(id){
         '</div>'+
         '<div style="display:flex;justify-content:flex-end;margin-top:14px">'+
           '<button onclick="saveWaTemplates()" class="btn btn-primary">'+
-            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>'+
             'Speichern'+
           '</button>'+
         '</div>'+
