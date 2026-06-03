@@ -27,7 +27,10 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 }
 #profil-desktop-bar .pdt-btn svg{opacity:.5}
 #profil-desktop-bar .pdt-btn.active svg{opacity:1}
-.main{padding-bottom:72px}
+/* Hide floating arrows on mobile */
+@media(max-width:768px){
+  #profil-bar-prev,#profil-bar-next{display:none!important}
+}
 .nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:600;color:#fff;letter-spacing:.01em;text-transform:none;line-height:1}
 .nav-logo span{color:#C9A84C}
 .nav-title{font-size:13px;font-weight:500;color:rgba(255,255,255,.9)}
@@ -696,13 +699,13 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
     <div id="profil-loader" style="position:relative;padding:60px 20px;display:flex;">
       <div class="profil-loader-txt">Daten werden geladen…</div>
     </div>
-    <div id="profil-toggles" style="display:none;gap:8px;flex-wrap:wrap;margin-bottom:0;padding:12px 16px;background:var(--tp);border:none;border-radius:12px 12px 0 0;min-height:44px;"></div>
-    <!-- Desktop bottom bar with arrow navigation -->
-    <div id="profil-desktop-bar" style="position:fixed;bottom:0;left:0;right:0;z-index:200;background:linear-gradient(135deg,#3d1568 0%,#5a2d82 100%);border-top:1px solid rgba(201,168,76,.3);box-shadow:0 -4px 20px rgba(0,0,0,.3);align-items:center;padding:0">
-      <button id="profil-bar-prev" onclick="profilBarStep(-1)" style="flex-shrink:0;width:52px;height:100%;background:none;border:none;border-right:1px solid rgba(255,255,255,.1);cursor:pointer;color:rgba(255,255,255,.5);font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .2s;padding:0" onmouseover="this.style.color='#C9A84C';this.style.background='rgba(255,255,255,.05)'" onmouseout="this.style.color='rgba(255,255,255,.5)';this.style.background='none'">‹</button>
+    <!-- Desktop bottom bar - tabs only, no arrows -->
+    <div id="profil-desktop-bar" style="position:fixed;bottom:0;left:0;right:0;z-index:200;background:linear-gradient(135deg,#3d1568 0%,#5a2d82 100%);border-top:1px solid rgba(201,168,76,.3);box-shadow:0 -4px 20px rgba(0,0,0,.3);display:flex;align-items:center;padding:0">
       <div id="profil-desktop-tabs" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 12px;overflow:hidden"></div>
-      <button id="profil-bar-next" onclick="profilBarStep(1)" style="flex-shrink:0;width:52px;height:100%;background:none;border:none;border-left:1px solid rgba(255,255,255,.1);cursor:pointer;color:rgba(255,255,255,.5);font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .2s;padding:0" onmouseover="this.style.color='#C9A84C';this.style.background='rgba(255,255,255,.05)'" onmouseout="this.style.color='rgba(255,255,255,.5)';this.style.background='none'">›</button>
     </div>
+    <!-- Floating arrow buttons left/right, vertically centered -->
+    <button id="profil-bar-prev" onclick="profilBarStep(-1)" style="position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:199;width:52px;height:80px;background:rgba(74,28,107,0.75);border:none;border-radius:0 12px 12px 0;cursor:pointer;color:rgba(255,255,255,.7);font-size:42px;display:flex;align-items:center;justify-content:center;transition:all .2s;padding:0;backdrop-filter:blur(4px)" onmouseover="this.style.color='#C9A84C';this.style.background='rgba(74,28,107,0.95)'" onmouseout="this.style.color='rgba(255,255,255,.7)';this.style.background='rgba(74,28,107,0.75)'">‹</button>
+    <button id="profil-bar-next" onclick="profilBarStep(1)" style="position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:199;width:52px;height:80px;background:rgba(74,28,107,0.75);border:none;border-radius:12px 0 0 12px;cursor:pointer;color:rgba(255,255,255,.7);font-size:42px;display:flex;align-items:center;justify-content:center;transition:all .2s;padding:0;backdrop-filter:blur(4px)" onmouseover="this.style.color='#C9A84C';this.style.background='rgba(74,28,107,0.95)'" onmouseout="this.style.color='rgba(255,255,255,.7)';this.style.background='rgba(74,28,107,0.75)'">›</button>
     <!-- Mobile fixed bottom nav for profil subs -->
     <div id="profil-bottom-nav" style="display:none"></div>
     <div id="profil-status-msg" style="font-size:12px;margin-top:10px;margin-bottom:16px;padding:2px 0;min-height:18px;"></div>
@@ -4166,17 +4169,10 @@ async function init(){
   loadFeatureSettings();
   checkGcalReturn();
 
-  // Loader anzeigen
-  var _loader=document.getElementById('profil-loader');
-  var _toggles=document.getElementById('profil-toggles');
-  if(_loader)_loader.style.display='flex';
-  if(_toggles)_toggles.style.display='none';
-
   // Alles laden, dann Profil aufbauen
   Promise.all([loadProfil(), loadServices(), loadStaff()])
     .then(function(){
       if(_loader)_loader.style.display='none';
-      if(_toggles)_toggles.style.display='flex';
       buildProfilToggles();
       initBookingStatus();
     });
@@ -4342,17 +4338,6 @@ function initBookingStatus(){
 }
 
 function buildProfilToggles(){
-  var wrap=document.getElementById('profil-toggles');
-  if(!wrap) return;
-  wrap.innerHTML=PTABS.map(function(t){
-    var c=_ptColor(t);
-    var locked=false;
-    return '<button id="ptgl-'+t.id+'" onclick="selectProfil(\''+t.id+'\')"'
-      +' style="padding:7px 16px;border-radius:20px;font-size:12px;font-weight:600;font-family:inherit;'
-      +'border:1.5px solid '+PCOL[c].border+';background:'+PCOL[c].dim+';color:'+PCOL[c].txt+';'
-      +'cursor:'+(locked?'not-allowed':'pointer')+';opacity:'+(locked?'0.4':'1')+';transition:all .2s;"'
-      +(locked?' disabled':'')+'>'+t.label+'</button>';
-  }).join('');
   // Build mobile bottom nav
   _buildProfilBottomNav();
   // Build desktop bottom bar
@@ -4409,15 +4394,7 @@ function _buildProfilBottomNav(){
 }
 
 function _ptActivate(id){
-  PTABS.forEach(function(t){
-    var pill=document.getElementById('ptgl-'+t.id); if(!pill)return;
-    var c=_ptColor(t); var on=(t.id===id);
-    pill.style.background=on?PCOL[c].bg:PCOL[c].dim;
-    pill.style.color='#fff';
-    pill.style.borderColor=PCOL[c].border;
-    pill.style.boxShadow=on?'0 3px 14px '+PCOL[c].glow:'none';
-  });
-  // Update bottom nav
+  // Update bottom nav (mobile)
   PTABS.forEach(function(t){
     var btn=document.getElementById('pbnav-'+t.id);if(!btn)return;
     var c=_ptColor(t);var on=(t.id===id);
