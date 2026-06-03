@@ -17,7 +17,11 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 /* ── NAV ── */
 .nav{background:var(--tp);padding:0 24px;display:flex;align-items:center;border-bottom:1px solid rgba(255,255,255,.08)}
 .nav-brand{padding:14px 20px 14px 0;border-right:1px solid rgba(255,255,255,.1);margin-right:4px;flex-shrink:0}
-#profil-desktop-bar{display:flex}
+#profil-desktop-bar{display:none}
+#profil-desktop-bar.visible{display:flex}
+#profil-bar-prev,#profil-bar-next{display:none}
+#profil-bar-prev.visible,#profil-bar-next.visible{display:flex}
+.main{padding-bottom:80px}
 #profil-desktop-bar .pdt-btn{
   flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;
   padding:8px 18px;border:1px solid transparent;background:none;
@@ -371,6 +375,7 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   #profil-toggles button{font-size:10px !important;padding:5px 10px !important}
   /* Fixed bottom nav for profil subs */
   #profil-desktop-bar{display:none!important}
+  #profil-bar-prev,#profil-bar-next{display:none!important}
   #profil-toggles{display:none!important}
   #profil-bottom-nav{display:flex!important}
   /* Mobile booking status label hidden (space) */
@@ -1223,6 +1228,14 @@ async function loadLiveTicker(){
 }
 
 function switchTab(n){
+  // Show/hide profil bottom bar and arrows
+  var bar=document.getElementById('profil-desktop-bar');
+  var prev=document.getElementById('profil-bar-prev');
+  var next=document.getElementById('profil-bar-next');
+  if(bar){bar.classList.toggle('visible',n==='profil');}
+  if(prev){prev.classList.toggle('visible',n==='profil');}
+  if(next){next.classList.toggle('visible',n==='profil');}
+
   // Auto-save nur wenn Änderungen gemacht wurden
   if(_currentTab!==n&&_dirty){
     var confirmed=confirm('Möchtest du die Änderungen speichern?');
@@ -4336,6 +4349,13 @@ function initBookingStatus(){
 }
 
 function buildProfilToggles(){
+  // Show desktop bar and arrows
+  var bar=document.getElementById('profil-desktop-bar');
+  var prev=document.getElementById('profil-bar-prev');
+  var next=document.getElementById('profil-bar-next');
+  if(bar)bar.classList.add('visible');
+  if(prev)prev.classList.add('visible');
+  if(next)next.classList.add('visible');
   // Build mobile bottom nav
   _buildProfilBottomNav();
   // Build desktop bottom bar
