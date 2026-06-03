@@ -123,7 +123,7 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 
 /* ── BUTTONS ── */
 .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
-.btn-primary{background:var(--tg);color:var(--td)}.btn-primary:hover{background:var(--tgl)}
+.btn-primary{background:var(--tp);color:#fff;border:1.5px solid var(--tg)}.btn-primary:hover{background:var(--tpl);border-color:var(--tgl)}
 .btn-primary:disabled{background:var(--border);color:#aaa;cursor:not-allowed}
 .btn-outline{background:transparent;color:var(--tpl);border:1.5px solid var(--tpl)}.btn-outline:hover{background:var(--tpp)}
 .btn-danger{background:transparent;color:var(--danger);border:1.5px solid #f5c6c6}.btn-danger:hover{background:#fef2f2}
@@ -4628,7 +4628,7 @@ function renderProfilContent(id){
         '<div style="display:flex;justify-content:flex-end;margin-top:14px">'+
           '<button onclick="saveWaTemplates()" class="btn btn-primary">'+
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>'+
-            'Templates speichern'+
+            'Speichern'+
           '</button>'+
         '</div>'+
       '</div>';
