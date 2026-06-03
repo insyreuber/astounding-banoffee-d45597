@@ -4361,8 +4361,11 @@ function buildProfilToggles(){
   // Build desktop bottom bar
   _buildProfilDesktopBar();
   _ptActivate(_pActive);
-  renderProfilContent(_pActive);
-  setTimeout(updateProfilStatus, 100);
+  // Render content after DOM is settled
+  setTimeout(function(){
+    renderProfilContent(_pActive);
+    setTimeout(updateProfilStatus, 100);
+  }, 0);
   initBookingStatus();
   updateProgressBar();
 }
