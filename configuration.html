@@ -4488,7 +4488,7 @@ function renderProfilContent(id){
           '</div>'+
         '</div>'+
       '</div>'+
-      '<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
+      '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:28px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
   }
 
   else if(id==='zeiten'){
@@ -4538,7 +4538,7 @@ function renderProfilContent(id){
         '<div id="temp-entries-list" style="display:flex;flex-direction:column;gap:14px"></div>'+
         '<div id="temp-empty" style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0">Noch keine temporären Zeiten</div>'+
       '</div>'+
-      '<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
+      '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:28px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
     buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
     renderAzWeekWidget(d.arbeitszeiten||null, d.temp_arbeitszeiten||null);
     setTimeout(function(){initSlotRaster();},50);
@@ -4564,15 +4564,15 @@ function renderProfilContent(id){
         '<div class="field" style="margin-bottom:16px"><label>Hinweis für Kunden <span style="font-size:10px;color:var(--muted);font-weight:400">(wird im Header angezeigt)</span></label>'+
         '<input type="text" id="f-note" placeholder="z.B. Keine Kartenzahlung möglich" maxlength="120" value="'+(d.note||'')+'"></div>'+
       '</div>'+
-      '<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
+      '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:28px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
     customLinks=Array.isArray(d.custom_links)?d.custom_links:[];
     renderCustomLinks();
   }
 
   else if(id==='service'){
     wrap.innerHTML=
-      '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:12px">Service</div>'+
-      '<div class="btn-add-wrap" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'+
+        '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600">Service</div>'+
         '<button class="btn-add" onclick="openSvcModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>'+
       '</div>'+
       '<div class="svc-list" id="svc-list"></div>';
@@ -4661,8 +4661,10 @@ function renderProfilContent(id){
 
   else if(id==='team'){
     wrap.innerHTML=
-      '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:12px">Profil</div>'+
-      '<button class="btn-add" onclick="openStaffModal()" style="margin-bottom:14px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'+
+        '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600">Profil</div>'+
+        '<button class="btn-add" onclick="openStaffModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>'+
+      '</div>'+
       '<div class="ma-sidebar" id="staff-sidebar"></div>';
     renderStaffSidebar();
   }
