@@ -1413,6 +1413,12 @@ var HORIZONT_LABELS=['Bis zu 1 Woche','Bis zu 2 Wochen','Bis zu 3 Wochen','Bis z
 var HORIZONT_VALS=[1,2,3,4,6,8,12];
 
 function updateTimelines(){
+  var vEl=document.getElementById('booking-vorlauf');
+  var hEl=document.getElementById('booking-horizont');
+  var vLbl=document.getElementById('vorlauf-label');
+  var hLbl=document.getElementById('horizont-label');
+  if(vEl&&vLbl)vLbl.textContent=VORLAUF_LABELS[parseInt(vEl.value)]||'';
+  if(hEl&&hLbl)hLbl.textContent=HORIZONT_LABELS[parseInt(hEl.value)-1]||'';
   saveBookingTimelines();
 }
 
@@ -4517,6 +4523,7 @@ function renderProfilContent(id){
         '<div style="height:1px;background:var(--border);margin:18px 0"></div>'+
         '<div style="margin-bottom:20px">'
           +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:14px;display:flex;align-items:center">Buchungsvorlauf<span class="help-tip" data-tip="Wie kurzfristig dürfen Kunden noch buchen?">?</span></div>'
+          +'<div id="vorlauf-label" style="font-size:13px;font-weight:600;color:var(--tpl);margin-bottom:10px;min-height:20px">'+(VORLAUF_LABELS[(function(){var fs=_pData&&_pData.feature_settings;var v=parseInt(fs&&fs.booking_vorlauf);return(!isNaN(v)&&v>=0&&v<=8)?v:2;}())]||'')+'</div>'
           +'<input type="range" id="booking-vorlauf" min="0" max="8" step="1" value="'+(function(){var fs=_pData&&_pData.feature_settings;var v=parseInt(fs&&fs.booking_vorlauf);return(!isNaN(v)&&v>=0&&v<=8)?v:2;}())+'" oninput="updateTimelines()" style="width:100%;accent-color:var(--tp);cursor:pointer;height:20px;display:block">'
           +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:4px">'
             +'<span>Sofort</span><span>1h</span><span>2h</span><span>4h</span><span>8h</span><span>12h</span><span>1 Tag</span><span>2 Tage</span><span>3 Tage</span>'
@@ -4525,6 +4532,7 @@ function renderProfilContent(id){
         +'<div style="height:1px;background:var(--border);margin:0 0 20px"></div>'
         +'<div style="margin-bottom:16px">'
           +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:14px;display:flex;align-items:center">Buchungshorizont<span class="help-tip" data-tip="Wie weit im Voraus können Kunden buchen?">?</span></div>'
+          +'<div id="horizont-label" style="font-size:13px;font-weight:600;color:var(--tpl);margin-bottom:10px;min-height:20px">'+(HORIZONT_LABELS[(function(){var fs=_pData&&_pData.feature_settings;if(fs&&fs.booking_horizont!=null&&!isNaN(fs.booking_horizont)){var idx=HORIZONT_VALS.indexOf(fs.booking_horizont);return idx>=0?idx:3;}return 3;}())]||'')+'</div>'
           +'<input type="range" id="booking-horizont" min="1" max="7" step="1" value="'+(function(){var fs=_pData&&_pData.feature_settings;if(fs&&fs.booking_horizont!=null&&!isNaN(fs.booking_horizont)){var idx=HORIZONT_VALS.indexOf(fs.booking_horizont);return idx>=0?idx+1:4;}return 4;}())+'" oninput="updateTimelines()" style="width:100%;accent-color:var(--tp);cursor:pointer;height:20px;display:block">'
           +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:4px">'
             +'<span>1 Woche</span><span>2 W.</span><span>3 W.</span><span>4 W.</span><span>6 W.</span><span>8 W.</span><span>12 W.</span>'
