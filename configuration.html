@@ -21,7 +21,7 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 #profil-desktop-bar.visible{display:flex!important}
 #profil-bar-prev,#profil-bar-next{display:none}
 #profil-bar-prev.visible,#profil-bar-next.visible{display:flex!important}
-.main{padding-bottom:80px}
+@media(min-width:769px){.main{padding-bottom:80px}}
 #profil-desktop-bar .pdt-btn{
   flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;
   padding:8px 18px;border:1px solid transparent;background:none;
@@ -405,6 +405,8 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
   }
   .profil-bnav-btn svg{opacity:.5}
   .profil-bnav-btn.active svg{opacity:1}
+  .profil-bnav-btn span{font-size:9px!important}
+  .profil-bnav-btn svg{width:16px!important;height:16px!important}
   /* main padding bottom for fixed nav */
   .main,.tab-panel{padding-bottom:80px!important}
   #profil-content .field[style*="max-width"]{max-width:100% !important;margin-left:0 !important}
