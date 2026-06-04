@@ -1229,13 +1229,16 @@ async function loadLiveTicker(){
 }
 
 function switchTab(n){
-  // Show/hide profil bottom bar and arrows
+  // Show/hide profil bottom bar and arrows (desktop only)
+  var isMobile=window.innerWidth<=768;
   var bar=document.getElementById('profil-desktop-bar');
   var prev=document.getElementById('profil-bar-prev');
   var next=document.getElementById('profil-bar-next');
-  if(bar){bar.classList.toggle('visible',n==='profil');}
-  if(prev){prev.classList.toggle('visible',n==='profil');}
-  if(next){next.classList.toggle('visible',n==='profil');}
+  if(!isMobile){
+    if(bar)bar.classList.toggle('visible',n==='profil');
+    if(prev)prev.classList.toggle('visible',n==='profil');
+    if(next)next.classList.toggle('visible',n==='profil');
+  }
 
   // Auto-save nur wenn Änderungen gemacht wurden
   if(_currentTab!==n&&_dirty){
@@ -4379,13 +4382,14 @@ function initBookingStatus(){
 }
 
 function buildProfilToggles(){
-  // Show desktop bar and arrows
+  // Show desktop bar and arrows only on desktop
+  var isMobile=window.innerWidth<=768;
   var bar=document.getElementById('profil-desktop-bar');
   var prev=document.getElementById('profil-bar-prev');
   var next=document.getElementById('profil-bar-next');
-  if(bar)bar.classList.add('visible');
-  if(prev)prev.classList.add('visible');
-  if(next)next.classList.add('visible');
+  if(bar)bar.classList.toggle('visible',!isMobile);
+  if(prev)prev.classList.toggle('visible',!isMobile);
+  if(next)next.classList.toggle('visible',!isMobile);
   // Build mobile bottom nav
   _buildProfilBottomNav();
   // Build desktop bottom bar
