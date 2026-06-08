@@ -120,12 +120,12 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .cal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
 .cal-nav{background:none;border:1px solid #e8e0f0;border-radius:6px;padding:2px 9px;cursor:pointer;font-size:14px;color:var(--tp);line-height:1.4}
 .cal-nav:hover{background:var(--tpp)}
-.cal-mo{font-size:13px;font-weight:700;color:#3d1568;letter-spacing:.08em;text-transform:uppercase;font-family:'Playfair Display',Georgia,serif;background:linear-gradient(90deg,#3d1568,#C9A84C);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cal-mo{font-size:13px;font-weight:700;color:#3d1568;letter-spacing:.12em;text-transform:uppercase}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:8px}
 .cdl{text-align:center;font-size:9px;padding:2px 0;font-weight:700;letter-spacing:.05em;color:#5a2d82}
-.cdl.weekend{color:#C9A84C}
+.cdl.weekend{color:#9a7200}
 .cd{text-align:center;padding:5px 2px;border-radius:5px;font-size:11px;cursor:pointer;color:var(--td)}
-.cw{color:#C9A84C;font-weight:600}
+.cw{background:rgba(201,168,76,.12);color:#8a6800;font-weight:600;border-radius:5px}
 .cd:hover:not(.cp):not(.ce){background:var(--tpp);color:var(--tp)}
 .cd.cs{background:var(--tp);color:#fff;font-weight:500}
 .cd.ce,.cd.cp{pointer-events:none}
@@ -971,7 +971,7 @@ function mkCal(){
     +'<span class="cal-mo">'+mo+'</span>'
     +'<button class="cal-nav" onclick="calNext()">&#8250;</button></div>'
     +'<div class="cal-grid">'
-    +['Mo','Di','Mi','Do','Fr','Sa','So'].map(function(x,i){return'<div class="cdl'+(i>=5?' weekend':'')+'">'+(i>=5?'<span style="color:#C9A84C">'+x+'</span>':x)+'</div>';}).join('')
+    +['Mo','Di','Mi','Do','Fr','Sa','So'].map(function(x,i){return'<div class="cdl'+(i>=5?' weekend':'')+'">'+x+'</div>';}).join('')
     +days+'</div>'+slotsHtml
     +(st.dual&&slot2time()?'<p class="hint">② startet ca. '+slot2time()+' Uhr</p>':'');
 }
