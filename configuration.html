@@ -3595,12 +3595,6 @@ function closeStaffModal(){
   updateFabVisibility();
 }
 async function editStaff(id){
-  // Fully reset modal state including calendar picker view
-  var overlay=document.getElementById('staff-overlay');
-  var modal=document.getElementById('staff-modal');
-  if(overlay)overlay.style.display='none';
-  if(modal)modal.classList.remove('open');
-  editingStaffId=null;
   // Reset calendar picker back to main view
   var calView=document.getElementById('s-cal-view');
   var mainView=document.getElementById('s-main-view');
@@ -3610,14 +3604,17 @@ async function editStaff(id){
   if(mainView)mainView.style.display='block';
   if(calBackBtn)calBackBtn.style.display='none';
   if(footer)footer.style.display='flex';
-  // Small delay to ensure DOM is reset
-  await new Promise(function(r){setTimeout(r,50);});
   // Fetch fresh data from DB
-  var res=await sb.from('mitarbeiter').select('*').eq('id',id).single();
-  if(res.error){toast('Fehler beim Laden','error');return;}
-  var aRes=await sb.from('mitarbeiter_service_varianten').select('service_variante_id').eq('mitarbeiter_id',id).eq('aktiv',true);
-  var varianteIds=aRes.data?aRes.data.map(function(a){return a.service_variante_id;}):[];
-  openStaffModal({mitarbeiter:res.data,varianteIds:varianteIds});
+  try{
+    var res=await sb.from('mitarbeiter').select('*').eq('id',id).single();
+    if(res.error){toast('Fehler beim Laden','error');return;}
+    var aRes=await sb.from('mitarbeiter_service_varianten').select('service_variante_id').eq('mitarbeiter_id',id).eq('aktiv',true);
+    var varianteIds=aRes.data?aRes.data.map(function(a){return a.service_variante_id;}):[];
+    openStaffModal({mitarbeiter:res.data,varianteIds:varianteIds});
+  }catch(e){
+    console.error('editStaff error:',e);
+    toast('Fehler beim Öffnen','error');
+  }
 }
 
 async function saveStaff(silent){
