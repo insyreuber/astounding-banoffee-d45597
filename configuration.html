@@ -3184,11 +3184,13 @@ async function openCalendarPicker(mitarbeiterId){
     calendars.forEach(function(cal){
       var current=currentCalId&&currentCalId===cal.id;
       var isPrimary=cal.primary;
+      var capturedCalId=cal.id; // capture per iteration
       var div=document.createElement('div');
       div.style.cssText='display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;background:'+(current?'var(--tpp)':'transparent')+';border:1.5px solid '+(current?'var(--tpl)':'transparent')+';transition:all .15s;margin-bottom:4px';
-      div.dataset.calId=cal.id;
-      div.dataset.mitId=capturedMitId;
-      div.addEventListener('click',function(){selectCalendar(capturedMitId,this.dataset.calId);});
+      div.addEventListener('click',function(e){
+        if(e.target.tagName==='BUTTON')return; // don't fire on disconnect btn
+        selectCalendar(capturedMitId, capturedCalId);
+      });
       var dotDiv=document.createElement('div');
       dotDiv.style.cssText='width:12px;height:12px;border-radius:50%;background:'+(cal.color||'#4a1c6b')+';flex-shrink:0';
       var infoDiv=document.createElement('div');
@@ -3492,6 +3494,12 @@ function openStaffModal(data){
   pickColor('#3498db');
   // Now set new values
   editingStaffId=data?data.mitarbeiter.id:null;
+  // Store mitId directly on gcal icon so onclick doesn't rely on global
+  if(gcalSection){
+    var midAttr=editingStaffId||'';
+    gcalSection.setAttribute('data-mid',midAttr);
+    gcalSection.setAttribute('onclick','openCalendarPicker(this.getAttribute(\'data-mid\'))');
+  }
   document.getElementById('staff-modal-title').textContent=data?'Profil bearbeiten':'Mitarbeiter hinzufügen';
   document.getElementById('s-delete-wrap').style.display=data?'block':'none';
   var m=data?data.mitarbeiter:{};
