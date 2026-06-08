@@ -117,29 +117,25 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 
 .cal-sum-row{display:grid;grid-template-columns:1fr 300px;gap:10px;align-items:start}
 #sum-col{position:relative;top:-18px}
-.cal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:8px 12px;background:linear-gradient(135deg,#3d1568 0%,#5a2d82 100%);border-radius:10px}
-.cal-nav{background:rgba(255,255,255,.12);border:1px solid rgba(201,168,76,.4);border-radius:6px;padding:2px 11px;cursor:pointer;font-size:16px;color:#fff;line-height:1.4;transition:all .15s}
-.cal-nav:hover{background:rgba(201,168,76,.25);border-color:#C9A84C}
-.cal-mo{font-size:13px;font-weight:700;color:#fff;letter-spacing:.16em;text-transform:uppercase}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:8px;background:rgba(74,28,107,.04);border-radius:8px;padding:6px}
-.cdl{text-align:center;font-size:9px;padding:3px 0 5px;font-weight:700;letter-spacing:.05em;color:#5a2d82}
-.cdl.weekend{color:#9a7200}
-.cd{text-align:center;padding:6px 2px;border-radius:6px;font-size:11px;cursor:pointer;color:#3d1568;transition:background .12s,color .12s}
-.cd:not(.cp):not(.cs):hover{background:rgba(74,28,107,.1)}
-.cw{background:rgba(201,168,76,.1);color:#7a5800;font-weight:600}
-.cw:not(.cp):not(.cs):hover{background:rgba(201,168,76,.22)!important}
-.cd.cs{background:var(--tp);color:#fff;font-weight:600;box-shadow:0 2px 8px rgba(74,28,107,.3)}
+.cal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.cal-nav{background:none;border:1px solid #e8e0f0;border-radius:6px;padding:2px 9px;cursor:pointer;font-size:14px;color:var(--tp);line-height:1.4}
+.cal-nav:hover{background:var(--tpp)}
+.cal-mo{font-size:12px;font-weight:500;color:var(--td)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:8px}
+.cdl{text-align:center;font-size:9px;color:#5a4a70;padding:2px 0;font-weight:500}
+.cd{text-align:center;padding:5px 2px;border-radius:5px;font-size:11px;cursor:pointer;color:var(--td)}
+.cd:hover:not(.cp):not(.ce){background:var(--tpp);color:var(--tp)}
+.cd.cs{background:var(--tp);color:#fff;font-weight:500}
 .cd.ce,.cd.cp{pointer-events:none}
-.cd.cp{color:#c0b0d0;opacity:0.5}
-.cd.ct{color:var(--tp);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+.cd.cp{color:#b0a0c0;opacity:0.6}
+.cd.ct{color:var(--tp);font-weight:500}
 .cd.ct.cp{color:#b0a0c0;opacity:0.55;font-weight:400}
-.slot-lbl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:700;margin:10px 0 6px;border-bottom:1px solid rgba(74,28,107,.1);padding-bottom:5px}
-.sl{border:1.5px solid rgba(90,45,130,.2);border-radius:7px;padding:7px 2px;text-align:center;font-size:11px;cursor:pointer;color:#3d1568;background:rgba(90,45,130,.04);font-weight:500;transition:all .15s}
-.sl:hover{background:rgba(90,45,130,.1);border-color:var(--tp);transform:translateY(-1px);box-shadow:0 3px 8px rgba(74,28,107,.15)}
-.sl.ss{background:var(--tp);color:#fff;border-color:var(--tp);font-weight:600;box-shadow:0 2px 8px rgba(74,28,107,.3)}
-.sl.sb{background:#f0ebf7;color:#b8a8cc;pointer-events:none;font-size:9px;border-color:#ddd5ee}
+.slot-lbl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:500;margin:8px 0 5px}
 .slots{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
-
+.sl{border:1.5px solid #d4c8e8;border-radius:6px;padding:6px 2px;text-align:center;font-size:11px;cursor:pointer;color:var(--td);box-shadow:0 1px 4px rgba(74,28,107,.10);transition:border-color .15s,box-shadow .15s,transform .15s}
+.sl:hover:not(.sb){border-color:var(--tp);color:var(--tp);background:var(--tpp);box-shadow:0 3px 8px rgba(74,28,107,.12);transform:translateY(-1px)}
+.sl.ss{background:var(--tp);color:#fff;border-color:var(--tp);font-weight:500}
+.sl.sb{background:#ede8f3;color:#b8a8cc;pointer-events:none;font-size:9px;border-color:#d0c8e0}
 
 .sumcard{background:#fff;border:1.5px solid #d4c8e8;border-radius:10px;overflow:hidden;box-shadow:0 2px 10px rgba(74,28,107,.10)}
 .sum-hdr{background:var(--tp);padding:10px 13px}
@@ -951,8 +947,7 @@ function mkCal(){
       var _dieserTag = new Date(cd.base.getFullYear(),cd.base.getMonth(),d);
       if(_dieserTag > _maxDatum) isBlocked=true;
     }
-    var isWeekend=dateObj.getDay()===0||dateObj.getDay()===6; // 0=So, 6=Sa
-    days+='<div class="cd '+(isBlocked?'cp':'')+' '+(isToday&&!isSel&&!isBlocked?'ct':'')+' '+(isSel?'cs':'')+' '+(isWeekend&&!isBlocked&&!isSel?'cw':'')+'"'
+    days+='<div class="cd '+(isBlocked?'cp':'')+' '+(isToday&&!isSel&&!isBlocked?'ct':'')+' '+(isSel?'cs':'')+'"'
       +(isBlocked?'':' onclick="pickDay(\''+key+'\')"')+' style="'+(isClosed&&!isPast?'text-decoration:line-through;opacity:0.35':'')+'">'+d+'</div>';
   }
   var slots=availSlots();
@@ -973,7 +968,7 @@ function mkCal(){
     +'<span class="cal-mo">'+mo+'</span>'
     +'<button class="cal-nav" onclick="calNext()">&#8250;</button></div>'
     +'<div class="cal-grid">'
-    +['Mo','Di','Mi','Do','Fr','Sa','So'].map(function(x,i){return'<div class="cdl'+(i>=5?' weekend':'')+'">'+x+'</div>';}).join('')
+    +['Mo','Di','Mi','Do','Fr','Sa','So'].map(function(x){return'<div class="cdl">'+x+'</div>';}).join('')
     +days+'</div>'+slotsHtml
     +(st.dual&&slot2time()?'<p class="hint">② startet ca. '+slot2time()+' Uhr</p>':'');
 }
@@ -1348,7 +1343,7 @@ const DAY_LABELS = {monday:'Montag',tuesday:'Dienstag',wednesday:'Mittwoch',thur
 
 function getSalonId(){return new URLSearchParams(window.location.search).get('salon_id');}
 function getTodayKey(){var m={0:'sunday',1:'monday',2:'tuesday',3:'wednesday',4:'thursday',5:'friday',6:'saturday'};return m[new Date().getDay()];}
-function formatHours(d){if(!d)return'—';if(!d.aktiv)return'Geschlossen';var sl=_slotsFor(d);if(!sl.length)return'—';return sl.map(function(s){return s.start+' – '+s.end;}).join(', ');}
+function formatHours(d){if(!d)return'—';if(!d.aktiv)return'Geschlossen';var sl=_slotsFor(d);if(!sl.length)return'—';return sl.map(function(s){return s.start+' – '+s.end;}).join('<br>');}
 
 function renderWorkingHours(arbeitszeiten){
   if(!arbeitszeiten)return;
@@ -1433,7 +1428,7 @@ function renderHdHoursRows(){
     var timeStr=closed?'—':formatHours(d);
     return'<div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 7px;border-radius:7px;'+(isToday?'background:rgba(255,255,255,.15)':'')+'">'
       +'<span style="font-size:9px;font-weight:600;'+(isToday?'color:#C9A84C':'color:rgba(255,255,255,.45)')+';letter-spacing:.05em;text-transform:uppercase">'+DAY_LABELS[k].slice(0,2)+'</span>'
-      +'<span style="font-size:10px;white-space:nowrap;'+(closed?'color:rgba(255,255,255,.25)':isToday?'color:#fff;font-weight:600':'color:rgba(255,255,255,.65)')+'">'+timeStr+'</span>'
+      +'<span style="font-size:10px;text-align:center;line-height:1.5;'+(closed?'color:rgba(255,255,255,.25)':isToday?'color:#fff;font-weight:600':'color:rgba(255,255,255,.65)')+'">'+timeStr+'</span>'
       +'</div>';
   }).join('');
 }
