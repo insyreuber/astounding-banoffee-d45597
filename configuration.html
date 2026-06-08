@@ -917,15 +917,21 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   <!-- Staff form view -->
   <div class="modal-body" id="s-main-view">
 
-    <!-- Avatar (klickbar für Farbauswahl) -->
-    <div style="display:flex;justify-content:center;margin-bottom:16px">
-      <!-- Hidden file input -->
-      <input type="file" id="s-avatar-file" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
-      <div id="s-modal-avatar" onclick="toggleColorPicker()" style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;cursor:pointer;position:relative;box-shadow:0 2px 10px rgba(0,0,0,.15);transition:transform .15s;background-size:cover;background-position:center" title="Farbe oder Foto ändern">
-        <span id="s-modal-avatar-ini">?</span>
-        <div style="position:absolute;bottom:0;right:0;width:20px;height:20px;border-radius:50%;background:var(--bg);border:2px solid var(--border);display:flex;align-items:center;justify-content:center">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+    <!-- Avatar left + Name/Rolle rechts -->
+    <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:16px">
+      <div style="flex-shrink:0">
+        <!-- Hidden file input -->
+        <input type="file" id="s-avatar-file" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
+        <div id="s-modal-avatar" onclick="toggleColorPicker()" style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;cursor:pointer;position:relative;box-shadow:0 2px 10px rgba(0,0,0,.15);transition:transform .15s;background-size:cover;background-position:center" title="Farbe oder Foto ändern">
+          <span id="s-modal-avatar-ini">?</span>
+          <div style="position:absolute;bottom:0;right:0;width:20px;height:20px;border-radius:50%;background:var(--bg);border:2px solid var(--border);display:flex;align-items:center;justify-content:center">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          </div>
         </div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+        <div class="field" style="margin-bottom:0"><label>Anzeigename (im Buchungswidget) *</label><input type="text" id="s-display" placeholder="z.B. Niran T." required oninput="updateModalAvatar()"></div>
+        <div class="field" style="margin-bottom:0"><label>Rolle / Berufsbezeichnung</label><input type="text" id="s-role" placeholder="z.B. Massagetherapeutin"></div>
       </div>
     </div>
     <!-- Color picker (hidden by default) -->
@@ -959,11 +965,6 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
       </div>
     </div>
 
-    <!-- Anzeigename & Rolle -->
-    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
-      <div class="field" style="margin-bottom:0"><label>Anzeigename (im Buchungswidget) *</label><input type="text" id="s-display" placeholder="z.B. Niran T." required oninput="updateModalAvatar()"></div>
-      <div class="field" style="margin-bottom:0"><label>Rolle / Berufsbezeichnung</label><input type="text" id="s-role" placeholder="z.B. Massagetherapeutin"></div>
-    </div>
     <!-- Hidden name field — uses display name as fallback -->
     <input type="hidden" id="s-name">
     <input type="hidden" id="s-email">
