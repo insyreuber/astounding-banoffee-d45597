@@ -3509,9 +3509,11 @@ function openStaffModal(data){
   pickColor('#3498db');
   // Now set new values
   editingStaffId=data?data.mitarbeiter.id:null;
-  // Reset gcal section onclick to use current editingStaffId
+  // Set gcal onclick with the correct staffId captured now
   if(gcalSection){
-    gcalSection.onclick=null; // clear any previous handler
+    (function(sid){
+      gcalSection.onclick=function(){openCalendarPicker(sid);};
+    })(editingStaffId);
   }
   document.getElementById('staff-modal-title').textContent=data?'Profil bearbeiten':'Mitarbeiter hinzufügen';
   document.getElementById('s-delete-wrap').style.display=data?'block':'none';
