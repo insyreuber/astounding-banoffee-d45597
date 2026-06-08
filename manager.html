@@ -728,7 +728,7 @@ function renderStorno(rows,varianteMap,staffMap,serviceMap){
           ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:auto;padding:8px 14px;background:#e74c3c;box-shadow:0 0 12px rgba(231,76,60,.4)"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg> Storno bestätigen</a>'
           :'<span></span>')+
         (!isErledigt
-          ?'<button onclick="stornoErledigt(\''+b.id+'\')" style="background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:12px;color:#16a34a;font-weight:600;flex-shrink:0">✓ Erledigt</button>'
+          ?'<div onclick="markErledigt(\'storno\',\''+b.id+'\',this)" style="width:22px;height:22px;border-radius:5px;border:2px solid #c8bcd8;background:#f5f5f5;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .2s" title="Erledigt markieren"></div>'
           :'<span style="font-size:11px;color:#bbb;font-weight:500">✓ Erledigt</span>')+
       '</div>'+
     '</div>';
@@ -769,6 +769,21 @@ function erledigt(id){
 }
 function stornoErledigt(id){erledigt(id);}
 function reminderErledigt(id){erledigt(id);}
+function markErledigt(type,id,el){
+  // Animate: grey → green with checkmark
+  el.style.background='#27ae60';
+  el.style.borderColor='#27ae60';
+  el.innerHTML='<svg width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="10 3 5 9 2 6"/></svg>';
+  el.style.transform='scale(1.2)';
+  setTimeout(function(){el.style.transform='scale(1)';},150);
+  // Then call the actual erledigt function
+  setTimeout(function(){
+    if(type==='confirm')confirmErledigt(id);
+    else if(type==='reminder')reminderErledigt(id);
+    else if(type==='storno')stornoErledigt(id);
+  },400);
+}
+
 function confirmErledigt(id){erledigt(id);}
 function tickerErledigt(id){
   if(!window._erledigtIds)window._erledigtIds=[];
@@ -893,7 +908,7 @@ function renderReminders(rows,varianteMap,staffMap,serviceMap){
           ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:auto;padding:8px 14px;background:#e67e22;box-shadow:0 0 12px rgba(230,126,34,.4)"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg> Erinnerung senden</a>'
           :'<span></span>')+
         (!isErledigt
-          ?'<button onclick="reminderErledigt(\''+b.id+'\')" style="background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:12px;color:#16a34a;font-weight:600;flex-shrink:0">✓ Erledigt</button>'
+          ?'<div onclick="markErledigt(\'reminder\',\''+b.id+'\',this)" style="width:22px;height:22px;border-radius:5px;border:2px solid #c8bcd8;background:#f5f5f5;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .2s" title="Erledigt markieren"></div>'
           :'<span style="font-size:11px;color:#bbb;font-weight:500">✓ Erledigt</span>')+
       '</div>'+
     '</div>';
@@ -949,7 +964,7 @@ function renderConfirm(rows,varianteMap,staffMap,serviceMap){
           ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:auto;padding:8px 14px;background:#27ae60;box-shadow:0 0 12px rgba(39,174,96,.4)"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg> Bestätigung senden</a>'
           :'<span></span>')+
         (!isErledigt
-          ?'<button onclick="confirmErledigt(\''+b.id+'\')" style="background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:12px;color:#16a34a;font-weight:600;flex-shrink:0">✓ Erledigt</button>'
+          ?'<div onclick="markErledigt(\'confirm\',\''+b.id+'\',this)" style="width:22px;height:22px;border-radius:5px;border:2px solid #c8bcd8;background:#f5f5f5;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .2s" title="Erledigt markieren"></div>'
           :'<span style="font-size:11px;color:#bbb;font-weight:500">✓ Erledigt</span>')+
       '</div>'+
     '</div>';
