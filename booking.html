@@ -94,7 +94,7 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .acc-body{overflow:hidden;max-height:0;opacity:0;transition:max-height .3s ease,opacity .2s,margin .2s}
 .acc-body.open{overflow:visible}
 .acc-body.open{max-height:2000px;opacity:1;margin-top:10px;overflow:visible}
-.staff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(234px,1fr));gap:7px;max-width:100%}
+.staff-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
 .stf{border:1.5px solid #d4c8e8;border-radius:8px;padding:10px 11px;display:flex;align-items:center;gap:9px;cursor:pointer;background:#fff;position:relative;overflow:visible;box-shadow:0 2px 8px rgba(74,28,107,.09),0 1px 3px rgba(74,28,107,.07);transition:border-color .15s,box-shadow .15s,transform .15s;z-index:1}
 .stf:hover{z-index:3}
 .stf:hover{border-color:var(--tpl);box-shadow:0 4px 12px rgba(74,28,107,.12);transform:translateY(-1px)}
@@ -120,10 +120,12 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .cal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
 .cal-nav{background:none;border:1px solid #e8e0f0;border-radius:6px;padding:2px 9px;cursor:pointer;font-size:14px;color:var(--tp);line-height:1.4}
 .cal-nav:hover{background:var(--tpp)}
-.cal-mo{font-size:12px;font-weight:500;color:var(--td)}
+.cal-mo{font-size:13px;font-weight:700;color:#3d1568;letter-spacing:.08em;text-transform:uppercase;font-family:'Playfair Display',Georgia,serif;background:linear-gradient(90deg,#3d1568,#C9A84C);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:8px}
-.cdl{text-align:center;font-size:9px;color:#5a4a70;padding:2px 0;font-weight:500}
+.cdl{text-align:center;font-size:9px;padding:2px 0;font-weight:700;letter-spacing:.05em;color:#5a2d82}
+.cdl.weekend{color:#C9A84C}
 .cd{text-align:center;padding:5px 2px;border-radius:5px;font-size:11px;cursor:pointer;color:var(--td)}
+.cw{color:#C9A84C;font-weight:600}
 .cd:hover:not(.cp):not(.ce){background:var(--tpp);color:var(--tp)}
 .cd.cs{background:var(--tp);color:#fff;font-weight:500}
 .cd.ce,.cd.cp{pointer-events:none}
@@ -266,7 +268,7 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
   .svc-grid{grid-template-columns:1fr}
 
   /* Team: 1 Spalte */
-  .staff-grid{grid-template-columns:1fr;max-width:100%}
+  .staff-grid{grid-template-columns:1fr}
 
   /* Kalender + Summary untereinander */
   .cal-sum-row{grid-template-columns:1fr}
@@ -362,11 +364,6 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
   /* Header kompakter */
   .hd-name{font-size:16px}
   .hd-chip{font-size:12px}
-  .acc-current{font-size:16px}
-  /* Große Wochenansicht auf Mobile ausblenden */
-  #hd-hours-all{display:none!important}
-  /* Kleines Pill auf Mobile einblenden */
-  #hours-pill{display:block!important}
 }
 </style>
 </head>
@@ -421,12 +418,6 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
         </div>
       </div>
       <div id="hd-hours-rows" style="display:flex;flex-wrap:wrap;gap:2px"></div>
-    </div>
-    <!-- Kleines Öffnungszeiten-Pill — nur Mobile -->
-    <div id="hours-pill" onclick="window.toggleHours()" style="display:none;flex-shrink:0;cursor:pointer;background:rgba(255,255,255,.1);border-radius:8px;padding:7px 11px;position:relative">
-      <div id="hd-hours-status" style="font-size:10px;font-weight:600;color:#4ade80;margin-bottom:2px">Geöffnet</div>
-      <div id="today-hours-label" style="font-size:12px;color:#fff;font-weight:500">– ▾</div>
-      <div id="hours-drop" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:#3a1060;border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:8px;min-width:180px;z-index:99;box-shadow:0 8px 24px rgba(0,0,0,.3)"></div>
     </div>
   </div>
 </div>
@@ -879,18 +870,13 @@ function mkSvcCards(){
         var allowed=isVarAllowed(v.id);
         var clickable=allowed&&!blocked;
         varHtml+='<div onclick="event.stopPropagation();'+(clickable?'pickVar(\''+s.id+'\',\''+v.id+'\')':'')+'" style="'
-          +'padding:8px 12px;border-radius:8px;font-size:12px;min-height:36px;display:inline-flex;align-items:center;flex-wrap:wrap;'
+          +'padding:8px 12px;border-radius:8px;font-size:12px;min-height:36px;display:inline-flex;align-items:center;'
           +'cursor:'+(clickable?'pointer':'default')+';transition:all .15s;'
           +'border:1.5px solid '+(isSel?'var(--tp)':allowed?'#e8e0f0':'#ece8f0')+';'
           +'background:'+(isSel?'var(--tp)':allowed?'#fff':'#f5f3f8')+';'
           +'color:'+(isSel?'#fff':allowed?'var(--td)':'#c0b8cc')+';'
-          +'font-weight:'+(isSel?'600':'400')+';white-space:normal;word-break:break-word;">';
-        var dispMin=(v.puffer_minuten>0)?(v.min+v.puffer_minuten):v.min;
-        varHtml+=(v.service_name?v.service_name+' · ':'');
-        if(v.dauer_anzeigen!==false)varHtml+=(dispMin||v.min||'?')+' Min';
-        if(v.dauer_anzeigen!==false&&v.preis_anzeigen!==false&&v.preis)varHtml+=' · ';
-        if(v.preis_anzeigen!==false&&v.preis)varHtml+=v.preis+' €';
-        if(v.bezeichnung)varHtml+=(v.dauer_anzeigen!==false||v.preis_anzeigen!==false?' · ':'')+v.bezeichnung;
+          +'font-weight:'+(isSel?'600':'400')+';">';
+        varHtml+=(v.service_name?v.service_name+' · ':'')+v.min+' Min'+(v.preis?' · '+v.preis+' €':'');
         if(!allowed)varHtml+=' <span style="font-size:9px;opacity:0.5">·</span>';
         varHtml+='</div>';
       });
@@ -963,7 +949,8 @@ function mkCal(){
       var _dieserTag = new Date(cd.base.getFullYear(),cd.base.getMonth(),d);
       if(_dieserTag > _maxDatum) isBlocked=true;
     }
-    days+='<div class="cd '+(isBlocked?'cp':'')+' '+(isToday&&!isSel&&!isBlocked?'ct':'')+' '+(isSel?'cs':'')+'"'
+    var isWeekend=dateObj.getDay()===0||dateObj.getDay()===6; // 0=So, 6=Sa
+    days+='<div class="cd '+(isBlocked?'cp':'')+' '+(isToday&&!isSel&&!isBlocked?'ct':'')+' '+(isSel?'cs':'')+' '+(isWeekend&&!isBlocked&&!isSel?'cw':'')+'"'
       +(isBlocked?'':' onclick="pickDay(\''+key+'\')"')+' style="'+(isClosed&&!isPast?'text-decoration:line-through;opacity:0.35':'')+'">'+d+'</div>';
   }
   var slots=availSlots();
@@ -984,7 +971,7 @@ function mkCal(){
     +'<span class="cal-mo">'+mo+'</span>'
     +'<button class="cal-nav" onclick="calNext()">&#8250;</button></div>'
     +'<div class="cal-grid">'
-    +['Mo','Di','Mi','Do','Fr','Sa','So'].map(function(x){return'<div class="cdl">'+x+'</div>';}).join('')
+    +['Mo','Di','Mi','Do','Fr','Sa','So'].map(function(x,i){return'<div class="cdl'+(i>=5?' weekend':'')+'">'+(i>=5?'<span style="color:#C9A84C">'+x+'</span>':x)+'</div>';}).join('')
     +days+'</div>'+slotsHtml
     +(st.dual&&slot2time()?'<p class="hint">② startet ca. '+slot2time()+' Uhr</p>':'');
 }
@@ -1230,13 +1217,12 @@ window.submitBooking=async function(){
   var services=st.services.map(function(s){
     var svc=fsvc(s.svcId);
     var v=fvar(s.varId);
-    var min=v?v.min:0;
     return{
       service_id:s.svcId,
       service_name:svc?svc.name:'',
       variante_id:s.varId,
       variante_name:v?v.service_name:'',
-      dauer_minuten:min,
+      dauer_minuten:v?v.min:0,
       preis:v?v.preis:0
     };
   });
@@ -1247,9 +1233,7 @@ window.submitBooking=async function(){
     date:dateFormatted,
     time:st.slot,
     datetime:timeISO,
-    duration_minutes:totalMinuten()+st.services.reduce(function(sum,s){var v=fvar(s.varId);return sum+(v?v.puffer_minuten||0:0);},0),
-    puffer_minuten:st.services.reduce(function(sum,s){var v=fvar(s.varId);return sum+(v?v.puffer_minuten||0:0);},0),
-    display_duration_minutes:totalMinuten(),
+    duration_minutes:totalMinuten(),
     services:services,
     customer_name:st.name.trim(),
     customer_phone:normPhone(st.phone),
@@ -1464,7 +1448,7 @@ async function loadSalonProfile(){
     var fs=data.feature_settings||{};
 
     // Buchungsseite gesperrt? — nur wenn explizit false gesetzt
-    var bookingActive = data.booking_active===false ? false : true;
+    var bookingActive = data.feature_settings&&data.feature_settings.booking_active===false ? false : true;
     if(bookingActive===false){
       var sName=data.brand_name||data.name||'Salon';
       var logo=data.logo_url||'';
@@ -1669,13 +1653,10 @@ async function loadServices(salonId){
           VARIANTEN[v.service_id].push({
             id:v.id,
             service_name:v.service_name||'',
-            bezeichnung:v.bezeichnung||'',
-            min:parseInt(v.dauer_minuten)||0,
-            dauer_anzeigen:v.dauer_anzeigen!==false,
+            min:v.dauer_minuten,
             preis:parseFloat(v.preis)||0,
-            preis_anzeigen:v.preis_anzeigen!==false,
             puffer_aktiv:v.puffer_aktiv,
-            puffer_minuten:parseInt(v.puffer_minuten)||0
+            puffer_minuten:v.puffer_minuten||0
           });
         });
       }
