@@ -1806,8 +1806,26 @@ function clIconsHtml(i,selectedKey){
     +'</div>';
 }
 
+window.toggleClPicker=function(i){
+  var picker=document.getElementById('cl-picker-'+i);
+  if(!picker)return;
+  var isOpen=picker.style.display==='block';
+  // Close all pickers first
+  document.querySelectorAll('[id^="cl-picker-"]').forEach(function(p){p.style.display='none';});
+  if(!isOpen)picker.style.display='block';
+};
+// Close pickers on outside click
+document.addEventListener('click',function(e){
+  if(!e.target.closest('[id^="cl-picker-"]')&&!e.target.closest('button[onclick*="toggleClPicker"]')){
+    document.querySelectorAll('[id^="cl-picker-"]').forEach(function(p){p.style.display='none';});
+  }
+});
+
 window.pickClIcon=function(i,key){
   customLinks[i].icon=key;
+  // Close picker
+  var picker=document.getElementById('cl-picker-'+i);
+  if(picker)picker.style.display='none';
   renderCustomLinks();
   setTimeout(function(){
     var rows=document.querySelectorAll('#custom-links-list .cl-row');
@@ -1827,17 +1845,28 @@ function renderCustomLinks(){
   if(empty)empty.style.display='none';
   list.innerHTML=customLinks.map(function(l,i){
     var icon=l.icon||'custom';
-    var isCustom=icon==='custom';
     var ph=clPlaceholder(icon);
-    return'<div class="cl-row" style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;">'
-      +clIconsHtml(i,icon)
-      +'<div class="custom-link-row" style="margin-top:6px">'
-        +'<input type="text" placeholder="Titel (optional)" value="'+esc(l.title||'')+'" oninput="customLinks['+i+'].title=this.value" style="flex:0 0 120px">'
-        +'<input type="text" class="cl-url-input" placeholder="'+ph+'" value="'+esc(l.url||'')+'" oninput="customLinks['+i+'].url=this.value">'
+    var svgIcon=CL_SVGS[icon]||CL_SVGS['custom'];
+    return'<div class="cl-row" style="display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:8px 10px;">'
+      // 1. Standard Icon Button (toggles picker)
+      +'<div style="position:relative;flex-shrink:0">'
+        +'<button type="button" onclick="toggleClPicker('+i+')" title="Icon wählen" style="width:36px;height:36px;border:1.5px solid var(--border);border-radius:8px;background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--tpl);transition:border-color .15s" onmouseover="this.style.borderColor=\'var(--tpl)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'+svgIcon+'</button>'
+        +'<div id="cl-picker-'+i+'" style="display:none;position:absolute;top:42px;left:0;z-index:50;background:#fff;border:1.5px solid var(--border);border-radius:10px;box-shadow:0 4px 16px rgba(74,28,107,.15);padding:8px;display:none">'
+          +'<div style="display:flex;gap:5px;flex-wrap:wrap;width:220px">'
+          +CL_ICONS.map(function(ic){
+            var sel=icon===ic.key?' selected':'';
+            var svg=CL_SVGS[ic.key]||CL_SVGS['custom'];
+            return'<button type="button" class="cl-icon-btn'+sel+'" onclick="pickClIcon('+i+',\''+ic.key+'\')" title="'+ic.label+'">'+svg+'</button>';
+          }).join('')
+          +'</div>'
+        +'</div>'
       +'</div>'
-      +'<div style="display:flex;justify-content:flex-end;margin-top:6px">'
-        +'<button onclick="removeCustomLink('+i+')" class="btn btn-sm btn-danger">Entfernen</button>'
-      +'</div>'
+      // 2. Titel
+      +'<input type="text" placeholder="Titel" value="'+esc(l.title||'')+'" oninput="customLinks['+i+'].title=this.value" style="flex:0 0 110px;border:1.5px solid var(--border);border-radius:8px;padding:7px 10px;font-size:13px;color:var(--td);background:var(--white);font-family:inherit;outline:none;box-sizing:border-box" onfocus="this.style.borderColor=\'var(--tpl)\'" onblur="this.style.borderColor=\'var(--border)\'">'
+      // 3. URL
+      +'<input type="text" class="cl-url-input" placeholder="'+ph+'" value="'+esc(l.url||'')+'" oninput="customLinks['+i+'].url=this.value" style="flex:1;border:1.5px solid var(--border);border-radius:8px;padding:7px 10px;font-size:13px;color:var(--td);background:var(--white);font-family:inherit;outline:none;box-sizing:border-box;min-width:0" onfocus="this.style.borderColor=\'var(--tpl)\'" onblur="this.style.borderColor=\'var(--border)\'">'
+      // 4. Entfernen
+      +'<button onclick="removeCustomLink('+i+')" class="btn btn-sm btn-danger" style="flex-shrink:0">Entfernen</button>'
     +'</div>';
   }).join('<div style="height:6px"></div>');
 }
