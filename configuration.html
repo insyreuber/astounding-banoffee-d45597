@@ -3149,8 +3149,14 @@ function connectOwnAccount(){
 }
 
 async function openCalendarPicker(mitarbeiterId){
+  if(!mitarbeiterId){
+    toast('Bitte Mitarbeiter zuerst speichern, dann Kalender verbinden','error');
+    return;
+  }
   calPickerMitarbeiterId=mitarbeiterId;
-  var m=staffData.filter(function(i){return i.mitarbeiter.id===mitarbeiterId;})[0];
+  // Capture in local const so all closures use the same value
+  var capturedMitId=mitarbeiterId;
+  var m=staffData.filter(function(i){return i.mitarbeiter.id===capturedMitId;})[0];
   var name=m?esc(m.mitarbeiter.display_name||m.mitarbeiter.name):'Mitarbeiter';
   document.getElementById('staff-modal-title').textContent='Kalender wählen — '+name;
   document.getElementById('cal-back-btn').style.display='block';
@@ -3177,15 +3183,18 @@ async function openCalendarPicker(mitarbeiterId){
     window._calNameMap=window._calNameMap||{};
     calendars.forEach(function(cal){window._calNameMap[cal.id]=cal.name;});
     if(!calendars.length){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Keine Subkalender gefunden.</div>';return;}
+    // Fetch fresh to get current google_calendar_id for THIS mitarbeiter
+    var freshRes=await sb.from('mitarbeiter').select('google_calendar_id').eq('id',capturedMitId).single();
+    var currentCalId=freshRes.data?freshRes.data.google_calendar_id:null;
     list.innerHTML='';
     calendars.forEach(function(cal){
-      var current=m&&m.mitarbeiter.google_calendar_id===cal.id;
+      var current=currentCalId&&currentCalId===cal.id;
       var isPrimary=cal.primary;
       var div=document.createElement('div');
       div.style.cssText='display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;background:'+(current?'var(--tpp)':'transparent')+';border:1.5px solid '+(current?'var(--tpl)':'transparent')+';transition:all .15s;margin-bottom:4px';
       div.dataset.calId=cal.id;
-      div.dataset.mitId=calPickerMitarbeiterId;
-      div.addEventListener('click',function(){selectCalendar(this.dataset.mitId,this.dataset.calId);});
+      div.dataset.mitId=capturedMitId;
+      div.addEventListener('click',function(){selectCalendar(capturedMitId,this.dataset.calId);});
       var dotDiv=document.createElement('div');
       dotDiv.style.cssText='width:12px;height:12px;border-radius:50%;background:'+(cal.color||'#4a1c6b')+';flex-shrink:0';
       var infoDiv=document.createElement('div');
@@ -3206,7 +3215,7 @@ async function openCalendarPicker(mitarbeiterId){
         var disconnBtn=document.createElement('button');
         disconnBtn.style.cssText='font-size:9px;color:var(--danger);background:none;border:none;cursor:pointer;font-family:inherit;padding:0';
         disconnBtn.textContent='Trennen';
-        var mid=calPickerMitarbeiterId;
+        var mid=capturedMitId;
         disconnBtn.addEventListener('click',function(e){e.stopPropagation();disconnectCalendar(mid);});
         checkDiv.appendChild(disconnBtn);
         div.appendChild(checkDiv);
