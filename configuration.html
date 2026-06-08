@@ -3559,9 +3559,13 @@ function closeStaffModal(){
   editingStaffId=null;
   updateFabVisibility();
 }
-function editStaff(id){
-  var item=staffData.filter(function(i){return i.mitarbeiter.id===id;})[0];
-  if(item)openStaffModal(item);
+async function editStaff(id){
+  // Fetch fresh data from DB — never rely on cached staffData
+  var res=await sb.from('mitarbeiter').select('*').eq('id',id).single();
+  if(res.error){toast('Fehler beim Laden','error');return;}
+  var aRes=await sb.from('mitarbeiter_service_varianten').select('service_variante_id').eq('mitarbeiter_id',id).eq('aktiv',true);
+  var varianteIds=aRes.data?aRes.data.map(function(a){return a.service_variante_id;}):[];
+  openStaffModal({mitarbeiter:res.data,varianteIds:varianteIds});
 }
 
 async function saveStaff(silent){
