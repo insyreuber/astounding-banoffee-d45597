@@ -4388,8 +4388,10 @@ function _pSaved(id){
 
 
 function resetProfil(){
-  renderProfilContent(_pActive);
-  toast('Zurückgesetzt','success');
+  loadProfil().then(function(){
+    renderProfilContent(_pActive);
+    toast('Zurückgesetzt','success');
+  });
 }
 
 
