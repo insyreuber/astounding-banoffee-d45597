@@ -1884,6 +1884,8 @@ function removeCustomLink(i){
 
 
 async function saveProfil(silent){
+  // Snapshot vor dem Speichern für Undo
+  window._pDataBeforeSave=JSON.parse(JSON.stringify(window._pData||{}));
   if(!SALON_ID){toast('Keine salon_id','error');return;}
 
   // Helper: read field value if it exists in DOM
@@ -1967,6 +1969,7 @@ async function saveProfil(silent){
     buildProfilToggles();
     if(st){st.className='save-status saved';st.textContent='✓ Gespeichert';}
     toast('Profil gespeichert ✓','success');
+    window._pDataBeforeSave=null; // clear undo snapshot after second save
     // Nach loadProfil Werte wiederherstellen
     var _savedVorlauf=window._pData.feature_settings.booking_vorlauf;
     var _savedHorizont=window._pData.feature_settings.booking_horizont;
@@ -4388,10 +4391,21 @@ function _pSaved(id){
 
 
 function resetProfil(){
-  loadProfil().then(function(){
+  if(window._pDataBeforeSave){
+    window._pData=JSON.parse(JSON.stringify(window._pDataBeforeSave));
+    window._pDataBeforeSave=null;
     renderProfilContent(_pActive);
-    toast('Zurückgesetzt','success');
-  });
+    // Also push the old data back to Supabase
+    sb.from('kunden_profile').update(window._pData).eq('id',SALON_ID).then(function(res){
+      if(!res.error)toast('Zurückgesetzt ✓','success');
+      else toast('Fehler beim Zurücksetzen','error');
+    });
+  } else {
+    loadProfil().then(function(){
+      renderProfilContent(_pActive);
+      toast('Zurückgesetzt ✓','success');
+    });
+  }
 }
 
 
