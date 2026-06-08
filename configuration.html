@@ -3254,6 +3254,9 @@ async function selectCalendar(mitarbeiterId, calendarId){
   staffData.forEach(function(item){
     if(item.mitarbeiter.id===mitarbeiterId){item.mitarbeiter._calName=resolvedName;item.mitarbeiter.google_calendar_id=calendarId;}
   });
+  // Update hidden s-cal field so saveStaff uses correct value
+  var calEl=document.getElementById('s-cal');
+  if(calEl)calEl.value=calendarId;
   // Update icon immediately
   var gcalDot=document.getElementById('s-gcal-connected-dot');
   var gcalNameLbl=document.getElementById('s-gcal-name-label');
@@ -3263,7 +3266,8 @@ async function selectCalendar(mitarbeiterId, calendarId){
   if(gcalNameLbl)gcalNameLbl.textContent=resolvedName;
   toast('Kalender gespeichert ✓','success');
   closeCalendarPicker();
-  await loadStaff();
+  // Reload staff in background without losing modal context
+  loadStaff();
 }
 
 function closeCalendarPicker(){
@@ -3599,13 +3603,13 @@ async function saveStaff(silent){
   var btn=document.getElementById('btn-staff-save');btn.disabled=true;
   var hasCustom=document.getElementById('s-custom-hours').checked;
   var nextSort=staffData.length;
+  var calVal=document.getElementById('s-cal').value.trim();
   var payload={
     salon_id:SALON_ID,
     name:name,
     display_name:document.getElementById('s-display').value.trim()||name,
     role:document.getElementById('s-role').value.trim(),
     email:document.getElementById('s-email').value.trim()||null,
-    google_calendar_id:document.getElementById('s-cal').value.trim(),
     arbeitszeiten:hasCustom?readHours('s-'):null,
     temp_arbeitszeiten:readStaffTempEntries().length?readStaffTempEntries():null,
     farbe:document.getElementById('s-color').value,
@@ -3613,6 +3617,8 @@ async function saveStaff(silent){
     avatar_url:(function(){var v=document.getElementById('s-avatar-url');return v?v.value||null:null;})(),
     sortierung:editingStaffId?undefined:nextSort
   };
+  // Only include google_calendar_id if explicitly set (don't overwrite with empty)
+  if(calVal)payload.google_calendar_id=calVal;
   // sortierung nur beim Insert
   if(editingStaffId)delete payload.sortierung;
   var res;
@@ -3635,8 +3641,9 @@ async function saveStaff(silent){
     );
     console.log('insert result:', insRes);
   }
+  var wasEditing=!!editingStaffId;
   closeStaffModal();
-  if(!silent)toast((editingStaffId?'Mitarbeiter aktualisiert':'Mitarbeiter angelegt')+' ✓','success');
+  if(!silent)toast((wasEditing?'Mitarbeiter aktualisiert':'Mitarbeiter angelegt')+' ✓','success');
   await loadStaff();}
 
 function deleteCurrentStaff(){
