@@ -3503,7 +3503,15 @@ function openStaffModal(data){
   if(gcalDot)gcalDot.style.display='none';
   if(gcalNameLbl)gcalNameLbl.textContent='';
   if(gcalSection){gcalSection.style.borderColor='var(--border)';gcalSection.style.background='var(--white)';}
-  var hoursWrap=document.getElementById('s-hours-wrap');
+  // Always reset calendar picker to main view
+  var _calView=document.getElementById('s-cal-view');
+  var _mainView=document.getElementById('s-main-view');
+  var _calBack=document.getElementById('cal-back-btn');
+  var _footer=document.querySelector('#staff-modal .modal-footer');
+  if(_calView)_calView.style.display='none';
+  if(_mainView)_mainView.style.display='block';
+  if(_calBack)_calBack.style.display='none';
+  if(_footer)_footer.style.display='flex';
   if(hoursWrap)hoursWrap.style.display='none';
   var customHours=document.getElementById('s-custom-hours');
   if(customHours)customHours.checked=false;
@@ -3587,15 +3595,24 @@ function closeStaffModal(){
   updateFabVisibility();
 }
 async function editStaff(id){
-  // Close any open modal first, then open fresh
+  // Fully reset modal state including calendar picker view
   var overlay=document.getElementById('staff-overlay');
   var modal=document.getElementById('staff-modal');
   if(overlay)overlay.style.display='none';
   if(modal)modal.classList.remove('open');
   editingStaffId=null;
+  // Reset calendar picker back to main view
+  var calView=document.getElementById('s-cal-view');
+  var mainView=document.getElementById('s-main-view');
+  var calBackBtn=document.getElementById('cal-back-btn');
+  var footer=document.querySelector('#staff-modal .modal-footer');
+  if(calView)calView.style.display='none';
+  if(mainView)mainView.style.display='block';
+  if(calBackBtn)calBackBtn.style.display='none';
+  if(footer)footer.style.display='flex';
   // Small delay to ensure DOM is reset
   await new Promise(function(r){setTimeout(r,50);});
-  // Fetch fresh data from DB — never rely on cached staffData
+  // Fetch fresh data from DB
   var res=await sb.from('mitarbeiter').select('*').eq('id',id).single();
   if(res.error){toast('Fehler beim Laden','error');return;}
   var aRes=await sb.from('mitarbeiter_service_varianten').select('service_variante_id').eq('mitarbeiter_id',id).eq('aktiv',true);
