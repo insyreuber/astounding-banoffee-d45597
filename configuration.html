@@ -3464,6 +3464,33 @@ function pickColor(hex){
 }
 
 function openStaffModal(data){
+  // Reset all fields first
+  document.getElementById('s-name').value='';
+  document.getElementById('s-display').value='';
+  document.getElementById('s-role').value='';
+  document.getElementById('s-email').value='';
+  document.getElementById('s-cal').value='';
+  var avUrlEl=document.getElementById('s-avatar-url');
+  if(avUrlEl)avUrlEl.value='';
+  var avRem=document.getElementById('s-avatar-remove');
+  if(avRem)avRem.style.display='none';
+  var cpWrap=document.getElementById('s-color-picker-wrap');
+  if(cpWrap)cpWrap.style.display='none';
+  var gcalDot=document.getElementById('s-gcal-connected-dot');
+  var gcalNameLbl=document.getElementById('s-gcal-name-label');
+  var gcalSection=document.getElementById('s-gcal-section');
+  if(gcalDot)gcalDot.style.display='none';
+  if(gcalNameLbl)gcalNameLbl.textContent='';
+  if(gcalSection){gcalSection.style.borderColor='var(--border)';gcalSection.style.background='var(--white)';}
+  var hoursWrap=document.getElementById('s-hours-wrap');
+  if(hoursWrap)hoursWrap.style.display='none';
+  var customHours=document.getElementById('s-custom-hours');
+  if(customHours)customHours.checked=false;
+  staffTempEntries=[];staffTempIdCounter=0;staffTempCalOffset={};
+  var sList=document.getElementById('s-svc-list');
+  if(sList)sList.innerHTML='';
+  pickColor('#3498db');
+  // Now set new values
   editingStaffId=data?data.mitarbeiter.id:null;
   document.getElementById('staff-modal-title').textContent=data?'Profil bearbeiten':'Mitarbeiter hinzufügen';
   document.getElementById('s-delete-wrap').style.display=data?'block':'none';
