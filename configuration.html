@@ -3135,6 +3135,7 @@ async function openCalendarPicker(mitarbeiterId){
   calPickerMitarbeiterId=mitarbeiterId;
   // Capture in local const so all closures use the same value
   var capturedMitId=mitarbeiterId;
+  console.log('openCalendarPicker: mitarbeiterId=', capturedMitId);
   var m=staffData.filter(function(i){return i.mitarbeiter.id===capturedMitId;})[0];
   var name=m?esc(m.mitarbeiter.display_name||m.mitarbeiter.name):'Mitarbeiter';
   document.getElementById('staff-modal-title').textContent='Kalender wählen — '+name;
@@ -3233,7 +3234,18 @@ async function disconnectCalendar(mitarbeiterId){
 }
 
 async function selectCalendar(mitarbeiterId, calendarId){
+  console.log('selectCalendar called:', mitarbeiterId, calendarId);
+  if(!mitarbeiterId||mitarbeiterId==='null'||mitarbeiterId==='undefined'){
+    toast('Fehler: Kein Mitarbeiter ausgewählt','error');
+    console.error('selectCalendar: invalid mitarbeiterId:', mitarbeiterId);
+    return;
+  }
+  if(!calendarId){
+    toast('Fehler: Kein Kalender ausgewählt','error');
+    return;
+  }
   var res=await sb.from('mitarbeiter').update({google_calendar_id:calendarId}).eq('id',mitarbeiterId);
+  console.log('Supabase update result:', res);
   if(res.error){toast('Fehler: '+res.error.message,'error');return;}
   var resolvedName=(window._calNameMap&&_calNameMap[calendarId])||calendarId.split('@')[0];
   staffData.forEach(function(item){
@@ -3497,8 +3509,8 @@ function openStaffModal(data){
   // Store mitId directly on gcal icon so onclick doesn't rely on global
   if(gcalSection){
     var midAttr=editingStaffId||'';
-    gcalSection.setAttribute('data-mid',midAttr);
-    gcalSection.setAttribute('onclick','openCalendarPicker(this.getAttribute(\'data-mid\'))');
+    gcalSection.dataset.mid=midAttr;
+    gcalSection.onclick=function(){openCalendarPicker(this.dataset.mid);};
   }
   document.getElementById('staff-modal-title').textContent=data?'Profil bearbeiten':'Mitarbeiter hinzufügen';
   document.getElementById('s-delete-wrap').style.display=data?'block':'none';
