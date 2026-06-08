@@ -673,9 +673,9 @@ function renderTicker(rows,varianteMap,staffMap){
     aktionen+=btn('Storno',waLink(phone,msgStorno),canStorno,'#e74c3c');
     aktionen+='<a href="'+successUrl+'" target="_blank" style="background:#5a2d82;border:1px solid #5a2d82;color:#fff;font-weight:700;box-shadow:0 0 10px #5a2d8299,0 0 20px #5a2d8244;border-radius:6px;padding:4px 9px;font-size:11px;white-space:nowrap;display:inline-block;text-decoration:none;">↗ Buchung</a>';
     if(isKachelErledigt){
-      aktionen+='<span style="margin-left:auto;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;font-size:12px;color:#16a34a;font-weight:600;cursor:default">✓</span>';
+      aktionen+='<div style="margin-left:auto;width:18px;height:18px;border-radius:4px;border:1.5px solid #27ae60;background:#27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:default"><svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="10 3 5 9 2 6"/></svg></div>';
     }else{
-      aktionen+='<button onclick="tickerErledigt(\''+b.id+'\')" style="margin-left:auto;background:'+(isErledigt2?'#e8f5e9':'var(--bg)')+';border:1px solid '+(isErledigt2?'#4ade80':'var(--border)')+';border-radius:6px;padding:2px 8px;font-size:12px;color:'+(isErledigt2?'#16a34a':'#ccc')+';font-weight:600;cursor:pointer">✓</button>';
+      aktionen+='<div onclick="tickerErledigt(\''+b.id+'\')" style="margin-left:auto;width:18px;height:18px;border-radius:4px;border:1.5px solid #c8bcd8;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor=\'#27ae60\'" onmouseout="this.style.borderColor=\'#c8bcd8\'"></div>';
     }
     aktionen+='</div>';
 
@@ -786,9 +786,20 @@ function confirmErledigt(id){erledigt(id);}
 function tickerErledigt(id){
   if(!window._erledigtIds)window._erledigtIds=[];
   var idx=window._erledigtIds.indexOf(id);
-  if(idx<0){window._erledigtIds.push(id);}else{window._erledigtIds.splice(idx,1);}
+  if(idx<0){
+    window._erledigtIds.push(id);
+    // Animate checkbox green
+    document.querySelectorAll('[onclick*="tickerErledigt(\''+id+'\')"]').forEach(function(el){
+      el.style.background='#27ae60';el.style.borderColor='#27ae60';
+      el.innerHTML='<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="10 3 5 9 2 6"/></svg>';
+      el.style.transform='scale(1.15)';
+      setTimeout(function(){el.style.transform='scale(1)';},150);
+    });
+  }else{
+    window._erledigtIds.splice(idx,1);
+  }
   saveErledigtIds();
-  updateErledigtVisual(id,idx<0);
+  setTimeout(function(){updateErledigtVisual(id,idx<0);},idx<0?350:0);
 }
 
 // Aktualisiert Buttons/Logik ohne sichtbares Flackern — speichert Scroll-Positionen
@@ -837,8 +848,8 @@ function updateErledigtVisual(id,done){
     aktionen+=btn2('Storno',waLink(phone,applyTemplate('storno',tplVars)),canStorno,'#e74c3c');
     aktionen+='<a href="'+successUrl+'" target="_blank" style="background:#5a2d82;border:1px solid #5a2d82;color:#fff;font-weight:700;box-shadow:0 0 10px #5a2d8299;border-radius:6px;padding:4px 9px;font-size:11px;white-space:nowrap;display:inline-block;text-decoration:none;">↗ Buchung</a>';
     aktionen+=alreadyDone
-      ?'<span style="margin-left:auto;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;font-size:12px;color:#16a34a;font-weight:600">✓</span>'
-      :'<button onclick="tickerErledigt(\''+b.id+'\')" style="margin-left:auto;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:12px;color:#ccc;font-weight:600;cursor:pointer">✓</button>';
+      ?'<div style="margin-left:auto;width:18px;height:18px;border-radius:4px;border:1.5px solid #27ae60;background:#27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:default"><svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="10 3 5 9 2 6"/></svg></div>'
+      :'<div onclick="tickerErledigt(\''+b.id+'\')" style="margin-left:auto;width:18px;height:18px;border-radius:4px;border:1.5px solid #c8bcd8;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor=\'#27ae60\'" onmouseout="this.style.borderColor=\'#c8bcd8\'"></div>';
     aktionen+='</div>';
     tr.style.opacity=alreadyDone?'0.35':'1';
     tr.style.filter=alreadyDone?'grayscale(0.4)':'';
