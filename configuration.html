@@ -3587,6 +3587,14 @@ function closeStaffModal(){
   updateFabVisibility();
 }
 async function editStaff(id){
+  // Close any open modal first, then open fresh
+  var overlay=document.getElementById('staff-overlay');
+  var modal=document.getElementById('staff-modal');
+  if(overlay)overlay.style.display='none';
+  if(modal)modal.classList.remove('open');
+  editingStaffId=null;
+  // Small delay to ensure DOM is reset
+  await new Promise(function(r){setTimeout(r,50);});
   // Fetch fresh data from DB — never rely on cached staffData
   var res=await sb.from('mitarbeiter').select('*').eq('id',id).single();
   if(res.error){toast('Fehler beim Laden','error');return;}
