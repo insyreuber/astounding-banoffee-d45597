@@ -3211,16 +3211,12 @@ async function openCalendarPicker(mitarbeiterId){
       infoDiv.appendChild(nameDiv);infoDiv.appendChild(idDiv);
       div.appendChild(dotDiv);div.appendChild(infoDiv);
       if(current){
-        var checkDiv=document.createElement('div');
-        checkDiv.style.cssText='display:flex;flex-direction:column;align-items:flex-end;gap:4px';
-        checkDiv.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
         var disconnBtn=document.createElement('button');
-        disconnBtn.style.cssText='font-size:9px;color:var(--danger);background:none;border:none;cursor:pointer;font-family:inherit;padding:0';
+        disconnBtn.style.cssText='font-size:12px;font-weight:600;color:#fff;background:var(--danger);border:none;border-radius:7px;cursor:pointer;font-family:inherit;padding:6px 12px;flex-shrink:0';
         disconnBtn.textContent='Trennen';
         var mid=mitarbeiterId;
         disconnBtn.addEventListener('click',function(e){e.stopPropagation();disconnectCalendar(mid);});
-        checkDiv.appendChild(disconnBtn);
-        div.appendChild(checkDiv);
+        div.appendChild(disconnBtn);
       }
       list.appendChild(div);
     });
