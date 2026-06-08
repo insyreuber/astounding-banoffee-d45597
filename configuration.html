@@ -2001,7 +2001,9 @@ function checkGcalReturn(){
       }
     });
   } else if(gcalMid&&gcalId){
-    sb.from('mitarbeiter').update({google_calendar_id:gcalId}).eq('id',gcalMid).then(function(res){
+    // Strip any accidentally encoded query params from the ID
+    var cleanMid=gcalMid.split('?')[0].split('&')[0];
+    sb.from('mitarbeiter').update({google_calendar_id:gcalId}).eq('id',cleanMid).then(function(res){
       if(!res.error){
         toast('Google Kalender verbunden ✓','success');
         var url=new URL(window.location.href);
@@ -3512,6 +3514,7 @@ function openStaffModal(data){
   if(_mainView)_mainView.style.display='block';
   if(_calBack)_calBack.style.display='none';
   if(_footer)_footer.style.display='flex';
+  var hoursWrap=document.getElementById('s-hours-wrap');
   if(hoursWrap)hoursWrap.style.display='none';
   var customHours=document.getElementById('s-custom-hours');
   if(customHours)customHours.checked=false;
