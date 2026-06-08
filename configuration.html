@@ -2534,10 +2534,10 @@ function toggleItem(id,type){
   var b=document.getElementById('body-'+type+'-'+id);
   var c=document.getElementById('chev-'+type+'-'+id);
   var open=b.classList.contains('open');
-  if(!open&&window.innerWidth<=768){
-    document.querySelectorAll('[id^="body-'+type+'-"]').forEach(function(el){el.classList.remove('open');});
-    document.querySelectorAll('[id^="chev-'+type+'-"]').forEach(function(el){el.classList.remove('open');});
-  }
+  // Close all others first
+  document.querySelectorAll('[id^="body-'+type+'-"]').forEach(function(el){el.classList.remove('open');});
+  document.querySelectorAll('[id^="chev-'+type+'-"]').forEach(function(el){el.classList.remove('open');});
+  // Toggle clicked one
   b.classList.toggle('open',!open);
   c.classList.toggle('open',!open);
 }
