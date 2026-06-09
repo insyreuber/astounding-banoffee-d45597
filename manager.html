@@ -286,15 +286,15 @@ html,body{overflow-x:hidden;max-width:100vw}
       <div style="position:sticky;top:41px;z-index:19;background:#fff;border-bottom:2px solid var(--border);flex-shrink:0;overflow:hidden">
         <table style="width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">
           <colgroup>
-            <col style="width:110px">
+            <col style="width:100px">
             <col>
-            <col>
-            <col>
-            <col style="width:60px">
-            <col style="width:60px">
             <col style="width:130px">
             <col>
-            <col style="width:360px">
+            <col style="width:80px">
+            <col style="width:70px">
+            <col style="width:120px">
+            <col>
+            <col style="width:340px">
           </colgroup>
           <thead><tr>
             <th style="padding:6px 14px;text-align:left;font-weight:700;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Status</th>
@@ -710,15 +710,15 @@ function renderTicker(rows,varianteMap,staffMap){
     aktionen+='</div>';
 
     return'<tr id="bk-'+b.id+'" style="'+(alreadyDone?'opacity:0.35;filter:grayscale(0.4)':'')+'">'
-      +'<td style="width:110px;border-radius:10px 0 0 10px;border-left:'+(alreadyDone?'3px solid #e5e5e5':'3px solid var(--tpl)')+'"><span class="badge '+type+'">'+typeLabel+'</span><div style="font-size:10px;color:var(--muted);margin-top:3px">'+esc(bookStr)+'</div></td>'
+      +'<td style="width:100px;border-radius:10px 0 0 10px;border-left:'+(alreadyDone?'3px solid #e5e5e5':'3px solid var(--tpl)')+'"><span class="badge '+type+'">'+typeLabel+'</span><div style="font-size:10px;color:var(--muted);margin-top:3px">'+esc(bookStr)+'</div></td>'
       +'<td style="font-weight:500">'+esc(b.customer_name||'–')+'</td>'
-      +'<td style="color:var(--muted);font-family:monospace;font-size:13px"><a href="tel:'+esc(b.customer_phone||'')+'" style="color:var(--tpl);text-decoration:none;font-weight:500">'+esc(b.customer_phone||'–')+'</a></td>'
+      +'<td style="color:var(--muted);font-family:monospace;font-size:13px;width:130px">'<a href="tel:'+esc(b.customer_phone||'')+'" style="color:var(--tpl);text-decoration:none;font-weight:500">'+esc(b.customer_phone||'–')+'</a></td>'
       +'<td>'+svcName+'</td>'
-      +'<td style="color:var(--muted);width:60px">'+dur+'</td>'
-      +'<td style="font-weight:500;color:var(--tpl);width:60px">'+price+'</td>'
-      +'<td style="width:130px"><div style="display:flex;align-items:center;gap:6px"><a href="#" onclick="openStaffOverlay(\''+esc(b.mitarbeiter_id||'')+'\');return false;" title="Profil ansehen" style="flex-shrink:0;text-decoration:none;cursor:pointer">'+renderAvatar(staffObj,36)+'</a><span style="color:var(--tg);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+staffName+'</span></div></td>'
+      +'<td style="color:var(--muted);width:80px">'+dur+'</td>'
+      +'<td style="font-weight:500;color:var(--tpl);width:70px">'+price+'</td>'
+      +'<td style="width:120px"><div style="display:flex;align-items:center;gap:6px"><a href="#" onclick="openStaffOverlay(\''+esc(b.mitarbeiter_id||'')+'\');return false;" title="Profil ansehen" style="flex-shrink:0;text-decoration:none;cursor:pointer">'+renderAvatar(staffObj,36)+'</a><span style="color:var(--tg);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+staffName+'</span></div></td>'
       +'<td style="white-space:nowrap">'+esc(dateStr)+'</td>'
-      +'<td style="font-size:13px;width:360px">'+aktionen+'</td>'
+      +'<td style="font-size:13px;width:340px">'+aktionen+'</td>'
     +'</tr>';
   }).join('');
   el.innerHTML='<div style="overflow-x:hidden"><table class="ticker-table" style="table-layout:fixed;width:100%"><tbody>'+tbody+'</tbody></table></div>';
