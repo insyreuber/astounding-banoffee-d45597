@@ -275,12 +275,27 @@ html,body{overflow-x:hidden;max-width:100vw}
     </div>
 
     <!-- Live-Aktivitäten — rechts 2/3 bis zum Rand -->
-    <div class="card" style="flex:1;border-radius:12px 0 0 12px;margin-right:0;display:flex;flex-direction:column;overflow:hidden">
-      <div style="overflow-y:auto;flex:1;max-height:480px;scrollbar-width:none;-ms-overflow-style:none;position:relative">
-        <div style="position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:8px">
-          <span class="live-dot"></span>
-          <span class="card-title" style="margin:0;padding:0;border:none;background:transparent;font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--muted);text-transform:uppercase">Live-Aktivitäten</span>
-        </div>
+    <div class="card" style="flex:1;border-radius:12px 0 0 12px;margin-right:0;display:flex;flex-direction:column;overflow:hidden;padding:0">
+      <!-- Sticky header: lila gradient, Live-Aktivitäten in weiß+gold -->
+      <div style="position:sticky;top:0;z-index:20;background:linear-gradient(135deg,#3d1568 0%,#5a2d82 100%);padding:10px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0">
+        <span class="live-dot"></span>
+        <span style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.7)">Live</span>
+        <span style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#C9A84C">Aktivitäten</span>
+      </div>
+      <!-- Sticky column headers -->
+      <div style="position:sticky;top:41px;z-index:19;background:#fff;border-bottom:2px solid var(--border);padding:6px 14px;display:grid;grid-template-columns:70px 1fr 100px 1fr 60px 60px 100px 120px 80px;gap:0;flex-shrink:0">
+        <span style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Status</span>
+        <span style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Name</span>
+        <span style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Telefon</span>
+        <span style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Service</span>
+        <span style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Dauer</span>
+        <span style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Preis</span>
+        <span style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Mitarbeiter</span>
+        <span style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Termin</span>
+        <span style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Aktionen</span>
+      </div>
+      <!-- Scrollable content -->
+      <div style="overflow-y:auto;flex:1;max-height:430px;scrollbar-width:none;-ms-overflow-style:none">
         <div id="ticker-list" style="padding-right:6px"><div class="loading">Wird geladen…</div></div>
       </div>
     </div>
@@ -691,7 +706,7 @@ function renderTicker(rows,varianteMap,staffMap){
       +'<td style="font-size:13px;width:360px">'+aktionen+'</td>'
     +'</tr>';
   }).join('');
-  el.innerHTML='<div style="overflow-x:hidden"><table class="ticker-table" style="table-layout:fixed;width:100%">'+thead+'<tbody>'+tbody+'</tbody></table></div>';
+  el.innerHTML='<div style="overflow-x:hidden"><table class="ticker-table" style="table-layout:fixed;width:100%"><tbody>'+tbody+'</tbody></table></div>';
   el.querySelectorAll('tr').forEach(function(tr,i){tr.style.animation='fadeIn .3s ease '+(i*0.04)+'s both';});
   var em=document.getElementById('ticker-list-m');
   if(em)renderMobileTickerCards(rows,varianteMap,staffMap,em);
