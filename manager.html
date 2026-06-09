@@ -747,27 +747,15 @@ function renderStorno(rows,varianteMap,staffMap,serviceMap){
     var phone=b.customer_phone||'';
     var activeStyle3='background:#fff;border:2px solid #e74c3c;border-radius:10px;padding:12px;position:relative;box-shadow:0 4px 16px rgba(231,76,60,.18),0 0 0 1px rgba(231,76,60,.08);animation:glowRed 3s ease-in-out infinite,fadeIn .35s ease both';
     var doneStyle3='background:#f8f8f8;border:1.5px solid #e5e5e5;border-radius:10px;padding:12px;position:relative;opacity:0.45;filter:grayscale(0.3)';
-    var dur=variante&&variante.dauer_minuten?variante.dauer_minuten+' Min':'–';
-    var price=variante&&variante.preis?parseFloat(variante.preis).toFixed(2)+' €':'–';
-    var activeStyle='background:#fff;border:2px solid #e74c3c;border-radius:10px;padding:12px;box-shadow:0 4px 16px rgba(0,0,0,.1);animation:fadeIn .35s ease both';
-    var doneStyle='background:#f8f8f8;border:1.5px solid #e5e5e5;border-radius:10px;padding:12px;opacity:0.45;filter:grayscale(0.3)';
-    return'<div style="'+(isErledigt?doneStyle:activeStyle)+'">'+ 
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'+ 
-        '<span style="font-size:13px;font-weight:600;color:'+(isErledigt?'#aaa':'var(--td)')+'">'+esc(b.customer_name||'Kunde')+'</span>'+ 
-        (!isErledigt?'<div onclick="stornoErledigt(\''+b.id+'\')" style=\"width:20px;height:20px;border-radius:4px;border:2px solid #c8bcd8;background:#f5f5f5;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .2s\"></div>':'<div style=\"width:20px;height:20px;border-radius:4px;background:#27ae60;border:1.5px solid #27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0\"><svg width=\"11\" height=\"11\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.5\" stroke-linecap=\"round\"><polyline points=\"10 3 5 9 2 6\"/></svg></div>')+ 
-      '</div>'+ 
-      '<div style="font-size:11px;color:'+(isErledigt?'#bbb':'var(--muted)')+';margin-bottom:6px">'+esc(dateStr)+'</div>'+ 
-      (phone?'<div style="font-size:11px;margin-bottom:3px"><span style="color:var(--muted);font-size:10px">Tel: </span>'+(isErledigt?esc(phone):'<a href="tel:'+esc(phone)+'" style="color:var(--tpl);text-decoration:none;font-size:11px">'+esc(phone)+'</a>')+'</div>':'')+ 
-      '<div style="font-size:11px;color:'+(isErledigt?'#bbb':'var(--muted)')+';margin-bottom:2px">'+esc(svcName)+'</div>'+ 
-      (staffName?'<div style="font-size:11px;color:'+(isErledigt?'#bbb':'var(--tg)')+';font-weight:600;margin-bottom:2px">'+esc(staffName)+'</div>':'')+ 
-      '<div style="display:flex;gap:12px;margin-bottom:4px">'+ 
-        '<span style="font-size:10px;color:'+(isErledigt?'#bbb':'var(--muted)')+'">'+dur+'</span>'+ 
-        '<span style="font-size:10px;color:'+(isErledigt?'#bbb':'var(--tpl)')+';font-weight:600">'+price+'</span>'+ 
-      '</div>'+ 
-      (cancelStr&&!isErledigt?'<div style="font-size:10px;color:#e74c3c;font-weight:600;margin-bottom:4px">Storniert: '+cancelStr+'</div>':cancelStr?'<div style="font-size:10px;color:#bbb;margin-bottom:4px">Storniert: '+cancelStr+'</div>':'')+ 
-      '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">'+ 
-        (phone&&!isErledigt?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:auto;padding:7px 13px;font-size:11px;background:#e74c3c"><svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z\"/><path d=\"M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z\"/></svg> Storno bestätigen</a>':'')+ 
-      '</div>'+ 
+    return'<div style="'+(isErledigt?doneStyle3:activeStyle3)+'">'+
+      (!isErledigt
+        ?'<div onclick="stornoErledigt(\''+b.id+'\')" style="width:22px;height:22px;border-radius:5px;border:2px solid #c8bcd8;background:#f5f5f5;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .2s"></div>'
+        :'<div style="width:22px;height:22px;border-radius:5px;background:#27ae60;border:1.5px solid #27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.5\" stroke-linecap=\"round\"><polyline points=\"10 3 5 9 2 6\"/></svg></div>')+
+      '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;padding-right:50px"><div class="ticker-dot cancel"></div><span style="font-size:13px;font-weight:600;color:'+(isErledigt?'#aaa':'var(--td)')+'">'+esc(b.customer_name||'Kunde')+'</span>'+(b.customer_phone&&!isErledigt?'<a href="tel:'+esc(b.customer_phone)+'" style="font-size:10px;color:var(--tpl);margin-left:4px;text-decoration:none;font-weight:500">'+esc(b.customer_phone)+'</a>':'')+'</div>'+
+      '<div style="font-size:11px;color:'+(isErledigt?'#bbb':'var(--muted)')+';margin-bottom:2px">'+esc(dateStr)+'</div>'+
+      '<div style="font-size:11px;color:'+(isErledigt?'#bbb':'var(--muted)')+';margin-bottom:2px">'+esc(svcName)+(staffName?' · '+esc(staffName):'')+'</div>'+
+      (cancelStr&&!isErledigt?'<div style="font-size:10px;color:#e74c3c;font-weight:600;margin-bottom:8px">Storniert: '+cancelStr+'</div>':cancelStr?'<div style="font-size:10px;color:#bbb;margin-bottom:8px">Storniert: '+cancelStr+'</div>':'')+
+      (phone&&!isErledigt?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:auto;padding:8px 14px;background:#e74c3c;box-shadow:0 0 12px rgba(231,76,60,.4)"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg> Storno bestätigen</a>':'')+
     '</div>';
   }
   var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Stornos erledigt</div>')+'</div>';
@@ -922,28 +910,16 @@ function renderReminders(rows){
     var cdId='cd-'+b.id;
     var activeStyle='background:#fff;border:2px solid #e67e22;border-radius:10px;padding:12px;position:relative;box-shadow:0 4px 16px rgba(230,126,34,.18),0 0 0 1px rgba(230,126,34,.08);animation:glowOrange 3s ease-in-out infinite,fadeIn .35s ease both';
     var doneStyle='background:#f8f8f8;border:1.5px solid #e5e5e5;border-radius:10px;padding:12px;position:relative;opacity:0.45;filter:grayscale(0.3)';
-    var dur=variante&&variante.dauer_minuten?variante.dauer_minuten+' Min':'–';
-    var price=variante&&variante.preis?parseFloat(variante.preis).toFixed(2)+' €':'–';
-    var activeStyle='background:#fff;border:2px solid #e67e22;border-radius:10px;padding:12px;box-shadow:0 4px 16px rgba(0,0,0,.1);animation:fadeIn .35s ease both';
-    var doneStyle='background:#f8f8f8;border:1.5px solid #e5e5e5;border-radius:10px;padding:12px;opacity:0.45;filter:grayscale(0.3)';
-    return'<div style="'+(isErledigt?doneStyle:activeStyle)+'">'+ 
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'+ 
-        '<span style="font-size:13px;font-weight:600;color:'+(isErledigt?'#aaa':'var(--td)')+'">'+esc(b.customer_name||'Kunde')+'</span>'+ 
-        (!isErledigt?'<div onclick="reminderErledigt(\''+b.id+'\')" style=\"width:20px;height:20px;border-radius:4px;border:2px solid #c8bcd8;background:#f5f5f5;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .2s\"></div>':'<div style=\"width:20px;height:20px;border-radius:4px;background:#27ae60;border:1.5px solid #27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0\"><svg width=\"11\" height=\"11\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.5\" stroke-linecap=\"round\"><polyline points=\"10 3 5 9 2 6\"/></svg></div>')+ 
-      '</div>'+ 
-      '<div style="font-size:11px;color:'+(isErledigt?'#bbb':'var(--muted)')+';margin-bottom:6px">'+esc(dateStr)+'</div>'+ 
-      (phone?'<div style="font-size:11px;margin-bottom:3px"><span style="color:var(--muted);font-size:10px">Tel: </span>'+(isErledigt?esc(phone):'<a href="tel:'+esc(phone)+'" style="color:var(--tpl);text-decoration:none;font-size:11px">'+esc(phone)+'</a>')+'</div>':'')+ 
-      '<div style="font-size:11px;color:'+(isErledigt?'#bbb':'var(--muted)')+';margin-bottom:2px">'+esc(svcName)+'</div>'+ 
-      (staffName?'<div style="font-size:11px;color:'+(isErledigt?'#bbb':'var(--tg)')+';font-weight:600;margin-bottom:2px">'+esc(staffName)+'</div>':'')+ 
-      '<div style="display:flex;gap:12px;margin-bottom:4px">'+ 
-        '<span style="font-size:10px;color:'+(isErledigt?'#bbb':'var(--muted)')+'">'+dur+'</span>'+ 
-        '<span style="font-size:10px;color:'+(isErledigt?'#bbb':'var(--tpl)')+';font-weight:600">'+price+'</span>'+ 
-      '</div>'+ 
-      (eingang&&!isErledigt?'<div style="font-size:10px;color:var(--muted);margin-bottom:2px">Eingang: '+eingang+'</div>':'')+ 
-      (!isErledigt?'<div id="'+cdId+'" data-target="'+d.getTime()+'" style="font-size:10px;font-weight:700;color:#e67e22;margin-bottom:4px">⏱ …</div>':'')+ 
-      '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">'+ 
-        (phone&&!isErledigt?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:auto;padding:7px 13px;font-size:11px;background:#e67e22"><svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z\"/><path d=\"M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z\"/></svg> Erinnerung senden</a>':'')+ 
-      '</div>'+ 
+    return'<div style="'+(isErledigt?doneStyle:activeStyle)+'">'+
+      (!isErledigt
+        ?'<div onclick="reminderErledigt(\''+b.id+'\')" style="width:22px;height:22px;border-radius:5px;border:2px solid #c8bcd8;background:#f5f5f5;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .2s"></div>'
+        :'<div style="width:22px;height:22px;border-radius:5px;background:#27ae60;border:1.5px solid #27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.5\" stroke-linecap=\"round\"><polyline points=\"10 3 5 9 2 6\"/></svg></div>')+
+      '<div style="font-size:13px;font-weight:600;margin-bottom:3px;padding-right:55px;color:'+(isErledigt?'#aaa':'var(--td)')+'">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
+      '<div style="font-size:10px;color:'+(isErledigt?'#bbb':'var(--muted)')+';margin-bottom:6px">'+esc(dateStr)+' '+timeStr+'</div>'+
+      (!isErledigt?'<div id="'+cdId+'" data-target="'+new Date(b.termin_start).getTime()+'" style="font-size:11px;font-weight:700;color:#e67e22;margin-bottom:8px;letter-spacing:0.03em">⏱ …</div>':'')+
+      (phone&&!isErledigt
+        ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:auto;padding:8px 14px;background:#e67e22;box-shadow:0 0 12px rgba(230,126,34,.4)"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg> Erinnerung senden</a>'
+        :'<a href="tel:'+phone+'" style="font-size:10px;color:#bbb;text-decoration:none">'+(phone?esc(phone):'Keine Nummer')+'</a>')+
     '</div>';
   }
   var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Erinnerungen erledigt</div>')+'</div>';
@@ -980,27 +956,15 @@ function renderConfirm(rows){
     var phone=b.customer_phone||b.phone||'';
     var activeStyle2='background:#fff;border:2px solid #27ae60;border-radius:10px;padding:12px;position:relative;box-shadow:0 4px 16px rgba(39,174,96,.18),0 0 0 1px rgba(39,174,96,.08);animation:glow 3s ease-in-out infinite,fadeIn .35s ease both';
     var doneStyle2='background:#f8f8f8;border:1.5px solid #e5e5e5;border-radius:10px;padding:12px;position:relative;opacity:0.45;filter:grayscale(0.3)';
-    var dur=variante&&variante.dauer_minuten?variante.dauer_minuten+' Min':'–';
-    var price=variante&&variante.preis?parseFloat(variante.preis).toFixed(2)+' €':'–';
-    var activeStyle='background:#fff;border:2px solid #27ae60;border-radius:10px;padding:12px;box-shadow:0 4px 16px rgba(0,0,0,.1);animation:fadeIn .35s ease both';
-    var doneStyle='background:#f8f8f8;border:1.5px solid #e5e5e5;border-radius:10px;padding:12px;opacity:0.45;filter:grayscale(0.3)';
-    return'<div style="'+(isErledigt?doneStyle:activeStyle)+'">'+ 
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'+ 
-        '<span style="font-size:13px;font-weight:600;color:'+(isErledigt?'#aaa':'var(--td)')+'">'+esc(b.customer_name||'Kunde')+'</span>'+ 
-        (!isErledigt?'<div onclick="confirmErledigt(\''+b.id+'\')" style=\"width:20px;height:20px;border-radius:4px;border:2px solid #c8bcd8;background:#f5f5f5;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .2s\"></div>':'<div style=\"width:20px;height:20px;border-radius:4px;background:#27ae60;border:1.5px solid #27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0\"><svg width=\"11\" height=\"11\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.5\" stroke-linecap=\"round\"><polyline points=\"10 3 5 9 2 6\"/></svg></div>')+ 
-      '</div>'+ 
-      '<div style="font-size:11px;color:'+(isErledigt?'#bbb':'var(--muted)')+';margin-bottom:6px">'+esc(dateStr)+'</div>'+ 
-      (phone?'<div style="font-size:11px;margin-bottom:3px"><span style="color:var(--muted);font-size:10px">Tel: </span>'+(isErledigt?esc(phone):'<a href="tel:'+esc(phone)+'" style="color:var(--tpl);text-decoration:none;font-size:11px">'+esc(phone)+'</a>')+'</div>':'')+ 
-      '<div style="font-size:11px;color:'+(isErledigt?'#bbb':'var(--muted)')+';margin-bottom:2px">'+esc(svcName)+'</div>'+ 
-      (staffName?'<div style="font-size:11px;color:'+(isErledigt?'#bbb':'var(--tg)')+';font-weight:600;margin-bottom:2px">'+esc(staffName)+'</div>':'')+ 
-      '<div style="display:flex;gap:12px;margin-bottom:4px">'+ 
-        '<span style="font-size:10px;color:'+(isErledigt?'#bbb':'var(--muted)')+'">'+dur+'</span>'+ 
-        '<span style="font-size:10px;color:'+(isErledigt?'#bbb':'var(--tpl)')+';font-weight:600">'+price+'</span>'+ 
-      '</div>'+ 
-      (eingang?'<div style="font-size:10px;color:var(--muted);margin-bottom:2px">Eingang: '+eingang+'</div>':'<div style="height:4px"></div>')+ 
-      '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">'+ 
-        (phone&&!isErledigt?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:auto;padding:7px 13px;font-size:11px;background:#27ae60"><svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z\"/><path d=\"M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z\"/></svg> Bestätigung senden</a>':'')+ 
-      '</div>'+ 
+    return'<div style="'+(isErledigt?doneStyle2:activeStyle2)+'">'+
+      (!isErledigt
+        ?'<div onclick="confirmErledigt(\''+b.id+'\')" style="width:22px;height:22px;border-radius:5px;border:2px solid #c8bcd8;background:#f5f5f5;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .2s"></div>'
+        :'<div style="width:22px;height:22px;border-radius:5px;background:#27ae60;border:1.5px solid #27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.5\" stroke-linecap=\"round\"><polyline points=\"10 3 5 9 2 6\"/></svg></div>')+
+      '<div style="font-size:13px;font-weight:600;margin-bottom:3px;padding-right:55px;color:'+(isErledigt?'#aaa':'var(--td)')+'">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
+      '<div style="font-size:10px;color:'+(isErledigt?'#bbb':'var(--muted)')+';margin-bottom:10px">'+esc(dateStr)+' '+timeStr2+'</div>'+
+      (phone&&!isErledigt
+        ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:auto;padding:8px 14px;background:#27ae60;box-shadow:0 0 12px rgba(39,174,96,.4)"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg> Bestätigung senden</a>'
+        :'<a href="tel:'+phone+'" style="font-size:10px;color:#bbb;text-decoration:none">'+(phone?esc(phone):'Keine Telefonnummer hinterlegt')+'</a>')+
     '</div>';
   }
   var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Bestätigungen erledigt</div>')+'</div>';
