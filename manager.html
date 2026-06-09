@@ -73,9 +73,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
   .nav-salon{font-size:13px}
   .nav-meta{font-size:13px}
   .mobile-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,#3d1568 0%,#5a2d82 100%);border-top:1px solid rgba(201,168,76,.3);z-index:200;padding:6px 4px;gap:2px;box-shadow:0 -4px 20px rgba(0,0,0,.3)}
-  .mobile-nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border:none;background:none;cursor:pointer;border-radius:10px;transition:all .2s;font-family:inherit;color:rgba(255,255,255,.45);font-size:9px;font-weight:600;letter-spacing:.04em;position:relative}
+  .mobile-nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border:none;background:none;cursor:pointer;border-radius:10px;transition:all .2s;font-family:inherit;color:rgba(255,255,255,.45);font-size:9px;font-weight:600;letter-spacing:.04em}
   .mobile-nav-btn.active{background:rgba(201,168,76,.15);color:#C9A84C;border:1px solid rgba(201,168,76,.3)}
-  .nav-badge{position:absolute;top:2px;right:6px;background:#e74c3c;color:#fff;font-size:8px;font-weight:700;border-radius:99px;min-width:14px;height:14px;display:flex;align-items:center;justify-content:center;padding:0 3px;line-height:1;display:none}
   .mobile-section{display:none;padding:12px}
   .mobile-section.active{display:block}
 }
@@ -277,11 +276,11 @@ html,body{overflow-x:hidden;max-width:100vw}
 
     <!-- Live-Aktivitäten — rechts 2/3 bis zum Rand -->
     <div class="card" style="flex:1;border-radius:12px 0 0 12px;margin-right:0;display:flex;flex-direction:column">
-      <div class="card-title">
+      <div class="card-title" style="position:sticky;top:0;z-index:10;background:#fff;border-radius:12px 0 0 0;border-bottom:1px solid var(--border);margin:-1px -1px 0 -1px;padding:10px 14px">
         <span class="live-dot"></span>
         Live-Aktivitäten
       </div>
-      <div style="overflow-y:scroll;max-height:480px;scrollbar-width:none;-ms-overflow-style:none"><div id="ticker-list" style="padding-right:6px"><div class="loading">Wird geladen…</div></div></div>
+      <div style="overflow-y:scroll;flex:1;max-height:480px;scrollbar-width:none;-ms-overflow-style:none"><div id="ticker-list" style="padding-right:6px"><div class="loading">Wird geladen…</div></div></div>
     </div>
 
   </div>
@@ -446,13 +445,12 @@ async function loadAll(){
   };
   renderTicker(ticker,varianteMap,staffMap);
   renderUpcomingCalendar(upcoming,varianteMap,staffMap,serviceMap);
-  renderReminders(reminders,varianteMap,staffMap,serviceMap);
+  renderReminders(reminders);
   window._lastReminderData=reminders;
-  renderConfirm(confirms,varianteMap,staffMap,serviceMap);
+  renderConfirm(confirms);
   window._lastConfirmData=confirms;
   renderStorno(stornos,varianteMap,staffMap,serviceMap);
   window._lastStornoData={rows:stornos,varianteMap:varianteMap,staffMap:staffMap,serviceMap:serviceMap};
-  setTimeout(updateNavBadges,300);
 
   // Mobile mirror — copy innerHTML to mobile sections
   setTimeout(function(){
@@ -673,9 +671,9 @@ function renderTicker(rows,varianteMap,staffMap){
     aktionen+=btn('Storno',waLink(phone,msgStorno),canStorno,'#e74c3c');
     aktionen+='<a href="'+successUrl+'" target="_blank" style="background:#5a2d82;border:1px solid #5a2d82;color:#fff;font-weight:700;box-shadow:0 0 10px #5a2d8299,0 0 20px #5a2d8244;border-radius:6px;padding:4px 9px;font-size:11px;white-space:nowrap;display:inline-block;text-decoration:none;">↗ Buchung</a>';
     if(isKachelErledigt){
-      aktionen+='<div style="margin-left:auto;width:18px;height:18px;border-radius:4px;border:1.5px solid #27ae60;background:#27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:default"><svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="10 3 5 9 2 6"/></svg></div>';
+      aktionen+='<span style="margin-left:auto;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;font-size:12px;color:#16a34a;font-weight:600;cursor:default">✓</span>';
     }else{
-      aktionen+='<div onclick="tickerErledigt(\''+b.id+'\')" style="margin-left:auto;width:18px;height:18px;border-radius:4px;border:1.5px solid #c8bcd8;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor=\'#27ae60\'" onmouseout="this.style.borderColor=\'#c8bcd8\'"></div>';
+      aktionen+='<button onclick="tickerErledigt(\''+b.id+'\')" style="margin-left:auto;background:'+(isErledigt2?'#e8f5e9':'var(--bg)')+';border:1px solid '+(isErledigt2?'#4ade80':'var(--border)')+';border-radius:6px;padding:2px 8px;font-size:12px;color:'+(isErledigt2?'#16a34a':'#ccc')+';font-weight:600;cursor:pointer">✓</button>';
     }
     aktionen+='</div>';
 
@@ -719,20 +717,14 @@ function renderStorno(rows,varianteMap,staffMap,serviceMap){
     var activeStyle3='background:#fff;border:2px solid #e74c3c;border-radius:10px;padding:12px;position:relative;box-shadow:0 4px 16px rgba(231,76,60,.18),0 0 0 1px rgba(231,76,60,.08);animation:glowRed 3s ease-in-out infinite,fadeIn .35s ease both';
     var doneStyle3='background:#f8f8f8;border:1.5px solid #e5e5e5;border-radius:10px;padding:12px;position:relative;opacity:0.45;filter:grayscale(0.3)';
     return'<div style="'+(isErledigt?doneStyle3:activeStyle3)+'">'+
-      '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px">'+
-        '<div style="display:flex;align-items:center;gap:6px"><div class="ticker-dot cancel"></div><span style="font-size:13px;font-weight:600;color:'+(isErledigt?'#aaa':'var(--td)')+'">'+esc(b.customer_name||'Kunde')+'</span>'+(b.customer_phone&&!isErledigt?'<a href="tel:'+esc(b.customer_phone)+'" style="font-size:10px;color:var(--tpl);margin-left:4px;text-decoration:none;font-weight:500">'+esc(b.customer_phone)+'</a>':'')+'</div>'+
-        (!isErledigt
-          ?'<div onclick="markErledigt(\'storno\',\''+b.id+'\',this)" style="width:18px;height:18px;border-radius:4px;border:1.5px solid #c8bcd8;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s" title="Erledigt markieren"></div>'
-          :'<div style="width:18px;height:18px;border-radius:4px;background:#27ae60;border:1.5px solid #27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="10 3 5 9 2 6"/></svg></div>')+
-      '</div>'+
+      (!isErledigt
+        ?'<button onclick="stornoErledigt(\''+b.id+'\')" style="position:absolute;top:8px;right:8px;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;cursor:pointer;font-size:12px;color:#16a34a;font-weight:600">✓</button>'
+        :'<span style="position:absolute;top:8px;right:8px;font-size:11px;color:#bbb;font-weight:500">✓ Erledigt</span>')+
+      '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;padding-right:50px"><div class="ticker-dot cancel"></div><span style="font-size:13px;font-weight:600;color:'+(isErledigt?'#aaa':'var(--td)')+'">'+esc(b.customer_name||'Kunde')+'</span>'+(b.customer_phone&&!isErledigt?'<a href="tel:'+esc(b.customer_phone)+'" style="font-size:10px;color:var(--tpl);margin-left:4px;text-decoration:none;font-weight:500">'+esc(b.customer_phone)+'</a>':'')+'</div>'+
       '<div style="font-size:11px;color:'+(isErledigt?'#bbb':'var(--muted)')+';margin-bottom:2px">'+esc(dateStr)+'</div>'+
       '<div style="font-size:11px;color:'+(isErledigt?'#bbb':'var(--muted)')+';margin-bottom:2px">'+esc(svcName)+(staffName?' · '+esc(staffName):'')+'</div>'+
-      (cancelStr&&!isErledigt?'<div style="font-size:10px;color:#e74c3c;font-weight:600;margin-bottom:8px">Storniert: '+cancelStr+'</div>':cancelStr?'<div style="font-size:10px;color:#bbb;margin-bottom:8px">Storniert: '+cancelStr+'</div>':'<div style="height:8px"></div>')+
-      '<div style="display:flex;justify-content:flex-end">'+
-        (phone&&!isErledigt
-          ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:auto;padding:8px 14px;background:#e74c3c;box-shadow:0 0 12px rgba(231,76,60,.4)"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg> Storno bestätigen</a>'
-          :'')+
-      '</div>'+
+      (cancelStr&&!isErledigt?'<div style="font-size:10px;color:#e74c3c;font-weight:600;margin-bottom:8px">Storniert: '+cancelStr+'</div>':cancelStr?'<div style="font-size:10px;color:#bbb;margin-bottom:8px">Storniert: '+cancelStr+'</div>':'')+
+      (phone&&!isErledigt?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:100%;justify-content:center;background:#e74c3c;box-shadow:0 0 12px rgba(231,76,60,.5),0 0 24px rgba(231,76,60,.25)"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg> Storno bestätigen</a>':'')+
     '</div>';
   }
   var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Stornos erledigt</div>')+'</div>';
@@ -753,8 +745,8 @@ function renderFromCache(){
   renderTicker(c.ticker,c.varianteMap,c.staffMap);
   renderUpcomingCalendar(c.upcoming,c.varianteMap,c.staffMap,c.serviceMap);
   renderStorno(c.stornos,c.varianteMap,c.staffMap,c.serviceMap);
-  renderReminders(c.reminders,c.varianteMap,c.staffMap,c.serviceMap);
-  renderConfirm(c.confirms,c.varianteMap,c.staffMap,c.serviceMap);
+  renderReminders(c.reminders);
+  renderConfirm(c.confirms);
 }
 
 async function saveErledigtIds(){
@@ -771,37 +763,13 @@ function erledigt(id){
 }
 function stornoErledigt(id){erledigt(id);}
 function reminderErledigt(id){erledigt(id);}
-function markErledigt(type,id,el){
-  el.style.background='#27ae60';
-  el.style.borderColor='#27ae60';
-  el.innerHTML='<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="10 3 5 9 2 6"/></svg>';
-  el.style.transform='scale(1.15)';
-  setTimeout(function(){el.style.transform='scale(1)';},150);
-  setTimeout(function(){
-    if(type==='confirm')confirmErledigt(id);
-    else if(type==='reminder')reminderErledigt(id);
-    else if(type==='storno')stornoErledigt(id);
-  },400);
-}
-
 function confirmErledigt(id){erledigt(id);}
 function tickerErledigt(id){
   if(!window._erledigtIds)window._erledigtIds=[];
   var idx=window._erledigtIds.indexOf(id);
-  if(idx<0){
-    window._erledigtIds.push(id);
-    // Animate checkbox green
-    document.querySelectorAll('[onclick*="tickerErledigt(\''+id+'\')"]').forEach(function(el){
-      el.style.background='#27ae60';el.style.borderColor='#27ae60';
-      el.innerHTML='<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="10 3 5 9 2 6"/></svg>';
-      el.style.transform='scale(1.15)';
-      setTimeout(function(){el.style.transform='scale(1)';},150);
-    });
-  }else{
-    window._erledigtIds.splice(idx,1);
-  }
+  if(idx<0){window._erledigtIds.push(id);}else{window._erledigtIds.splice(idx,1);}
   saveErledigtIds();
-  setTimeout(function(){updateErledigtVisual(id,idx<0);},idx<0?350:0);
+  updateErledigtVisual(id,idx<0);
 }
 
 // Aktualisiert Buttons/Logik ohne sichtbares Flackern — speichert Scroll-Positionen
@@ -812,8 +780,8 @@ function _silentRefresh(){
   ids.forEach(function(id){var el=document.getElementById(id);if(el){scrolls[id]=el.scrollTop;}});
   var c=window._cache;
   renderTicker(c.ticker,c.varianteMap,c.staffMap);
-  renderConfirm(c.confirms,c.varianteMap,c.staffMap,c.serviceMap);
-  renderReminders(c.reminders,c.varianteMap,c.staffMap,c.serviceMap);
+  renderConfirm(c.confirms);
+  renderReminders(c.reminders);
   renderStorno(c.stornos,c.varianteMap,c.staffMap,c.serviceMap);
   ids.forEach(function(id){var el=document.getElementById(id);if(el){el.scrollTop=scrolls[id]||0;el.style.overflowY='auto';}});
 }
@@ -850,8 +818,8 @@ function updateErledigtVisual(id,done){
     aktionen+=btn2('Storno',waLink(phone,applyTemplate('storno',tplVars)),canStorno,'#e74c3c');
     aktionen+='<a href="'+successUrl+'" target="_blank" style="background:#5a2d82;border:1px solid #5a2d82;color:#fff;font-weight:700;box-shadow:0 0 10px #5a2d8299;border-radius:6px;padding:4px 9px;font-size:11px;white-space:nowrap;display:inline-block;text-decoration:none;">↗ Buchung</a>';
     aktionen+=alreadyDone
-      ?'<div style="margin-left:auto;width:18px;height:18px;border-radius:4px;border:1.5px solid #27ae60;background:#27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:default"><svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="10 3 5 9 2 6"/></svg></div>'
-      :'<div onclick="tickerErledigt(\''+b.id+'\')" style="margin-left:auto;width:18px;height:18px;border-radius:4px;border:1.5px solid #c8bcd8;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor=\'#27ae60\'" onmouseout="this.style.borderColor=\'#c8bcd8\'"></div>';
+      ?'<span style="margin-left:auto;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;font-size:12px;color:#16a34a;font-weight:600">✓</span>'
+      :'<button onclick="tickerErledigt(\''+b.id+'\')" style="margin-left:auto;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:12px;color:#ccc;font-weight:600;cursor:pointer">✓</button>';
     aktionen+='</div>';
     tr.style.opacity=alreadyDone?'0.35':'1';
     tr.style.filter=alreadyDone?'grayscale(0.4)':'';
@@ -886,8 +854,7 @@ function updateErledigtVisual(id,done){
   });
 }
 
-function renderReminders(rows,varianteMap,staffMap,serviceMap){
-  varianteMap=varianteMap||{};staffMap=staffMap||{};serviceMap=serviceMap||{};
+function renderReminders(rows){
   if(!rows.length){writeList('reminder-list','<div class="loading">Keine Termine in den nächsten 2 Tagen</div>');return;}
   var erledigtIds=(window._erledigtIds||[]);
   var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
@@ -896,34 +863,22 @@ function renderReminders(rows,varianteMap,staffMap,serviceMap){
     var d=new Date(b.termin_start||b.created_at||new Date());
     var dateStr=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'});
     var timeStr=new Date(b.termin_start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
-    var variante=varianteMap[b.service_variante_id];
-    var svcParent=variante&&variante.service_id?serviceMap[variante.service_id]||'':'';
-    var svcName=variante?[svcParent,variante.service_name].filter(Boolean).join(' · ')||'–':'–';
-    var staffObj=staffMap[b.mitarbeiter_id]||null;
-    var staffName=staffObj?(staffObj.display_name||staffObj.name||''):'';
-    var eingang=b.created_at?new Date(b.created_at).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+' '+new Date(b.created_at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}):'';
     var bookingLink='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
-    var msg=applyTemplate('erinnerung',{name:b.customer_name||b.name||'',termin:dateStr+' um '+timeStr+' Uhr',datum:dateStr,uhrzeit:timeStr+' Uhr',service:svcName,buchungslink:bookingLink,salon:window.SALON_NAME||''});
+    var msg=applyTemplate('erinnerung',{name:b.customer_name||b.name||'',termin:dateStr+' um '+timeStr+' Uhr',datum:dateStr,uhrzeit:timeStr+' Uhr',service:'',buchungslink:bookingLink,salon:window.SALON_NAME||''});
     var phone=b.customer_phone||b.phone||'';
     var cdId='cd-'+b.id;
     var activeStyle='background:#fff;border:2px solid #e67e22;border-radius:10px;padding:12px;position:relative;box-shadow:0 4px 16px rgba(230,126,34,.18),0 0 0 1px rgba(230,126,34,.08);animation:glowOrange 3s ease-in-out infinite,fadeIn .35s ease both';
     var doneStyle='background:#f8f8f8;border:1.5px solid #e5e5e5;border-radius:10px;padding:12px;position:relative;opacity:0.45;filter:grayscale(0.3)';
     return'<div style="'+(isErledigt?doneStyle:activeStyle)+'">'+
-      '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px">'+
-        '<div style="display:flex;align-items:center;gap:6px"><div class="ticker-dot warn"></div><span style="font-size:13px;font-weight:600;color:'+(isErledigt?'#aaa':'var(--td)')+'">'+esc(b.customer_name||b.name||'Kunde')+'</span>'+(b.customer_phone&&!isErledigt?'<a href="tel:'+esc(b.customer_phone)+'" style="font-size:10px;color:var(--tpl);margin-left:4px;text-decoration:none;font-weight:500">'+esc(b.customer_phone)+'</a>':'')+'</div>'+
-        (!isErledigt
-          ?'<div onclick="markErledigt(\'reminder\',\''+b.id+'\',this)" style="width:18px;height:18px;border-radius:4px;border:1.5px solid #c8bcd8;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s" title="Erledigt markieren"></div>'
-          :'<div style="width:18px;height:18px;border-radius:4px;background:#27ae60;border:1.5px solid #27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="10 3 5 9 2 6"/></svg></div>')+
-      '</div>'+
-      '<div style="font-size:11px;color:'+(isErledigt?'#bbb':'var(--muted)')+';margin-bottom:2px">'+esc(dateStr)+' um '+timeStr+' Uhr</div>'+
-      '<div style="font-size:11px;color:'+(isErledigt?'#bbb':'var(--muted)')+';margin-bottom:2px">'+esc(svcName)+(staffName?' · '+esc(staffName):'')+'</div>'+
-      (eingang&&!isErledigt?'<div style="font-size:10px;color:var(--muted);margin-bottom:4px">Eingang: '+eingang+'</div>':'')+
-      (!isErledigt?'<div id="'+cdId+'" data-target="'+new Date(b.termin_start).getTime()+'" style="font-size:11px;font-weight:700;color:#e67e22;margin-bottom:8px;letter-spacing:0.03em">⏱ …</div>':'<div style="height:8px"></div>')+
-      '<div style="display:flex;justify-content:flex-end">'+
-        (phone&&!isErledigt
-          ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:auto;padding:8px 14px;background:#e67e22;box-shadow:0 0 12px rgba(230,126,34,.4)"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg> Erinnerung senden</a>'
-          :'')+
-      '</div>'+
+      (!isErledigt
+        ?'<button onclick="reminderErledigt(\''+b.id+'\')" style="position:absolute;top:8px;right:8px;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;cursor:pointer;font-size:12px;color:#16a34a;font-weight:600">✓</button>'
+        :'<span style="position:absolute;top:8px;right:8px;font-size:11px;color:#bbb;font-weight:500">✓ Erledigt</span>')+
+      '<div style="font-size:13px;font-weight:600;margin-bottom:3px;padding-right:55px;color:'+(isErledigt?'#aaa':'var(--td)')+'">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
+      '<div style="font-size:10px;color:'+(isErledigt?'#bbb':'var(--muted)')+';margin-bottom:6px">'+esc(dateStr)+' '+timeStr+'</div>'+
+      (!isErledigt?'<div id="'+cdId+'" data-target="'+new Date(b.termin_start).getTime()+'" style="font-size:11px;font-weight:700;color:#e67e22;margin-bottom:8px;letter-spacing:0.03em">⏱ …</div>':'')+
+      (phone&&!isErledigt
+        ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:100%;justify-content:center;background:#e67e22;box-shadow:0 0 12px rgba(230,126,34,.5),0 0 24px rgba(230,126,34,.25)"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg> Erinnerung senden</a>'
+        :'<a href="tel:'+phone+'" style="font-size:10px;color:#bbb;text-decoration:none">'+(phone?esc(phone):'Keine Nummer')+'</a>')+
     '</div>';
   }
   var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Erinnerungen erledigt</div>')+'</div>';
@@ -946,8 +901,7 @@ function renderReminders(rows,varianteMap,staffMap,serviceMap){
   },1000);
 }
 
-function renderConfirm(rows,varianteMap,staffMap,serviceMap){
-  varianteMap=varianteMap||{};staffMap=staffMap||{};serviceMap=serviceMap||{};
+function renderConfirm(rows){
   if(!rows.length){writeList('confirm-list','<div class="loading">Keine Termine heute / morgen</div>');return;}
   var erledigtIds=(window._erledigtIds||[]);
   var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
@@ -956,32 +910,20 @@ function renderConfirm(rows,varianteMap,staffMap,serviceMap){
     var d=new Date(b.termin_start||b.created_at||new Date());
     var dateStr=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit'});
     var timeStr2=new Date(b.termin_start).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
-    var variante=varianteMap[b.service_variante_id];
-    var svcParent=variante&&variante.service_id?serviceMap[variante.service_id]||'':'';
-    var svcName=variante?[svcParent,variante.service_name].filter(Boolean).join(' · ')||'–':'–';
-    var staffObj=staffMap[b.mitarbeiter_id]||null;
-    var staffName=staffObj?(staffObj.display_name||staffObj.name||''):'';
-    var eingang=b.created_at?new Date(b.created_at).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+' '+new Date(b.created_at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}):'';
     var bookingLink2='https://insy-reception.com/success?salon_id='+SALON_ID+'&booking_id='+b.id;
-    var msg=applyTemplate('bestaetigung',{name:b.customer_name||b.name||'',termin:dateStr+' um '+timeStr2+' Uhr',datum:dateStr,uhrzeit:timeStr2+' Uhr',service:svcName,buchungslink:bookingLink2,salon:window.SALON_NAME||''});
+    var msg=applyTemplate('bestaetigung',{name:b.customer_name||b.name||'',termin:dateStr+' um '+timeStr2+' Uhr',datum:dateStr,uhrzeit:timeStr2+' Uhr',service:'',buchungslink:bookingLink2,salon:window.SALON_NAME||''});
     var phone=b.customer_phone||b.phone||'';
     var activeStyle2='background:#fff;border:2px solid #27ae60;border-radius:10px;padding:12px;position:relative;box-shadow:0 4px 16px rgba(39,174,96,.18),0 0 0 1px rgba(39,174,96,.08);animation:glow 3s ease-in-out infinite,fadeIn .35s ease both';
     var doneStyle2='background:#f8f8f8;border:1.5px solid #e5e5e5;border-radius:10px;padding:12px;position:relative;opacity:0.45;filter:grayscale(0.3)';
     return'<div style="'+(isErledigt?doneStyle2:activeStyle2)+'">'+
-      '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px">'+
-        '<div style="display:flex;align-items:center;gap:6px"><div class="ticker-dot ok"></div><span style="font-size:13px;font-weight:600;color:'+(isErledigt?'#aaa':'var(--td)')+'">'+esc(b.customer_name||b.name||'Kunde')+'</span>'+(b.customer_phone&&!isErledigt?'<a href="tel:'+esc(b.customer_phone)+'" style="font-size:10px;color:var(--tpl);margin-left:4px;text-decoration:none;font-weight:500">'+esc(b.customer_phone)+'</a>':'')+'</div>'+
-        (!isErledigt
-          ?'<div onclick="markErledigt(\'confirm\',\''+b.id+'\',this)" style="width:18px;height:18px;border-radius:4px;border:1.5px solid #c8bcd8;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s" title="Erledigt markieren"></div>'
-          :'<div style="width:18px;height:18px;border-radius:4px;background:#27ae60;border:1.5px solid #27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="10 3 5 9 2 6"/></svg></div>')+
-      '</div>'+
-      '<div style="font-size:11px;color:'+(isErledigt?'#bbb':'var(--muted)')+';margin-bottom:2px">'+esc(dateStr)+' um '+timeStr2+' Uhr</div>'+
-      '<div style="font-size:11px;color:'+(isErledigt?'#bbb':'var(--muted)')+';margin-bottom:2px">'+esc(svcName)+(staffName?' · '+esc(staffName):'')+'</div>'+
-      (eingang?'<div style="font-size:10px;color:var(--muted);margin-bottom:8px">Eingang: '+eingang+'</div>':'<div style="height:8px"></div>')+
-      '<div style="display:flex;justify-content:flex-end">'+
-        (phone&&!isErledigt
-          ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:auto;padding:8px 14px;background:#27ae60;box-shadow:0 0 12px rgba(39,174,96,.4)"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg> Bestätigung senden</a>'
-          :'')+
-      '</div>'+
+      (!isErledigt
+        ?'<button onclick="confirmErledigt(\''+b.id+'\')" style="position:absolute;top:8px;right:8px;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;cursor:pointer;font-size:12px;color:#16a34a;font-weight:600">✓</button>'
+        :'<span style="position:absolute;top:8px;right:8px;font-size:11px;color:#bbb;font-weight:500">✓ Erledigt</span>')+
+      '<div style="font-size:13px;font-weight:600;margin-bottom:3px;padding-right:55px;color:'+(isErledigt?'#aaa':'var(--td)')+'">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
+      '<div style="font-size:10px;color:'+(isErledigt?'#bbb':'var(--muted)')+';margin-bottom:10px">'+esc(dateStr)+' '+timeStr2+'</div>'+
+      (phone&&!isErledigt
+        ?'<a class="wa-btn" href="'+waLink(phone,msg)+'" target="_blank" style="width:100%;justify-content:center;background:#27ae60;box-shadow:0 0 12px rgba(39,174,96,.5),0 0 24px rgba(39,174,96,.25)"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.253 2 2 6.253 2 11.5c0 1.85.537 3.573 1.459 5.021L2 22l5.668-1.434A9.456 9.456 0 0011.5 21c5.247 0 9.5-4.253 9.5-9.5S16.747 2 11.5 2z"/></svg> Bestätigung senden</a>'
+        :'<a href="tel:'+phone+'" style="font-size:10px;color:#bbb;text-decoration:none">'+(phone?esc(phone):'Keine Telefonnummer hinterlegt')+'</a>')+
     '</div>';
   }
   var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">'+(offen.length?offen.map(function(b){return buildCard(b,false);}).join(''):'<div class="loading">Alle Bestätigungen erledigt</div>')+'</div>';
@@ -1365,39 +1307,11 @@ function renderOneMobileCard(b,varianteMap,staffMap){
   return tmp.innerHTML;
 }
 
-function updateNavBadges(){
-  function setBadge(id,count){
-    var b=document.getElementById('badge-'+id);
-    if(!b)return;
-    if(count>0){b.textContent=count>99?'99+':count;b.style.display='flex';}
-    else{b.style.display='none';}
-  }
-  var c=window._cache||{};
-  var erledigtIds=window._erledigtIds||[];
-  var stornoIds=window._stornoIds||[];
-  // Live: neue unbestätigte Buchungen im Ticker
-  var liveCount=(c.ticker||[]).length;
-  // Termine: bevorstehende Termine
-  var termineCount=(c.upcoming||[]).length;
-  // Bestätigung: offen (nicht erledigt)
-  var bestCount=(c.confirms||[]).filter(function(b){return erledigtIds.indexOf(b.id)<0;}).length;
-  // Erinnerung: offen
-  var erinCount=(c.reminders||[]).filter(function(b){return erledigtIds.indexOf(b.id)<0;}).length;
-  // Storno: offen
-  var stornoCount=(c.stornos||[]).filter(function(b){return stornoIds.indexOf(b.id)<0;}).length;
-  setBadge('live',liveCount);
-  setBadge('termine',termineCount);
-  setBadge('bestaetigung',bestCount);
-  setBadge('erinnerung',erinCount);
-  setBadge('storno',stornoCount);
-}
-
 function mobileTab(tab){
   document.querySelectorAll('.mobile-section').forEach(function(s){s.classList.remove('active');});
   document.querySelectorAll('.mobile-nav-btn').forEach(function(b){b.classList.remove('active');});
   var s=document.getElementById('ms-'+tab);var b=document.getElementById('mn-'+tab);
   if(s)s.classList.add('active');if(b)b.classList.add('active');
-  window._currentMobileTab=tab;
   // Erledigt-Bereich beim Tab-Wechsel einklappen
   document.querySelectorAll('#ms-'+tab+' [style*="display:grid"]').forEach(function(el){
     if(el.previousElementSibling&&el.previousElementSibling.tagName==='BUTTON'){
@@ -1408,56 +1322,32 @@ function mobileTab(tab){
   });
 }
 
-var _MTABS=['live','termine','bestaetigung','erinnerung','storno'];
-window._currentMobileTab='live';
-
-// Swipe zwischen Manager-Tabs
-(function(){
-  var sx=0,sy=0;
-  document.addEventListener('touchstart',function(e){
-    sx=e.touches[0].clientX;sy=e.touches[0].clientY;
-  },{passive:true});
-  document.addEventListener('touchend',function(e){
-    var dx=e.changedTouches[0].clientX-sx;
-    var dy=e.changedTouches[0].clientY-sy;
-    if(Math.abs(dx)<40||Math.abs(dx)<Math.abs(dy)*1.5)return;
-    var cur=_MTABS.indexOf(window._currentMobileTab);
-    if(cur<0)return;
-    var next=dx<0?Math.min(cur+1,_MTABS.length-1):Math.max(cur-1,0);
-    if(next!==cur)mobileTab(_MTABS[next]);
-  },{passive:true});
-})();
-
 loadAll();
-setTimeout(updateNavBadges, 1500);
-setInterval(function(){if(!document.hidden){loadAll();setTimeout(updateNavBadges,800);}},300000);
+initKurzfristigSetting();
+// Auto-Refresh alle 60s — externe Änderungen (Stornos, neue Buchungen) werden erkannt
+setInterval(function(){if(!document.hidden)loadAll();},60000);
 </script>
 
 <!-- Mobile Only — auf Desktop komplett hidden -->
 <div id="mobile-shell" style="display:none">
   <nav class="mobile-nav">
     <button class="mobile-nav-btn active" onclick="mobileTab('live')" id="mn-live">
-      <span class="nav-badge" id="badge-live"></span>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
       <span>Live</span>
     </button>
     <button class="mobile-nav-btn" onclick="mobileTab('termine')" id="mn-termine">
-      <span class="nav-badge" id="badge-termine"></span>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       <span>Termine</span>
     </button>
     <button class="mobile-nav-btn" onclick="mobileTab('bestaetigung')" id="mn-bestaetigung">
-      <span class="nav-badge" id="badge-bestaetigung"></span>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
       <span>Bestätigung</span>
     </button>
     <button class="mobile-nav-btn" onclick="mobileTab('erinnerung')" id="mn-erinnerung">
-      <span class="nav-badge" id="badge-erinnerung"></span>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       <span>Erinnerung</span>
     </button>
     <button class="mobile-nav-btn" onclick="mobileTab('storno')" id="mn-storno">
-      <span class="nav-badge" id="badge-storno"></span>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
       <span>Storno</span>
     </button>
