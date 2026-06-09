@@ -260,18 +260,21 @@ html,body{overflow-x:hidden;max-width:100vw}
   <div style="grid-column:1/-1;display:flex;gap:16px;align-items:stretch">
 
     <!-- Nächste Termine — 22% links, hinter Live-Aktivitäten -->
-    <div class="card" style="width:22%;flex-shrink:0;position:relative;z-index:1">
-      <div class="card-title">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        Nächste Termine
+    <div class="card" style="width:22%;flex-shrink:0;position:relative;z-index:1;padding:0;overflow:hidden;display:flex;flex-direction:column">
+      <div style="background:linear-gradient(135deg,#3d1568 0%,#5a2d82 100%);padding:10px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.7)">Nächste</span>
+        <span style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#C9A84C">Termine</span>
       </div>
-      <div style="display:flex;gap:5px;margin-bottom:10px">
-        <button onclick="stepUpcomingFilter(0,true)" id="duf-alle" style="flex:1;padding:5px 0;border-radius:7px;border:1.5px solid #C9A84C;font-size:10px;font-weight:600;cursor:pointer;background:#4a1f72;color:#fff;font-family:inherit;box-shadow:0 0 8px rgba(201,168,76,.25);transition:all .2s">Alle</button>
-        <button onclick="stepUpcomingFilter(1,true)" id="duf-heute" style="flex:1;padding:5px 0;border-radius:7px;border:1.5px solid #C9A84C;font-size:10px;font-weight:600;cursor:pointer;background:#4a1f72;color:#fff;font-family:inherit;box-shadow:0 0 8px rgba(201,168,76,.25);transition:all .2s">Heute</button>
-        <button onclick="stepUpcomingFilter(2,true)" id="duf-morgen" style="flex:1;padding:5px 0;border-radius:7px;border:1.5px solid #C9A84C;font-size:10px;font-weight:600;cursor:pointer;background:#4a1f72;color:#fff;font-family:inherit;box-shadow:0 0 8px rgba(201,168,76,.25);transition:all .2s">Morgen</button>
-        <button onclick="stepUpcomingFilter(3,true)" id="duf-uebermorgen" style="flex:1;padding:5px 0;border-radius:7px;border:1.5px solid #C9A84C;font-size:10px;font-weight:600;cursor:pointer;background:#4a1f72;color:#fff;font-family:inherit;box-shadow:0 0 8px rgba(201,168,76,.25);transition:all .2s">+2</button>
+      <div style="padding:10px 12px 6px">
+        <div style="display:flex;gap:5px;margin-bottom:10px">
+          <button onclick="stepUpcomingFilter(0,true)" id="duf-alle" style="flex:1;padding:5px 0;border-radius:7px;border:1.5px solid #C9A84C;font-size:10px;font-weight:600;cursor:pointer;background:#4a1f72;color:#fff;font-family:inherit;box-shadow:0 0 8px rgba(201,168,76,.25);transition:all .2s">Alle</button>
+          <button onclick="stepUpcomingFilter(1,true)" id="duf-heute" style="flex:1;padding:5px 0;border-radius:7px;border:1.5px solid #C9A84C;font-size:10px;font-weight:600;cursor:pointer;background:#4a1f72;color:#fff;font-family:inherit;box-shadow:0 0 8px rgba(201,168,76,.25);transition:all .2s">Heute</button>
+          <button onclick="stepUpcomingFilter(2,true)" id="duf-morgen" style="flex:1;padding:5px 0;border-radius:7px;border:1.5px solid #C9A84C;font-size:10px;font-weight:600;cursor:pointer;background:#4a1f72;color:#fff;font-family:inherit;box-shadow:0 0 8px rgba(201,168,76,.25);transition:all .2s">Morgen</button>
+          <button onclick="stepUpcomingFilter(3,true)" id="duf-uebermorgen" style="flex:1;padding:5px 0;border-radius:7px;border:1.5px solid #C9A84C;font-size:10px;font-weight:600;cursor:pointer;background:#4a1f72;color:#fff;font-family:inherit;box-shadow:0 0 8px rgba(201,168,76,.25);transition:all .2s">+2</button>
+        </div>
       </div>
-      <div style="max-height:400px;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none"><div id="upcoming-list" style="padding-right:6px"><div class="loading">Wird geladen…</div></div></div>
+      <div style="flex:1;max-height:400px;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;padding:0 12px 12px"><div id="upcoming-list" style="padding-right:6px"><div class="loading">Wird geladen…</div></div></div>
     </div>
 
     <!-- Live-Aktivitäten — rechts 2/3 bis zum Rand -->
