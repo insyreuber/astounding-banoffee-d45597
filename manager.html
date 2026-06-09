@@ -686,7 +686,7 @@ function renderTicker(rows,varianteMap,staffMap){
     aktionen+=btn('Bestätigung',waLink(phone,msgBestaetigung),canBestaetigen,'#27ae60');
     aktionen+=btn('Erinnerung',waLink(phone,msgErinnerung),canErinnern,'#e67e22');
     aktionen+=btn('Storno',waLink(phone,msgStorno),canStorno,'#e74c3c');
-    aktionen+='<a href="'+successUrl+'" target="_blank" style="background:#5a2d82;border:1px solid #5a2d82;color:#fff;font-weight:700;box-shadow:0 0 10px #5a2d8299;border-radius:6px;padding:4px 9px;font-size:11px;white-space:nowrap;display:inline-block;text-decoration:none;">↗ Buchung</a>';
+    aktionen+='<a href="'+successUrl+'" target="_blank" style="flex-shrink:0;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;background:#5a2d82;border:1px solid #5a2d82;color:#fff;box-shadow:0 0 6px #5a2d8299;border-radius:6px;text-decoration:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>';
     if(isKachelErledigt){
       aktionen+='<span style="margin-left:auto;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;font-size:12px;color:#16a34a;font-weight:600;cursor:default">✓</span>';
     }else{
