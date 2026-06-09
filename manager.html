@@ -476,9 +476,9 @@ async function loadAll(){
   };
   renderTicker(ticker,varianteMap,staffMap);
   renderUpcomingCalendar(upcoming,varianteMap,staffMap,serviceMap);
-  renderReminders(reminders);
+  renderReminders(reminders,varianteMap,staffMap,serviceMap);
   window._lastReminderData=reminders;
-  renderConfirm(confirms);
+  renderConfirm(confirms,varianteMap,staffMap,serviceMap);
   window._lastConfirmData=confirms;
   renderStorno(stornos,varianteMap,staffMap,serviceMap);
   window._lastStornoData={rows:stornos,varianteMap:varianteMap,staffMap:staffMap,serviceMap:serviceMap};
@@ -788,8 +788,8 @@ function renderFromCache(){
   renderTicker(c.ticker,c.varianteMap,c.staffMap);
   renderUpcomingCalendar(c.upcoming,c.varianteMap,c.staffMap,c.serviceMap);
   renderStorno(c.stornos,c.varianteMap,c.staffMap,c.serviceMap);
-  renderReminders(c.reminders);
-  renderConfirm(c.confirms);
+  renderReminders(c.reminders,c.varianteMap,c.staffMap,c.serviceMap);
+  renderConfirm(c.confirms,c.varianteMap,c.staffMap,c.serviceMap);
 }
 
 async function saveErledigtIds(){
@@ -833,8 +833,8 @@ function _silentRefresh(){
   ids.forEach(function(id){var el=document.getElementById(id);if(el){scrolls[id]=el.scrollTop;}});
   var c=window._cache;
   renderTicker(c.ticker,c.varianteMap,c.staffMap);
-  renderConfirm(c.confirms);
-  renderReminders(c.reminders);
+  renderConfirm(c.confirms,c.varianteMap,c.staffMap,c.serviceMap);
+  renderReminders(c.reminders,c.varianteMap,c.staffMap,c.serviceMap);
   renderStorno(c.stornos,c.varianteMap,c.staffMap,c.serviceMap);
   ids.forEach(function(id){var el=document.getElementById(id);if(el){el.scrollTop=scrolls[id]||0;el.style.overflowY='auto';}});
 }
@@ -907,7 +907,8 @@ function updateErledigtVisual(id,done){
   });
 }
 
-function renderReminders(rows){
+function renderReminders(rows,varianteMap,staffMap,serviceMap){
+  varianteMap=varianteMap||{};staffMap=staffMap||{};serviceMap=serviceMap||{};
   if(!rows.length){writeList('reminder-list','<div class="loading">Keine Termine in den nächsten 2 Tagen</div>');return;}
   var erledigtIds=(window._erledigtIds||[]);
   var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
@@ -966,7 +967,8 @@ function renderReminders(rows){
   },1000);
 }
 
-function renderConfirm(rows){
+function renderConfirm(rows,varianteMap,staffMap,serviceMap){
+  varianteMap=varianteMap||{};staffMap=staffMap||{};serviceMap=serviceMap||{};
   if(!rows.length){writeList('confirm-list','<div class="loading">Keine Termine heute / morgen</div>');return;}
   var erledigtIds=(window._erledigtIds||[]);
   var offen=rows.filter(function(b){return erledigtIds.indexOf(b.id)<0;});
