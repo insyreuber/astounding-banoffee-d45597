@@ -712,7 +712,7 @@ function renderTicker(rows,varianteMap,staffMap){
     return'<tr id="bk-'+b.id+'" style="'+(alreadyDone?'opacity:0.35;filter:grayscale(0.4)':'')+'">'
       +'<td style="width:100px;border-radius:10px 0 0 10px;border-left:'+(alreadyDone?'3px solid #e5e5e5':'3px solid var(--tpl)')+'"><span class="badge '+type+'">'+typeLabel+'</span><div style="font-size:10px;color:var(--muted);margin-top:3px">'+esc(bookStr)+'</div></td>'
       +'<td style="font-weight:500">'+esc(b.customer_name||'–')+'</td>'
-      +'<td style="color:var(--muted);font-family:monospace;font-size:13px;width:130px">'<a href="tel:'+esc(b.customer_phone||'')+'" style="color:var(--tpl);text-decoration:none;font-weight:500">'+esc(b.customer_phone||'–')+'</a></td>'
+      +'<td style="color:var(--muted);font-family:monospace;font-size:13px;width:130px"><a href="tel:'+esc(b.customer_phone||'')+'" style="color:var(--tpl);text-decoration:none;font-weight:500">'+esc(b.customer_phone||'–')+'</a></td>'
       +'<td>'+svcName+'</td>'
       +'<td style="color:var(--muted);width:80px">'+dur+'</td>'
       +'<td style="font-weight:500;color:var(--tpl);width:70px">'+price+'</td>'
