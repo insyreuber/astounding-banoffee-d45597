@@ -936,6 +936,7 @@ function renderReminders(rows,varianteMap,staffMap,serviceMap){
     var staffName=staffObj?(staffObj.display_name||staffObj.name||''):'';
     var eingang=b.created_at?new Date(b.created_at).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+' '+new Date(b.created_at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}):'';
     var dur=variante&&variante.dauer_minuten?variante.dauer_minuten+' Min':'–';
+    var price=variante&&variante.preis?parseFloat(variante.preis).toFixed(2)+' €':'–';
     return'<div style="'+(isErledigt?doneStyle:activeStyle)+'">'+ 
       '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'+ 
         '<span style="font-size:13px;font-weight:600;color:'+(isErledigt?'#aaa':'var(--td)')+'">'+esc(b.customer_name||'Kunde')+'</span>'+ 
