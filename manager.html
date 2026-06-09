@@ -702,9 +702,9 @@ function renderTicker(rows,varianteMap,staffMap){
     aktionen+=btn('Storno',waLink(phone,msgStorno),canStorno,'#e74c3c');
     aktionen+='<a href="'+successUrl+'" target="_blank" style="flex-shrink:0;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;background:#5a2d82;border:1px solid #5a2d82;color:#fff;box-shadow:0 0 6px #5a2d8299;border-radius:6px;text-decoration:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>';
     if(isKachelErledigt){
-      aktionen+='<span style="margin-left:auto;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;font-size:12px;color:#16a34a;font-weight:600;cursor:default">✓</span>';
+      aktionen+='<div style="width:22px;height:22px;border-radius:5px;background:#27ae60;border:1.5px solid #27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:auto"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.5\" stroke-linecap=\"round\"><polyline points=\"10 3 5 9 2 6\"/></svg></div>';
     }else{
-      aktionen+='<button onclick="tickerErledigt(\''+b.id+'\')" style="margin-left:auto;background:'+(isErledigt2?'#e8f5e9':'var(--bg)')+';border:1px solid '+(isErledigt2?'#4ade80':'var(--border)')+';border-radius:6px;padding:2px 8px;font-size:12px;color:'+(isErledigt2?'#16a34a':'#ccc')+';font-weight:600;cursor:pointer">✓</button>';
+      aktionen+='<div style="width:22px;height:22px;border-radius:5px;background:#27ae60;border:1.5px solid #27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:auto"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.5\" stroke-linecap=\"round\"><polyline points=\"10 3 5 9 2 6\"/></svg></div>';
     }
     aktionen+='</div>';
 
@@ -749,8 +749,8 @@ function renderStorno(rows,varianteMap,staffMap,serviceMap){
     var doneStyle3='background:#f8f8f8;border:1.5px solid #e5e5e5;border-radius:10px;padding:12px;position:relative;opacity:0.45;filter:grayscale(0.3)';
     return'<div style="'+(isErledigt?doneStyle3:activeStyle3)+'">'+
       (!isErledigt
-        ?'<button onclick="stornoErledigt(\''+b.id+'\')" style="position:absolute;top:8px;right:8px;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;cursor:pointer;font-size:12px;color:#16a34a;font-weight:600">✓</button>'
-        :'<span style="position:absolute;top:8px;right:8px;font-size:11px;color:#bbb;font-weight:500">✓ Erledigt</span>')+
+        ?'<div onclick="stornoErledigt(\''+b.id+'\')" style="width:22px;height:22px;border-radius:5px;border:2px solid #c8bcd8;background:#f5f5f5;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .2s"></div>'
+        :'<div style="width:22px;height:22px;border-radius:5px;background:#27ae60;border:1.5px solid #27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.5\" stroke-linecap=\"round\"><polyline points=\"10 3 5 9 2 6\"/></svg></div>')+
       '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;padding-right:50px"><div class="ticker-dot cancel"></div><span style="font-size:13px;font-weight:600;color:'+(isErledigt?'#aaa':'var(--td)')+'">'+esc(b.customer_name||'Kunde')+'</span>'+(b.customer_phone&&!isErledigt?'<a href="tel:'+esc(b.customer_phone)+'" style="font-size:10px;color:var(--tpl);margin-left:4px;text-decoration:none;font-weight:500">'+esc(b.customer_phone)+'</a>':'')+'</div>'+
       '<div style="font-size:11px;color:'+(isErledigt?'#bbb':'var(--muted)')+';margin-bottom:2px">'+esc(dateStr)+'</div>'+
       '<div style="font-size:11px;color:'+(isErledigt?'#bbb':'var(--muted)')+';margin-bottom:2px">'+esc(svcName)+(staffName?' · '+esc(staffName):'')+'</div>'+
@@ -793,6 +793,16 @@ function erledigt(id){
   updateErledigtVisual(id,true);
 }
 function stornoErledigt(id){erledigt(id);}
+function markErledigt(type,id,el){
+  el.style.background='#27ae60';el.style.borderColor='#27ae60';
+  el.innerHTML='<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="10 3 5 9 2 6"/></svg>';
+  el.style.transform='scale(1.15)';setTimeout(function(){el.style.transform='scale(1)';},150);
+  setTimeout(function(){
+    if(type==='confirm')confirmErledigt(id);
+    else if(type==='reminder')reminderErledigt(id);
+    else if(type==='storno')stornoErledigt(id);
+  },400);
+}
 function reminderErledigt(id){erledigt(id);}
 function confirmErledigt(id){erledigt(id);}
 function tickerErledigt(id){
@@ -849,8 +859,8 @@ function updateErledigtVisual(id,done){
     aktionen+=btn2('Storno',waLink(phone,applyTemplate('storno',tplVars)),canStorno,'#e74c3c');
     aktionen+='<a href="'+successUrl+'" target="_blank" style="background:#5a2d82;border:1px solid #5a2d82;color:#fff;font-weight:700;box-shadow:0 0 10px #5a2d8299;border-radius:6px;padding:4px 9px;font-size:11px;white-space:nowrap;display:inline-block;text-decoration:none;">↗ Buchung</a>';
     aktionen+=alreadyDone
-      ?'<span style="margin-left:auto;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;font-size:12px;color:#16a34a;font-weight:600">✓</span>'
-      :'<button onclick="tickerErledigt(\''+b.id+'\')" style="margin-left:auto;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:12px;color:#ccc;font-weight:600;cursor:pointer">✓</button>';
+      ?'<div style="width:22px;height:22px;border-radius:5px;background:#27ae60;border:1.5px solid #27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:auto"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.5\" stroke-linecap=\"round\"><polyline points=\"10 3 5 9 2 6\"/></svg></div>'
+      :'<div onclick="tickerErledigt(\''+b.id+'\')" style="width:22px;height:22px;border-radius:5px;border:2px solid #c8bcd8;background:#f5f5f5;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;margin-left:auto;transition:all .2s"></div>';
     aktionen+='</div>';
     tr.style.opacity=alreadyDone?'0.35':'1';
     tr.style.filter=alreadyDone?'grayscale(0.4)':'';
@@ -902,8 +912,8 @@ function renderReminders(rows){
     var doneStyle='background:#f8f8f8;border:1.5px solid #e5e5e5;border-radius:10px;padding:12px;position:relative;opacity:0.45;filter:grayscale(0.3)';
     return'<div style="'+(isErledigt?doneStyle:activeStyle)+'">'+
       (!isErledigt
-        ?'<button onclick="reminderErledigt(\''+b.id+'\')" style="position:absolute;top:8px;right:8px;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;cursor:pointer;font-size:12px;color:#16a34a;font-weight:600">✓</button>'
-        :'<span style="position:absolute;top:8px;right:8px;font-size:11px;color:#bbb;font-weight:500">✓ Erledigt</span>')+
+        ?'<div onclick="reminderErledigt(\''+b.id+'\')" style="width:22px;height:22px;border-radius:5px;border:2px solid #c8bcd8;background:#f5f5f5;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .2s"></div>'
+        :'<div style="width:22px;height:22px;border-radius:5px;background:#27ae60;border:1.5px solid #27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.5\" stroke-linecap=\"round\"><polyline points=\"10 3 5 9 2 6\"/></svg></div>')+
       '<div style="font-size:13px;font-weight:600;margin-bottom:3px;padding-right:55px;color:'+(isErledigt?'#aaa':'var(--td)')+'">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
       '<div style="font-size:10px;color:'+(isErledigt?'#bbb':'var(--muted)')+';margin-bottom:6px">'+esc(dateStr)+' '+timeStr+'</div>'+
       (!isErledigt?'<div id="'+cdId+'" data-target="'+new Date(b.termin_start).getTime()+'" style="font-size:11px;font-weight:700;color:#e67e22;margin-bottom:8px;letter-spacing:0.03em">⏱ …</div>':'')+
@@ -948,8 +958,8 @@ function renderConfirm(rows){
     var doneStyle2='background:#f8f8f8;border:1.5px solid #e5e5e5;border-radius:10px;padding:12px;position:relative;opacity:0.45;filter:grayscale(0.3)';
     return'<div style="'+(isErledigt?doneStyle2:activeStyle2)+'">'+
       (!isErledigt
-        ?'<button onclick="confirmErledigt(\''+b.id+'\')" style="position:absolute;top:8px;right:8px;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;cursor:pointer;font-size:12px;color:#16a34a;font-weight:600">✓</button>'
-        :'<span style="position:absolute;top:8px;right:8px;font-size:11px;color:#bbb;font-weight:500">✓ Erledigt</span>')+
+        ?'<div onclick="confirmErledigt(\''+b.id+'\')" style="width:22px;height:22px;border-radius:5px;border:2px solid #c8bcd8;background:#f5f5f5;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .2s"></div>'
+        :'<div style="width:22px;height:22px;border-radius:5px;background:#27ae60;border:1.5px solid #27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.5\" stroke-linecap=\"round\"><polyline points=\"10 3 5 9 2 6\"/></svg></div>')+
       '<div style="font-size:13px;font-weight:600;margin-bottom:3px;padding-right:55px;color:'+(isErledigt?'#aaa':'var(--td)')+'">'+esc(b.customer_name||b.name||'Kunde')+'</div>'+
       '<div style="font-size:10px;color:'+(isErledigt?'#bbb':'var(--muted)')+';margin-bottom:10px">'+esc(dateStr)+' '+timeStr2+'</div>'+
       (phone&&!isErledigt
@@ -1313,9 +1323,9 @@ function renderMobileTickerCards(rows,varianteMap,staffMap,el){
     aktionen+=btn('Storno',waLink(phone,msgStorno),canStorno,'#e74c3c');
     aktionen+='<a href="'+bookingLink+'" target="_blank" style="background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);color:#fff;border-radius:8px;padding:6px 8px;text-decoration:none;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#5a2d82"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><\/a>';
     if(isKachelErledigt){
-      aktionen+='<span style="margin-left:auto;background:#e8f5e9;border:1px solid #4ade80;border-radius:6px;padding:2px 8px;font-size:12px;color:#16a34a;font-weight:600">✓<\/span>';
+      aktionen+='<div style="width:22px;height:22px;border-radius:5px;background:#27ae60;border:1.5px solid #27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:auto"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.5\" stroke-linecap=\"round\"><polyline points=\"10 3 5 9 2 6\"/></svg></div>';
     }else{
-      aktionen+='<button onclick="tickerErledigt(\''+b.id+'\')" style="margin-left:auto;background:'+(isErledigt2?'#e8f5e9':'var(--bg)')+';border:1px solid '+(isErledigt2?'#4ade80':'var(--border)')+';border-radius:6px;padding:2px 8px;font-size:12px;color:'+(isErledigt2?'#16a34a':'#ccc')+';font-weight:600;cursor:pointer">✓<\/button>';
+      aktionen+='<div style="width:22px;height:22px;border-radius:5px;background:#27ae60;border:1.5px solid #27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:auto"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.5\" stroke-linecap=\"round\"><polyline points=\"10 3 5 9 2 6\"/></svg></div>';
     }
     aktionen+='<\/div>';
     return'<div id="mc-'+b.id+'" style="'+firstTop+'background:#fff;border-radius:12px;margin-bottom:10px;border:1.5px solid '+(alreadyDone?'#e5e5e5':'var(--border)')+';border-left:3px solid '+(alreadyDone?'#e5e5e5':type==='cancel'?'#e74c3c':type==='move'?'#f39c12':'#27ae60')+';padding:10px 12px;'+(alreadyDone?'opacity:0.4;filter:grayscale(0.3)':'')+'">'+
