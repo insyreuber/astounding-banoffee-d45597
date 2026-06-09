@@ -1374,6 +1374,16 @@ function mobileTab(tab){
   });
 }
 
+function initKurzfristigSetting(){
+  var saved=localStorage.getItem('kurzfristig_setting')||'anzeigen';
+  var el=document.getElementById('kurzfristig-setting');
+  if(el)el.value=saved;
+}
+function saveKurzfristigSetting(val){
+  localStorage.setItem('kurzfristig_setting',val);
+  renderFromCache();
+}
+
 loadAll();
 initKurzfristigSetting();
 // Auto-Refresh alle 60s — externe Änderungen (Stornos, neue Buchungen) werden erkannt
