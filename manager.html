@@ -564,7 +564,7 @@ function renderUpcomingCalendar(events,varianteMap,staffMap,serviceMap){
     return;
   }
   el.innerHTML=filtered.map(function(b,i){
-    var firstStyle=i===0?'margin-top:60px;':'';
+    var firstStyle='';
     var d=new Date(b.termin_start);
     var dateStr=d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
     var variante=varianteMap[b.service_variante_id];
