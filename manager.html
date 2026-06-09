@@ -53,7 +53,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
   background:#fff;color:var(--muted);
   font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
   padding:2px 14px 12px;text-align:left;border-bottom:2px solid var(--border);white-space:nowrap;
-  position:sticky;top:0;z-index:2;
+  position:sticky;top:42px;z-index:2;
 }
 .ticker-table td{
   padding:13px 14px;border-bottom:none;
@@ -275,12 +275,14 @@ html,body{overflow-x:hidden;max-width:100vw}
     </div>
 
     <!-- Live-Aktivitäten — rechts 2/3 bis zum Rand -->
-    <div class="card" style="flex:1;border-radius:12px 0 0 12px;margin-right:0;display:flex;flex-direction:column">
-      <div class="card-title" style="position:sticky;top:0;z-index:10;background:#fff;border-radius:12px 0 0 0;border-bottom:1px solid var(--border);margin:-1px -1px 0 -1px;padding:10px 14px">
-        <span class="live-dot"></span>
-        Live-Aktivitäten
+    <div class="card" style="flex:1;border-radius:12px 0 0 12px;margin-right:0;display:flex;flex-direction:column;overflow:hidden">
+      <div style="overflow-y:auto;flex:1;max-height:480px;scrollbar-width:none;-ms-overflow-style:none;position:relative">
+        <div style="position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:8px">
+          <span class="live-dot"></span>
+          <span class="card-title" style="margin:0;padding:0;border:none;background:transparent;font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--muted);text-transform:uppercase">Live-Aktivitäten</span>
+        </div>
+        <div id="ticker-list" style="padding-right:6px"><div class="loading">Wird geladen…</div></div>
       </div>
-      <div style="overflow-y:scroll;flex:1;max-height:480px;scrollbar-width:none;-ms-overflow-style:none"><div id="ticker-list" style="padding-right:6px"><div class="loading">Wird geladen…</div></div></div>
     </div>
 
   </div>
