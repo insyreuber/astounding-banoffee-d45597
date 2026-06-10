@@ -21,20 +21,22 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#f3f0f7;min-height:10
   overflow:hidden;
 }
 
-/* Salon Info */
-.salon-info{
-  margin-bottom:28px;
-  padding-bottom:20px;
-  border-bottom:1px solid rgba(255,255,255,0.12);
-  text-align:left;
-}
-.salon-brand{font-family:'Playfair Display',serif;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:none;margin-bottom:4px;line-height:1}.salon-brand .insy{color:#fff}.salon-brand .reception{color:#C9A84C}
-.salon-name{font-size:16px;font-weight:600;color:#fff;margin-bottom:8px}
-.salon-chips{display:flex;flex-wrap:wrap;gap:6px}
-.salon-chip{display:flex;align-items:center;gap:4px;font-size:11px;color:rgba(255,255,255,.55)}
-.salon-chip svg{flex-shrink:0;opacity:0.7}
-.salon-chip a{color:rgba(255,255,255,.65);text-decoration:none}
-.salon-chip a:hover{color:#fff}
+/* booking-style header */
+.hd{background:linear-gradient(135deg,#3d1568 0%,#5a2d82 60%,#4a1f72 100%);padding:14px 20px;width:100%;position:relative;border-radius:20px 20px 0 0;margin:-40px -36px 24px;width:calc(100% + 72px)}
+.hd-inner{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.hd-left{flex:1;min-width:0}
+.hd-logo{font-family:'Playfair Display',serif;font-size:0.65rem;font-weight:600;color:#fff;letter-spacing:.16em;text-transform:uppercase;line-height:1;margin-bottom:3px}
+.hd-logo span{color:#C9A84C}
+.hd-name{font-size:18px;font-weight:600;color:#fff;margin-bottom:5px;line-height:1.2}
+.hd-meta{display:flex;flex-direction:column;gap:5px}
+.hd-meta-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.hd-chip{font-size:12px;color:rgba(255,255,255,.65);display:flex;align-items:center;gap:5px}
+.hd-hours-inline{cursor:pointer;position:relative;user-select:none}
+.hd-hours-inline:hover{color:rgba(255,255,255,.82)}
+.hd-hours-drop{position:absolute;top:calc(100% + 6px);left:0;background:#fff;border:1.5px solid #e8e0f0;border-radius:10px;padding:10px 14px;min-width:200px;z-index:300;box-shadow:0 4px 16px rgba(74,28,107,.12);display:none}
+.hd-hour-row{display:flex;justify-content:space-between;gap:16px;font-size:12px;color:#7a6a8a;padding:3px 0}
+.hd-hour-today{color:#3d1568;font-weight:600}
+.hd-hour-closed{color:#c8bcd8}
 
 /* Check */
 .check-wrap{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,rgba(201,168,76,0.35),rgba(201,168,76,0.15));border:2px solid rgba(201,168,76,0.55);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
@@ -81,12 +83,44 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#f3f0f7;min-height:10
 
 <div class="card" id="conf-card">
 
-  <!-- Zurück zur Buchungsseite -->
-  <!-- Salon Info wird dynamisch geladen -->
-  <div class="salon-info" id="salon-info">
-    <div class="salon-brand"><span class="insy">Insy</span> <span class="reception">Reception</span></div>
-    <div class="salon-name" id="salon-name">—</div>
-    <div class="salon-chips" id="salon-chips"></div>
+  <!-- Header wie booking.html -->
+  <div class="hd">
+    <div class="hd-inner">
+      <div class="hd-left">
+        <div class="hd-logo" id="brand-name">Insy <span>Reception</span></div>
+        <div class="hd-name" id="salon-name">—</div>
+        <div class="hd-meta">
+          <div class="hd-meta-row">
+            <a class="hd-chip" id="salon-address" href="#" style="display:none;text-decoration:none;color:rgba(255,255,255,.65)"></a>
+            <div class="hd-chip" id="salon-phone" style="display:none"></div>
+          </div>
+          <div class="hd-meta-row" id="hd-links-row" style="display:none">
+            <a class="hd-chip" id="salon-instagram" href="#" target="_blank" style="display:none;text-decoration:none;color:rgba(255,255,255,.55)">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>Instagram
+            </a>
+            <a class="hd-chip" id="salon-website" href="#" target="_blank" style="display:none;text-decoration:none;color:rgba(255,255,255,.55)">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>Website
+            </a>
+          </div>
+          <!-- Öffnungszeiten aufklappbar -->
+          <div class="hd-meta-row">
+            <div class="hd-chip hd-hours-inline" id="hours-pill" onclick="toggleHours()">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span id="hd-hours-status" style="font-weight:600">—</span>
+              <span id="today-hours-label" style="color:rgba(255,255,255,.55)"> ▾</span>
+              <div class="hd-hours-drop" id="hours-drop"></div>
+            </div>
+          </div>
+          <!-- Buchungs-URL -->
+          <div class="hd-meta-row">
+            <a class="hd-chip" id="booking-url-chip" href="#" style="display:none;text-decoration:none;color:rgba(255,255,255,.55)">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+              <span id="booking-url-text">Buchungslink</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Bestätigung -->
@@ -234,37 +268,89 @@ async function init(){
     if(link)link.href='https://insy-reception.com/booking?salon_id='+salonId;
   }
 
-  // Salon Info + Mitarbeiter laden
+  // Salon Info + Öffnungszeiten laden
   if(salonId){
     try{
-      var res=await fetch(SURL+'/rest/v1/kunden_profile?id=eq.'+salonId+'&select=brand_name,name,street,house_number,postal_code,city,area_code,phone_number,instagram_url,website_url,google_maps_url',{
+      var res=await fetch(SURL+'/rest/v1/kunden_profile?id=eq.'+salonId+'&select=brand_name,name,street,house_number,postal_code,city,area_code,phone_number,instagram_url,website_url,google_maps_url,arbeitszeiten,feature_settings',{
         headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}
       });
       var data=await res.json();
       if(data&&data[0]){
         var d=data[0];
-        document.getElementById('salon-name').textContent=d.brand_name||d.name||'Salon';
-        document.getElementById('watermark').textContent=d.brand_name||d.name||'INSY RECEPTION';
-        var chips='';
-        var addr=[d.street,d.house_number,(d.postal_code||''),d.city].filter(Boolean).join(' ');
-        if(addr){
-          var mapsHref=d.google_maps_url?'href="'+d.google_maps_url+'" target="_blank"':'';
-          chips+='<div class="salon-chip"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><a '+mapsHref+'>'+addr+'</a></div>';
+        var salonName=d.brand_name||d.name||'Salon';
+        document.getElementById('salon-name').textContent=salonName;
+
+        // Adresse
+        var phoneRaw=[d.area_code,d.phone_number].filter(Boolean).join(' ');
+        var street=[d.street,d.house_number].filter(Boolean).join(' ');
+        var city=[d.postal_code,d.city].filter(Boolean).join(' ');
+        var addr=[street,city].filter(Boolean).join(', ');
+        var phoneEl=document.getElementById('salon-phone');
+        var addrEl=document.getElementById('salon-address');
+        if(phoneEl&&phoneRaw){phoneEl.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>'+phoneRaw;phoneEl.style.display='flex';}
+        if(addrEl&&addr){addrEl.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>'+addr;addrEl.style.display='flex';if(d.google_maps_url){addrEl.href=d.google_maps_url;addrEl.target='_blank';}}
+
+        // Links
+        var hasLinks=false;
+        var igEl=document.getElementById('salon-instagram');
+        var webEl=document.getElementById('salon-website');
+        if(igEl&&d.instagram_url){igEl.href=d.instagram_url;igEl.style.display='flex';hasLinks=true;}
+        if(webEl&&d.website_url){webEl.href=d.website_url;webEl.style.display='flex';hasLinks=true;}
+        if(hasLinks)document.getElementById('hd-links-row').style.display='flex';
+
+        // Buchungs-URL
+        var bookingUrl='https://insy-reception.com/booking?salon_id='+salonId;
+        var urlChip=document.getElementById('booking-url-chip');
+        if(urlChip){urlChip.href=bookingUrl;urlChip.style.display='flex';}
+
+        // Öffnungszeiten
+        if(d.arbeitszeiten){
+          window.SALON_AZ=d.arbeitszeiten;
+          renderWorkingHours(d.arbeitszeiten);
         }
-        if(d.area_code&&d.phone_number){
-          chips+='<div class="salon-chip"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>'+d.area_code+' '+d.phone_number+'</div>';
-        }
-        if(d.instagram_url){
-          chips+='<div class="salon-chip"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg><a href="'+d.instagram_url+'" target="_blank">Instagram</a></div>';
-        }
-        if(d.website_url){
-          chips+='<div class="salon-chip"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg><a href="'+d.website_url+'" target="_blank">Website</a></div>';
-        }
-        document.getElementById('salon-chips').innerHTML=chips;
       }
     }catch(e){console.error(e);}
   }
 }
+
+// ── Öffnungszeiten Helpers ──
+var hoursOpen=false;
+var DAY_ORDER=['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+var DAY_LABELS={monday:'Montag',tuesday:'Dienstag',wednesday:'Mittwoch',thursday:'Donnerstag',friday:'Freitag',saturday:'Samstag',sunday:'Sonntag'};
+function getTodayKey(){var m={0:'sunday',1:'monday',2:'tuesday',3:'wednesday',4:'thursday',5:'friday',6:'saturday'};return m[new Date().getDay()];}
+function _slotsFor(h){if(h.slots&&h.slots.length)return h.slots;if(h.start||h.end)return[{start:h.start||'09:00',end:h.end||'18:00'}];return[{start:'09:00',end:'18:00'}];}
+function formatHours(d){if(!d)return'—';if(!d.aktiv)return'Geschlossen';var sl=_slotsFor(d);if(!sl.length)return'—';return sl.map(function(s){return s.start+' – '+s.end;}).join('<br>');}
+function toggleHours(){
+  hoursOpen=!hoursOpen;
+  document.getElementById('hours-drop').style.display=hoursOpen?'block':'none';
+}
+document.addEventListener('click',function(e){
+  if(hoursOpen&&!e.target.closest('#hours-pill')){
+    hoursOpen=false;
+    var d=document.getElementById('hours-drop');
+    if(d)d.style.display='none';
+  }
+});
+function renderWorkingHours(az){
+  var todayKey=getTodayKey();
+  var todayData=az[todayKey];
+  var hoursText=formatHours(todayData).replace('<br>',' / ');
+  var isOpen=todayData&&todayData.aktiv&&hoursText!=='Geschlossen';
+  var hst=document.getElementById('hd-hours-status');
+  if(hst){hst.textContent=isOpen?'Geöffnet':'Geschlossen';hst.style.color=isOpen?'#4ade80':'rgba(255,255,255,.5)';}
+  var lbl=document.getElementById('today-hours-label');
+  if(lbl)lbl.textContent=' '+hoursText+' ▾';
+  var drop=document.getElementById('hours-drop');
+  if(drop){
+    drop.innerHTML=DAY_ORDER.map(function(k){
+      var d=az[k],isToday=k===todayKey,isClosed=!d||!d.aktiv;
+      var cls='hd-hour-row'+(isToday?' hd-hour-today':'')+(isClosed?' hd-hour-closed':'');
+      return'<div class="'+cls+'"><span>'+DAY_LABELS[k]+'</span><span>'+formatHours(d).replace('<br>',' / ')+'</span></div>';
+    }).join('');
+  }
+}
+
+init();
 
 async function cancelBooking(){
   if(!confirm('Möchtest du den Termin wirklich stornieren?'))return;
@@ -289,7 +375,7 @@ async function cancelBooking(){
   }
 }
 
-init();
+
 </script>
 </body>
 </html>
