@@ -283,6 +283,7 @@ html,body{overflow-x:hidden;max-width:100vw}
         <span class="live-dot"></span>
         <span style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.7)">Live</span>
         <span style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#C9A84C">Aktivitäten</span>
+        <div id="ticker-pagination" style="margin-left:auto;display:flex;align-items:center;gap:4px"></div>
       </div>
       <!-- Sticky column headers — same table-layout as ticker-table -->
       <div style="position:sticky;top:41px;z-index:19;background:#fff;border-bottom:2px solid var(--border);flex-shrink:0;overflow:hidden">
@@ -582,7 +583,6 @@ function renderAvatar(staffObj,size){
 
 function renderTicker(rows,varianteMap,staffMap){
   varianteMap=varianteMap||{};staffMap=staffMap||{};
-  // Cache für Re-Render ohne Supabase
   window._mTicker=rows;window._mVMap=varianteMap;window._mSMap=staffMap;
   var el=document.getElementById('ticker-list');
   var elM=document.getElementById('ticker-list-m');
@@ -590,6 +590,22 @@ function renderTicker(rows,varianteMap,staffMap){
   if(cnt)cnt.textContent=rows.length+' Einträge';
   if(!rows.length){el.innerHTML='<div class="loading">Noch keine Aktivitäten</div>';return;}
   window._tickerRows=rows;window._tickerVarianteMap=varianteMap;window._tickerStaffMap=staffMap;
+
+  var PAGE_SIZE=25;
+  if(!window._tickerPage)window._tickerPage=0;
+  var totalPages=Math.ceil(rows.length/PAGE_SIZE);
+  if(window._tickerPage>=totalPages)window._tickerPage=0;
+  var pageRows=rows.slice(window._tickerPage*PAGE_SIZE,(window._tickerPage+1)*PAGE_SIZE);
+
+  // Update pagination UI
+  var pgEl=document.getElementById('ticker-pagination');
+  if(pgEl){
+    pgEl.innerHTML=
+      '<button onclick="tickerPageStep(-1)" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,.7);font-size:18px;padding:0 8px;line-height:1">&#8249;</button>'+
+      '<span style="font-size:10px;color:rgba(255,255,255,.6);font-weight:500">'+(window._tickerPage+1)+' / '+totalPages+'</span>'+
+      '<button onclick="tickerPageStep(1)" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,.7);font-size:18px;padding:0 8px;line-height:1">&#8250;</button>';
+  }
+
   var erledigtIds=(window._erledigtIds||[]);
   var thead='<thead><tr>'
     +'<th style="width:110px">Status</th>'
@@ -602,7 +618,7 @@ function renderTicker(rows,varianteMap,staffMap){
     +'<th style="width:120px">Termin</th>'
     +'<th style="font-size:12px;width:360px">Aktionen</th>'
   +'</tr></thead>';
-  var tbody=rows.map(function(b){
+  var tbody=pageRows.map(function(b){
     var type=b.status==='cancelled'?'cancel':b.status==='rescheduled'?'move':'in';
     var typeLabel=type==='cancel'?'Storno':type==='move'?'Verschoben':'Eingang';
     var d=new Date(b.termin_start||b.created_at||new Date());
@@ -681,6 +697,13 @@ function renderTicker(rows,varianteMap,staffMap){
   if(em)renderMobileTickerCards(rows,varianteMap,staffMap,em);
 }
 
+function tickerPageStep(dir){
+  var rows=window._tickerRows||[];
+  var totalPages=Math.ceil(rows.length/25);
+  window._tickerPage=Math.max(0,Math.min(totalPages-1,(window._tickerPage||0)+dir));
+  renderTicker(rows,window._tickerVarianteMap,window._tickerStaffMap);
+  var s=document.getElementById('ticker-scroll');if(s)s.scrollTop=0;
+}
 function renderStorno(rows,varianteMap,staffMap,serviceMap){
   varianteMap=varianteMap||{};staffMap=staffMap||{};serviceMap=serviceMap||{};
   if(!rows.length){writeList('storno-list','<div class="loading">Keine Stornos in den letzten 7 Tagen</div>');return;}
