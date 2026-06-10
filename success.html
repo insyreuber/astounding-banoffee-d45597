@@ -101,7 +101,6 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#f3f0f7;min-height:10
     <div class="detail-row" id="d-staff-row"><span class="detail-label">bei</span><span class="detail-value" id="d-staff">—</span></div>
     <div class="detail-row"><span class="detail-label">Datum</span><span class="detail-value" id="d-date">—</span></div>
     <div class="detail-row"><span class="detail-label">Uhrzeit</span><span class="detail-value" id="d-time">—</span></div>
-    <div class="detail-row" id="d-price-row"><span class="detail-label">Preis</span><span class="detail-value" id="d-price">—</span></div>
   </div>
 
   <!-- Kalender + Aktionen -->
@@ -197,6 +196,11 @@ async function init(){
   document.getElementById('d-service').textContent=decodeURIComponent(svcNames);
   document.getElementById('d-date').textContent=decodeURIComponent(date);
   document.getElementById('d-time').textContent=time?time:'—';
+  if(staffName&&staffName!=='—'){
+    document.getElementById('d-staff').textContent=decodeURIComponent(staffName);
+  } else {
+    document.getElementById('d-staff-row').style.display='none';
+  }
   // Kalender-Links aufbauen
   var calStart='', calEnd='';
   try{
@@ -214,17 +218,14 @@ async function init(){
     // Google Calendar link
     var gLink='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+calTitle+'&dates='+calStart+'/'+calEnd+'&details='+calDesc;
     document.getElementById('cal-google').href=gLink;
-    // ICS file
-    var ics='BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:'+calStart+'\nDTEND:'+calEnd+'\nSUMMARY:'+decodeURIComponent(calTitle)+'\nDESCRIPTION:'+decodeURIComponent(calDesc)+'\nEND:VEVENT\nEND:VCALENDAR';
-    var icsBlob=new Blob([ics],{type:'text/calendar'});
-    document.getElementById('cal-ics').href=URL.createObjectURL(icsBlob);
     document.getElementById('cal-btns').style.display='flex';
   }
 
-  if(price&&price!=='null'){
-    document.getElementById('d-price').textContent=price+' €';
+  // Staff anzeigen — aus Supabase-Daten (bereits geladen)
+  if(staffName&&staffName!=='—'){
+    document.getElementById('d-staff').textContent=decodeURIComponent(staffName);
   } else {
-    document.getElementById('d-price-row').style.display='none';
+    document.getElementById('d-staff-row').style.display='none';
   }
 
   // Buchungslink zurück
@@ -262,26 +263,6 @@ async function init(){
         document.getElementById('salon-chips').innerHTML=chips;
       }
     }catch(e){console.error(e);}
-
-    // Mitarbeiter aus URL-Parameter laden
-    var staffParam=params.get('staff_id');
-    if(staffParam){
-      try{
-        var sres=await fetch(SURL+'/rest/v1/mitarbeiter?id=eq.'+staffParam+'&select=display_name,name',{
-          headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}
-        });
-        var sdata=await sres.json();
-        if(sdata&&sdata[0]){
-          document.getElementById('d-staff').textContent=sdata[0].display_name||sdata[0].name;
-        } else {
-          document.getElementById('d-staff-row').style.display='none';
-        }
-      }catch(e){document.getElementById('d-staff-row').style.display='none';}
-    } else if(staffName&&staffName!=='—'){
-      document.getElementById('d-staff').textContent=decodeURIComponent(staffName);
-    } else {
-      document.getElementById('d-staff-row').style.display='none';
-    }
   }
 }
 
