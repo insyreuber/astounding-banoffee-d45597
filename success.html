@@ -119,6 +119,11 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#f3f0f7;min-height:10
               <div class="hd-hours-drop" id="hours-drop"></div>
             </div>
           </div>
+          <!-- Bemerkung/Hinweis -->
+          <div id="hd-note" style="display:none;margin-top:7px;padding:5px 12px;background:rgba(255,255,255,0.12);border-radius:8px;font-size:11px;color:rgba(255,255,255,0.85);align-items:flex-start;gap:6px;word-break:break-word;line-height:1.5;width:fit-content">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:2px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span id="hd-note-text" style="flex:1;min-width:0"></span>
+          </div>
         </div>
       </div>
     </div>
@@ -272,7 +277,7 @@ async function init(){
   // Salon Info + Öffnungszeiten laden
   if(salonId){
     try{
-      var res=await fetch(SURL+'/rest/v1/kunden_profile?id=eq.'+salonId+'&select=brand_name,name,street,house_number,postal_code,city,area_code,phone_number,instagram_url,website_url,google_maps_url,arbeitszeiten,feature_settings',{
+      var res=await fetch(SURL+'/rest/v1/kunden_profile?id=eq.'+salonId+'&select=brand_name,name,street,house_number,postal_code,city,area_code,phone_number,instagram_url,website_url,google_maps_url,arbeitszeiten,feature_settings,note',{
         headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}
       });
       var data=await res.json();
@@ -299,6 +304,14 @@ async function init(){
         if(webEl&&d.website_url){webEl.href=d.website_url;webEl.style.display='flex';hasLinks=true;}
         if(d.mobile_url){var mEl=document.getElementById('salon-mobile-link');var mLbl=document.getElementById('salon-mobile-label');if(mEl){mEl.href='tel:'+d.mobile_url.replace(/\s/g,'');mEl.style.display='flex';if(mLbl)mLbl.textContent=d.mobile_url;}}
         if(hasLinks)document.getElementById('hd-links-row').style.display='flex';
+
+        // Bemerkung/Hinweis
+        if(d.note&&d.note.trim()){
+          var noteEl=document.getElementById('hd-note');
+          var noteTxt=document.getElementById('hd-note-text');
+          if(noteEl)noteEl.style.display='flex';
+          if(noteTxt)noteTxt.textContent=d.note.trim();
+        }
 
         // Öffnungszeiten
         if(d.arbeitszeiten){
