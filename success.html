@@ -22,14 +22,14 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#f3f0f7;min-height:10
 }
 
 /* booking-style header */
-.hd{background:linear-gradient(135deg,#3d1568 0%,#5a2d82 60%,#4a1f72 100%);padding:14px 20px;width:100%;position:relative;border-radius:20px 20px 0 0;margin:-40px -36px 24px;width:calc(100% + 72px)}
-.hd-inner{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
-.hd-left{flex:1;min-width:0}
+.hd{background:linear-gradient(135deg,#3d1568 0%,#5a2d82 60%,#4a1f72 100%);padding:14px 20px;width:100%;position:relative;border-radius:20px 20px 0 0;margin:-40px -36px 24px;width:calc(100% + 72px);text-align:center}
+.hd-inner{display:flex;align-items:flex-start;justify-content:center;gap:16px}
+.hd-left{flex:1;min-width:0;text-align:center}
 .hd-logo{font-family:'Playfair Display',serif;font-size:0.65rem;font-weight:600;color:#fff;letter-spacing:.16em;text-transform:uppercase;line-height:1;margin-bottom:3px}
 .hd-logo span{color:#C9A84C}
 .hd-name{font-size:18px;font-weight:600;color:#fff;margin-bottom:5px;line-height:1.2}
-.hd-meta{display:flex;flex-direction:column;gap:5px}
-.hd-meta-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.hd-meta{display:flex;flex-direction:column;gap:5px;align-items:center}
+.hd-meta-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center}
 .hd-chip{font-size:12px;color:rgba(255,255,255,.65);display:flex;align-items:center;gap:5px}
 .hd-hours-inline{cursor:pointer;position:relative;user-select:none}
 .hd-hours-inline:hover{color:rgba(255,255,255,.82)}
@@ -119,7 +119,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#f3f0f7;min-height:10
             </div>
           </div>
           <!-- Bemerkung/Hinweis -->
-          <div id="hd-note" style="display:none;margin-top:7px;padding:5px 12px;background:rgba(255,255,255,0.12);border-radius:8px;font-size:11px;color:rgba(255,255,255,0.85);align-items:flex-start;gap:6px;word-break:break-word;line-height:1.5;width:fit-content">
+          <div id="hd-note" style="display:none;margin-top:7px;padding:5px 12px;background:rgba(255,255,255,0.12);border-radius:8px;font-size:11px;color:rgba(255,255,255,0.85);align-items:flex-start;gap:6px;word-break:break-word;line-height:1.5;max-width:100%;justify-content:center;text-align:center">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:2px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             <span id="hd-note-text" style="flex:1;min-width:0"></span>
           </div>
