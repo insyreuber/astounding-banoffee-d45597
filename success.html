@@ -138,8 +138,8 @@ var SURL='https://uzemgxfjgjwqfgfwbboi.supabase.co';
 var SKEY='sb_publishable__XubcF5yPDyIMpfE7kO9Rg_Xp7kj0hL';
 
 async function init(){
-  // Buchungsdetails — erst aus URL, dann aus Supabase nachladen
-  var needsLoad = (!svcNames || svcNames==='—') && bookingId;
+  // Buchungsdetails — immer aus Supabase nachladen wenn bookingId vorhanden
+  var needsLoad = !!bookingId;
 
   if(needsLoad){
     try{
