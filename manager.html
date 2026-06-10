@@ -674,7 +674,7 @@ function renderTicker(rows,varianteMap,staffMap){
       +'<td style="font-size:13px;width:340px">'+aktionen+'</td>'
     +'</tr>';
   }).join('');
-  el.innerHTML='<div style="overflow-x:hidden"><table class="ticker-table" style="table-layout:fixed;width:100%"><tbody>'+tbody+'</tbody></table></div>';
+  el.innerHTML='<table class="ticker-table" style="table-layout:fixed;width:100%"><tbody>'+tbody+'</tbody></table>';
   el.querySelectorAll('tr').forEach(function(tr,i){tr.style.animation='fadeIn .3s ease '+(i*0.04)+'s both';});
   var em=document.getElementById('ticker-list-m');
   if(em)renderMobileTickerCards(rows,varianteMap,staffMap,em);
