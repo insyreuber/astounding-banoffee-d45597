@@ -59,13 +59,13 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#f3f0f7;min-height:10
 /* Cancel Button */
 .cancel-btn{
   display:inline-flex;align-items:center;gap:6px;
-  background:none;border:1.5px solid rgba(255,100,100,.4);
+  background:#e74c3c;border:1.5px solid #e74c3c;
   border-radius:10px;padding:10px 20px;
-  font-size:13px;color:rgba(255,160,160,.9);
+  font-size:13px;color:#fff;font-weight:600;
   cursor:pointer;font-family:inherit;
   transition:all .2s;
 }
-.cancel-btn:hover{background:rgba(255,100,100,.1);border-color:rgba(255,100,100,.7);}
+.cancel-btn:hover{background:#c0392b;border-color:#c0392b;}
 
 /* New booking link */
 .new-link{display:block;margin-top:14px;font-size:12px;color:rgba(255,255,255,.4);text-decoration:none;}
@@ -82,10 +82,6 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#f3f0f7;min-height:10
 <div class="card" id="conf-card">
 
   <!-- Zurück zur Buchungsseite -->
-  <a id="back-to-booking" href="#" title="Neuen Termin buchen" style="position:absolute;top:14px;right:14px;display:inline-flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,.35);text-decoration:none;padding:5px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.12);transition:all .2s;z-index:10" onmouseover="this.style.color='rgba(255,255,255,.7)';this.style.borderColor='rgba(255,255,255,.3)'" onmouseout="this.style.color='rgba(255,255,255,.35)';this.style.borderColor='rgba(255,255,255,.12)'">
-    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-    Neuer Termin
-  </a>
   <!-- Salon Info wird dynamisch geladen -->
   <div class="salon-info" id="salon-info">
     <div class="salon-brand"><span class="insy">Insy</span> <span class="reception">Reception</span></div>
@@ -102,35 +98,27 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:#f3f0f7;min-height:10
   <!-- Termin-Details -->
   <div class="details" id="booking-details">
     <div class="detail-row"><span class="detail-label">Service</span><span class="detail-value" id="d-service">—</span></div>
-    <div class="detail-row" id="d-staff-row"><span class="detail-label">Mitarbeiter</span><span class="detail-value" id="d-staff">—</span></div>
+    <div class="detail-row" id="d-staff-row"><span class="detail-label">bei</span><span class="detail-value" id="d-staff">—</span></div>
     <div class="detail-row"><span class="detail-label">Datum</span><span class="detail-value" id="d-date">—</span></div>
     <div class="detail-row"><span class="detail-label">Uhrzeit</span><span class="detail-value" id="d-time">—</span></div>
     <div class="detail-row" id="d-price-row"><span class="detail-label">Preis</span><span class="detail-value" id="d-price">—</span></div>
   </div>
 
-  <!-- Stornieren -->
-  <button class="cancel-btn" id="cancel-btn" onclick="cancelBooking()">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    Termin stornieren
-  </button>
-
-  <!-- Kalender Button -->
-  <div id="cal-btns" style="display:none;margin-top:12px;display:flex;flex-direction:column;align-items:center;gap:8px">
-    <a id="cal-google" class="cal-btn" href="#" target="_blank">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      In Google Kalender speichern
+  <!-- Kalender + Aktionen -->
+  <div id="cal-btns" style="display:none;margin-top:16px;display:flex;flex-direction:column;align-items:flex-start;gap:10px">
+    <a id="cal-google" href="#" target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:#fff;border:1px solid #dadce0;border-radius:8px;padding:10px 16px;font-size:14px;font-weight:500;color:#3c4043;cursor:pointer;text-decoration:none;font-family:'Google Sans',Arial,sans-serif;box-shadow:0 1px 3px rgba(0,0,0,.12);transition:box-shadow .2s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.2)'" onmouseout="this.style.boxShadow='0 1px 3px rgba(0,0,0,.12)'">
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#4285F4" d="M45.5 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h12.1c-.5 2.8-2.1 5.2-4.4 6.8v5.6h7.1c4.2-3.8 6.7-9.5 6.7-16.1z"/><path fill="#34A853" d="M24 46c6.5 0 11.9-2.1 15.8-5.8l-7.1-5.6c-2.2 1.5-5 2.3-8.7 2.3-6.7 0-12.4-4.5-14.4-10.6H2.2v5.8C6.1 40.9 14.4 46 24 46z"/><path fill="#FBBC05" d="M9.6 26.3c-.5-1.5-.8-3.1-.8-4.8s.3-3.3.8-4.8v-5.8H2.2C.8 13.8 0 17.8 0 22s.8 8.2 2.2 11.1l7.4-6.8z"/><path fill="#EA4335" d="M24 8.8c3.8 0 7.1 1.3 9.8 3.9l7.3-7.3C36.9 1.8 31.5 0 24 0 14.4 0 6.1 5.1 2.2 12.9l7.4 5.8C11.6 13.3 17.3 8.8 24 8.8z"/></svg>
+      In Kalender speichern
     </a>
-    <a id="cal-ics" class="cal-btn" href="#" download="termin.ics">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      In Kalender speichern (.ics)
-    </a>
+    <a class="new-link" id="new-booking-link" href="#" style="display:inline-flex;background:#2e8b57;color:#fff;border:1.5px solid #2e8b57;border-radius:10px;padding:10px 22px;font-size:14px;font-weight:600;text-decoration:none;transition:all .2s" onmouseover="this.style.background='#256e46'" onmouseout="this.style.background='#2e8b57'">Neuen Termin buchen</a>
+    <div style="width:100%;display:flex;justify-content:flex-start">
+      <button id="cancel-btn" onclick="cancelBooking()" style="display:inline-flex;align-items:center;gap:6px;background:#c0392b;border:1.5px solid #c0392b;border-radius:10px;padding:7px 16px;font-size:11px;color:#fff;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.background='#a93226';this.style.borderColor='#a93226'" onmouseout="this.style.background='#c0392b';this.style.borderColor='#c0392b'">Termin stornieren</button>
+    </div>
+    <p style="font-size:10px;color:rgba(255,255,255,.3);margin-top:14px;line-height:1.5;text-align:center">Ein neuer Termin kann erst gebucht werden, nachdem der aktuelle Termin storniert wurde oder abgelaufen ist.</p>
   </div>
 
-  <!-- Neuen Termin buchen — nur nach Stornierung sichtbar -->
-  <a class="new-link" id="new-booking-link" href="#" style="display:none">+ Neuen Termin buchen</a>
-
   <!-- Hintergrund Wasserzeichen -->
-  <div style="position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);font-size:52px;font-weight:700;color:rgba(255,255,255,0.04);white-space:nowrap;pointer-events:none;letter-spacing:0.05em;user-select:none" id="watermark">INSY RECEPTION</div>
+  <div style="display:none" id="watermark"></div>
 </div>
 
 <script>
@@ -167,15 +155,26 @@ async function init(){
           date=d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'});
           time=d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
         }
-        // service_variante_id → service name
+        // service_variante_id → full service name incl. parent
         if(b.service_variante_id){
-          var svRes=await fetch(SURL+'/rest/v1/service_varianten?id=eq.'+b.service_variante_id+'&select=service_name,preis,dauer_minuten',{
+          var svRes=await fetch(SURL+'/rest/v1/service_varianten?id=eq.'+b.service_variante_id+'&select=service_name,preis,dauer_minuten,service_id',{
             headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}
           });
           var svData=await svRes.json();
           if(svData&&svData[0]){
-            svcNames=svData[0].service_name||'—';
+            var varianteName=svData[0].service_name||'';
             if(svData[0].preis)price=svData[0].preis;
+            // Load parent service name
+            if(svData[0].service_id){
+              try{
+                var psRes=await fetch(SURL+'/rest/v1/services?id=eq.'+svData[0].service_id+'&select=name',{
+                  headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}
+                });
+                var psData=await psRes.json();
+                var parentName=psData&&psData[0]?psData[0].name:'';
+                svcNames=parentName&&varianteName&&parentName!==varianteName?parentName+' · '+varianteName:(varianteName||parentName||'—');
+              }catch(e){svcNames=varianteName||'—';}
+            }else{svcNames=varianteName||'—';}
           }
         }
         // mitarbeiter_id → staff name
@@ -197,7 +196,7 @@ async function init(){
   // Buchungsdetails setzen
   document.getElementById('d-service').textContent=decodeURIComponent(svcNames);
   document.getElementById('d-date').textContent=decodeURIComponent(date);
-  document.getElementById('d-time').textContent=time?time+' Uhr':'—';
+  document.getElementById('d-time').textContent=time?time:'—';
   // Kalender-Links aufbauen
   var calStart='', calEnd='';
   try{
@@ -230,10 +229,8 @@ async function init(){
 
   // Buchungslink zurück
   var link=document.getElementById('new-booking-link');
-  var backBtn=document.getElementById('back-to-booking');
   if(salonId){
     if(link)link.href='https://insy-reception.com/booking?salon_id='+salonId;
-    if(backBtn)backBtn.href='https://insy-reception.com/booking?salon_id='+salonId;
   }
 
   // Salon Info + Mitarbeiter laden
