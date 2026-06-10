@@ -771,14 +771,14 @@ function tickerErledigt(id){
 function _silentRefresh(){
   if(!window._cache)return;
   var scrolls={};
-  var ids=['ticker-list','ticker-list-m','confirm-list-desktop','confirm-list-m','reminder-list','reminder-list-m','storno-list','storno-list-m'];
+  var ids=['ticker-scroll','confirm-list-desktop','confirm-list-m','reminder-list','reminder-list-m','storno-list','storno-list-m'];
   ids.forEach(function(id){var el=document.getElementById(id);if(el){scrolls[id]=el.scrollTop;}});
   var c=window._cache;
   renderTicker(c.ticker,c.varianteMap,c.staffMap);
   renderConfirm(c.confirms);
   renderReminders(c.reminders);
   renderStorno(c.stornos,c.varianteMap,c.staffMap,c.serviceMap);
-  ids.forEach(function(id){var el=document.getElementById(id);if(el){el.scrollTop=scrolls[id]||0;el.style.overflowY='auto';}});
+  ids.forEach(function(id){var el=document.getElementById(id);if(el){el.scrollTop=scrolls[id]||0;}});
 }
 
 function updateErledigtVisual(id,done){
