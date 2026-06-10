@@ -20,6 +20,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--td);min-h
 #ticker-scroll::-webkit-scrollbar-track{background:rgba(74,28,107,.06);border-radius:99px}
 #ticker-scroll::-webkit-scrollbar-thumb{background:var(--tpl);border-radius:99px}
 #ticker-scroll::-webkit-scrollbar-thumb:hover{background:#5a2d82}
+#ticker-scroll{overflow-y:scroll!important}
 #upcoming-list::-webkit-scrollbar,#upcoming-list-m::-webkit-scrollbar,
 #confirm-list-desktop::-webkit-scrollbar,#confirm-list-m::-webkit-scrollbar,
 #reminder-list::-webkit-scrollbar,#reminder-list-m::-webkit-scrollbar,
@@ -315,8 +316,8 @@ html,body{overflow-x:hidden;max-width:100vw}
         </table>
       </div>
       <!-- Scrollable content -->
-      <div id="ticker-scroll" style="overflow-y:scroll;flex:1;scrollbar-width:thin;scrollbar-color:var(--tpl) rgba(74,28,107,.1)">
-        <div id="ticker-list" style="padding-right:6px"><div class="loading">Wird geladen…</div></div>
+      <div id="ticker-scroll" style="overflow-y:auto;flex:1;scrollbar-width:thin;scrollbar-color:var(--tpl) rgba(74,28,107,.06)">
+        <div id="ticker-list" style="padding-right:6px;min-height:100%"><div class="loading">Wird geladen…</div></div>
       </div>
     </div>
 
