@@ -261,7 +261,7 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
   .hd-left{text-align:center}
   .hd-meta{align-items:center}
   .hd-meta-row{justify-content:center}
-  .hd-note{justify-content:center;text-align:center}
+  .hd-note{margin-left:auto;margin-right:auto;text-align:center;justify-content:center}
 }
 @media (min-width: 701px){
   .card4-purple{background:#fff !important;border-color:#e8e0f0 !important;}
@@ -921,21 +921,27 @@ function mkStaffGrid(){
   return'<div class="staff-grid">'+STAFF.map(function(p){
     var isSel=st.stf1===p.id;
     var canHandle=st.services.length===0||staffCanHandleSelectedServices(p);
-     var availHtml=p.avail?'<div class="stf-av">● Verfügbar</div>':'<div class="stf-na">● Heute belegt</div>';
-     var blocked=!canHandle&&!isSel;
-     var avBg=p.color?hexToRgba(p.color,.15):'var(--tpp)';
-     var avClr=p.color||'var(--tp)';
-     var avStyle=p.avatar_url
-       ?'background-image:url('+p.avatar_url+');background-size:cover;background-position:center'
-       :'background:'+avBg+';color:'+avClr;
-     var avClr=p.color||'var(--tp)';
-     var html='<div class="stf '+(isSel?'sel1only':blocked?'stf-blocked':'')+'" '+(blocked?'':'onclick="pickStf(\''+p.id+'\')"')+' style="'+(blocked?'opacity:0.45;cursor:not-allowed':'cursor:pointer')+'">';
-     html+='<div class="stf-inner">';
-     html+='<div class="av '+(p.gold?'g':'')+'" style="'+avStyle+'">'+(!p.avatar_url?p.ini:'')+'</div>';
-     html+='<div><div class="stf-n">'+p.name+'</div><div class="stf-r">'+p.role+'</div>'+availHtml+'</div>';
-     html+='</div></div>';
-     return html;
-  }).join('')+'</div>';}
+    var blocked=!canHandle&&!isSel;
+    var avBg=p.color?hexToRgba(p.color,.15):'var(--tpp)';
+    var avClr=p.color||'var(--tp)';
+    var avStyle=p.avatar_url
+      ?'background-image:url('+p.avatar_url+');background-size:cover;background-position:center'
+      :'background:'+avBg+';color:'+avClr;
+    var html='<div class="stf '+(isSel?'sel1only':blocked?'stf-blocked':'')+'" '
+      +(blocked?'':'onclick="pickStf(\''+p.id+'\')"')
+      +' style="flex-direction:column;align-items:center;text-align:center;padding:14px 10px;gap:8px;'
+      +(blocked?'opacity:0.45;cursor:not-allowed':'cursor:pointer')+'">';
+    // Large avatar
+    html+='<div class="av '+(p.gold?'g':'')+'" style="'+avStyle+';width:64px;height:64px;font-size:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+(!p.avatar_url?p.ini:'')+'</div>';
+    // Name + Role
+    html+='<div style="line-height:1.3">';
+    html+='<div class="stf-n" style="font-size:13px;font-weight:600">'+p.name+'</div>';
+    if(p.role)html+='<div class="stf-r" style="font-size:11px;margin-top:2px">'+p.role+'</div>';
+    html+='</div>';
+    html+='</div>';
+    return html;
+  }).join('')+'</div>';
+}
 
 function mkCal(){
   var cd=getCalData();
