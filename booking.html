@@ -941,8 +941,8 @@ function mkStaffGrid(){
     html+='<div class="'+avClass+'" style="'+avStyle+';width:50%;height:256px;font-size:56px;border-radius:0;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative;z-index:2">'+(!p.avatar_url?p.ini:'')+'</div>';
     // Name + Role right
     html+='<div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;position:relative;z-index:2">';
-    html+='<div class="stf-n" style="font-size:14px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.5)">'+p.name+'</div>';
-    if(p.role)html+='<div class="stf-r" style="font-size:11px;margin-top:3px;color:rgba(255,255,255,.75)">'+p.role+'</div>';
+    html+='<div class="stf-n" style="font-size:15px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.5)">'+p.name+'</div>';
+    if(p.role)html+='<div class="stf-r" style="font-size:12px;margin-top:3px;color:rgba(255,255,255,.75)">'+p.role+'</div>';
     html+='</div>';
     html+='</div>';
     return html;
