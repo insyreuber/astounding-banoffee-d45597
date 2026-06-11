@@ -95,7 +95,7 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .acc-body.open{overflow:visible}
 .acc-body.open{max-height:2000px;opacity:1;margin-top:10px;overflow:visible}
 .staff-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
-.stf{border:1.5px solid #d4c8e8;border-radius:8px;padding:10px 11px;display:flex;align-items:flex-start;gap:9px;cursor:pointer;background:#fff;position:relative;overflow:visible;box-shadow:0 2px 8px rgba(74,28,107,.09),0 1px 3px rgba(74,28,107,.07);transition:border-color .15s,box-shadow .15s,transform .15s;z-index:1}
+.stf{border:1.5px solid #d4c8e8;border-radius:8px;display:flex;cursor:pointer;background:#fff;position:relative;overflow:hidden;box-shadow:0 2px 8px rgba(74,28,107,.09),0 1px 3px rgba(74,28,107,.07);transition:border-color .15s,box-shadow .15s,transform .15s;z-index:1}
 .stf:hover{z-index:3}
 .stf:hover{border-color:var(--tpl);box-shadow:0 4px 12px rgba(74,28,107,.12);transform:translateY(-1px)}
 .stf.sel1only{border-color:var(--tp);background:var(--tpp)}
@@ -929,12 +929,20 @@ function mkStaffGrid(){
       :'background:'+avBg+';color:'+avClr;
     var html='<div class="stf '+(isSel?'sel1only':blocked?'stf-blocked':'')+'" '
       +(blocked?'':'onclick="pickStf(\''+p.id+'\')"')
-      +' style="flex-direction:column;align-items:center;padding:0;gap:0;overflow:hidden;'
+      +' style="flex-direction:row;align-items:stretch;padding:0;gap:0;overflow:hidden;position:relative;min-height:256px;'
       +(blocked?'opacity:0.45;cursor:not-allowed':'cursor:pointer')+'">';
-    html+='<div class="av '+(p.gold?'g':'')+'" style="'+avStyle+';width:100%;height:220px;font-size:56px;border-radius:0;flex-shrink:0;display:flex;align-items:center;justify-content:center">'+(!p.avatar_url?p.ini:'')+'</div>';
-    html+='<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 10px;text-align:center;width:100%">';
-    html+='<div class="stf-n" style="font-size:13px;font-weight:600">'+p.name+'</div>';
-    if(p.role)html+='<div class="stf-r" style="font-size:11px;margin-top:2px">'+p.role+'</div>';
+    // Blurred bg
+    html+='<div style="position:absolute;inset:0;'
+      +(p.avatar_url?'background-image:url('+p.avatar_url+');background-size:cover;background-position:center;':'background:'+avBg+';')
+      +'filter:blur(18px) brightness(.7);transform:scale(1.15);z-index:0"></div>';
+    html+='<div style="position:absolute;inset:0;background:linear-gradient(to right,transparent 40%,rgba(0,0,0,.6) 100%);z-index:1"></div>';
+    // Avatar left 50%
+    var avClass='av '+(p.gold?'g':'');
+    html+='<div class="'+avClass+'" style="'+avStyle+';width:50%;height:256px;font-size:56px;border-radius:0;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative;z-index:2">'+(!p.avatar_url?p.ini:'')+'</div>';
+    // Name + Role right
+    html+='<div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;position:relative;z-index:2">';
+    html+='<div class="stf-n" style="font-size:14px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.5)">'+p.name+'</div>';
+    if(p.role)html+='<div class="stf-r" style="font-size:11px;margin-top:3px;color:rgba(255,255,255,.75)">'+p.role+'</div>';
     html+='</div>';
     html+='</div>';
     return html;
