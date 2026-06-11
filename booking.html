@@ -54,8 +54,8 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .tog-lbl{font-size:13px;font-weight:500;color:var(--td)}
 .tog-sub{font-size:11px;color:#7a6a8a}
 
-.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
-.svc{border:1.5px solid #d4c8e8;border-radius:8px;padding:10px 9px;cursor:default;position:relative;overflow:visible;background:#fff;box-shadow:0 2px 8px rgba(74,28,107,.09),0 1px 3px rgba(74,28,107,.07)}
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;align-items:start}
+.svc{border:1.5px solid #d4c8e8;border-radius:8px;padding:10px 9px;cursor:default;position:relative;overflow:visible;background:#fff;box-shadow:0 2px 8px rgba(74,28,107,.09),0 1px 3px rgba(74,28,107,.07);align-self:start}
 
 .svc.sel1only{border-color:var(--tp);background:var(--tpp)}
 .svc.sel2only{border-color:var(--tg);background:var(--tgp)}
@@ -407,16 +407,17 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
         <span id="hd-note-text" style="flex:1;min-width:0"></span>
       </div>
     </div>
-    <!-- Öffnungszeiten alle Tage rechts -->
-    <div id="hd-hours-all" style="flex-shrink:0;background:rgba(255,255,255,.08);border-radius:10px;padding:10px 14px;min-width:180px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:600" id="hd-hours-week-label">Diese Woche</div>
-        <div style="display:flex;gap:4px">
-          <button onclick="hdHoursWeek(-1)" style="background:rgba(255,255,255,.1);border:none;border-radius:5px;color:#fff;font-size:11px;width:20px;height:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">‹</button>
-          <button onclick="hdHoursWeek(1)" style="background:rgba(255,255,255,.1);border:none;border-radius:5px;color:#fff;font-size:11px;width:20px;height:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">›</button>
+          <!-- Öffnungszeiten aufklappbar (klein) -->
+          <div class="hd-meta-row">
+            <div class="hd-chip hd-hours-inline" id="hours-pill" onclick="toggleHours()">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span id="hd-hours-status" style="font-weight:600">—</span>
+              <span id="today-hours-label"> ▾</span>
+              <div class="hd-hours-drop" id="hours-drop"></div>
+            </div>
+          </div>
         </div>
       </div>
-      <div id="hd-hours-rows" style="display:flex;flex-wrap:wrap;gap:2px"></div>
     </div>
   </div>
 </div>
@@ -863,7 +864,8 @@ function mkSvcCards(){
     var minPreis=vars.length?Math.min.apply(null,vars.map(function(v){return v.preis;})):null;
     var varHtml='';
     if(vars.length){
-      varHtml='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid rgba(74,28,107,0.12)">';
+      varHtml='<div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(74,28,107,0.12)">';
+      varHtml+='<div class="var-wrap" id="varw-'+s.id+'" style="display:flex;gap:6px;flex-wrap:wrap">';
       vars.forEach(function(v){
         var isSel=entry&&entry.varId===v.id;
         var allowed=isVarAllowed(v.id);
@@ -874,11 +876,11 @@ function mkSvcCards(){
           +'border:1.5px solid '+(isSel?'var(--tp)':allowed?'#e8e0f0':'#ece8f0')+';'
           +'background:'+(isSel?'var(--tp)':allowed?'#fff':'#f5f3f8')+';'
           +'color:'+(isSel?'#fff':allowed?'var(--td)':'#c0b8cc')+';'
-          +'font-weight:'+(isSel?'600':'400')+';">';
-        varHtml+=(v.service_name?v.service_name+' · ':'')+v.min+' Min'+(v.preis?' · '+v.preis+' €':'');
-        if(!allowed)varHtml+=' <span style="font-size:9px;opacity:0.5">·</span>';
-        varHtml+='</div>';
+          +'font-weight:'+(isSel?'600':'400')+';">'
+          +(v.service_name?v.service_name+' · ':'')+v.min+' Min'+(v.preis?' · '+v.preis+' €':'')
+          +'</div>';
       });
+      varHtml+='</div>';
       varHtml+='</div>';
     }
     var hasAllowed=svcHasAllowedVariant(s.id);
@@ -1080,6 +1082,32 @@ function mkSumCard(){
     +'<button class="book-btn" '+(canBook()?'':'disabled')+' onclick="submitBooking()">Termin buchen →</button>';
 }
 
+function applyVarAccordions(){
+  document.querySelectorAll('.var-wrap').forEach(function(wrap){
+    if(wrap.dataset.accordion)return;
+    wrap.dataset.accordion='1';
+    var children=Array.from(wrap.children);
+    if(!children.length)return;
+    // Measure first row height
+    var firstTop=children[0].getBoundingClientRect().top;
+    var firstRowItems=children.filter(function(c){return Math.abs(c.getBoundingClientRect().top-firstTop)<10;});
+    if(firstRowItems.length===children.length)return; // all fit in one row, no accordion needed
+    // Hide items from second row onward
+    var hiddenItems=children.slice(firstRowItems.length);
+    hiddenItems.forEach(function(c){c.style.display='none';});
+    // Add toggle button after wrap
+    var btn=document.createElement('button');
+    btn.textContent='+ '+(hiddenItems.length)+' weitere';
+    btn.style.cssText='margin-top:5px;background:none;border:none;font-size:11px;color:var(--tpl);cursor:pointer;font-weight:600;padding:0;font-family:inherit;display:block';
+    btn.onclick=function(e){
+      e.stopPropagation();
+      var open=hiddenItems[0].style.display!=='none';
+      hiddenItems.forEach(function(c){c.style.display=open?'none':'inline-flex';});
+      btn.textContent=open?'+ '+hiddenItems.length+' weitere':'▲ Weniger';
+    };
+    wrap.parentNode.appendChild(btn);
+  });
+}
 function renderCalOnly(){var el=document.getElementById('cal-inner');if(el)el.innerHTML=mkCal();}
 function renderPhoneOnly(){var el=document.getElementById('phone-outer');if(el)el.innerHTML=mkPhone();}
 function renderSumOnly(){
@@ -1132,6 +1160,7 @@ function render(){
     +'Services</div>'
     +'<div class="svc-grid">'+mkSvcCards()+'</div>'
     +'</div>';
+  setTimeout(applyVarAccordions,60);
 
   // ── Schritt 2: Mitarbeiter — gesperrt bis Service+Variante ──
   var lock2 = !staffChosen;
