@@ -293,7 +293,7 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .cal-tab.active{border-color:var(--tpl);color:var(--tpl);background:var(--tpp)}
 .channel-btn:hover{border-color:var(--tpl);color:var(--tpl)}
 .channel-btn.active{border-color:var(--tp);background:var(--tpp);color:var(--tpl)}
-.toast{position:fixed;bottom:24px;left:24px;background:var(--td);color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:500;opacity:0;transform:translateY(10px);transition:all .25s;z-index:999;pointer-events:none}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--td);color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:500;opacity:0;transform:translateY(10px);transition:all .25s;z-index:999;pointer-events:none}
 .toast.show{opacity:1;transform:translateY(0)}
 .toast.success{background:var(--success)}.toast.error{background:var(--danger)}
 
@@ -707,7 +707,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   <div class="tab-panel active" id="panel-profil">
     <!-- Mobile fixed bottom nav -->
     <div id="profil-bottom-nav" style="display:none"></div>
-    <div id="profil-status-msg" style="font-size:12px;margin-top:10px;margin-bottom:16px;padding:2px 0;min-height:18px;text-align:left"></div>
+    <div id="profil-status-msg" style="font-size:12px;margin-top:10px;margin-bottom:16px;padding:2px 0;min-height:18px;"></div>
     <div id="profil-content" style="width:100%;overflow:hidden;box-sizing:border-box"></div>
   </div>
 
@@ -2545,7 +2545,7 @@ async function handleSvcImageUpload(event,svcId){
   var file=event.target.files[0];if(!file)return;
   if(file.size>2*1024*1024){alert('Bild max. 2 MB');return;}
   var ext=file.name.split('.').pop().toLowerCase();
-  var path=svcId+'-'+Date.now()+'.'+ext;
+  var path='service-images/'+svcId+'-'+Date.now()+'.'+ext;
   var upRes=await sb.storage.from('service-images').upload(path,file,{upsert:true});
   if(upRes.error){alert('Upload fehlgeschlagen: '+upRes.error.message);return;}
   var url=sb.storage.from('service-images').getPublicUrl(path).data.publicUrl;
