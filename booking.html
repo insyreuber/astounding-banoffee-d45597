@@ -932,7 +932,7 @@ function mkStaffGrid(){
       +' style="flex-direction:row;align-items:stretch;padding:0;gap:0;overflow:hidden;'
       +(blocked?'opacity:0.45;cursor:not-allowed':'cursor:pointer')+'">';
     // Avatar links, volle Höhe
-    html+='<div class="av '+(p.gold?'g':'')+'" style="'+avStyle+';width:256px;min-height:128px;font-size:56px;border-radius:0;flex-shrink:0;display:flex;align-items:center;justify-content:center;align-self:stretch">'+(!p.avatar_url?p.ini:'')+'</div>';
+    html+='<div class="av '+(p.gold?'g':'')+'" style="'+avStyle+';width:128px;height:256px;font-size:56px;border-radius:0;flex-shrink:0;display:flex;align-items:center;justify-content:center">'+(!p.avatar_url?p.ini:'')+'</div>';
     // Name + Role rechts
     html+='<div style="display:flex;flex-direction:column;justify-content:center;padding:10px 12px;min-width:0">';
     html+='<div class="stf-n" style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.name+'</div>';
