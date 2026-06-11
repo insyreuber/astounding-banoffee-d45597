@@ -382,19 +382,22 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 <div class="hd">
   <div class="hd-inner">
     <div class="hd-left">
-      <div class="hd-logo" id="brand-name">Insy <span>Reception</span></div>
+      <div class="hd-logo" id="brand-name">INSY <span>RECEPTION</span></div>
       <div class="hd-name" id="salon-name">Salonname</div>
       <div class="hd-meta">
-        <!-- Reihe 1: Adresse + Telefon -->
-        <div class="hd-meta-row">
-          <a class="hd-chip" id="salon-address" href="#" style="display:none;text-decoration:none;color:rgba(255,255,255,.65);cursor:default"></a>
-          <div class="hd-chip" id="salon-phone" style="display:none"></div>
+        <!-- Reihe 3: Adresse -->
+        <div class="hd-meta-row" id="hd-address-row" style="display:none">
+          <a class="hd-chip" id="salon-address" href="#" style="text-decoration:none;color:rgba(255,255,255,.65);cursor:default"></a>
+        </div>
+        <!-- Reihe 4: Telefon / Handy -->
+        <div class="hd-meta-row" id="hd-phone-row" style="display:none">
+          <div class="hd-chip" id="salon-phone"></div>
           <a class="hd-chip" id="salon-mobile-link" href="#" style="display:none;text-decoration:none;color:rgba(255,255,255,.65)">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
             <span id="salon-mobile-label">Mobil</span>
           </a>
         </div>
-        <!-- Reihe 2: Links -->
+        <!-- Reihe 5: Eigene Links -->
         <div class="hd-meta-row" id="hd-links-row" style="display:none">
           <a class="hd-chip" id="salon-instagram" href="#" target="_blank" style="display:none;text-decoration:none;color:rgba(255,255,255,.55)">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>Instagram
@@ -416,7 +419,7 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
           </div>
         </div>
       </div>
-      <!-- Bemerkung/Hinweis -->
+      <!-- Reihe 6: Bemerkung -->
       <div id="hd-note" style="display:none;margin-top:7px;padding:5px 12px;background:rgba(255,255,255,0.12);border-radius:8px;font-size:11px;color:rgba(255,255,255,0.85);align-items:flex-start;gap:6px;word-break:break-word;line-height:1.5;width:fit-content">
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:2px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         <span id="hd-note-text" style="flex:1;min-width:0"></span>
@@ -1520,7 +1523,7 @@ async function loadSalonProfile(){
     var phoneEl=document.getElementById('salon-phone');
     var addressEl=document.getElementById('salon-address');
 
-    if(brandEl)brandEl.innerHTML='Insy <span style="color:#C9A84C">Reception</span>';
+    if(brandEl)brandEl.innerHTML='INSY <span style="color:#C9A84C">RECEPTION</span>';
     if(nameEl)nameEl.textContent=salonName;
 
     // Phone — hide if empty
@@ -1528,6 +1531,8 @@ async function loadSalonProfile(){
       if(phoneRaw){
         phoneEl.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.4 1.18 2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>'+phoneRaw;
         phoneEl.style.display='flex';
+        var phoneRow=document.getElementById('hd-phone-row');
+        if(phoneRow)phoneRow.style.display='flex';
       } else {
         phoneEl.style.display='none';
       }
@@ -1538,6 +1543,8 @@ async function loadSalonProfile(){
       if(salonAddress){
         addressEl.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>'+salonAddress;
         addressEl.style.display='flex';
+        var addrRow=document.getElementById('hd-address-row');
+        if(addrRow)addrRow.style.display='flex';
         if(data.google_maps_url){
           addressEl.href=data.google_maps_url;
           addressEl.target='_blank';
