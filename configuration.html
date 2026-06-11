@@ -17,25 +17,6 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 /* ── NAV ── */
 .nav{background:var(--tp);padding:0 24px;display:flex;align-items:center;border-bottom:1px solid rgba(255,255,255,.08)}
 .nav-brand{padding:14px 20px 14px 0;border-right:1px solid rgba(255,255,255,.1);margin-right:4px;flex-shrink:0}
-#profil-desktop-bar{display:none}
-#profil-desktop-bar.visible{display:flex!important}
-#profil-bar-prev,#profil-bar-next{display:none}
-#profil-bar-prev.visible,#profil-bar-next.visible{display:flex!important}
-@media(min-width:769px){.main{padding-bottom:80px}}
-@media(min-width:769px){#panel-profil{padding-bottom:70px}}
-#profil-desktop-bar .pdt-btn{
-  flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;
-  padding:8px 18px;border:1px solid transparent;background:none;
-  cursor:pointer;border-radius:10px;transition:all .2s;
-  font-family:inherit;color:rgba(255,255,255,.45);
-  font-size:11px;font-weight:600;letter-spacing:.04em;white-space:nowrap;
-}
-#profil-desktop-bar .pdt-btn svg{opacity:.5}
-#profil-desktop-bar .pdt-btn.active svg{opacity:1}
-/* Hide floating arrows on mobile */
-@media(max-width:768px){
-  #profil-bar-prev,#profil-bar-next{display:none!important}
-}
 .nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:600;color:#fff;letter-spacing:.01em;text-transform:none;line-height:1}
 .nav-logo span{color:#C9A84C}
 .nav-title{font-size:13px;font-weight:500;color:rgba(255,255,255,.9)}
@@ -93,11 +74,7 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .toggle-sw .slider{position:absolute;inset:0;background:rgba(255,255,255,.3);border-radius:99px;cursor:pointer;transition:.2s}
 .toggle-sw .slider:before{content:'';position:absolute;width:12px;height:12px;border-radius:50%;background:#fff;left:3px;top:3px;transition:.2s}
 .toggle-sw input:checked+.slider{background:#27ae60}
-.help-tip{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:var(--muted);color:#fff;font-size:9px;font-weight:700;cursor:pointer;flex-shrink:0;position:relative;margin-left:5px;-webkit-user-select:none;user-select:none}
-.help-tip::after{content:attr(data-tip);position:absolute;left:20px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.75);color:#fff;font-size:10px;font-weight:400;padding:5px 9px;border-radius:7px;white-space:normal;z-index:99;pointer-events:none;max-width:220px;line-height:1.4;display:none}
-.help-tip::before{content:'';position:absolute;left:15px;top:50%;transform:translateY(-50%);border:4px solid transparent;border-right-color:rgba(0,0,0,.75);z-index:99;display:none}
-.help-tip:hover::after,.help-tip.active::after{display:block}
-.help-tip:hover::before,.help-tip.active::before{display:block}
+.hours-col-closed{display:none}
 #slot-btn-15,#slot-btn-30,#slot-btn-60{background:var(--tp);color:#fff}
 #slot-raster-btns + div, #slot-raster-btns ~ *:not([style*="letter-spacing"]){}
 .hours-col:not(.aktiv){opacity:0.45;pointer-events:none}
@@ -120,18 +97,16 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .hours-col.aktiv select{background:rgba(255,255,255,.12)}
 .hours-col-sep{font-size:10px;color:rgba(255,255,255,.5)}
 .hours-col-closed{font-size:10px;color:rgba(255,255,255,.35);font-style:italic}
-/* Hide all accordion chevrons globally */
-.chevron,[id^="chev-"],[id^="var-chev-"],[id$="-chev"]{display:none!important;visibility:hidden!important}
 .hours-time-wrap{display:flex;flex-direction:row;align-items:center;gap:6px;flex:1}
 
 /* ── BUTTONS ── */
 .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
-.btn-primary{background:var(--tp);color:#fff;border:1.5px solid var(--tg)}.btn-primary:hover{background:var(--tpl);border-color:var(--tgl)}
+.btn-primary{background:var(--tg);color:var(--td)}.btn-primary:hover{background:var(--tgl)}
 .btn-primary:disabled{background:var(--border);color:#aaa;cursor:not-allowed}
 .btn-outline{background:transparent;color:var(--tpl);border:1.5px solid var(--tpl)}.btn-outline:hover{background:var(--tpp)}
-.btn-danger{background:var(--danger);color:#fff;border:1.5px solid var(--danger)}.btn-danger:hover{background:#a93226;border-color:#a93226}
+.btn-danger{background:transparent;color:var(--danger);border:1.5px solid #f5c6c6}.btn-danger:hover{background:#fef2f2}
 .btn-sm{padding:6px 12px;font-size:12px}
-.btn-ghost{background:var(--tpp);color:var(--tpl);border:1.5px solid var(--tpl)}.btn-ghost:hover{background:var(--tp);color:#fff;border-color:var(--tp)}
+.btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border)}.btn-ghost:hover{border-color:var(--tpl);color:var(--tpl)}
 
 /* ── SAVE BAR ── */
 .save-bar{background:rgba(255,255,255,0.97);border-top:1.5px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;bottom:0;z-index:50;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 -4px 20px rgba(74,28,107,.08);border-radius:0}
@@ -156,7 +131,7 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 /* ── VARIANTEN (service edit) ── */
 .var-header{display:grid;grid-template-columns:2fr 1.2fr 1.2fr 1.2fr 28px;gap:8px;padding:0 12px;margin-bottom:4px}
 .var-col-lbl{font-size:10px;color:var(--muted);text-align:center;letter-spacing:.05em}
-.btn-add{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--tp);color:#fff;border:1.5px solid var(--tg);border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:opacity .15s;width:auto;justify-content:center}
+.btn-add{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--tp);color:#fff;border:1.5px solid var(--tg);border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:opacity .15s;width:100%;justify-content:center}
 .btn-add:hover{opacity:0.85}
 .btn-add svg{stroke:#fff}
 .var-acc{background:var(--white);border:1.5px solid var(--border);border-radius:8px;margin-bottom:6px;overflow:visible;font-size:16px}
@@ -170,19 +145,20 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .var-group input[type="number"]:focus,.var-group input[type="text"]:focus{outline:none;border-color:var(--tpl);box-shadow:0 0 0 3px rgba(90,45,130,.15)}
 .var-group:focus-within{border-color:var(--tpl)}
 .var-group .toggle-sw{flex-shrink:0}
-.var-del{width:28px;height:28px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit;transition:all .15s}
+.var-del{width:28px;height:28px;border-radius:6px;border:1.5px solid #fde8e8;background:#fff5f5;color:#c0392b;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit;transition:all .15s}
+.var-del:hover{background:#fde8e8;border-color:#c0392b}
 
 /* ── MITARBEITER TAB LAYOUT ── */
 .ma-layout{display:grid;grid-template-columns:200px 1fr;gap:14px;align-items:start}
 .ma-sidebar{display:flex;flex-direction:column;gap:8px}
 .staff-card{background:var(--white);border:1.5px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .2s;cursor:pointer}
 .staff-card:hover{border-color:var(--tpl)}
-.staff-card-body{padding:13px 14px;display:flex;align-items:center;gap:11px}
+.staff-card-body{padding:11px 12px;display:flex;align-items:center;gap:9px}
 .staff-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
-.staff-name{font-size:15px;font-weight:500;color:var(--td);line-height:1.2}
-.staff-role{font-size:12px;color:var(--muted);margin-top:1px}
+.staff-name{font-size:13px;font-weight:500;color:var(--td);line-height:1.2}
+.staff-role{font-size:10px;color:var(--muted);margin-top:1px}
 .staff-card-actions{display:flex;border-top:1px solid var(--border)}
-.staff-action{flex:1;padding:9px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;text-align:center;transition:all .15s;background:none;border:none;font-family:inherit}
+.staff-action{flex:1;padding:7px;font-size:10px;font-weight:500;color:var(--muted);cursor:pointer;text-align:center;transition:all .15s;background:none;border:none;font-family:inherit}
 .staff-action:hover{background:var(--tpp);color:var(--tpl)}
 .staff-action+.staff-action{border-left:1px solid var(--border)}
 .staff-add-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 16px;border:1.5px solid var(--tg);border-radius:10px;font-size:13px;color:#fff;cursor:pointer;background:var(--tp);font-family:inherit;width:100%;transition:opacity .15s;font-weight:500}
@@ -238,7 +214,7 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 .color-swatch.selected{border-color:var(--td);transform:scale(1.1)}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(26,10,46,.45);z-index:500;backdrop-filter:blur(2px)}
 .modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:14px;width:660px;max-width:96vw;max-height:90vh;display:none;flex-direction:column;z-index:600;box-shadow:0 20px 60px rgba(74,28,107,.22)}
-.modal.open{display:flex;min-height:520px}
+.modal.open{display:flex}
 .modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1.5px solid var(--border);flex-shrink:0}
 .modal-title{font-size:15px;font-weight:600;color:var(--td)}
 .modal-close{background:none;border:none;cursor:pointer;font-size:22px;color:var(--muted);line-height:1;padding:0 4px}
@@ -307,36 +283,29 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
 @media (max-width: 768px) {
   #slot-raster-btns { flex-direction: row !important; gap: 8px !important; }
   #slot-raster-btns button {
-    padding: 10px 4px !important;
+    padding: 12px 6px !important;
     min-width: 0 !important;
     flex: 1 !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 4px !important;
+    gap: 6px !important;
+    line-height: 1.3 !important;
     overflow: hidden !important;
   }
   #slot-raster-btns button svg {
-    width: 56px !important;
-    height: 56px !important;
+    width: 80px !important;
+    height: 80px !important;
     display: block !important;
     margin: 0 auto !important;
     flex-shrink: 0 !important;
   }
-  #slot-raster-btns button span:last-child {
-    white-space: nowrap !important;
-    font-size: 9px !important;
-  }
 
   /* Nav: Akkordion auf Mobile */
-  .nav{flex-direction:row;flex-wrap:wrap;padding:0;}
-  .nav-brand{padding:12px 16px;border-right:none;margin-right:0;border-bottom:1px solid rgba(255,255,255,.1);flex:1}
-  .nav-brand::after{content:none!important}
-  .nav-brand-menu{display:flex!important;align-items:center;border-bottom:1px solid rgba(255,255,255,.1)}
-  #nav-booking-status-mobile{display:flex!important;border-bottom:1px solid rgba(255,255,255,.1)}
-  #nav-booking-status{display:none!important}
-  .nav-tabs{width:100%;order:3}
+  .nav{flex-direction:column;padding:0;gap:0;width:100%;}
+  .nav-brand{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.1);width:100%;border-right:none;margin-right:0;}
+  .nav-brand::after{content:'☰';font-size:20px;color:rgba(255,255,255,.7);}
   .nav-logo{font-size:1.2rem !important;letter-spacing:.01em !important;text-transform:none !important}
 
   .nav-tabs{display:none;flex-direction:column;gap:0;border-bottom:1.5px solid rgba(255,255,255,.1);width:100%;}
@@ -374,47 +343,6 @@ hr.div{border:none;border-top:1.5px dashed var(--border);margin:16px 0}
     }
   }
 
-  #profil-toggles button{font-size:10px !important;padding:5px 10px !important}
-  /* Fixed bottom nav for profil subs */
-  #profil-desktop-bar{display:none!important}
-  #profil-bar-prev,#profil-bar-next{display:none!important}
-  #profil-toggles{display:none!important}
-  #profil-bottom-nav{display:flex!important}
-  /* Mobile booking status label hidden (space) */
-  #booking-status-label{display:none!important}
-  /* Fixed bottom nav */
-  #profil-bottom-nav{
-    position:fixed;bottom:0;left:0;right:0;
-    background:linear-gradient(135deg,#3d1568 0%,#5a2d82 100%);
-    border-top:1px solid rgba(201,168,76,.3);
-    z-index:200;padding:6px 4px;
-    gap:2px;
-    box-shadow:0 -4px 20px rgba(0,0,0,.3);
-    overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;
-    scroll-snap-type:x mandatory;
-    -webkit-overflow-scrolling:touch;
-  }
-  #profil-bottom-nav::-webkit-scrollbar{display:none}
-  .profil-bnav-btn{
-    flex:0 0 auto;min-width:58px;
-    display:flex;flex-direction:column;align-items:center;gap:2px;
-    padding:6px 8px;border:1px solid transparent;background:none;
-    cursor:pointer;border-radius:10px;transition:all .2s;
-    font-family:inherit;color:rgba(255,255,255,.45);
-    font-size:9px;font-weight:600;letter-spacing:.04em;
-    scroll-snap-align:start;
-  }
-  .profil-bnav-btn svg{opacity:.5}
-  .profil-bnav-btn.active svg{opacity:1}
-  .profil-bnav-btn span{font-size:9px!important}
-  .profil-bnav-btn svg{width:16px!important;height:16px!important}
-  /* main padding bottom for fixed nav */
-  .main,.tab-panel{padding-bottom:80px!important}
-  #profil-content .field[style*="max-width"]{max-width:100% !important;margin-left:0 !important}
-  #profil-content div[style*="max-width"]{max-width:100% !important;margin-left:0 !important}
-  /* Adresse 2-col grid → single col on mobile */
-  #profil-content div[style*="grid-template-columns:1fr 1fr"]{display:block !important}
-  #profil-content div[style*="height:68px"]{display:none !important}
   /* Alle Hinzufügen Buttons volle Breite + eigene Zeile */
   .btn-add{width:100% !important;justify-content:center !important;display:flex !important}
   .btn-add-wrap{flex-direction:column !important;align-items:stretch !important;gap:8px !important}
@@ -615,10 +543,8 @@ input[type=range]::-moz-range-thumb{font-size:0 !important}
 @keyframes loadbar{0%{width:0%;margin-left:0}50%{width:60%;margin-left:20%}100%{width:0%;margin-left:100%}}
 .profil-loader-txt{font-size:12px;color:var(--muted);}
 
-input[type=range]{-webkit-appearance:none;appearance:none;height:6px;border-radius:99px;background:linear-gradient(90deg,var(--tp),rgba(90,45,130,0.2));outline:none;cursor:pointer}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:radial-gradient(circle,#fff 35%,var(--tg) 100%);border:2.5px solid var(--tg);box-shadow:0 1px 6px rgba(74,28,107,.3);cursor:pointer}
-input[type=range]::-moz-range-track{height:6px;border-radius:99px;background:linear-gradient(90deg,var(--tp),rgba(90,45,130,0.2))}
-input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:radial-gradient(circle,#fff 35%,var(--tg) 100%);border:2.5px solid var(--tg);box-shadow:0 1px 6px rgba(74,28,107,.3);cursor:pointer}
+input[type=range]::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--tp);border:3px solid #fff;box-shadow:0 1px 6px rgba(74,28,107,.3);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--tp);border:3px solid #fff;box-shadow:0 1px 6px rgba(74,28,107,.3);cursor:pointer;border:3px solid white}
 </style>
 </head>
 <body>
@@ -630,17 +556,10 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   <div class="auth-label" id="auth-label">Wird geladen…</div>
 </div>
 
-
 <nav class="nav">
   <div class="nav-brand" onclick="if(window.innerWidth<=768)document.querySelector('.nav-tabs').classList.toggle('open')">
     <div class="nav-logo">Insy <span style="color:var(--tg)">Reception</span></div>
   </div>
-  <div id="nav-booking-status-mobile" style="display:none;align-items:center;gap:5px;padding:0 8px;flex-shrink:0">
-    <div id="booking-status-dot-m" style="width:6px;height:6px;border-radius:50%;background:#27ae60;flex-shrink:0;"></div>
-    <span id="booking-status-label-m" style="font-size:10px;font-weight:500;color:rgba(255,255,255,0.8);">Online</span>
-    <label class="toggle-sw"><input type="checkbox" id="dash-booking-active-m" onchange="syncBookingToggle(this)"><span class="slider"></span></label>
-  </div>
-  <span class="nav-brand-menu" style="display:none;padding:12px 16px;color:rgba(255,255,255,.7);font-size:20px;cursor:pointer;flex-shrink:0" onclick="document.querySelector('.nav-tabs').classList.toggle('open')">☰</span>
   <div class="nav-tabs">
     <div class="nav-tab active" onclick="switchTab('profil')" id="tab-profil">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -678,12 +597,6 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
     </div>
   </div>
   <div class="nav-right">
-    <!-- Booking status: visible on desktop in nav-right, on mobile via #nav-booking-status-mobile -->
-    <div id="nav-booking-status" style="display:flex;align-items:center;gap:6px;">
-      <div id="booking-status-dot" style="width:7px;height:7px;border-radius:50%;background:#27ae60;flex-shrink:0;"></div>
-      <span id="booking-status-label" style="font-size:11px;font-weight:500;color:rgba(255,255,255,0.8);">Online</span>
-      <label class="toggle-sw"><input type="checkbox" id="dash-booking-active" onchange="syncBookingToggle(this)"><span class="slider"></span></label>
-    </div>
     <a class="nav-booking-btn" id="nav-booking-btn-desktop" href="#" target="_blank">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
       Buchungsseite öffnen
@@ -696,17 +609,29 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
 </a>
 
-<!-- Progress bar at bottom of header -->
-<div id="header-progress-wrap" style="height:3px;background:rgba(255,255,255,0.1);width:100%">
-  <div id="profil-progress-bar" style="height:100%;background:linear-gradient(90deg,rgba(255,255,255,0.4) 0%,#C9A84C 60%);width:0%;transition:width 0.6s ease;"></div>
-</div>
-
 <div class="main">
 
   <!-- ════ DASHBOARD ════ -->
   <div class="tab-panel active" id="panel-profil">
-    <!-- Mobile fixed bottom nav -->
-    <div id="profil-bottom-nav" style="display:none"></div>
+    <div id="profil-loader" style="position:relative;padding:60px 20px;display:flex;">
+      <div class="profil-loader-txt">Daten werden geladen…</div>
+    </div>
+    <div id="profil-toggles" style="display:none;gap:8px;flex-wrap:wrap;margin-bottom:0;padding:12px 16px;background:var(--tp);border:none;border-radius:12px 12px 0 0;min-height:44px;"></div>
+    <!-- Buchungsseite Online/Offline -->
+    <div id="booking-status-bar" style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px 12px;background:var(--tp);border-radius:0 0 12px 12px;margin-bottom:8px;border-top:1px solid rgba(255,255,255,0.12);">
+      <div style="display:flex;flex-direction:column;gap:6px;width:100%;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div id="booking-status-dot" style="width:8px;height:8px;border-radius:50%;background:#27ae60;flex-shrink:0;"></div>
+          <span id="booking-status-label" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.85);">Buchungsseite Online</span>
+        </div>
+        <label class="toggle-sw" style="margin-left:16px;"><input type="checkbox" id="dash-booking-active" onchange="toggleBookingActive()"><span class="slider"></span></label>
+        <!-- Fortschrittsbalken -->
+        <div style="margin-top:6px;width:100%;height:4px;background:rgba(255,255,255,0.15);border-radius:99px;overflow:hidden;">
+          <div id="profil-progress-bar" style="height:100%;border-radius:99px;background:linear-gradient(90deg,#c0392b,#d4a000,#1e7a3c);width:0%;transition:width 0.6s ease;"></div>
+        </div>
+      </div>
+    </div>
+
     <div id="profil-status-msg" style="font-size:12px;margin-top:10px;margin-bottom:16px;padding:2px 0;min-height:18px;"></div>
     <div id="profil-content" style="width:100%;overflow:hidden;box-sizing:border-box"></div>
   </div>
@@ -859,14 +784,6 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
     </div>
   </div>
 
-
-<!-- Desktop bottom bar - outside tab panels so always visible -->
-<div id="profil-desktop-bar" style="position:fixed;bottom:0;left:0;right:0;z-index:200;background:linear-gradient(135deg,#3d1568 0%,#5a2d82 100%);border-top:1px solid rgba(201,168,76,.3);box-shadow:0 -4px 20px rgba(0,0,0,.3);align-items:center;padding:0">
-  <div id="profil-desktop-tabs" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 12px;overflow:hidden"></div>
-</div>
-<!-- Floating arrow buttons -->
-<button id="profil-bar-prev" onclick="profilBarStep(-1)" style="position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:199;width:52px;height:80px;background:rgba(74,28,107,0.75);border:none;border-radius:0 12px 12px 0;cursor:pointer;color:rgba(255,255,255,.7);font-size:42px;align-items:center;justify-content:center;transition:all .2s;padding:0;backdrop-filter:blur(4px)" onmouseover="this.style.color='#C9A84C';this.style.background='rgba(74,28,107,0.95)'" onmouseout="this.style.color='rgba(255,255,255,.7)';this.style.background='rgba(74,28,107,0.75)'">&#8249;</button>
-<button id="profil-bar-next" onclick="profilBarStep(1)" style="position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:199;width:52px;height:80px;background:rgba(74,28,107,0.75);border:none;border-radius:12px 0 0 12px;cursor:pointer;color:rgba(255,255,255,.7);font-size:42px;align-items:center;justify-content:center;transition:all .2s;padding:0;backdrop-filter:blur(4px)" onmouseover="this.style.color='#C9A84C';this.style.background='rgba(74,28,107,0.95)'" onmouseout="this.style.color='rgba(255,255,255,.7)';this.style.background='rgba(74,28,107,0.75)'">&#8250;</button>
 </div><!-- /main -->
 
 <!-- ── KALENDER PICKER MODAL ── -->
@@ -900,6 +817,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   <div class="modal-footer">
     <button class="btn btn-ghost" onclick="closeSvcModal()">Abbrechen</button>
     <button class="btn btn-primary" onclick="saveNewService()" id="btn-svc-save">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
       Service anlegen
     </button>
   </div>
@@ -917,35 +835,19 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   </div>
   <!-- Staff form view -->
   <div class="modal-body" id="s-main-view">
-    <!-- Alle 4 Elemente in einer Zeile: Avatar | Kalender | Anzeigename | Rolle -->
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-      <div style="flex-shrink:0">
-        <input type="file" id="s-avatar-file" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
-        <div id="s-modal-avatar" onclick="toggleColorPicker()" style="width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;cursor:pointer;position:relative;box-shadow:0 2px 10px rgba(0,0,0,.15);transition:transform .15s;background-size:cover;background-position:center" title="Farbe oder Foto ändern">
-          <span id="s-modal-avatar-ini">?</span>
-          <div style="position:absolute;bottom:0;right:0;width:18px;height:18px;border-radius:50%;background:var(--bg);border:2px solid var(--border);display:flex;align-items:center;justify-content:center">
-            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-          </div>
+
+    <!-- Avatar (klickbar für Farbauswahl) -->
+    <div style="display:flex;justify-content:center;margin-bottom:16px">
+      <!-- Hidden file input -->
+      <input type="file" id="s-avatar-file" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
+      <div id="s-modal-avatar" onclick="toggleColorPicker()" style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;cursor:pointer;position:relative;box-shadow:0 2px 10px rgba(0,0,0,.15);transition:transform .15s;background-size:cover;background-position:center" title="Farbe oder Foto ändern">
+        <span id="s-modal-avatar-ini">?</span>
+        <div style="position:absolute;bottom:0;right:0;width:20px;height:20px;border-radius:50%;background:var(--bg);border:2px solid var(--border);display:flex;align-items:center;justify-content:center">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
         </div>
       </div>
-      <!-- Kalender Icon -->
-      <div id="s-gcal-section" onclick="openCalendarPicker(editingStaffId)" title="Google Kalender verbinden" style="width:56px;height:56px;flex-shrink:0;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;border:1.5px solid var(--border);background:var(--white);transition:all .15s;position:relative;overflow:hidden" onmouseover="this.style.borderColor='var(--tpl)'" onmouseout="this.style.borderColor=this.dataset.connected==='1'?'#a8e6bf':'var(--border)'">
-        <div id="s-gcal-connected-dot" style="display:none;position:absolute;top:3px;right:3px;width:7px;height:7px;border-radius:50%;background:#27ae60"></div>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <div id="s-gcal-name-label" style="font-size:7px;color:var(--muted);text-align:center;max-width:52px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 2px"></div>
-        <input type="hidden" id="s-gcal-id-label">
-      </div>
-      <!-- Anzeigename -->
-      <div class="field" style="margin-bottom:0;flex:1;min-width:0">
-        <label>Anzeigename *</label>
-        <input type="text" id="s-display" placeholder="z.B. Niran T." required oninput="updateModalAvatar()" style="width:100%">
-      </div>
-      <!-- Rolle -->
-      <div class="field" style="margin-bottom:0;flex:1;min-width:0">
-        <label>Rolle</label>
-        <input type="text" id="s-role" placeholder="z.B. Massagetherapeutin" style="width:100%">
-      </div>
     </div>
+    <!-- Color picker (hidden by default) -->
     <div id="s-color-picker-wrap" style="display:none;margin-bottom:16px;padding:12px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px">
       <div style="font-size:10px;color:var(--muted);margin-bottom:8px;text-align:center">Farbe oder Foto</div>
       <div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:center" id="color-picker">
@@ -967,19 +869,49 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
       <div id="s-avatar-remove" style="display:none;margin-top:6px;text-align:center"><button type="button" onclick="removeAvatarPhoto()" style="background:none;border:none;font-size:10px;color:var(--muted);cursor:pointer;font-family:inherit">× Foto entfernen</button></div>
       <input type="hidden" id="s-color" value="#3498db">
       <input type="hidden" id="s-avatar-url" value="">
-      <!-- Mitarbeiter löschen -->
-      <div id="s-delete-wrap" style="display:none;margin-top:10px">
-        <button type="button" onclick="deleteCurrentStaff()" class="btn btn-sm btn-danger" style="width:100%">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-          Mitarbeiter löschen
-        </button>
-      </div>
     </div>
 
+    <!-- Anzeigename & Rolle -->
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
+      <div class="field" style="margin-bottom:0"><label>Anzeigename (im Buchungswidget) *</label><input type="text" id="s-display" placeholder="z.B. Niran T." required oninput="updateModalAvatar()"></div>
+      <div class="field" style="margin-bottom:0"><label>Rolle / Berufsbezeichnung</label><input type="text" id="s-role" placeholder="z.B. Massagetherapeutin"></div>
+    </div>
     <!-- Hidden name field — uses display name as fallback -->
     <input type="hidden" id="s-name">
     <input type="hidden" id="s-email">
 
+    <!-- Google Kalender verbinden — über dem Services Akkordion -->
+    <div id="s-gcal-section" style="margin-bottom:14px">
+      <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Google Kalender</div>
+      <div id="s-gcal-connected" style="display:none;align-items:center;gap:8px;padding:8px 12px;background:#f0faf4;border:1.5px solid #a8e6bf;border-radius:8px;margin-bottom:6px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <div style="flex:1;min-width:0">
+          <div id="s-gcal-name-label" style="font-size:12px;color:#1a6b3a;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+          <details style="margin-top:2px">
+            <summary style="font-size:9px;color:#27ae60;opacity:.6;cursor:pointer;list-style:none;user-select:none;display:inline-flex;align-items:center;gap:3px">▸ Kalender-ID</summary>
+            <div id="s-gcal-id-label" style="font-size:9px;color:#1a6b3a;opacity:.6;word-break:break-all;margin-top:2px;font-family:'DM Mono',monospace"></div>
+          </details>
+        </div>
+        <button type="button" onclick="openCalendarPicker(editingStaffId)" style="font-size:10px;color:var(--tpl);background:none;border:none;cursor:pointer;font-family:inherit;padding:0;white-space:nowrap;flex-shrink:0">Ändern</button>
+      </div>
+
+      <button type="button" id="s-gcal-btn" onclick="openCalendarPicker(editingStaffId)"
+        style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:9px 14px;border:1.5px solid var(--border);border-radius:8px;background:var(--white);font-size:12px;font-weight:500;color:var(--td);cursor:pointer;font-family:inherit;transition:border-color .15s;">
+        <svg width="15" height="15" viewBox="0 0 24 24"><path d="M21.05 11.1H12v2.8h5.15c-.22 1.17-.9 2.17-1.9 2.83v2.35h3.07c1.8-1.65 2.83-4.1 2.83-7z" fill="#4285F4"/><path d="M12 21c2.59 0 4.76-.86 6.35-2.32l-3.07-2.35c-.85.57-1.95.91-3.28.91-2.52 0-4.66-1.7-5.42-3.98H3.43v2.43C5.01 18.98 8.27 21 12 21z" fill="#34A853"/><path d="M6.58 13.26A5.98 5.98 0 016.2 12c0-.44.07-.87.18-1.28V8.3H3.43A9.97 9.97 0 002 12c0 1.61.39 3.13 1.07 4.46l3.08-2.43z" fill="#FBBC04"/><path d="M12 6.04c1.42 0 2.7.49 3.7 1.44l2.77-2.77C16.75 3.12 14.58 2 12 2 8.27 2 5.01 4.02 3.43 7.04L6.5 9.47c.76-2.28 2.9-3.43 5.5-3.43z" fill="#EA4335"/></svg>
+        Google Kalender verbinden
+      </button>
+    </div>
+
+    <!-- Online/Offline Toggle -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;margin-bottom:14px">
+      <div>
+        <div style="font-size:12px;font-weight:500;color:var(--td)">Im Buchungswidget anzeigen</div>
+        <div style="font-size:11px;color:var(--muted)" id="s-online-label">Mitarbeiter ist buchbar</div>
+      </div>
+      <label class="toggle-sw"><input type="checkbox" id="s-online" onchange="updateOnlineLabel()"><span class="slider"></span></label>
+    </div>
+
+    <hr class="div">
 
     <!-- Services zuweisen -->
     <div style="margin-bottom:14px">
@@ -1014,10 +946,18 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 
     <input type="hidden" id="s-cal" value="">
 
+    <!-- Mitarbeiter löschen (nur im Edit-Modus) -->
+    <div id="s-delete-wrap" style="display:none;margin-top:8px;margin-bottom:4px">
+      <button type="button" onclick="deleteCurrentStaff()" style="width:100%;padding:9px;border-radius:8px;border:1.5px solid var(--danger);background:transparent;color:var(--danger);font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .15s;" onmouseover="this.style.background='rgba(231,76,60,0.06)'" onmouseout="this.style.background='transparent'">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        Mitarbeiter löschen
+      </button>
+    </div>
+
   </div><!-- /s-main-view -->
 
   <!-- Calendar picker view (inline in staff modal) -->
-  <div class="modal-body" id="s-cal-view" style="display:none">
+  <div id="s-cal-view" style="display:none;flex:1;overflow-y:auto;padding:20px 24px">
     <div id="cal-picker-no-admin" style="display:none">
       <div style="background:var(--bg);border-radius:10px;padding:14px;margin-bottom:14px;font-size:12px;color:var(--muted);line-height:1.6">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2" style="vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -1047,6 +987,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   <div class="modal-footer">
     <button class="btn btn-ghost" onclick="closeStaffModal()">Abbrechen</button>
     <button class="btn btn-primary" onclick="saveStaff()" id="btn-staff-save">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
       Speichern
     </button>
   </div>
@@ -1054,8 +995,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 
 <div class="toast" id="toast"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
 // Iframe resize by dragging handle
 (function(){
   var handle=null,iframe=null,startY=0,startH=0;
@@ -1111,13 +1051,6 @@ var staffTempIdCounter=0;
 var staffTempCalOffset={};
 var weekPlanOffset=0; // KW-Offset für Wochenplan-Navigation
 var cachedSalonAz=null;
-
-// Help-tip click toggle für Mobile
-document.addEventListener('click',function(e){
-  var tip=e.target.closest('.help-tip');
-  if(tip){e.stopPropagation();tip.classList.toggle('active');return;}
-  document.querySelectorAll('.help-tip.active').forEach(function(t){t.classList.remove('active');});
-});
 
 // ── TABS ──────────────────────────────────────────────────────
 var _currentTab='dashboard';
@@ -1209,17 +1142,6 @@ async function loadLiveTicker(){
 }
 
 function switchTab(n){
-  // Show/hide profil bottom bar and arrows (desktop only)
-  var isMobile=window.innerWidth<=768;
-  var bar=document.getElementById('profil-desktop-bar');
-  var prev=document.getElementById('profil-bar-prev');
-  var next=document.getElementById('profil-bar-next');
-  if(!isMobile){
-    if(bar)bar.classList.toggle('visible',n==='profil');
-    if(prev)prev.classList.toggle('visible',n==='profil');
-    if(next)next.classList.toggle('visible',n==='profil');
-  }
-
   // Auto-save nur wenn Änderungen gemacht wurden
   if(_currentTab!==n&&_dirty){
     var confirmed=confirm('Möchtest du die Änderungen speichern?');
@@ -1292,16 +1214,11 @@ function buildTimeOptions(selected){
 
 function toggleTempAcc(id){
   var body=document.getElementById('temp-body-'+id);
+  var chev=document.getElementById('temp-chev-'+id);
   if(!body)return;
   var open=body.style.display==='flex';
-  // Alle anderen schließen
-  tempEntries.forEach(function(e){
-    if(e.id!==id){
-      var b=document.getElementById('temp-body-'+e.id);
-      if(b)b.style.display='none';
-    }
-  });
   body.style.display=open?'none':'flex';
+  if(chev)chev.style.transform=open?'':'rotate(180deg)';
   if(!open){
     buildHoursCols(null,'temp-hcols-'+id,'te'+id+'-',false,true);
     var entry=tempEntries.filter(function(e){return e.id===id;})[0];
@@ -1311,16 +1228,11 @@ function toggleTempAcc(id){
 
 function toggleStAcc(id){
   var body=document.getElementById('st-body-'+id);
+  var chev=document.getElementById('st-chev-'+id);
   if(!body)return;
   var open=body.style.display==='flex';
-  // Alle anderen schließen
-  staffTempEntries.forEach(function(e){
-    if(e.id!==id){
-      var b=document.getElementById('st-body-'+e.id);
-      if(b)b.style.display='none';
-    }
-  });
   body.style.display=open?'none':'flex';
+  if(chev)chev.style.transform=open?'':'rotate(180deg)';
   if(!open){
     var entry=staffTempEntries.filter(function(e){return e.id===id;})[0];
     buildHoursCols(entry&&entry.zeiten?entry.zeiten:null,'st-hcols-'+id,'ste'+id+'-',true,true);
@@ -1400,12 +1312,6 @@ var HORIZONT_LABELS=['Bis zu 1 Woche','Bis zu 2 Wochen','Bis zu 3 Wochen','Bis z
 var HORIZONT_VALS=[1,2,3,4,6,8,12];
 
 function updateTimelines(){
-  var vEl=document.getElementById('booking-vorlauf');
-  var hEl=document.getElementById('booking-horizont');
-  var vLbl=document.getElementById('vorlauf-label');
-  var hLbl=document.getElementById('horizont-label');
-  if(vEl&&vLbl)vLbl.textContent=VORLAUF_LABELS[parseInt(vEl.value)]||'';
-  if(hEl&&hLbl)hLbl.textContent=HORIZONT_LABELS[parseInt(hEl.value)-1]||'';
   saveBookingTimelines();
 }
 
@@ -1441,9 +1347,13 @@ function highlightSlotRaster(min){
     var btn=document.getElementById('slot-btn-'+v);
     if(!btn)return;
     if(v===min){
+      btn.style.background='var(--tp)';
+      btn.style.color='var(--td)';
       btn.style.border='3px solid var(--tg)';
       btn.style.boxShadow='0 0 0 3px rgba(201,168,76,0.35)';
     } else {
+      btn.style.background='var(--tp)';
+      btn.style.color='var(--td)';
       btn.style.border='1.5px solid rgba(255,255,255,.15)';
       btn.style.boxShadow='';
     }
@@ -1634,18 +1544,18 @@ function renderTempEntries(){
   empty.style.display='none';
   list.innerHTML=tempEntries.map(function(entry){
     return'<div id="temp-entry-'+entry.id+'" style="border:1.5px solid var(--border);border-radius:10px;overflow:hidden">'
-      +'<div onclick="toggleTempAcc('+entry.id+')" style="display:flex;align-items:center;justify-content:center;padding:10px 14px;background:var(--tp);cursor:pointer;">'
-        +'<div style="font-size:12px;font-weight:500;color:#fff;text-align:center" id="temp-label-'+entry.id+'">'+kwLabel(entry.kw,entry.year)+'</div>'
-        +'<svg id="temp-chev-'+entry.id+'" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="transparent" stroke-width="2.5" style="transition:transform .2s"><polyline points="6 9 12 15 18 9"/></svg>'
+      +'<div onclick="toggleTempAcc('+entry.id+')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#faf8fc;cursor:pointer;">'
+        +'<div style="font-size:12px;font-weight:500;color:var(--tpl)" id="temp-label-'+entry.id+'">'+kwLabel(entry.kw,entry.year)+'</div>'
+        +'<div style="display:flex;align-items:center;gap:6px">'
+          +'<svg id="temp-chev-'+entry.id+'" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" style="transition:transform .2s"><polyline points="6 9 12 15 18 9"/></svg>'
+          +'<button onclick="event.stopPropagation();removeTempEntry('+entry.id+')" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--muted);padding:2px 6px" title="Entfernen">✕</button>'
+        +'</div>'
       +'</div>'
-      +'<div id="temp-body-'+entry.id+'" style="display:none;padding:14px;border-top:1px solid var(--border);flex-direction:column;gap:14px">'
+      +'<div id="temp-body-'+entry.id+'" style="display:none;padding:14px;border-top:1px solid var(--border);display:none;flex-direction:column;gap:14px">'
         +'<div id="temp-cal-'+entry.id+'">'+buildKwCal(entry.id,entry.kw,entry.year)+'</div>'
         +'<div>'
           +'<div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px">Zeiten für diese Woche</div>'
           +'<div class="hours-cols" id="temp-hcols-'+entry.id+'"></div>'
-        +'</div>'
-        +'<div style="display:flex;justify-content:flex-end">'
-          +'<button onclick="removeTempEntry('+entry.id+')" class="btn btn-sm btn-danger">Entfernen</button>'
         +'</div>'
       +'</div>'
     +'</div>';
@@ -1807,26 +1717,8 @@ function clIconsHtml(i,selectedKey){
     +'</div>';
 }
 
-window.toggleClPicker=function(i){
-  var picker=document.getElementById('cl-picker-'+i);
-  if(!picker)return;
-  var isOpen=picker.style.display==='block';
-  // Close all pickers first
-  document.querySelectorAll('[id^="cl-picker-"]').forEach(function(p){p.style.display='none';});
-  if(!isOpen)picker.style.display='block';
-};
-// Close pickers on outside click
-document.addEventListener('click',function(e){
-  if(!e.target.closest('[id^="cl-picker-"]')&&!e.target.closest('button[onclick*="toggleClPicker"]')){
-    document.querySelectorAll('[id^="cl-picker-"]').forEach(function(p){p.style.display='none';});
-  }
-});
-
 window.pickClIcon=function(i,key){
   customLinks[i].icon=key;
-  // Close picker
-  var picker=document.getElementById('cl-picker-'+i);
-  if(picker)picker.style.display='none';
   renderCustomLinks();
   setTimeout(function(){
     var rows=document.querySelectorAll('#custom-links-list .cl-row');
@@ -1846,28 +1738,17 @@ function renderCustomLinks(){
   if(empty)empty.style.display='none';
   list.innerHTML=customLinks.map(function(l,i){
     var icon=l.icon||'custom';
+    var isCustom=icon==='custom';
     var ph=clPlaceholder(icon);
-    var svgIcon=CL_SVGS[icon]||CL_SVGS['custom'];
-    return'<div class="cl-row" style="display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:8px 10px;">'
-      // 1. Standard Icon Button (toggles picker)
-      +'<div style="position:relative;flex-shrink:0">'
-        +'<button type="button" onclick="toggleClPicker('+i+')" title="Icon wählen" style="width:36px;height:36px;border:1.5px solid var(--border);border-radius:8px;background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--tpl);transition:border-color .15s" onmouseover="this.style.borderColor=\'var(--tpl)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'+svgIcon+'</button>'
-        +'<div id="cl-picker-'+i+'" style="display:none;position:absolute;top:42px;left:0;z-index:50;background:#fff;border:1.5px solid var(--border);border-radius:10px;box-shadow:0 4px 16px rgba(74,28,107,.15);padding:8px;display:none">'
-          +'<div style="display:flex;gap:5px;flex-wrap:wrap;width:220px">'
-          +CL_ICONS.map(function(ic){
-            var sel=icon===ic.key?' selected':'';
-            var svg=CL_SVGS[ic.key]||CL_SVGS['custom'];
-            return'<button type="button" class="cl-icon-btn'+sel+'" onclick="pickClIcon('+i+',\''+ic.key+'\')" title="'+ic.label+'">'+svg+'</button>';
-          }).join('')
-          +'</div>'
-        +'</div>'
+    return'<div class="cl-row" style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;">'
+      +clIconsHtml(i,icon)
+      +'<div class="custom-link-row" style="margin-top:6px">'
+                +'<input type="text" placeholder="Titel (optional)" value="'+esc(l.title||'')+'" oninput="customLinks['+i+'].title=this.value" style="flex:0 0 120px">'
+        +'<input type="text" class="cl-url-input" placeholder="'+ph+'" value="'+esc(l.url||'')+'" oninput="customLinks['+i+'].url=this.value">'
+        +'<button class="custom-link-del" onclick="removeCustomLink('+i+')" title="Entfernen">'
+          +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+        +'</button>'
       +'</div>'
-      // 2. Titel
-      +'<input type="text" placeholder="Titel" value="'+esc(l.title||'')+'" oninput="customLinks['+i+'].title=this.value" style="flex:0 0 110px;border:1.5px solid var(--border);border-radius:8px;padding:7px 10px;font-size:13px;color:var(--td);background:var(--white);font-family:inherit;outline:none;box-sizing:border-box" onfocus="this.style.borderColor=\'var(--tpl)\'" onblur="this.style.borderColor=\'var(--border)\'">'
-      // 3. URL
-      +'<input type="text" class="cl-url-input" placeholder="'+ph+'" value="'+esc(l.url||'')+'" oninput="customLinks['+i+'].url=this.value" style="flex:1;border:1.5px solid var(--border);border-radius:8px;padding:7px 10px;font-size:13px;color:var(--td);background:var(--white);font-family:inherit;outline:none;box-sizing:border-box;min-width:0" onfocus="this.style.borderColor=\'var(--tpl)\'" onblur="this.style.borderColor=\'var(--border)\'">'
-      // 4. Entfernen
-      +'<button onclick="removeCustomLink('+i+')" class="btn btn-sm btn-danger" style="flex-shrink:0">Entfernen</button>'
     +'</div>';
   }).join('<div style="height:6px"></div>');
 }
@@ -1884,8 +1765,6 @@ function removeCustomLink(i){
 
 
 async function saveProfil(silent){
-  // Snapshot vor dem Speichern für Undo
-  window._pDataBeforeSave=JSON.parse(JSON.stringify(window._pData||{}));
   if(!SALON_ID){toast('Keine salon_id','error');return;}
 
   // Helper: read field value if it exists in DOM
@@ -1969,7 +1848,6 @@ async function saveProfil(silent){
     buildProfilToggles();
     if(st){st.className='save-status saved';st.textContent='✓ Gespeichert';}
     toast('Profil gespeichert ✓','success');
-    window._pDataBeforeSave=null; // clear undo snapshot after second save
     // Nach loadProfil Werte wiederherstellen
     var _savedVorlauf=window._pData.feature_settings.booking_vorlauf;
     var _savedHorizont=window._pData.feature_settings.booking_horizont;
@@ -2034,9 +1912,7 @@ function checkGcalReturn(){
       }
     });
   } else if(gcalMid&&gcalId){
-    // Strip any accidentally encoded query params from the ID
-    var cleanMid=gcalMid.split('?')[0].split('&')[0];
-    sb.from('mitarbeiter').update({google_calendar_id:gcalId}).eq('id',cleanMid).then(function(res){
+    sb.from('mitarbeiter').update({google_calendar_id:gcalId}).eq('id',gcalMid).then(function(res){
       if(!res.error){
         toast('Google Kalender verbunden ✓','success');
         var url=new URL(window.location.href);
@@ -2310,21 +2186,6 @@ function updateVarPreview(svcId){
   item.varianten.forEach(function(v){updateSingleVarPreview(svcId,v.id);});
 }
 
-function toggleSvcMenu(id){
-  var menu=document.getElementById('svc-menu-'+id);
-  if(!menu)return;
-  var open=menu.style.display==='block';
-  // Close all menus first
-  document.querySelectorAll('[id^="svc-menu-"]').forEach(function(m){m.style.display='none';});
-  if(!open)menu.style.display='block';
-}
-// Close svc menus on outside click
-document.addEventListener('click',function(e){
-  if(!e.target.closest('[id^="svc-menu-"]')&&!e.target.closest('button[onclick*="toggleSvcMenu"]')){
-    document.querySelectorAll('[id^="svc-menu-"]').forEach(function(m){m.style.display='none';});
-  }
-});
-
 function renderSvcList(){
   // Invalidate SVC_MAP so it rebuilds with fresh data
   window.SVC_MAP=null;
@@ -2342,7 +2203,7 @@ function renderSvcList(){
           +(s.beschreibung?'<div class="svc-item-meta">'+esc(s.beschreibung)+'</div>':'')
         +'</div>'
         +(minP!==null?'<span style="font-size:12px;color:var(--tg);font-weight:500;margin-right:8px">ab '+minP+' €</span>':'')
-        +'<span class="badge '+(s.aktiv?'':'off')+'" id="svc-badge-'+s.id+'">'+(s.aktiv?'Aktiv':'Inaktiv')+'</span>'
+        +'<span class="badge '+(s.aktiv?'':'off')+'">'+(s.aktiv?'Aktiv':'Inaktiv')+'</span>'
         +'<span class="chevron" id="chev-svc-'+s.id+'">⌄</span>'
       +'</div>'
       +'<div class="item-body" id="body-svc-'+s.id+'">'+renderSvcBody(s,vars)+'</div>'
@@ -2352,22 +2213,18 @@ function renderSvcList(){
 
 function renderSvcBody(s,vars){
   return'<div style="margin-bottom:12px">'
-    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'
-      +'<div class="field" style="flex:1;margin-bottom:0"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="svc-f-name-'+s.id+'" value="'+esc(s.name)+'" style="background:rgba(90,45,130,.12);border-color:var(--tpl)"></div>'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px">'
+      +'<div class="field" style="flex:0 0 40%;margin-bottom:0"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="svc-f-name-'+s.id+'" value="'+esc(s.name)+'" style="background:rgba(90,45,130,.12);border-color:var(--tpl)"></div>'
       +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0;margin-top:20px">'
-        +'<label class="toggle-sw" title="Im Widget aktiv"><input type="checkbox" id="svc-f-aktiv-'+s.id+'" '+(s.aktiv?'checked':'')+' onchange="(function(el){var b=document.getElementById(\'svc-badge-'+s.id+'\');if(b){b.textContent=el.checked?\'Aktiv\':\'Inaktiv\';b.className=\'badge \'+(el.checked?\'\':\'off\');}})(this)"><span class="slider"></span></label>'
-        +'<span style="font-size:9px;color:var(--muted)">Aktiv</span>'
-      +'</div>'
-      +'<div style="position:relative;flex-shrink:0;margin-top:20px">'
-        +'<button onclick="toggleSvcMenu(\''+s.id+'\')" style="background:none;border:1px solid var(--border);border-radius:7px;width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:all .15s" onmouseover="this.style.borderColor=\'var(--tpl)\';this.style.color=\'var(--tpl)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.color=\'var(--muted)\'">'
-          +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>'
+        +'<input type="file" id="svc-f-img-'+s.id+'" accept="image/*" style="display:none" onchange="handleSvcImageUpload(event,\''+s.id+'\')">'
+        +'<button type="button" onclick="document.getElementById(\'svc-f-img-'+s.id+'\').click()" style="width:36px;height:36px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s" title="Foto hochladen">'
+          +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>'
         +'</button>'
-        +'<div id="svc-menu-'+s.id+'" style="display:none;position:absolute;right:0;top:36px;background:#fff;border:1.5px solid var(--border);border-radius:10px;box-shadow:0 4px 16px rgba(74,28,107,.15);z-index:50;min-width:160px;overflow:hidden">'
-          +'<button onclick="deleteSvc(\''+s.id+'\')" style="width:100%;padding:10px 14px;text-align:left;background:none;border:none;cursor:pointer;font-size:13px;color:var(--danger);font-family:inherit;display:flex;align-items:center;gap:8px" onmouseover="this.style.background=\'#fef2f2\'" onmouseout="this.style.background=\'none\'">'
-            +'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>'
-            +'Service löschen'
-          +'</button>'
-        +'</div>'
+        +'<span style="font-size:9px;color:var(--muted)">Foto</span>'
+      +'</div>'
+      +'<div style="padding-bottom:2px;display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0;margin-top:20px">'
+        +'<label class="toggle-sw" title="Im Widget aktiv"><input type="checkbox" id="svc-f-aktiv-'+s.id+'" '+(s.aktiv?'checked':'')+' ><span class="slider"></span></label>'
+        +'<span style="font-size:9px;color:var(--muted)">Aktiv</span>'
       +'</div>'
     +'</div>'
     +'<div class="field" style="margin-bottom:0"><label>Beschreibung <span style="font-size:10px;color:var(--muted);font-weight:400">(optional)</span></label><textarea id="svc-f-desc-'+s.id+'" rows="2" style="width:100%;border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;font-size:13px;font-family:inherit;color:var(--td);background:#fff;resize:vertical;outline:none">'+esc(s.beschreibung||'')+'</textarea></div>'
@@ -2381,7 +2238,10 @@ function renderSvcBody(s,vars){
     +'<button class="btn-add" onclick="addVariante(\''+s.id+'\')">'
       +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen'
     +'</button>'
-    +'<button class="btn btn-sm btn-primary" onclick="saveSvcAll(\''+s.id+'\')" style="margin-left:auto">Speichern</button>'
+    +'<button class="btn btn-sm btn-primary" onclick="saveSvcAll(\''+s.id+'\')" style="margin-left:auto">'
+      +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>Speichern'
+    +'</button>'
+    +'<button class="btn btn-sm btn-danger" onclick="deleteSvc(\''+s.id+'\')" >Service löschen</button>'
   +'</div>';
 }
 
@@ -2413,53 +2273,64 @@ function mkVarRow(v,svcId,idx){
       +'</div>'
       +(isFirst
         ?'<div style="width:28px;flex-shrink:0"></div>'
-        :'<button onclick="event.stopPropagation();deleteVar(\''+v.id+'\',\''+svcId+'\')" class="btn btn-sm btn-danger" style="flex-shrink:0;width:28px;height:28px;padding:0;justify-content:center">✕</button>'
+        :'<button onclick="event.stopPropagation();deleteVar(\''+v.id+'\',\''+svcId+'\')" class="var-del" style="flex-shrink:0">✕</button>'
       )
-      +'<span id="var-chev-'+v.id+'" style="display:none;font-size:16px;color:var(--tpl);transition:transform .2s;flex-shrink:0">⌄</span>'
+      +'<span id="var-chev-'+v.id+'" style="font-size:16px;color:var(--tpl);transition:transform .2s;flex-shrink:0">⌄</span>'
     +'</div>'
     // ── Akkordion Body — exakt altes var-row Grid ──
     +'<div id="var-body-'+v.id+'" style="display:none;padding:8px 10px 10px;border-top:1.5px solid #e8e0f0">'
-      +'<div class="var-row" id="var-'+v.id+'" style="grid-template-columns:0.7fr 1fr;gap:8px">'
-        // Spalte 1: Min+Puffer+Toggle+Preis
+      +'<div class="var-row" id="var-'+v.id+'" style="grid-template-columns:1fr 1.5fr 2fr;gap:8px">'
+        // Spalte 1: Min+Puffer+Toggle
         +'<div style="display:flex;flex-direction:column;gap:6px;min-width:0">'
-          +'<div style="display:flex;align-items:center;gap:6px">'
-            +'<div style="display:flex;align-items:center;border:1.5px solid var(--tpl);border-radius:6px;overflow:hidden;background:rgba(90,45,130,.12);flex:1;min-width:0">'
-              +'<input data-field="dauer_minuten" type="number" min="5" step="5" placeholder="Min" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value);updateVarTotal(\''+v.id+'\');updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="flex:1;min-width:0;text-align:center;border:none;padding:6px 2px;font-size:12px;font-family:inherit;color:var(--td);background:transparent;outline:none">'
-              +'<span style="font-size:11px;font-weight:700;color:var(--tpl);padding:0 2px;flex-shrink:0">+</span>'
-              +'<input data-field="puffer_minuten" type="number" min="0" placeholder="Puffer" value="'+(v.puffer_minuten||0)+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'puffer_minuten\',this.value);updateVarTotal(\''+v.id+'\');updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="flex:1;min-width:0;text-align:center;border:none;padding:6px 2px;font-size:12px;font-family:inherit;color:var(--td);background:#fff;outline:none">'
-              +'<span style="font-size:11px;font-weight:600;color:var(--tpl);padding:0 2px;flex-shrink:0">=</span>'
-              +'<span id="vartotal-'+v.id+'" style="flex:0 0 30px;text-align:center;font-size:12px;font-weight:600;color:var(--tpl);padding:6px 2px">'
-                +((parseInt(durVal)||0)+(v.puffer_minuten||0)||'—')
-              +'</span>'
+          +'<div style="display:flex;align-items:flex-end;gap:8px">'
+            +'<div style="display:flex;flex-direction:column;gap:3px;width:50%">'
+              +'<span style="font-size:10px;color:var(--muted);font-weight:500;white-space:nowrap">Min + Puffer = Gesamt</span>'
+              +'<div style="display:flex;align-items:center;border:1.5px solid var(--tpl);border-radius:6px;overflow:hidden;background:rgba(90,45,130,.12)">'
+                +'<input data-field="dauer_minuten" type="number" min="5" step="5" placeholder="—" value="'+durVal+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_minuten\',this.value);updateVarTotal(\''+v.id+'\');updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="flex:1;min-width:0;text-align:center;border:none;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:transparent;outline:none">'
+                +'<span style="font-size:13px;font-weight:700;color:var(--tpl);padding:0 2px;flex-shrink:0">+</span>'
+                +'<input data-field="puffer_minuten" type="number" min="0" placeholder="—" value="'+(v.puffer_minuten||0)+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'puffer_minuten\',this.value);updateVarTotal(\''+v.id+'\');updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="flex:1;min-width:0;text-align:center;border:none;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:#fff;outline:none">'
+                +'<span style="font-size:11px;font-weight:600;color:var(--tpl);padding:0 4px;flex-shrink:0">=</span>'
+                +'<span id="vartotal-'+v.id+'" style="flex:0 0 38px;text-align:center;font-size:13px;font-weight:600;color:var(--tpl);display:flex;align-items:center;justify-content:center;padding:6px 2px">'
+                  +((parseInt(durVal)||0)+(v.puffer_minuten||0)||'—')
+                +'</span>'
+              +'</div>'
             +'</div>'
-            +'<div style="display:flex;flex-direction:column;align-items:center;gap:2px">'
-              +'<span style="font-size:9px;color:var(--muted);font-weight:500;white-space:nowrap">Dauer</span>'
+            +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding-bottom:3px">'
+              +'<span style="font-size:10px;color:var(--muted);font-weight:500;text-align:center">Dauer<br>anzeigen</span>'
               +'<label class="toggle-sw"><input data-field="dauer_anzeigen" type="checkbox" '+(v.dauer_anzeigen!==false?'checked':'')+' onchange="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'dauer_anzeigen\',this.checked);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')"><span class="slider"></span></label>'
             +'</div>'
             +'<input data-field="puffer_aktiv" type="checkbox" '+(v.puffer_aktiv?'checked':'')+' style="display:none">'
           +'</div>'
-          +'<div style="display:flex;align-items:center;gap:4px">'
-            +'<input data-field="preis" type="text" inputmode="decimal" placeholder="Preis" value="'+(preisVal?String(preisVal).replace('.',','):'')+'" oninput="formatPreisInput(this);localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis\',parsePreisVal(this.value));updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="flex:1;min-width:0;text-align:center;border:1.5px solid var(--border);border-radius:6px;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);outline:none">'
-            +'<select data-field="waehrung" onchange="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'waehrung\',this.value);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="border:1.5px solid var(--border);border-radius:6px;padding:6px 2px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);outline:none;cursor:pointer">'
-              +'<option value="EUR" '+((!v.waehrung||v.waehrung==='EUR')?'selected':'')+'>€</option>'
-              +'<option value="CHF" '+(v.waehrung==='CHF'?'selected':'')+'>₣</option>'
-              +'<option value="GBP" '+(v.waehrung==='GBP'?'selected':'')+'>£</option>'
-              +'<option value="USD" '+(v.waehrung==='USD'?'selected':'')+'>$</option>'
-              +'<option value="TRY" '+(v.waehrung==='TRY'?'selected':'')+'>₺</option>'
-            +'</select>'
-            +'<div style="display:flex;flex-direction:column;align-items:center;gap:2px">'
-              +'<span style="font-size:9px;color:var(--muted);font-weight:500">Preis</span>'
-              +'<label class="toggle-sw"><input data-field="preis_anzeigen" type="checkbox" '+(v.preis_anzeigen!==false?'checked':'')+' onchange="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis_anzeigen\',this.checked);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')"><span class="slider"></span></label>'
+          +'<div style="display:flex;flex-direction:column;gap:3px">'
+            +'<span style="font-size:10px;color:var(--muted);font-weight:500">Preis</span>'
+            +'<div style="display:flex;align-items:center;gap:6px">'
+              +'<input data-field="preis" type="text" inputmode="decimal" placeholder="0,00" value="'+(preisVal?String(preisVal).replace('.',','):'')+'" oninput="formatPreisInput(this);localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis\',parsePreisVal(this.value));updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="width:30%;min-width:60px;text-align:center;border:1.5px solid var(--border);border-radius:6px;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);outline:none">'
+              +'<select data-field="waehrung" onchange="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'waehrung\',this.value);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="border:1.5px solid var(--border);border-radius:6px;padding:6px 4px;font-size:12px;font-family:inherit;color:var(--td);background:var(--white);outline:none;cursor:pointer">'
+                +'<option value="EUR" '+((!v.waehrung||v.waehrung==='EUR')?'selected':'')+'>€ EUR</option>'
+                +'<option value="CHF" '+(v.waehrung==='CHF'?'selected':'')+'>₣ CHF</option>'
+                +'<option value="GBP" '+(v.waehrung==='GBP'?'selected':'')+'>£ GBP</option>'
+                +'<option value="USD" '+(v.waehrung==='USD'?'selected':'')+'>$ USD</option>'
+                +'<option value="TRY" '+(v.waehrung==='TRY'?'selected':'')+'>₺ TRY</option>'
+              +'</select>'
+              +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px">'
+                +'<span style="font-size:10px;color:var(--muted);font-weight:500">Anzeigen</span>'
+                +'<label class="toggle-sw"><input data-field="preis_anzeigen" type="checkbox" '+(v.preis_anzeigen!==false?'checked':'')+' onchange="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'preis_anzeigen\',this.checked);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')"><span class="slider"></span></label>'
+              +'</div>'
             +'</div>'
           +'</div>'
         +'</div>'
-        // Spalte 2: Name oben, Beschreibung unten
-        +'<div style="display:flex;flex-direction:column;gap:6px;min-width:0">'
+        // Spalte 2: Name
+        +'<div style="display:flex;flex-direction:column;gap:3px;min-width:0">'
+          +'<span class="var-row-lbl" style="font-size:10px;color:var(--muted);font-weight:500">Name</span>'
           +'<div class="var-group">'
-            +'<input data-field="service_name" type="text" placeholder="Name z.B. Fade, Rasur…" value="'+esc(v.service_name||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'service_name\',this.value);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="border:none;outline:none;padding:6px;font-family:inherit;color:var(--td);background:transparent;width:100%;min-width:0">'
+            +'<input data-field="service_name" type="text" placeholder="z.B. Fade, Rasur…" value="'+esc(v.service_name||'')+'" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'service_name\',this.value);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="border:none;outline:none;padding:6px;font-family:inherit;color:var(--td);background:transparent;width:100%;min-width:0">'
           +'</div>'
+        +'</div>'
+        // Spalte 3: Beschreibung
+        +'<div style="display:flex;flex-direction:column;gap:3px;min-width:0">'
+          +'<span class="var-row-lbl" style="font-size:10px;color:var(--muted);font-weight:500">Beschreibung</span>'
           +'<div class="var-group">'
-            +'<textarea data-field="bezeichnung" rows="2" placeholder="Beschreibung…" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'bezeichnung\',this.value);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="border:none;outline:none;padding:6px;font-family:inherit;color:var(--td);background:transparent;width:100%;resize:none">'+esc(v.bezeichnung||'')+'</textarea>'
+            +'<textarea data-field="bezeichnung" rows="2" oninput="localUpdateVar(\''+svcId+'\',\''+v.id+'\',\'bezeichnung\',this.value);updateSingleVarPreview(\''+svcId+'\',\''+v.id+'\')" style="border:none;outline:none;padding:6px;font-family:inherit;color:var(--td);background:transparent;width:100%;resize:none">'+esc(v.bezeichnung||'')+'</textarea>'
           +'</div>'
         +'</div>'
       +'</div>'
@@ -2526,12 +2397,27 @@ function toggleItem(id,type){
   var b=document.getElementById('body-'+type+'-'+id);
   var c=document.getElementById('chev-'+type+'-'+id);
   var open=b.classList.contains('open');
-  // Close all others first
-  document.querySelectorAll('[id^="body-'+type+'-"]').forEach(function(el){el.classList.remove('open');});
-  document.querySelectorAll('[id^="chev-'+type+'-"]').forEach(function(el){el.classList.remove('open');});
-  // Toggle clicked one
+  if(!open&&window.innerWidth<=768){
+    document.querySelectorAll('[id^="body-'+type+'-"]').forEach(function(el){el.classList.remove('open');});
+    document.querySelectorAll('[id^="chev-'+type+'-"]').forEach(function(el){el.classList.remove('open');});
+  }
   b.classList.toggle('open',!open);
   c.classList.toggle('open',!open);
+}
+
+async function handleSvcImageUpload(event,svcId){
+  var file=event.target.files[0];if(!file)return;
+  if(file.size>2*1024*1024){alert('Bild max. 2 MB');return;}
+  var ext=file.name.split('.').pop();
+  var path='service-images/'+svcId+'-'+Date.now()+'.'+ext;
+  var {data,error}=await sb.storage.from('service-images').upload(path,file,{upsert:true});
+  if(error){alert('Upload fehlgeschlagen: '+error.message);return;}
+  var url=sb.storage.from('service-images').getPublicUrl(path).data.publicUrl;
+  await sb.from('services').update({image_url:url}).eq('id',svcId);
+  var item=servicesData.find(function(x){return x.service.id===svcId;});
+  if(item)item.service.image_url=url;
+  alert('Foto gespeichert!');
+  event.target.value='';
 }
 
 async function saveSvcAll(id){
@@ -2823,18 +2709,18 @@ function renderStaffTempEntries(){
   empty.style.display='none';
   list.innerHTML=staffTempEntries.map(function(entry){
     return'<div id="st-entry-'+entry.id+'" style="border:1.5px solid var(--border);border-radius:10px;overflow:hidden">'
-      +'<div onclick="toggleStAcc('+entry.id+')" style="display:flex;align-items:center;justify-content:center;padding:8px 12px;background:var(--tp);cursor:pointer;">'
-        +'<div style="font-size:11px;font-weight:500;color:#fff;text-align:center" id="st-label-'+entry.id+'">'+kwLabel(entry.kw,entry.year)+'</div>'
-        +'<svg id="st-chev-'+entry.id+'" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="transparent" stroke-width="2.5" style="transition:transform .2s"><polyline points="6 9 12 15 18 9"/></svg>'
+      +'<div onclick="toggleStAcc('+entry.id+')" style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#faf8fc;cursor:pointer;">'
+        +'<div style="font-size:11px;font-weight:500;color:var(--tpl)" id="st-label-'+entry.id+'">'+kwLabel(entry.kw,entry.year)+'</div>'
+        +'<div style="display:flex;align-items:center;gap:6px">'
+          +'<svg id="st-chev-'+entry.id+'" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" style="transition:transform .2s"><polyline points="6 9 12 15 18 9"/></svg>'
+          +'<button onclick="event.stopPropagation();removeStaffTempEntry('+entry.id+')" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--muted)">✕</button>'
+        +'</div>'
       +'</div>'
       +'<div id="st-body-'+entry.id+'" style="display:none;padding:12px;border-top:1px solid var(--border);flex-direction:column;gap:10px">'
         +'<div id="st-cal-'+entry.id+'">'+buildStaffKwCal(entry.id,entry.kw,entry.year)+'</div>'
         +'<div>'
           +'<div style="font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:6px">Zeiten für diese Woche</div>'
           +'<div class="hours-cols-sm" id="st-hcols-'+entry.id+'"></div>'
-        +'</div>'
-        +'<div style="display:flex;justify-content:flex-end">'
-          +'<button onclick="removeStaffTempEntry('+entry.id+')" class="btn btn-sm btn-danger">Entfernen</button>'
         +'</div>'
       +'</div>'
     +'</div>';
@@ -3118,6 +3004,7 @@ function renderStaffSidebar(){
   if(!sidebar)return;
   if(!staffData.length){
     sidebar.innerHTML='<div style="font-size:12px;color:var(--muted);padding:12px 4px">Noch kein Team</div>';
+    sidebar.insertAdjacentHTML('beforeend','<button class="staff-add-btn" onclick="openStaffModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>');
     return;
   }
   sidebar.innerHTML=staffData.map(function(item){
@@ -3126,8 +3013,9 @@ function renderStaffSidebar(){
     var ini=(m.display_name||m.name||'?').split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
     var gcalConnected=!!(m.google_calendar_id);
     var isOnline=m.aktiv!==false;
-    return'<div class="staff-card" id="staff-card-'+m.id+'" style="opacity:'+(isOnline?'1':'0.55')+'">'      +'<div style="height:3px;background:'+color+'"></div>'      +'<div class="staff-card-body">'        +renderAvatar(m,40)        +'<div style="min-width:0;flex:1">'          +'<div class="staff-name">'+esc(m.display_name||m.name)+'</div>'          +'<div class="staff-role">'+esc(m.role||'—')+'</div>'        +'</div>'      +'</div>'      +'<div class="staff-card-actions">'        +'<button class="staff-action" onclick="toggleStaffOnline(\''+m.id+'\','+isOnline+')" style="color:'+(isOnline?'#1e7a3c':'#c0392b')+'" title="Online/Offline">'+(isOnline?'● Online':'○ Offline')+'</button>'        +'<button class="staff-action" onclick="editStaff(\''+m.id+'\')" title="Bearbeiten">✎ Bearbeiten</button>'      +'</div>'    +'</div>';
+    return'<div class="staff-card" id="staff-card-'+m.id+'" style="opacity:'+(isOnline?'1':'0.55')+'">'      +'<div style="height:3px;background:'+color+'"></div>'      +'<div class="staff-card-body">'        +renderAvatar(m,34)        +'<div style="min-width:0;flex:1">'          +'<div class="staff-name">'+esc(m.display_name||m.name)+'</div>'          +'<div class="staff-role">'+esc(m.role||'—')+'</div>'        +'</div>'      +'</div>'      +'<div class="staff-card-actions">'        +'<button class="staff-action" onclick="toggleStaffOnline(\''+m.id+'\','+isOnline+')" style="color:'+(isOnline?'#1e7a3c':'#c0392b')+'" title="Online/Offline">'+(isOnline?'● Online':'○ Offline')+'</button>'        +'<button class="staff-action" onclick="editStaff(\''+m.id+'\')" title="Bearbeiten">✎ Bearbeiten</button>'      +'</div>'    +'</div>';
   }).join('');
+  sidebar.insertAdjacentHTML('beforeend','<button class="staff-add-btn" onclick="openStaffModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>');
 }
 
 // ── KALENDER PICKER ───────────────────────────────────────────
@@ -3152,19 +3040,13 @@ function connectOwnAccount(){
 }
 
 async function openCalendarPicker(mitarbeiterId){
-  if(!mitarbeiterId){
-    toast('Bitte Mitarbeiter zuerst speichern, dann Kalender verbinden','error');
-    return;
-  }
   calPickerMitarbeiterId=mitarbeiterId;
-  // Capture in local const so all closures use the same value
-    console.log('openCalendarPicker: mitarbeiterId=', mitarbeiterId);
   var m=staffData.filter(function(i){return i.mitarbeiter.id===mitarbeiterId;})[0];
   var name=m?esc(m.mitarbeiter.display_name||m.mitarbeiter.name):'Mitarbeiter';
   document.getElementById('staff-modal-title').textContent='Kalender wählen — '+name;
   document.getElementById('cal-back-btn').style.display='block';
   document.getElementById('s-main-view').style.display='none';
-  document.getElementById('s-cal-view').style.display='block';
+  document.getElementById('s-cal-view').style.cssText='display:flex;flex-direction:column;flex:1;overflow-y:auto;padding:20px 24px';
   var footer=document.querySelector('#staff-modal .modal-footer');
   if(footer)footer.style.display='none';
   var profRes=await sb.from('kunden_profile').select('google_refresh_token_encrypted,google_connected').eq('id',SALON_ID).single();
@@ -3178,47 +3060,23 @@ async function openCalendarPicker(mitarbeiterId){
   document.getElementById('cal-picker-content').style.display='block';
   switchCalTab('sub');
   var list=document.getElementById('cal-picker-list');
-  // Add "Neuen Kalender erstellen" button at top
-  list.innerHTML='<a href="https://calendar.google.com/calendar/r/settings/createcalendar" target="_blank" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;border:1.5px dashed var(--tg);color:var(--tpl);text-decoration:none;margin-bottom:10px;transition:all .15s;background:var(--tgp)" onmouseover="this.style.background=\'#fdf3d0\'" onmouseout="this.style.background=\'var(--tgp)\'">'
-    +'<div style="width:28px;height:28px;border-radius:50%;background:var(--tg);display:flex;align-items:center;justify-content:center;flex-shrink:0">'
-      +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>'
-    +'</div>'
-    +'<div>'
-      +'<div style="font-size:13px;font-weight:600;color:var(--tpl)">Neuen Kalender erstellen</div>'
-      +'<div style="font-size:10px;color:var(--muted)">Öffnet Google Kalender Einstellungen</div>'
-    +'</div>'
-    +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2" style="margin-left:auto;flex-shrink:0"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>'
-  +'</a>'
-  +'<div style="height:1px;background:var(--border);margin-bottom:10px"></div>'
-  +'<div style="font-size:10px;color:var(--muted);margin-bottom:8px;font-weight:600;letter-spacing:.05em;text-transform:uppercase">Vorhandene Kalender</div>'
-  +'<div id="cal-picker-list-inner"></div>';
-  var list=document.getElementById('cal-picker-list-inner');
   list.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Kalender werden geladen…</div>';
   try{
     var res=await fetch('https://insy-n8n-u71054.vm.elestio.app/webhook/get-calendar-list?salon_id='+SALON_ID);
     var data=await res.json();
     var calendars=data.calendars||[];
-    console.log('Calendar API response:', JSON.stringify(calendars.slice(0,2)));
     window._calNameMap=window._calNameMap||{};
     calendars.forEach(function(cal){window._calNameMap[cal.id]=cal.name;});
     if(!calendars.length){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Keine Subkalender gefunden.</div>';return;}
-    // Fetch fresh to get current google_calendar_id for THIS mitarbeiter
-    var freshRes=await sb.from('mitarbeiter').select('google_calendar_id').eq('id',mitarbeiterId).single();
-    var currentCalId=freshRes.data?freshRes.data.google_calendar_id:null;
     list.innerHTML='';
     calendars.forEach(function(cal){
-      var current=currentCalId&&currentCalId===cal.id;
+      var current=m&&m.mitarbeiter.google_calendar_id===cal.id;
       var isPrimary=cal.primary;
-      var thisCalId=cal.id; // local copy per iteration
       var div=document.createElement('div');
       div.style.cssText='display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;background:'+(current?'var(--tpp)':'transparent')+';border:1.5px solid '+(current?'var(--tpl)':'transparent')+';transition:all .15s;margin-bottom:4px';
-      div.addEventListener('click',(function(calId,mitId){
-        return function(e){
-          if(e.target.tagName==='BUTTON')return;
-          console.log('Calendar div clicked, calId=',calId,'mitId=',mitId);
-          selectCalendar(mitId, calId);
-        };
-      })(thisCalId, mitarbeiterId));
+      div.dataset.calId=cal.id;
+      div.dataset.mitId=calPickerMitarbeiterId;
+      div.addEventListener('click',function(){selectCalendar(this.dataset.mitId,this.dataset.calId);});
       var dotDiv=document.createElement('div');
       dotDiv.style.cssText='width:12px;height:12px;border-radius:50%;background:'+(cal.color||'#4a1c6b')+';flex-shrink:0';
       var infoDiv=document.createElement('div');
@@ -3233,12 +3091,16 @@ async function openCalendarPicker(mitarbeiterId){
       infoDiv.appendChild(nameDiv);infoDiv.appendChild(idDiv);
       div.appendChild(dotDiv);div.appendChild(infoDiv);
       if(current){
+        var checkDiv=document.createElement('div');
+        checkDiv.style.cssText='display:flex;flex-direction:column;align-items:flex-end;gap:4px';
+        checkDiv.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
         var disconnBtn=document.createElement('button');
-        disconnBtn.style.cssText='font-size:12px;font-weight:600;color:#fff;background:var(--danger);border:none;border-radius:7px;cursor:pointer;font-family:inherit;padding:6px 12px;flex-shrink:0';
+        disconnBtn.style.cssText='font-size:9px;color:var(--danger);background:none;border:none;cursor:pointer;font-family:inherit;padding:0';
         disconnBtn.textContent='Trennen';
-        var mid=mitarbeiterId;
+        var mid=calPickerMitarbeiterId;
         disconnBtn.addEventListener('click',function(e){e.stopPropagation();disconnectCalendar(mid);});
-        div.appendChild(disconnBtn);
+        checkDiv.appendChild(disconnBtn);
+        div.appendChild(checkDiv);
       }
       list.appendChild(div);
     });
@@ -3257,37 +3119,16 @@ async function disconnectCalendar(mitarbeiterId){
 }
 
 async function selectCalendar(mitarbeiterId, calendarId){
-  console.log('selectCalendar called:', mitarbeiterId, calendarId);
-  if(!mitarbeiterId||mitarbeiterId==='null'||mitarbeiterId==='undefined'){
-    toast('Fehler: Kein Mitarbeiter ausgewählt','error');
-    console.error('selectCalendar: invalid mitarbeiterId:', mitarbeiterId);
-    return;
-  }
-  if(!calendarId){
-    toast('Fehler: Kein Kalender ausgewählt','error');
-    return;
-  }
   var res=await sb.from('mitarbeiter').update({google_calendar_id:calendarId}).eq('id',mitarbeiterId);
-  console.log('Supabase update result:', res);
   if(res.error){toast('Fehler: '+res.error.message,'error');return;}
+  // Store name for display
   var resolvedName=(window._calNameMap&&_calNameMap[calendarId])||calendarId.split('@')[0];
   staffData.forEach(function(item){
-    if(item.mitarbeiter.id===mitarbeiterId){item.mitarbeiter._calName=resolvedName;item.mitarbeiter.google_calendar_id=calendarId;}
+    if(item.mitarbeiter.id===mitarbeiterId)item.mitarbeiter._calName=resolvedName;
   });
-  // Update hidden s-cal field so saveStaff uses correct value
-  var calEl=document.getElementById('s-cal');
-  if(calEl)calEl.value=calendarId;
-  // Update icon immediately
-  var gcalDot=document.getElementById('s-gcal-connected-dot');
-  var gcalNameLbl=document.getElementById('s-gcal-name-label');
-  var gcalSection=document.getElementById('s-gcal-section');
-  if(gcalDot)gcalDot.style.display='block';
-  if(gcalSection){gcalSection.style.borderColor='#a8e6bf';gcalSection.style.background='#f0faf4';}
-  if(gcalNameLbl)gcalNameLbl.textContent=resolvedName;
   toast('Kalender gespeichert ✓','success');
   closeCalendarPicker();
-  // Reload staff in background without losing modal context
-  loadStaff();
+  await loadStaff();
 }
 
 function closeCalendarPicker(){
@@ -3505,49 +3346,7 @@ function pickColor(hex){
 }
 
 function openStaffModal(data){
-  // Reset all fields first
-  document.getElementById('s-name').value='';
-  document.getElementById('s-display').value='';
-  document.getElementById('s-role').value='';
-  document.getElementById('s-email').value='';
-  document.getElementById('s-cal').value='';
-  var avUrlEl=document.getElementById('s-avatar-url');
-  if(avUrlEl)avUrlEl.value='';
-  var avRem=document.getElementById('s-avatar-remove');
-  if(avRem)avRem.style.display='none';
-  var cpWrap=document.getElementById('s-color-picker-wrap');
-  if(cpWrap)cpWrap.style.display='none';
-  var gcalDot=document.getElementById('s-gcal-connected-dot');
-  var gcalNameLbl=document.getElementById('s-gcal-name-label');
-  var gcalSection=document.getElementById('s-gcal-section');
-  if(gcalDot)gcalDot.style.display='none';
-  if(gcalNameLbl)gcalNameLbl.textContent='';
-  if(gcalSection){gcalSection.style.borderColor='var(--border)';gcalSection.style.background='var(--white)';}
-  // Always reset calendar picker to main view
-  var _calView=document.getElementById('s-cal-view');
-  var _mainView=document.getElementById('s-main-view');
-  var _calBack=document.getElementById('cal-back-btn');
-  var _footer=document.querySelector('#staff-modal .modal-footer');
-  if(_calView)_calView.style.display='none';
-  if(_mainView)_mainView.style.display='block';
-  if(_calBack)_calBack.style.display='none';
-  if(_footer)_footer.style.display='flex';
-  var hoursWrap=document.getElementById('s-hours-wrap');
-  if(hoursWrap)hoursWrap.style.display='none';
-  var customHours=document.getElementById('s-custom-hours');
-  if(customHours)customHours.checked=false;
-  staffTempEntries=[];staffTempIdCounter=0;staffTempCalOffset={};
-  var sList=document.getElementById('s-svc-list');
-  if(sList)sList.innerHTML='';
-  pickColor('#3498db');
-  // Now set new values
   editingStaffId=data?data.mitarbeiter.id:null;
-  // Set gcal onclick with the correct staffId captured now
-  if(gcalSection){
-    (function(sid){
-      gcalSection.onclick=function(){openCalendarPicker(sid);};
-    })(editingStaffId);
-  }
   document.getElementById('staff-modal-title').textContent=data?'Profil bearbeiten':'Mitarbeiter hinzufügen';
   document.getElementById('s-delete-wrap').style.display=data?'block':'none';
   var m=data?data.mitarbeiter:{};
@@ -3557,23 +3356,26 @@ function openStaffModal(data){
   document.getElementById('s-email').value=m.email||'';
   document.getElementById('s-cal').value=m.google_calendar_id||'';
   updateGcalStatus(m.google_calendar_id||'');
-  // Google Kalender Icon aktualisieren
-  var gcalDot=document.getElementById('s-gcal-connected-dot');
+  // Google Kalender UI im Modal
+  var gcalConnected=document.getElementById('s-gcal-connected');
+  var gcalBtn=document.getElementById('s-gcal-btn');
+  var gcalLbl=document.getElementById('s-gcal-id-label');
   var gcalNameLbl=document.getElementById('s-gcal-name-label');
-  var gcalSection=document.getElementById('s-gcal-section');
   if(m.google_calendar_id){
-    if(gcalDot)gcalDot.style.display='block';
-    if(gcalSection){gcalSection.style.borderColor='#a8e6bf';gcalSection.style.background='#f0faf4';}
-    if(gcalNameLbl)gcalNameLbl.textContent=m._calName||'verbunden';
+    if(gcalConnected){gcalConnected.style.display='flex';}
+    if(gcalBtn){gcalBtn.style.display='none';}
+    if(gcalLbl){gcalLbl.textContent=m.google_calendar_id;}
+    if(gcalNameLbl){gcalNameLbl.textContent='Kalender verbunden';}
   } else {
-    if(gcalDot)gcalDot.style.display='none';
-    if(gcalSection){gcalSection.style.borderColor='var(--border)';gcalSection.style.background='var(--white)';}
-    if(gcalNameLbl)gcalNameLbl.textContent='';
+    if(gcalConnected){gcalConnected.style.display='none';}
+    if(gcalBtn){gcalBtn.style.display='flex';}
   }
-  // Online toggle (hidden from UI but keep value)
+  // Google Kalender Button: neue Mitarbeiter noch kein editingStaffId — zeigen nach Save
+  // Online toggle
   var onlineEl=document.getElementById('s-online');
-  if(onlineEl){onlineEl.checked=data?m.aktiv!==false:true;}
-  if(gcalSection)gcalSection.style.display='flex';
+  if(onlineEl){onlineEl.checked=data?m.aktiv!==false:true;updateOnlineLabel();}
+  var gcalSection=document.getElementById('s-gcal-section');
+  if(gcalSection)gcalSection.style.display=data?'block':'none';
   // Farbe setzen
   pickColor(m.farbe||'#3498db');
   // Reset color picker visibility
@@ -3615,27 +3417,9 @@ function closeStaffModal(){
   editingStaffId=null;
   updateFabVisibility();
 }
-async function editStaff(id){
-  // Reset calendar picker back to main view
-  var calView=document.getElementById('s-cal-view');
-  var mainView=document.getElementById('s-main-view');
-  var calBackBtn=document.getElementById('cal-back-btn');
-  var footer=document.querySelector('#staff-modal .modal-footer');
-  if(calView)calView.style.display='none';
-  if(mainView)mainView.style.display='block';
-  if(calBackBtn)calBackBtn.style.display='none';
-  if(footer)footer.style.display='flex';
-  // Fetch fresh data from DB
-  try{
-    var res=await sb.from('mitarbeiter').select('*').eq('id',id).single();
-    if(res.error){toast('Fehler beim Laden','error');return;}
-    var aRes=await sb.from('mitarbeiter_service_varianten').select('service_variante_id').eq('mitarbeiter_id',id).eq('aktiv',true);
-    var varianteIds=aRes.data?aRes.data.map(function(a){return a.service_variante_id;}):[];
-    openStaffModal({mitarbeiter:res.data,varianteIds:varianteIds});
-  }catch(e){
-    console.error('editStaff error:',e);
-    toast('Fehler beim Öffnen','error');
-  }
+function editStaff(id){
+  var item=staffData.filter(function(i){return i.mitarbeiter.id===id;})[0];
+  if(item)openStaffModal(item);
 }
 
 async function saveStaff(silent){
@@ -3646,13 +3430,13 @@ async function saveStaff(silent){
   var btn=document.getElementById('btn-staff-save');btn.disabled=true;
   var hasCustom=document.getElementById('s-custom-hours').checked;
   var nextSort=staffData.length;
-  var calVal=document.getElementById('s-cal').value.trim();
   var payload={
     salon_id:SALON_ID,
     name:name,
     display_name:document.getElementById('s-display').value.trim()||name,
     role:document.getElementById('s-role').value.trim(),
     email:document.getElementById('s-email').value.trim()||null,
+    google_calendar_id:document.getElementById('s-cal').value.trim(),
     arbeitszeiten:hasCustom?readHours('s-'):null,
     temp_arbeitszeiten:readStaffTempEntries().length?readStaffTempEntries():null,
     farbe:document.getElementById('s-color').value,
@@ -3660,8 +3444,6 @@ async function saveStaff(silent){
     avatar_url:(function(){var v=document.getElementById('s-avatar-url');return v?v.value||null:null;})(),
     sortierung:editingStaffId?undefined:nextSort
   };
-  // Only include google_calendar_id if explicitly set (don't overwrite with empty)
-  if(calVal)payload.google_calendar_id=calVal;
   // sortierung nur beim Insert
   if(editingStaffId)delete payload.sortierung;
   var res;
@@ -3684,9 +3466,8 @@ async function saveStaff(silent){
     );
     console.log('insert result:', insRes);
   }
-  var wasEditing=!!editingStaffId;
   closeStaffModal();
-  if(!silent)toast((wasEditing?'Mitarbeiter aktualisiert':'Mitarbeiter angelegt')+' ✓','success');
+  if(!silent)toast((editingStaffId?'Mitarbeiter aktualisiert':'Mitarbeiter angelegt')+' ✓','success');
   await loadStaff();}
 
 function deleteCurrentStaff(){
@@ -4220,44 +4001,13 @@ async function toggleBookingActive(){
     return;
   }
   var dot=document.getElementById('booking-status-dot');
-  var dotM=document.getElementById('booking-status-dot-m');
   var lbl=document.getElementById('booking-status-label');
-  var lblM=document.getElementById('booking-status-label-m');
-  var togM=document.getElementById('dash-booking-active-m');
   if(dot)dot.style.background=active?'#27ae60':'#c0392b';
-  if(dotM)dotM.style.background=active?'#27ae60':'#c0392b';
-  if(togM)togM.checked=active;
-  if(lbl)lbl.textContent=active?'Online':'Offline';
-  if(lblM)lblM.textContent=active?'Online':'Offline';
+  if(lbl)lbl.textContent=active?'Buchungsseite Online':'Buchungsseite Offline';
   setStatusDot('dash-status-booking','dash-status-booking-label',active,'Online','Gesperrt');
   updateBsPanelStatus(active);
   toast((active?'Buchungsseite aktiviert ✓':'Buchungsseite gesperrt'),'success');
 }
-
-// Swipe zwischen Profil-Subs
-(function(){
-  var _sx=0,_sy=0,_startEl=null;
-  document.addEventListener('touchstart',function(e){
-    var t=e.touches[0];
-    _sx=t.clientX;_sy=t.clientY;
-    _startEl=e.target;
-  },{passive:true});
-  document.addEventListener('touchend',function(e){
-    // Nicht auslösen wenn Touch auf der Bottom-Nav gestartet wurde
-    if(_startEl&&_startEl.closest('#profil-bottom-nav'))return;
-    var wrap=document.getElementById('profil-content');
-    if(!wrap)return;
-    var t=e.changedTouches[0];
-    var dx=t.clientX-_sx;
-    var dy=t.clientY-_sy;
-    if(Math.abs(dx)<40||Math.abs(dx)<Math.abs(dy)*1.5)return;
-    var ids=PTABS.map(function(t){return t.id;});
-    var cur=ids.indexOf(_pActive);
-    if(cur<0)return;
-    var next=dx<0?Math.min(cur+1,ids.length-1):Math.max(cur-1,0);
-    if(next!==cur)selectProfil(ids[next]);
-  },{passive:true});
-})();
 
 // ── INIT + AUTH ───────────────────────────────────────────────
 async function init(){
@@ -4323,11 +4073,18 @@ async function init(){
   loadFeatureSettings();
   checkGcalReturn();
 
+  // Loader anzeigen
+  var _loader=document.getElementById('profil-loader');
+  var _toggles=document.getElementById('profil-toggles');
+  if(_loader)_loader.style.display='flex';
+  if(_toggles)_toggles.style.display='none';
+
   // Alles laden, dann Profil aufbauen
   Promise.all([loadProfil(), loadServices(), loadStaff()])
     .then(function(){
+      if(_loader)_loader.style.display='none';
+      if(_toggles)_toggles.style.display='flex';
       buildProfilToggles();
-      renderProfilContent(_pActive);
       initBookingStatus();
     });
 }
@@ -4380,21 +4137,8 @@ function _pSaved(id){
 
 
 function resetProfil(){
-  if(window._pDataBeforeSave){
-    window._pData=JSON.parse(JSON.stringify(window._pDataBeforeSave));
-    window._pDataBeforeSave=null;
-    renderProfilContent(_pActive);
-    // Also push the old data back to Supabase
-    sb.from('kunden_profile').update(window._pData).eq('id',SALON_ID).then(function(res){
-      if(!res.error)toast('Zurückgesetzt ✓','success');
-      else toast('Fehler beim Zurücksetzen','error');
-    });
-  } else {
-    loadProfil().then(function(){
-      renderProfilContent(_pActive);
-      toast('Zurückgesetzt ✓','success');
-    });
-  }
+  renderProfilContent(_pActive);
+  toast('Zurückgesetzt','success');
 }
 
 
@@ -4406,13 +4150,13 @@ function updateProfilStatus(){
   // Read color directly from rendered button background color in DOM
   var MSGS={
     red:{
-      adresse:  'Fülle <strong>Adresse & Kontakt</strong> aus — dein Salon braucht einen Namen.',
-      zeiten:   'Hinterlege deine <strong>Öffnungszeiten</strong> — mind. 1 Tag muss aktiv sein.',
-      service:  'Füge mindestens einen <strong>Service</strong> mit Dauer hinzu.',
-      team:     'Füge mindestens ein <strong>Teammitglied</strong> hinzu.'
+      adresse:  '⚠ Fülle <strong>Adresse & Kontakt</strong> aus — dein Salon braucht einen Namen.',
+      zeiten:   '⚠ Hinterlege deine <strong>Öffnungszeiten</strong> — mind. 1 Tag muss aktiv sein.',
+      service:  '⚠ Füge mindestens einen <strong>Service</strong> mit Dauer hinzu.',
+      team:     '⚠ Füge mindestens ein <strong>Teammitglied</strong> hinzu.'
     },
     yellow:{
-      sonstiges:'Optional: Ergänze <strong>Links & eine Notiz</strong> für deinen Auftritt.'
+      sonstiges:'✦ Optional: Ergänze <strong>Links & eine Notiz</strong> für deinen Auftritt.'
     }
   };
 
@@ -4440,7 +4184,7 @@ function updateProfilStatus(){
       return;
     }
   }
-  el.innerHTML='<span style="color:#1e7a3c">Alles bereit — dein Salon ist vollständig eingerichtet und buchbar.</span>';
+  el.innerHTML='<span style="color:#1e7a3c">✓ Alles bereit — dein Salon ist vollständig eingerichtet und buchbar.</span>';
 }
 
 
@@ -4456,7 +4200,10 @@ function updateProgressBar(){
   var bar=document.getElementById('profil-progress-bar');
   if(!bar)return;
   bar.style.width=pct+'%';
-  bar.style.background='linear-gradient(90deg,rgba(255,255,255,0.4) 0%,#C9A84C 60%)';
+  // Color: red=0-40, yellow=40-80, green=80-100
+  if(pct>=80)bar.style.background='linear-gradient(90deg,#27ae60,#1e7a3c)';
+  else if(pct>=40)bar.style.background='linear-gradient(90deg,#d4a000,#27ae60)';
+  else bar.style.background='linear-gradient(90deg,#c0392b,#d4a000)';
 }
 
 function bsPanelToggle(){
@@ -4478,127 +4225,46 @@ function updateBsPanelStatus(active){
   if(tog)tog.checked=active;
 }
 
-function syncBookingToggle(el){
-  var main=document.getElementById('dash-booking-active');
-  if(main&&main!==el)main.checked=el.checked;
-  var mob=document.getElementById('dash-booking-active-m');
-  if(mob&&mob!==el)mob.checked=el.checked;
-  toggleBookingActive();
-}
-
 function initBookingStatus(){
   var d=window._pData||{};
   var active=d.booking_active!==false;
   var tog=document.getElementById('dash-booking-active');
-  var togM=document.getElementById('dash-booking-active-m');
   var dot=document.getElementById('booking-status-dot');
-  var dotM=document.getElementById('booking-status-dot-m');
   var lbl=document.getElementById('booking-status-label');
-  var lblM=document.getElementById('booking-status-label-m');
   if(tog)tog.checked=active;
-  if(togM)togM.checked=active;
   if(dot)dot.style.background=active?'#27ae60':'#c0392b';
-  if(dotM)dotM.style.background=active?'#27ae60':'#c0392b';
-  if(lbl)lbl.textContent=active?'Online':'Offline';
-  if(lblM)lblM.textContent=active?'Online':'Offline';
+  if(lbl)lbl.textContent=active?'Buchungsseite Online':'Buchungsseite Offline';
   updateBsPanelStatus(active);
 }
 
 function buildProfilToggles(){
-  // Show desktop bar and arrows only on desktop
-  var isMobile=window.innerWidth<=768;
-  var bar=document.getElementById('profil-desktop-bar');
-  var prev=document.getElementById('profil-bar-prev');
-  var next=document.getElementById('profil-bar-next');
-  if(bar)bar.classList.toggle('visible',!isMobile);
-  if(prev)prev.classList.toggle('visible',!isMobile);
-  if(next)next.classList.toggle('visible',!isMobile);
-  // Build mobile bottom nav
-  _buildProfilBottomNav();
-  // Build desktop bottom bar
-  _buildProfilDesktopBar();
+  var wrap=document.getElementById('profil-toggles');
+  if(!wrap) return;
+  wrap.innerHTML=PTABS.map(function(t){
+    var c=_ptColor(t);
+    var locked=false;
+    return '<button id="ptgl-'+t.id+'" onclick="selectProfil(\''+t.id+'\')"'
+      +' style="padding:7px 16px;border-radius:20px;font-size:12px;font-weight:600;font-family:inherit;'
+      +'border:1.5px solid '+PCOL[c].border+';background:'+PCOL[c].dim+';color:'+PCOL[c].txt+';'
+      +'cursor:'+(locked?'not-allowed':'pointer')+';opacity:'+(locked?'0.4':'1')+';transition:all .2s;"'
+      +(locked?' disabled':'')+'>'+t.label+'</button>';
+  }).join('');
   _ptActivate(_pActive);
-  // Render content after DOM is settled
-  setTimeout(function(){
-    renderProfilContent(_pActive);
-    setTimeout(updateProfilStatus, 100);
-  }, 0);
+  renderProfilContent(_pActive);
+  setTimeout(updateProfilStatus, 100);
   initBookingStatus();
   updateProgressBar();
 }
 
-var _TAB_ICONS={
-  adresse:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>',
-  zeiten:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
-  service:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>',
-  team:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>',
-  whatsapp:'<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.962-1.424A9.953 9.953 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>',
-  sonstiges:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>'
-};
-
-function _buildProfilDesktopBar(){
-  var wrap=document.getElementById('profil-desktop-tabs');
-  if(!wrap)return;
-  wrap.innerHTML=PTABS.map(function(t){
-    var c=_ptColor(t);var col=PCOL[c];var on=(t.id===_pActive);
-    return'<button class="pdt-btn'+(on?' active':'')+'" id="pdtb-'+t.id+'" onclick="selectProfil(\''+t.id+'\')" '
-      +'style="'+(on?'background:'+col.dim+';border-color:'+col.border+';color:'+col.txt+';':'')+'color:'+(on?col.txt:'rgba(255,255,255,.45)')+'">'
-      +_TAB_ICONS[t.id]
-      +'<span>'+t.label+'</span>'
-    +'</button>';
-  }).join('');
-}
-
-function profilBarStep(dir){
-  var ids=PTABS.map(function(t){return t.id;});
-  var cur=ids.indexOf(_pActive);
-  var next=Math.max(0,Math.min(ids.length-1,cur+dir));
-  if(next!==cur)selectProfil(ids[next]);
-}
-
-function _buildProfilBottomNav(){
-  var nav=document.getElementById('profil-bottom-nav');
-  if(!nav)return;
-  nav.innerHTML=PTABS.map(function(t){
-    var c=_ptColor(t);
-    var col=PCOL[c];
-    var isActive=t.id===_pActive;
-    return'<button class="profil-bnav-btn'+(isActive?' active':'')+'" id="pbnav-'+t.id+'" onclick="selectProfil(\''+t.id+'\')" '
-      +'style="'+(isActive?'background:'+col.dim+';border-color:'+col.border+';color:'+col.txt+';':'')+'color:'+(isActive?col.txt:'rgba(255,255,255,.45)')+'">'+
-      _TAB_ICONS[t.id]+
-      '<span>'+t.label+'</span>'+
-    '</button>';
-  }).join('');
-}
-
 function _ptActivate(id){
-  // Update bottom nav (mobile)
   PTABS.forEach(function(t){
-    var btn=document.getElementById('pbnav-'+t.id);if(!btn)return;
-    var c=_ptColor(t);var on=(t.id===id);
-    btn.classList.toggle('active',on);
-    btn.style.background=on?PCOL[c].dim:'';
-    btn.style.borderColor=on?PCOL[c].border:'transparent';
-    btn.style.color=on?PCOL[c].txt:'rgba(255,255,255,.45)';
-    // Scroll active button into view
-    if(on)btn.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+    var pill=document.getElementById('ptgl-'+t.id); if(!pill)return;
+    var c=_ptColor(t); var on=(t.id===id);
+    pill.style.background=on?PCOL[c].bg:PCOL[c].dim;
+    pill.style.color='#fff';
+    pill.style.borderColor=PCOL[c].border;
+    pill.style.boxShadow=on?'0 3px 14px '+PCOL[c].glow:'none';
   });
-  // Update desktop bar
-  PTABS.forEach(function(t){
-    var btn=document.getElementById('pdtb-'+t.id);if(!btn)return;
-    var c=_ptColor(t);var on=(t.id===id);
-    btn.classList.toggle('active',on);
-    btn.style.background=on?PCOL[c].dim:'';
-    btn.style.borderColor=on?PCOL[c].border:'transparent';
-    btn.style.color=on?PCOL[c].txt:'rgba(255,255,255,.45)';
-  });
-  // Arrow opacity
-  var ids=PTABS.map(function(t){return t.id;});
-  var cur=ids.indexOf(id);
-  var prev=document.getElementById('profil-bar-prev');
-  var nxt=document.getElementById('profil-bar-next');
-  if(prev)prev.style.opacity=cur===0?'0.2':'1';
-  if(nxt)nxt.style.opacity=cur===ids.length-1?'0.2':'1';
 }
 
 function selectProfil(id){
@@ -4618,81 +4284,81 @@ function renderProfilContent(id){
 
   if(id==='adresse'){
     wrap.innerHTML=
-      '<div>'+
-        '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Adresse & Kontakt</div>'+
-        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start">'+
-          // Linke Spalte: Name, Straße+Hausnummer, Google Maps
-          '<div>'+
-            '<div class="field" style="margin-bottom:12px;max-width:80%"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="f-brand" placeholder="z.B. Wellness Store" value="'+(d.brand_name||d.name||'')+'"></div>'+
-            '<div style="display:grid;grid-template-columns:0.7fr 0.3fr;gap:12px;margin-bottom:12px;max-width:80%">'+
-              '<div class="field" style="margin-bottom:0"><label>Straße</label><input type="text" id="f-street" placeholder="Fritz-Raue Strasse" value="'+(d.street||'')+'" style="min-width:0;width:100%"></div>'+
-              '<div class="field" style="margin-bottom:0"><label>Hausnummer</label><input type="text" id="f-house" placeholder="1" value="'+(d.house_number||'')+'" style="min-width:0;width:100%"></div>'+
-            '</div>'+
-            '<div style="margin-bottom:12px;max-width:80%">'+
-              '<div class="field" style="margin-bottom:0">'+
-                '<label>Google Maps Link <span style="font-size:10px;color:var(--muted);font-weight:400">— Kunden werden bei Klick auf die Adresse weitergeleitet</span></label>'+
-                '<input type="text" id="f-google-maps" placeholder="https://maps.google.com/?q=..." value="'+(d.google_maps_url||'')+'">'+
-              '</div>'+
-            '</div>'+
-          '</div>'+
-          // Rechte Spalte: PLZ+Stadt eine Zeile höher (kein spacer oben), dann Spacer für Straße+Google Maps, dann Vorwahl+Telefon 3 Zeilen höher
-          '<div>'+
-            '<div style="display:grid;grid-template-columns:0.3fr 0.7fr;gap:12px;margin-bottom:12px">'+
-              '<div class="field" style="margin-bottom:0"><label>PLZ</label><input type="text" id="f-plz" placeholder="51674" value="'+(d.postal_code||'')+'" style="min-width:0;width:100%"></div>'+
-              '<div class="field" style="margin-bottom:0"><label>Stadt</label><input type="text" id="f-city" placeholder="Wiehl" value="'+(d.city||'')+'" style="min-width:0;width:100%"></div>'+
-            '</div>'+
-            '<div style="height:68px"></div>'+
-            '<div style="display:grid;grid-template-columns:0.3fr 0.7fr;gap:12px;margin-bottom:12px">'+
-              '<div class="field" style="margin-bottom:0"><label>Vorwahl</label><input type="text" id="f-area-code" placeholder="02262" value="'+(d.area_code||'')+'" style="min-width:0;width:100%"></div>'+
-              '<div class="field" style="margin-bottom:0"><label>Telefon</label><input type="text" id="f-phone-number" placeholder="12131243" value="'+(d.phone_number||'')+'" style="min-width:0;width:100%"></div>'+
-            '</div>'+
-            '<div class="field" style="margin-bottom:0"><label>Handy</label><input type="text" id="f-mobile" placeholder="+49 151 …" value="'+(d.mobile_url||'')+'"></div>'+
+      '<div class="card">'+
+        '<div class="card-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Adresse &amp; Kontakt</div>'+
+        '<div class="field" style="margin-bottom:12px"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="f-brand" placeholder="z.B. Wellness Store" value="'+(d.brand_name||d.name||'')+'"></div>'+
+        '<div style="display:grid;grid-template-columns:0.3fr 0.7fr;gap:12px;margin-bottom:12px;width:100%;box-sizing:border-box">'+
+          '<div class="field" style="margin-bottom:0"><label>PLZ</label><input type="text" id="f-plz" placeholder="51674" value="'+(d.postal_code||'')+'" style="min-width:0;width:100%"></div>'+
+          '<div class="field" style="margin-bottom:0"><label>Stadt</label><input type="text" id="f-city" placeholder="Wiehl" value="'+(d.city||'')+'" style="min-width:0;width:100%"></div>'+
+        '</div>'+
+        '<div style="display:grid;grid-template-columns:0.7fr 0.3fr;gap:12px;margin-bottom:12px;width:100%;box-sizing:border-box">'+
+          '<div class="field" style="margin-bottom:0"><label>Straße</label><input type="text" id="f-street" placeholder="Fritz-Raue Strasse" value="'+(d.street||'')+'" style="min-width:0;width:100%"></div>'+
+          '<div class="field" style="margin-bottom:0"><label>Hausnummer</label><input type="text" id="f-house" placeholder="1" value="'+(d.house_number||'')+'" style="min-width:0;width:100%"></div>'+
+        '</div>'+
+        '<div style="margin-bottom:12px">'+
+          '<div class="field" style="margin-bottom:0">'+
+            '<label>Google Maps Link <span style="font-size:10px;color:var(--muted);font-weight:400">— Kunden werden bei Klick auf die Adresse weitergeleitet</span></label>'+
+            '<input type="text" id="f-google-maps" placeholder="https://maps.google.com/?q=..." value="'+(d.google_maps_url||'')+'">'+
           '</div>'+
         '</div>'+
+        '<div style="display:grid;grid-template-columns:0.3fr 0.7fr;gap:12px;margin-bottom:12px;width:100%;box-sizing:border-box">'+
+          '<div class="field" style="margin-bottom:0"><label>Vorwahl</label><input type="text" id="f-area-code" placeholder="02262" value="'+(d.area_code||'')+'" style="min-width:0;width:100%"></div>'+
+          '<div class="field" style="margin-bottom:0"><label>Telefon</label><input type="text" id="f-phone-number" placeholder="12131243" value="'+(d.phone_number||'')+'" style="min-width:0;width:100%"></div>'+
+        '</div>'+
+        '<div class="field" style="margin-bottom:0"><label>Handy</label><input type="text" id="f-mobile" placeholder="+49 151 …" value="'+(d.mobile_url||'')+'"></div>'+
       '</div>'+
-      '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:28px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
+      '<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
   }
 
   else if(id==='zeiten'){
     wrap.innerHTML=
-      '<div>'+
-        '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Öffnungszeiten</div>'+
+      '<div class="card">'+
         '<div id="az-acc" style="border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:4px">'
         +'<div onclick="toggleAzAcc()" style="cursor:pointer;position:relative;">'
           +'<div id="az-week-widget" style="background:var(--tp);padding:10px 14px;width:100%">'
+            +'<div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:600;margin-bottom:8px">Öffnungszeiten</div>'
             +'<div id="az-week-rows" style="display:flex;flex-wrap:wrap;gap:2px;justify-content:space-between"></div>'
           +'</div>'
-          +'<svg id="az-acc-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="transparent" stroke-width="2.5" style="transition:transform .2s;position:absolute;top:50%;right:14px;transform:translateY(-50%)"><polyline points="6 9 12 15 18 9"/></svg>'
+          +'<svg id="az-acc-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" style="transition:transform .2s;position:absolute;top:50%;right:14px;transform:translateY(-50%)"><polyline points="6 9 12 15 18 9"/></svg>'
         +'</div>'
         +'<div id="az-acc-body" style="display:none;padding:12px 14px;border-top:1px solid var(--border)">'
           +'<div class="hours-cols" id="hours-cols"></div>'
         +'</div>'
       +'</div>'+
         '<div style="margin:18px 0 12px">'
-          +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px;display:flex;align-items:center">Slot-Raster<span class="help-tip" data-tip="Wie fein sollen Termine im Buchungswidget angezeigt werden?">?</span></div>'
-          +'<div id="slot-raster-btns" style="display:flex;gap:12px;flex-wrap:wrap">'
-            +'<button type="button" id="slot-btn-15" onclick="setSlotRaster(15)" style="flex:1;min-width:90px;padding:12px 8px;text-align:center;border-radius:10px;border:1.5px solid rgba(255,255,255,.15);background:var(--tp);color:#fff;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="80" height="80" viewBox="-50 -50 100 100" style="display:block;flex-shrink:0"><path d="M0,0 L0,-44 A44,44 0 0,1 44,0 Z" fill="#4a1c6b" opacity="0.85"/><path d="M0,0 L44,0 A44,44 0 0,1 0,44 Z" fill="#4a1c6b" opacity="0.6"/><path d="M0,0 L0,44 A44,44 0 0,1 -44,0 Z" fill="#4a1c6b" opacity="0.35"/><path d="M0,0 L-44,0 A44,44 0 0,1 0,-44 Z" fill="#4a1c6b" opacity="0.12"/><line x1="0" y1="-46" x2="0" y2="46" stroke="#fff" stroke-width="1"/><line x1="-46" y1="0" x2="46" y2="0" stroke="#fff" stroke-width="1"/><line x1="0.0" y1="-44.0" x2="0.0" y2="-36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="44.0" y1="0.0" x2="36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="0.0" y1="44.0" x2="0.0" y2="36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-44.0" y1="0.0" x2="-36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><circle r="44" fill="none" stroke="#4a1c6b" stroke-width="1.5" opacity="0.4"/><circle r="3" fill="#fff"/></svg><span style="font-size:11px;font-weight:600;color:#fff">¼ Stunde</span><span style="font-size:10px;color:rgba(255,255,255,.6)">09:00, 09:15…</span></button>'
-            +'<button type="button" id="slot-btn-30" onclick="setSlotRaster(30)" style="flex:1;min-width:90px;padding:12px 8px;text-align:center;border-radius:10px;border:1.5px solid rgba(255,255,255,.15);background:var(--tp);color:#fff;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="80" height="80" viewBox="-50 -50 100 100" style="display:block;flex-shrink:0"><path d="M0,0 L0,-44 A44,44 0 0,1 0,44 Z" fill="#4a1c6b" opacity="0.8"/><path d="M0,0 L0,44 A44,44 0 0,1 0,-44 Z" fill="#4a1c6b" opacity="0.25"/><line x1="0" y1="-46" x2="0" y2="46" stroke="#fff" stroke-width="1"/><line x1="0.0" y1="-44.0" x2="0.0" y2="-36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="44.0" y1="0.0" x2="36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="0.0" y1="44.0" x2="0.0" y2="36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-44.0" y1="0.0" x2="-36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><circle r="44" fill="none" stroke="#4a1c6b" stroke-width="1.5" opacity="0.4"/><circle r="3" fill="#fff"/></svg><span style="font-size:11px;font-weight:600;color:#fff">½ Stunde</span><span style="font-size:10px;color:rgba(255,255,255,.6)">09:00, 09:30…</span></button>'
-            +'<button type="button" id="slot-btn-60" onclick="setSlotRaster(60)" style="flex:1;min-width:90px;padding:12px 8px;text-align:center;border-radius:10px;border:1.5px solid rgba(255,255,255,.15);background:var(--tp);color:#fff;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="80" height="80" viewBox="-50 -50 100 100" style="display:block;flex-shrink:0"><circle r="44" fill="#4a1c6b" opacity="0.75"/><line x1="0.0" y1="-44.0" x2="0.0" y2="-36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="44.0" y1="0.0" x2="36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="0.0" y1="44.0" x2="0.0" y2="36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-44.0" y1="0.0" x2="-36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><circle r="44" fill="none" stroke="#4a1c6b" stroke-width="1.5" opacity="0.4"/><circle r="3" fill="#fff"/></svg><span style="font-size:11px;font-weight:600;color:#fff">1 Stunde</span><span style="font-size:10px;color:rgba(255,255,255,.6)">09:00, 10:00…</span></button>'
-          +'</div>'
+          +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px">Slot-Raster</div>'
+          +'<div style="font-size:11px;color:var(--muted);margin-bottom:10px">Wie fein sollen Termine im Buchungswidget angezeigt werden?</div>'
+            +'<div id="slot-raster-btns" style="display:flex;gap:12px;flex-wrap:wrap">'
+            +'<button type="button" id="slot-btn-15" onclick="setSlotRaster(15)" class="btn" style="flex:1;min-width:90px;padding:12px 8px;text-align:center;line-height:1.3;display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="80" height="80" viewBox="-50 -50 100 100" style="display:block;flex-shrink:0"><path d="M0,0 L0,-44 A44,44 0 0,1 44,0 Z" fill="#4a1c6b" opacity="0.85"/><path d="M0,0 L44,0 A44,44 0 0,1 0,44 Z" fill="#4a1c6b" opacity="0.6"/><path d="M0,0 L0,44 A44,44 0 0,1 -44,0 Z" fill="#4a1c6b" opacity="0.35"/><path d="M0,0 L-44,0 A44,44 0 0,1 0,-44 Z" fill="#4a1c6b" opacity="0.12"/><line x1="0" y1="-46" x2="0" y2="46" stroke="#fff" stroke-width="1"/><line x1="-46" y1="0" x2="46" y2="0" stroke="#fff" stroke-width="1"/><line x1="0.0" y1="-44.0" x2="0.0" y2="-36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="22.0" y1="-38.1" x2="19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="38.1" y1="-22.0" x2="33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="44.0" y1="0.0" x2="36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="38.1" y1="22.0" x2="33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="22.0" y1="38.1" x2="19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="0.0" y1="44.0" x2="0.0" y2="36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-22.0" y1="38.1" x2="-19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-38.1" y1="22.0" x2="-33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-44.0" y1="0.0" x2="-36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-38.1" y1="-22.0" x2="-33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-22.0" y1="-38.1" x2="-19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><circle r="44" fill="none" stroke="#4a1c6b" stroke-width="1.5" opacity="0.4"/><circle r="3" fill="#fff"/></svg><div style="display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:11px;font-weight:600;display:block">¼ Stunde</span><span style="font-size:10px;opacity:.6;display:block">09:00, 09:15…</span></div></button>'
+            +'<button type="button" id="slot-btn-30" onclick="setSlotRaster(30)" class="btn" style="flex:1;min-width:90px;padding:12px 8px;text-align:center;line-height:1.3;display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="80" height="80" viewBox="-50 -50 100 100" style="display:block;flex-shrink:0"><path d="M0,0 L0,-44 A44,44 0 0,1 0,44 Z" fill="#4a1c6b" opacity="0.8"/><path d="M0,0 L0,44 A44,44 0 0,1 0,-44 Z" fill="#4a1c6b" opacity="0.25"/><line x1="0" y1="-46" x2="0" y2="46" stroke="#fff" stroke-width="1"/><line x1="0.0" y1="-44.0" x2="0.0" y2="-36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="22.0" y1="-38.1" x2="19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="38.1" y1="-22.0" x2="33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="44.0" y1="0.0" x2="36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="38.1" y1="22.0" x2="33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="22.0" y1="38.1" x2="19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="0.0" y1="44.0" x2="0.0" y2="36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-22.0" y1="38.1" x2="-19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-38.1" y1="22.0" x2="-33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-44.0" y1="0.0" x2="-36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-38.1" y1="-22.0" x2="-33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-22.0" y1="-38.1" x2="-19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><circle r="44" fill="none" stroke="#4a1c6b" stroke-width="1.5" opacity="0.4"/><circle r="3" fill="#fff"/></svg><div style="display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:11px;font-weight:600;display:block">½ Stunde</span><span style="font-size:10px;opacity:.6;display:block">09:00, 09:30…</span></div></button>'
+            +'<button type="button" id="slot-btn-60" onclick="setSlotRaster(60)" class="btn" style="flex:1;min-width:90px;padding:12px 8px;text-align:center;line-height:1.3;display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="80" height="80" viewBox="-50 -50 100 100" style="display:block;flex-shrink:0"><circle r="44" fill="#4a1c6b" opacity="0.75"/><line x1="0.0" y1="-44.0" x2="0.0" y2="-36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="22.0" y1="-38.1" x2="19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="38.1" y1="-22.0" x2="33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="44.0" y1="0.0" x2="36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="38.1" y1="22.0" x2="33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="22.0" y1="38.1" x2="19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="0.0" y1="44.0" x2="0.0" y2="36.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-22.0" y1="38.1" x2="-19.5" y2="33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-38.1" y1="22.0" x2="-33.8" y2="19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-44.0" y1="0.0" x2="-36.0" y2="0.0" stroke="#fff" stroke-width="1.2" opacity="0.65"/><line x1="-38.1" y1="-22.0" x2="-33.8" y2="-19.5" stroke="#fff" stroke-width="0.6" opacity="0.3"/><line x1="-22.0" y1="-38.1" x2="-19.5" y2="-33.8" stroke="#fff" stroke-width="0.6" opacity="0.3"/><circle r="44" fill="none" stroke="#4a1c6b" stroke-width="1.5" opacity="0.4"/><circle r="3" fill="#fff"/></svg><div style="display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:11px;font-weight:600;display:block">1 Stunde</span><span style="font-size:10px;opacity:.6;display:block">09:00, 10:00…</span></div></button>'
+            +'</div>'
         +'</div>'+
-        '<div style="height:1px;background:var(--border);margin:18px 0"></div>'+
-        '<div style="margin-bottom:20px">'
-          +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:14px;display:flex;align-items:center">Buchungsvorlauf<span class="help-tip" data-tip="Wie kurzfristig dürfen Kunden noch buchen?">?</span></div>'
-          +'<div id="vorlauf-label" style="font-size:13px;font-weight:600;color:var(--tpl);margin-bottom:10px;min-height:20px">'+(VORLAUF_LABELS[(function(){var fs=_pData&&_pData.feature_settings;var v=parseInt(fs&&fs.booking_vorlauf);return(!isNaN(v)&&v>=0&&v<=8)?v:2;}())]||'')+'</div>'
-          +'<input type="range" id="booking-vorlauf" min="0" max="8" step="1" value="'+(function(){var fs=_pData&&_pData.feature_settings;var v=parseInt(fs&&fs.booking_vorlauf);return(!isNaN(v)&&v>=0&&v<=8)?v:2;}())+'" oninput="updateTimelines()" style="width:100%;accent-color:var(--tp);cursor:pointer;height:20px;display:block">'
-          +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:4px">'
+        +'<div style="height:1px;background:var(--border);margin:20px 0"></div>'
+        +'<div style="margin-bottom:20px">'
+          +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:4px">Buchungsvorlauf</div>'
+          +'<div style="font-size:11px;color:var(--muted);margin-bottom:14px">Wie kurzfristig dürfen Kunden noch buchen?</div>'
+          +'<div style="position:relative;height:36px;margin-bottom:6px;overflow:hidden;font-size:0">'
+            +'<div style="position:absolute;top:14px;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--tp),rgba(90,45,130,0.15));border-radius:99px"></div>'
+            +'<input type="range" id="booking-vorlauf" min="0" max="8" step="1" aria-valuetext=" " value="'+(function(){var fs=_pData&&_pData.feature_settings;var v=parseInt(fs&&fs.booking_vorlauf);return(v>=0&&v<=8)?v:2;}())+'" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px">'
+          +'</div>'
+          +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:4px">'
             +'<span>Sofort</span><span>1h</span><span>2h</span><span>4h</span><span>8h</span><span>12h</span><span>1 Tag</span><span>2 Tage</span><span>3 Tage</span>'
           +'</div>'
+          +''
         +'</div>'
         +'<div style="height:1px;background:var(--border);margin:0 0 20px"></div>'
         +'<div style="margin-bottom:16px">'
-          +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:14px;display:flex;align-items:center">Buchungshorizont<span class="help-tip" data-tip="Wie weit im Voraus können Kunden buchen?">?</span></div>'
-          +'<div id="horizont-label" style="font-size:13px;font-weight:600;color:var(--tpl);margin-bottom:10px;min-height:20px">'+(HORIZONT_LABELS[(function(){var fs=_pData&&_pData.feature_settings;if(fs&&fs.booking_horizont!=null&&!isNaN(fs.booking_horizont)){var idx=HORIZONT_VALS.indexOf(fs.booking_horizont);return idx>=0?idx:3;}return 3;}())]||'')+'</div>'
-          +'<input type="range" id="booking-horizont" min="1" max="7" step="1" value="'+(function(){var fs=_pData&&_pData.feature_settings;if(fs&&fs.booking_horizont!=null&&!isNaN(fs.booking_horizont)){var idx=HORIZONT_VALS.indexOf(fs.booking_horizont);return idx>=0?idx+1:4;}return 4;}())+'" oninput="updateTimelines()" style="width:100%;accent-color:var(--tp);cursor:pointer;height:20px;display:block">'
-          +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:4px">'
+          +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:4px">Buchungshorizont</div>'
+          +'<div style="font-size:11px;color:var(--muted);margin-bottom:14px">Wie weit im Voraus können Kunden buchen?</div>'
+          +'<div style="position:relative;height:36px;margin-bottom:6px;overflow:hidden;font-size:0">'
+            +'<div style="position:absolute;top:14px;left:0;right:0;height:6px;background:linear-gradient(90deg,rgba(90,45,130,0.15),var(--tp));border-radius:99px"></div>'
+            +'<input type="range" id="booking-horizont" min="1" max="7" step="1" aria-valuetext=" " value="'+(function(){var fs=_pData&&_pData.feature_settings;if(fs&&fs.booking_horizont!=null&&!isNaN(fs.booking_horizont)){var idx=HORIZONT_VALS.indexOf(fs.booking_horizont);return idx>=0?idx+1:4;}return 4;}())+'" oninput="updateTimelines()" style="position:absolute;top:8px;left:0;right:0;width:100%;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;height:20px">'
+          +'</div>'
+          +'<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:4px">'
             +'<span>1 Woche</span><span>2 W.</span><span>3 W.</span><span>4 W.</span><span>6 W.</span><span>8 W.</span><span>12 W.</span>'
           +'</div>'
+          +''
         +'</div>'+
         '<div style="height:1px;background:var(--border);margin:18px 0"></div>'+
         '<div class="btn-add-wrap" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'+
@@ -4702,10 +4368,10 @@ function renderProfilContent(id){
         '<div id="temp-entries-list" style="display:flex;flex-direction:column;gap:14px"></div>'+
         '<div id="temp-empty" style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0">Noch keine temporären Zeiten</div>'+
       '</div>'+
-      '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:28px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
+      '<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
     buildHoursCols(d.arbeitszeiten||null,'hours-cols','h-',false);
     renderAzWeekWidget(d.arbeitszeiten||null, d.temp_arbeitszeiten||null);
-    setTimeout(function(){initSlotRaster();},50);
+    setTimeout(function(){initSlotRaster();initTimelines();},50);
     tempEntries=[];tempIdCounter=0;tempCalOffset={};
     if(d.temp_arbeitszeiten&&d.temp_arbeitszeiten.length){
       d.temp_arbeitszeiten.forEach(function(t){addTempEntry(t);});
@@ -4714,29 +4380,27 @@ function renderProfilContent(id){
 
   else if(id==='sonstiges'){
     wrap.innerHTML=
-      '<div>'+
+      '<div class="card">'+
+        '<div class="card-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> Bemerkung im Buchungswidget</div>'+
+        '<div class="field" style="margin-bottom:0"><label>Hinweis für Kunden <span style="font-size:10px;color:var(--muted);font-weight:400">(wird im Header angezeigt)</span></label>'+
+        '<input type="text" id="f-note" placeholder="z.B. Keine Kartenzahlung möglich" maxlength="120" value="'+(d.note||'')+'"></div>'+
+      '</div>'+
+      '<div class="card">'+
         '<div class="btn-add-wrap" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'+
-          '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg> Eigene Links</div>'+
+          '<div class="card-title" style="margin-bottom:0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg> Eigene Links</div>'+
           '<button type="button" class="btn-add" onclick="addCustomLink()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>'+
         '</div>'+
         '<div id="custom-links-list" style="display:flex;flex-direction:column;gap:7px"></div>'+
         '<div id="custom-links-empty" style="font-size:11px;color:var(--muted);padding:8px 0 4px;text-align:center">Noch keine Links — klicke Hinzufügen</div>'+
       '</div>'+
-      '<div style="height:1px;background:var(--border);margin:20px 0"></div>'+
-      '<div>'+
-        '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600;margin-bottom:8px;display:flex;align-items:center">Bemerkung im Buchungswidget<span class="help-tip" data-tip="Wird im Header des Buchungswidgets für Kunden angezeigt.">?</span></div>'+
-        '<div class="field" style="margin-bottom:16px">'+
-        '<input type="text" id="f-note" placeholder="z.B. Keine Kartenzahlung möglich" maxlength="120" value="'+(d.note||'')+'"></div>'+
-      '</div>'+
-      '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:28px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
+      '<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px"><button class="btn btn-ghost" onclick="resetProfil()">Zurücksetzen</button><button class="btn btn-primary" onclick="saveProfil()">Speichern</button></div>';
     customLinks=Array.isArray(d.custom_links)?d.custom_links:[];
     renderCustomLinks();
   }
 
   else if(id==='service'){
     wrap.innerHTML=
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'+
-        '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600">Service</div>'+
+      '<div class="btn-add-wrap" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'+
         '<button class="btn-add" onclick="openSvcModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>'+
       '</div>'+
       '<div class="svc-list" id="svc-list"></div>';
@@ -4745,13 +4409,14 @@ function renderProfilContent(id){
 
   else if(id==='whatsapp'){
     wrap.innerHTML=
-      '<div>'+
-        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'+
-          '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600">WhatsApp Templates</div>'+
-          '<div style="display:flex;gap:6px">'+
-            '<button onclick="waSelectTab(\'bestaetigung\')" id="wat-bestaetigung" class="wa-tab-btn wa-tab-active"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Bestätigung</button>'+
-            '<button onclick="waSelectTab(\'erinnerung\')" id="wat-erinnerung" class="wa-tab-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Erinnerung</button>'+
-            '<button onclick="waSelectTab(\'storno\')" id="wat-storno" class="wa-tab-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Storno</button>'+
+      '<div class="card">'+
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">'+
+          '<div style="width:38px;height:38px;border-radius:10px;background:#e8f8ee;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+
+            '<svg width="20" height="20" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.072 22l4.948-1.348A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>'+
+          '</div>'+
+          '<div>'+
+            '<div style="font-size:14px;font-weight:600;color:var(--td)">WhatsApp Templates</div>'+
+            '<div style="font-size:12px;color:var(--muted)">Eigene Nachrichten für jeden Anlass konfigurieren</div>'+
           '</div>'+
         '</div>'+
         '<div style="background:rgba(90,45,130,.03);border:1px solid rgba(90,45,130,.1);border-radius:12px;padding:14px;margin-bottom:20px">'+
@@ -4767,28 +4432,34 @@ function renderProfilContent(id){
           '</div>'+
           '<div style="font-size:10px;color:var(--muted);margin-top:8px;opacity:.7">Cursor im Textfeld positionieren, dann Variable klicken</div>'+
         '</div>'+
+        '<div style="display:flex;gap:6px;margin-bottom:16px">'+
+          '<button onclick="waSelectTab(\'bestaetigung\')" id="wat-bestaetigung" class="wa-tab-btn wa-tab-active"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Bestätigung</button>'+
+          '<button onclick="waSelectTab(\'erinnerung\')" id="wat-erinnerung" class="wa-tab-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Erinnerung</button>'+
+          '<button onclick="waSelectTab(\'storno\')" id="wat-storno" class="wa-tab-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Storno</button>'+
+        '</div>'+
         '<div id="wa-template-editor" contenteditable="true" spellcheck="false" style="width:100%;min-height:120px;border:1.5px solid var(--border);border-radius:10px;padding:12px;font-size:13px;font-family:inherit;color:var(--td);background:#fff;outline:none;line-height:1.9;margin-bottom:14px;white-space:pre-wrap;word-break:break-word;cursor:text" oninput="waEditorInput()"></div>'+
-        '<div style="background:#efeae2;border-radius:16px;padding:20px;position:relative;overflow:hidden">'+
-          '<div style="font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,0,0,.35);margin-bottom:14px">Vorschau</div>'+
+        '<div style="background:#0a1929;border-radius:16px;padding:20px;position:relative;overflow:hidden">'+
+          '<div style="font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:14px">Vorschau</div>'+
           '<div style="display:flex;align-items:flex-end;gap:8px">'+
             '<div style="width:28px;height:28px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-bottom:4px">'+
               '<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.072 22l4.948-1.348A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>'+
             '</div>'+
             '<div style="max-width:85%">'+
-              '<div style="background:#fff;border-radius:16px 16px 16px 4px;padding:12px 14px;box-shadow:0 1px 2px rgba(0,0,0,.1)">'+
-                '<div id="wa-preview" style="font-size:13px;color:#111;white-space:pre-wrap;line-height:1.6;word-break:break-word"></div>'+
+              '<div style="background:#1f3a2e;border-radius:16px 16px 16px 4px;padding:12px 14px">'+
+                '<div id="wa-preview" style="font-size:13px;color:#e8f5e2;white-space:pre-wrap;line-height:1.6;word-break:break-word"></div>'+
                 '<div style="display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:6px">'+
-                  '<span style="font-size:10px;color:rgba(0,0,0,.35)">Jetzt</span>'+
-                  '<svg width="14" height="10" viewBox="0 0 16 11" fill="none"><path d="M1 6l3.5 3.5L10 1M6 6l3.5 3.5L15 1" stroke="#53bdeb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
+                  '<span style="font-size:10px;color:rgba(232,245,226,.4)">Jetzt</span>'+
+                  '<svg width="14" height="10" viewBox="0 0 16 11" fill="none"><path d="M1 6l3.5 3.5L10 1M6 6l3.5 3.5L15 1" stroke="#4fc3f7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
                 '</div>'+
               '</div>'+
-              '<div style="font-size:9px;color:rgba(0,0,0,.35);margin-top:4px;margin-left:4px">insy-reception · WhatsApp</div>'+
+              '<div style="font-size:9px;color:rgba(255,255,255,.2);margin-top:4px;margin-left:4px">insy-reception · WhatsApp</div>'+
             '</div>'+
           '</div>'+
         '</div>'+
         '<div style="display:flex;justify-content:flex-end;margin-top:14px">'+
           '<button onclick="saveWaTemplates()" class="btn btn-primary">'+
-            'Speichern'+
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>'+
+            'Templates speichern'+
           '</button>'+
         '</div>'+
       '</div>';
@@ -4828,8 +4499,7 @@ function renderProfilContent(id){
   else if(id==='team'){
     wrap.innerHTML=
       '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'+
-        '<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:600">Profil</div>'+
-        '<button class="btn-add" onclick="openStaffModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Hinzufügen</button>'+
+
       '</div>'+
       '<div class="ma-sidebar" id="staff-sidebar"></div>';
     renderStaffSidebar();
