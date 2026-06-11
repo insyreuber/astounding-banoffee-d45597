@@ -863,44 +863,22 @@ function mkSvcCards(){
     var minPreis=vars.length?Math.min.apply(null,vars.map(function(v){return v.preis;})):null;
     var varHtml='';
     if(vars.length){
-      var firstVar=vars[0];
-      var restVars=vars.slice(1);
-      varHtml='<div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(74,28,107,0.12)">';
-      // First variant always visible
-      var isSel0=entry&&entry.varId===firstVar.id;
-      var allowed0=isVarAllowed(firstVar.id);
-      var clickable0=allowed0&&!blocked;
-      varHtml+='<div onclick="event.stopPropagation();'+(clickable0?'pickVar(\''+s.id+'\',\''+firstVar.id+'\')':'')+'" style="'
-        +'padding:8px 12px;border-radius:8px;font-size:12px;min-height:36px;display:inline-flex;align-items:center;'
-        +'cursor:'+(clickable0?'pointer':'default')+';transition:all .15s;margin-bottom:4px;'
-        +'border:1.5px solid '+(isSel0?'var(--tp)':allowed0?'#e8e0f0':'#ece8f0')+';'
-        +'background:'+(isSel0?'var(--tp)':allowed0?'#fff':'#f5f3f8')+';'
-        +'color:'+(isSel0?'#fff':allowed0?'var(--td)':'#c0b8cc')+';'
-        +'font-weight:'+(isSel0?'600':'400')+';">'
-        +(firstVar.service_name?firstVar.service_name+' · ':'')+firstVar.min+' Min'+(firstVar.preis?' · '+firstVar.preis+' €':'')
-        +'</div>';
-      // Rest collapsible
-      if(restVars.length){
-        var accId='varacc-'+s.id;
-        varHtml+='<div id="'+accId+'" style="display:none;display:flex;gap:6px;flex-wrap:wrap;margin-top:2px">';
-        restVars.forEach(function(v){
-          var isSel=entry&&entry.varId===v.id;
-          var allowed=isVarAllowed(v.id);
-          var clickable=allowed&&!blocked;
-          varHtml+='<div onclick="event.stopPropagation();'+(clickable?'pickVar(\''+s.id+'\',\''+v.id+'\')':'')+'" style="'
-            +'padding:8px 12px;border-radius:8px;font-size:12px;min-height:36px;display:inline-flex;align-items:center;'
-            +'cursor:'+(clickable?'pointer':'default')+';transition:all .15s;'
-            +'border:1.5px solid '+(isSel?'var(--tp)':allowed?'#e8e0f0':'#ece8f0')+';'
-            +'background:'+(isSel?'var(--tp)':allowed?'#fff':'#f5f3f8')+';'
-            +'color:'+(isSel?'#fff':allowed?'var(--td)':'#c0b8cc')+';'
-            +'font-weight:'+(isSel?'600':'400')+';">'
-            +(v.service_name?v.service_name+' · ':'')+v.min+' Min'+(v.preis?' · '+v.preis+' €':'')
-            +'</div>';
-        });
+      varHtml='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid rgba(74,28,107,0.12)">';
+      vars.forEach(function(v){
+        var isSel=entry&&entry.varId===v.id;
+        var allowed=isVarAllowed(v.id);
+        var clickable=allowed&&!blocked;
+        varHtml+='<div onclick="event.stopPropagation();'+(clickable?'pickVar(\''+s.id+'\',\''+v.id+'\')':'')+'" style="'
+          +'padding:8px 12px;border-radius:8px;font-size:12px;min-height:36px;display:inline-flex;align-items:center;'
+          +'cursor:'+(clickable?'pointer':'default')+';transition:all .15s;'
+          +'border:1.5px solid '+(isSel?'var(--tp)':allowed?'#e8e0f0':'#ece8f0')+';'
+          +'background:'+(isSel?'var(--tp)':allowed?'#fff':'#f5f3f8')+';'
+          +'color:'+(isSel?'#fff':allowed?'var(--td)':'#c0b8cc')+';'
+          +'font-weight:'+(isSel?'600':'400')+';">';
+        varHtml+=(v.service_name?v.service_name+' · ':'')+v.min+' Min'+(v.preis?' · '+v.preis+' €':'');
+        if(!allowed)varHtml+=' <span style="font-size:9px;opacity:0.5">·</span>';
         varHtml+='</div>';
-        varHtml+='<button onclick="event.stopPropagation();var el=document.getElementById(\''+accId+'\');var open=el.style.display!==\'none\'&&el.style.display!==\'\';el.style.display=open?\'none\':\'flex\';this.textContent=open?\'+ '+(restVars.length)+' weitere\':\'▲ Weniger\'" '
-          +'style="margin-top:5px;background:none;border:none;font-size:11px;color:var(--tpl);cursor:pointer;font-weight:600;padding:0;font-family:inherit">+ '+restVars.length+' weitere</button>';
-      }
+      });
       varHtml+='</div>';
     }
     var hasAllowed=svcHasAllowedVariant(s.id);
