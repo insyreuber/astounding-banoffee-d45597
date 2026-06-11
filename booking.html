@@ -903,8 +903,8 @@ function mkSvcCards(){
     var hasAllowed=svcHasAllowedVariant(s.id);
     var blocked=!hasAllowed&&!isSelected;
     var html='<div class="svc '+(isSelected?'sel1only':blocked?'svc-blocked':'')+
-      '" style="opacity:'+(blocked?'0.45':'1')+'">';
-    html+='<div class="svc-inner">';
+      '" style="opacity:'+(blocked?'0.45':'1')+';display:flex;overflow:hidden;padding:0">';
+    html+='<div class="svc-inner" style="flex:1;padding:10px 9px;min-width:0">';
     html+='<div style="display:flex;align-items:center;justify-content:space-between">';
     html+='<div class="svc-n">'+s.name+'</div>';
     if(isSelected)html+='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tp)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
@@ -913,7 +913,12 @@ function mkSvcCards(){
     html+='<div class="svc-d" style="min-height:14px">'+(s.desc||'')+'</div>';
     html+='<div class="svc-p" style="min-height:18px;visibility:'+(isSelected?'hidden':'visible')+'">'+(minPreis!==null?'ab '+minPreis+' €':'')+'</div>';
     html+=varHtml;
-    html+='</div></div>';
+    html+='</div>';
+    // Image on right if available
+    if(s.image_url){
+      html+='<div style="width:83px;flex-shrink:0;height:125px;background-image:url('+s.image_url+');background-size:cover;background-position:center;border-radius:0 8px 8px 0"></div>';
+    }
+    html+='</div>';
     return html;
   }).join('');}
 
@@ -1698,7 +1703,7 @@ async function loadServices(salonId){
     if(sRes.error){console.error('Services Fehler:',sRes.error);return;}
     var services=sRes.data||[];
     SVCS=services.map(function(s){
-      return{id:s.id,name:s.name,desc:s.beschreibung||'',dauer_anzeigen:s.dauer_anzeigen};
+      return{id:s.id,name:s.name,desc:s.beschreibung||'',dauer_anzeigen:s.dauer_anzeigen,image_url:s.image_url||null};
     });
 
     // 2. Varianten für alle Services laden
