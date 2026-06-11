@@ -2545,7 +2545,7 @@ async function handleSvcImageUpload(event,svcId){
   var file=event.target.files[0];if(!file)return;
   if(file.size>2*1024*1024){alert('Bild max. 2 MB');return;}
   var ext=file.name.split('.').pop().toLowerCase();
-  var path='service-images/'+svcId+'-'+Date.now()+'.'+ext;
+  var path=svcId+'-'+Date.now()+'.'+ext;
   var upRes=await sb.storage.from('service-images').upload(path,file,{upsert:true});
   if(upRes.error){alert('Upload fehlgeschlagen: '+upRes.error.message);return;}
   var url=sb.storage.from('service-images').getPublicUrl(path).data.publicUrl;
