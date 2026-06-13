@@ -4578,8 +4578,10 @@ function _buildProfilDesktopBar(){
   if(!wrap)return;
   wrap.innerHTML=PTABS.map(function(t){
     var c=_ptColor(t);var col=PCOL[c];var on=(t.id===_pActive);
+    var badge=(!on&&c==='red')?'<span class="req-dot" style="position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:#e74c3c;box-shadow:0 0 4px rgba(231,76,60,.7);display:block"></span>':'';
     return'<button class="pdt-btn'+(on?' active':'')+'" id="pdtb-'+t.id+'" onclick="selectProfil(\''+t.id+'\')" '
-      +'style="'+(on?'background:'+col.dim+';border-color:'+col.border+';color:'+col.txt+';':'')+'color:'+(on?col.txt:'rgba(255,255,255,.45)')+'">'
+      +'style="position:relative;'+(on?'background:'+col.dim+';border-color:'+col.border+';color:'+col.txt+';':'')+'color:'+(on?col.txt:'rgba(255,255,255,.45)')+'">'
+      +badge
       +_TAB_ICONS[t.id]
       +'<span>'+t.label+'</span>'
     +'</button>';
@@ -4600,8 +4602,10 @@ function _buildProfilBottomNav(){
     var c=_ptColor(t);
     var col=PCOL[c];
     var isActive=t.id===_pActive;
+    var badge=(!isActive&&c==='red')?'<span class="req-dot" style="position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:#e74c3c;box-shadow:0 0 4px rgba(231,76,60,.7);display:block"></span>':'';
     return'<button class="profil-bnav-btn'+(isActive?' active':'')+'" id="pbnav-'+t.id+'" onclick="selectProfil(\''+t.id+'\')" '
-      +'style="'+(isActive?'background:'+col.dim+';border-color:'+col.border+';color:'+col.txt+';':'')+'color:'+(isActive?col.txt:'rgba(255,255,255,.45)')+'">'+
+      +'style="position:relative;'+(isActive?'background:'+col.dim+';border-color:'+col.border+';color:'+col.txt+';':'')+'color:'+(isActive?col.txt:'rgba(255,255,255,.45)')+'">'+
+      badge+
       _TAB_ICONS[t.id]+
       '<span>'+t.label+'</span>'+
     '</button>';
@@ -4617,7 +4621,8 @@ function _ptActivate(id){
     btn.style.background=on?PCOL[c].dim:'';
     btn.style.borderColor=on?PCOL[c].border:'transparent';
     btn.style.color=on?PCOL[c].txt:'rgba(255,255,255,.45)';
-    // Scroll active button into view
+    var dot=btn.querySelector('.req-dot');
+    if(dot)dot.style.display=(!on&&c==='red')?'block':'none';
     if(on)btn.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
   });
   // Update desktop bar
@@ -4628,6 +4633,8 @@ function _ptActivate(id){
     btn.style.background=on?PCOL[c].dim:'';
     btn.style.borderColor=on?PCOL[c].border:'transparent';
     btn.style.color=on?PCOL[c].txt:'rgba(255,255,255,.45)';
+    var dot=btn.querySelector('.req-dot');
+    if(dot)dot.style.display=(!on&&c==='red')?'block':'none';
   });
   // Arrow opacity
   var ids=PTABS.map(function(t){return t.id;});
