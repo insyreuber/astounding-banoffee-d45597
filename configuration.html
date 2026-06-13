@@ -1767,6 +1767,7 @@ async function loadProfil(){
   setTimeout(hideNaN,100);
   setTimeout(hideNaN,500);
   setTimeout(hideNaN,1500);
+  updateProfilStatus();
 }
 
 function hideNaN(){
@@ -2277,6 +2278,7 @@ async function loadServices(){
   }
   servicesData=svcs.map(function(s){return{service:s,varianten:allVars.filter(function(v){return v.service_id===s.id;})};});
   renderSvcList();
+  updateProfilStatus();
 }
 
 function buildVarPreviewChips(vars){
