@@ -4442,11 +4442,7 @@ function resetProfil(){
 
 
 function updateProfilStatus(){
-  // Rebuild nav buttons with correct dots
-  _buildProfilDesktopBar();
-  _buildProfilBottomNav();
-  _ptActivate(_pActive);
-
+  updateProgressBar();
   var el=document.getElementById('profil-status-msg');
 
   // Read color directly from rendered button background color in DOM
@@ -4497,6 +4493,23 @@ function updateProgressBar(){
     var col=_ptColor(t);
     if(col==='green')green++;
     else if(col==='yellow')green+=0.5;
+    // Update dots on both desktop and mobile buttons
+    ['pdtb-','pbnav-'].forEach(function(prefix){
+      var btn=document.getElementById(prefix+t.id);
+      if(!btn)return;
+      var on=btn.classList.contains('active');
+      var dot=btn.querySelector('.req-dot');
+      var showDot=(!on&&col==='red');
+      if(dot){
+        dot.style.display=showDot?'block':'none';
+      } else if(showDot){
+        var d=document.createElement('span');
+        d.className='req-dot';
+        d.style.cssText='position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:#e74c3c;box-shadow:0 0 4px rgba(231,76,60,.7);display:block;pointer-events:none';
+        btn.style.position='relative';
+        btn.appendChild(d);
+      }
+    });
   });
   var pct=Math.round((green/total)*100);
   var bar=document.getElementById('profil-progress-bar');
