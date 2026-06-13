@@ -123,12 +123,15 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f2f8;width:1
 .cal-mo{font-size:12px;font-weight:500;color:var(--td)}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:8px}
 .cdl{text-align:center;font-size:9px;color:#5a4a70;padding:2px 0;font-weight:500}
+.cdl.weekend{color:#9a7200;font-weight:600}
 .cd{text-align:center;padding:5px 2px;border-radius:5px;font-size:11px;cursor:pointer;color:var(--td)}
 .cd:hover:not(.cp):not(.ce){background:var(--tpp);color:var(--tp)}
-.cd.cs{background:var(--tp);color:#fff;font-weight:500}
+.cd.cs{background:var(--tp);color:#fff;font-weight:600;box-shadow:0 2px 8px rgba(74,28,107,.3)}
 .cd.ce,.cd.cp{pointer-events:none}
 .cd.cp{color:#b0a0c0;opacity:0.6}
-.cd.ct{color:var(--tp);font-weight:500}
+.cd.ct{color:var(--tp);font-weight:700;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--tp)}
+.cw{background:rgba(201,168,76,.1);color:#7a5800;font-weight:600}
+.cw.cs{background:var(--tp);color:#fff}
 .cd.ct.cp{color:#b0a0c0;opacity:0.55;font-weight:400}
 .slot-lbl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--tpl);font-weight:500;margin:8px 0 5px}
 .slots{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
@@ -983,7 +986,8 @@ function mkCal(){
       var _dieserTag = new Date(cd.base.getFullYear(),cd.base.getMonth(),d);
       if(_dieserTag > _maxDatum) isBlocked=true;
     }
-    days+='<div class="cd '+(isBlocked?'cp':'')+' '+(isToday&&!isSel&&!isBlocked?'ct':'')+' '+(isSel?'cs':'')+'"'
+    var isWeekend=dateObj.getDay()===0||dateObj.getDay()===6;
+    days+='<div class="cd '+(isBlocked?'cp':'')+' '+(isToday&&!isSel&&!isBlocked?'ct':'')+' '+(isSel?'cs':'')+' '+(isWeekend&&!isBlocked?'cw':'')+'"'
       +(isBlocked?'':' onclick="pickDay(\''+key+'\')"')+' style="'+(isClosed&&!isPast?'text-decoration:line-through;opacity:0.35':'')+'">'+d+'</div>';
   }
   var slots=availSlots();
@@ -1004,7 +1008,7 @@ function mkCal(){
     +'<span class="cal-mo">'+mo+'</span>'
     +'<button class="cal-nav" onclick="calNext()">&#8250;</button></div>'
     +'<div class="cal-grid">'
-    +['Mo','Di','Mi','Do','Fr','Sa','So'].map(function(x){return'<div class="cdl">'+x+'</div>';}).join('')
+    +['Mo','Di','Mi','Do','Fr','Sa','So'].map(function(x,i){return'<div class="cdl'+(i>=5?' weekend':'')+'">'+ x+'</div>';}).join('')
     +days+'</div>'+slotsHtml
     +(st.dual&&slot2time()?'<p class="hint">② startet ca. '+slot2time()+' Uhr</p>':'');
 }
@@ -1197,25 +1201,15 @@ function render(){
     +'</div>';
   setTimeout(applyVarAccordions,0);
 
-  // ── Schritt 2: Mitarbeiter — gesperrt bis Service+Variante ──
+  // ── Schritt 2: Mitarbeiter ──
   var lock2 = !staffChosen;
   var card2 = '<div class="card" style="position:relative;overflow:visible">'
-    +'<div class="acc-hdr" onclick="toggleStaff()">'
-      +'<div class="acc-hdr-left">'
-        +'<span class="cnum">1</span>'
-        +'<span class="acc-title">Team</span>'
-        +(st.stf1?'<span class="acc-current">'+fname(st.stf1)+'</span>':'')
-      +'</div>'
-      +'<span class="acc-arrow '+(staffOpen?'open':'')+'" id="acc-arrow">⌄</span>'
+    +'<div class="ctitle">'
+      +'<span class="cnum">1</span>'
+      +'Team'
+      +(st.stf1?'<span class="acc-current" style="margin-left:8px">'+fname(st.stf1)+'</span>':'')
     +'</div>'
-    +'<div class="acc-body open" id="acc-body">'
-      +(false
-        ?'<div class="staff-grid">'
-          +'<div class="stf"><div class="stf-inner"><div class="av">AB</div><div><div class="stf-n">Mitarbeiter 1</div><div class="stf-r">Spezialist</div></div></div></div>'
-          +'<div class="stf"><div class="stf-inner"><div class="av g">CD</div><div><div class="stf-n">Mitarbeiter 2</div><div class="stf-r">Spezialist</div></div></div></div>'
-          +'</div>'
-        :mkStaffGrid())
-    +'</div>'
+    +mkStaffGrid()
     +'</div>';
 
   // ── Schritt 3: Datum & Zeit — gesperrt bis Service gewählt ──
