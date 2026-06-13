@@ -452,7 +452,8 @@ input[type=range]::-moz-range-thumb{font-size:0 !important}
   .custom-link-row{display:flex !important;flex-direction:column !important;gap:6px !important}
   .custom-link-row input[style*="flex:0 0 120px"]{flex:unset !important;width:100% !important}
   .custom-link-row,.custom-link-row input,.custom-link-row button{font-size:16px !important}
-  .cl-row{flex-direction:column !important;align-items:stretch !important}
+  .s-name-role-desktop{display:none !important}
+  .s-name-role-mobile{display:flex !important}
   .cl-row input,.cl-row .cl-url-input{flex:unset !important;width:100% !important;font-size:16px !important}
   .cl-row button{font-size:16px !important}
   #staff-modal label,#staff-modal input,#staff-modal select,#staff-modal textarea,#staff-modal button,#staff-modal .modal-title{font-size:16px !important}
@@ -920,33 +921,47 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   </div>
   <!-- Staff form view -->
   <div class="modal-body" id="s-main-view">
-    <!-- Alle 4 Elemente in einer Zeile: Avatar | Kalender | Anzeigename | Rolle -->
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-      <div style="flex-shrink:0">
-        <input type="file" id="s-avatar-file" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
-        <div id="s-modal-avatar" onclick="toggleColorPicker()" style="width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;cursor:pointer;position:relative;box-shadow:0 2px 10px rgba(0,0,0,.15);transition:transform .15s;background-size:cover;background-position:center" title="Farbe oder Foto ändern">
-          <span id="s-modal-avatar-ini">?</span>
-          <div style="position:absolute;bottom:0;right:0;width:18px;height:18px;border-radius:50%;background:var(--bg);border:2px solid var(--border);display:flex;align-items:center;justify-content:center">
-            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+    <!-- Zeile 1: Avatar + Kalender | Zeile 2: Anzeigename | Zeile 3: Rolle -->
+    <div style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div style="flex-shrink:0">
+          <input type="file" id="s-avatar-file" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
+          <div id="s-modal-avatar" onclick="toggleColorPicker()" style="width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;cursor:pointer;position:relative;box-shadow:0 2px 10px rgba(0,0,0,.15);transition:transform .15s;background-size:cover;background-position:center" title="Farbe oder Foto ändern">
+            <span id="s-modal-avatar-ini">?</span>
+            <div style="position:absolute;bottom:0;right:0;width:18px;height:18px;border-radius:50%;background:var(--bg);border:2px solid var(--border);display:flex;align-items:center;justify-content:center">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+            </div>
+          </div>
+        </div>
+        <!-- Kalender Icon -->
+        <div id="s-gcal-section" onclick="openCalendarPicker(editingStaffId)" title="Google Kalender verbinden" style="width:56px;height:56px;flex-shrink:0;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;border:1.5px solid var(--border);background:var(--white);transition:all .15s;position:relative;overflow:hidden" onmouseover="this.style.borderColor='var(--tpl)'" onmouseout="this.style.borderColor=this.dataset.connected==='1'?'#a8e6bf':'var(--border)'">
+          <div id="s-gcal-connected-dot" style="display:none;position:absolute;top:3px;right:3px;width:7px;height:7px;border-radius:50%;background:#27ae60"></div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <div id="s-gcal-name-label" style="font-size:7px;color:var(--muted);text-align:center;max-width:52px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 2px"></div>
+          <input type="hidden" id="s-gcal-id-label">
+        </div>
+        <!-- Anzeigename + Rolle nebeneinander auf Desktop -->
+        <div class="s-name-role-desktop" style="display:flex;gap:10px;flex:1;min-width:0">
+          <div class="field" style="margin-bottom:0;flex:1;min-width:0">
+            <label>Anzeigename *</label>
+            <input type="text" id="s-display" placeholder="z.B. Niran T." required oninput="updateModalAvatar()" style="width:100%">
+          </div>
+          <div class="field" style="margin-bottom:0;flex:1;min-width:0">
+            <label>Rolle</label>
+            <input type="text" id="s-role" placeholder="z.B. Massagetherapeutin" style="width:100%">
           </div>
         </div>
       </div>
-      <!-- Kalender Icon -->
-      <div id="s-gcal-section" onclick="openCalendarPicker(editingStaffId)" title="Google Kalender verbinden" style="width:56px;height:56px;flex-shrink:0;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;border:1.5px solid var(--border);background:var(--white);transition:all .15s;position:relative;overflow:hidden" onmouseover="this.style.borderColor='var(--tpl)'" onmouseout="this.style.borderColor=this.dataset.connected==='1'?'#a8e6bf':'var(--border)'">
-        <div id="s-gcal-connected-dot" style="display:none;position:absolute;top:3px;right:3px;width:7px;height:7px;border-radius:50%;background:#27ae60"></div>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tpl)" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <div id="s-gcal-name-label" style="font-size:7px;color:var(--muted);text-align:center;max-width:52px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 2px"></div>
-        <input type="hidden" id="s-gcal-id-label">
-      </div>
-      <!-- Anzeigename -->
-      <div class="field" style="margin-bottom:0;flex:1;min-width:0">
-        <label>Anzeigename *</label>
-        <input type="text" id="s-display" placeholder="z.B. Niran T." required oninput="updateModalAvatar()" style="width:100%">
-      </div>
-      <!-- Rolle -->
-      <div class="field" style="margin-bottom:0;flex:1;min-width:0">
-        <label>Rolle</label>
-        <input type="text" id="s-role" placeholder="z.B. Massagetherapeutin" style="width:100%">
+      <!-- Anzeigename + Rolle untereinander auf Mobile -->
+      <div class="s-name-role-mobile" style="display:none;flex-direction:column;gap:10px">
+        <div class="field" style="margin-bottom:0">
+          <label>Anzeigename *</label>
+          <input type="text" id="s-display-m" placeholder="z.B. Niran T." required oninput="document.getElementById('s-display').value=this.value;updateModalAvatar()" style="width:100%">
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>Rolle</label>
+          <input type="text" id="s-role-m" placeholder="z.B. Massagetherapeutin" oninput="document.getElementById('s-role').value=this.value" style="width:100%">
+        </div>
       </div>
     </div>
     <div id="s-color-picker-wrap" style="display:none;margin-bottom:16px;padding:12px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px">
@@ -3527,6 +3542,8 @@ function openStaffModal(data){
   document.getElementById('s-name').value='';
   document.getElementById('s-display').value='';
   document.getElementById('s-role').value='';
+  var sdm2=document.getElementById('s-display-m');var srm2=document.getElementById('s-role-m');
+  if(sdm2)sdm2.value='';if(srm2)srm2.value='';
   document.getElementById('s-email').value='';
   document.getElementById('s-cal').value='';
   var avUrlEl=document.getElementById('s-avatar-url');
@@ -3572,6 +3589,9 @@ function openStaffModal(data){
   document.getElementById('s-name').value=m.name||'';
   document.getElementById('s-display').value=m.display_name||'';
   document.getElementById('s-role').value=m.role||'';
+  var sdm=document.getElementById('s-display-m');var srm=document.getElementById('s-role-m');
+  if(sdm)sdm.value=m.display_name||'';
+  if(srm)srm.value=m.role||'';
   document.getElementById('s-email').value=m.email||'';
   document.getElementById('s-cal').value=m.google_calendar_id||'';
   updateGcalStatus(m.google_calendar_id||'');
