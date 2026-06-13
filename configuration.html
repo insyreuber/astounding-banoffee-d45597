@@ -4442,25 +4442,12 @@ function resetProfil(){
 
 
 function updateProfilStatus(){
-  var el=document.getElementById('profil-status-msg');
+  // Rebuild nav buttons with correct dots
+  _buildProfilDesktopBar();
+  _buildProfilBottomNav();
+  _ptActivate(_pActive);
 
-  // Refresh dots on all tab buttons
-  PTABS.forEach(function(t){
-    var c=_ptColor(t);
-    ['pdtb-','pbnav-'].forEach(function(prefix){
-      var btn=document.getElementById(prefix+t.id);
-      if(!btn)return;
-      var on=btn.classList.contains('active');
-      var dot=btn.querySelector('.req-dot');
-      if(dot){dot.style.display=(!on&&c==='red')?'block':'none';}
-      else if(!on&&c==='red'){
-        var d=document.createElement('span');
-        d.className='req-dot';
-        d.style.cssText='position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:#e74c3c;box-shadow:0 0 4px rgba(231,76,60,.7);display:block';
-        btn.appendChild(d);
-      }
-    });
-  });
+  var el=document.getElementById('profil-status-msg');
 
   // Read color directly from rendered button background color in DOM
   var MSGS={
