@@ -639,7 +639,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   <div class="nav-brand" onclick="if(window.innerWidth<=768)document.querySelector('.nav-tabs').classList.toggle('open')">
     <div class="nav-logo">Insy <span style="color:var(--tg)">Reception</span></div>
   </div>
-  <div id="nav-booking-status-mobile" style="display:none;align-items:center;gap:5px;padding:0 8px;flex-shrink:0">
+  <div id="nav-booking-status-mobile" style="display:none;align-items:center;gap:5px;padding:0 8px;flex-shrink:0;align-self:stretch;border-left:1px solid rgba(255,255,255,.1)">
     <div id="booking-status-dot-m" style="width:6px;height:6px;border-radius:50%;background:#27ae60;flex-shrink:0;"></div>
     <span id="booking-status-label-m" style="font-size:10px;font-weight:500;color:rgba(255,255,255,0.8);">Online</span>
     <label class="toggle-sw"><input type="checkbox" id="dash-booking-active-m" onchange="syncBookingToggle(this)"><span class="slider"></span></label>
