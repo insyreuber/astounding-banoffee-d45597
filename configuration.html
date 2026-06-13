@@ -34,6 +34,7 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 #profil-desktop-bar .pdt-btn.active svg{opacity:1}
 /* Hide floating arrows on mobile */
 @media(max-width:768px){
+  .s-name-role-wrap{flex-direction:column !important}
   #profil-bar-prev,#profil-bar-next{display:none!important}
 }
 .nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:600;color:#fff;letter-spacing:.01em;text-transform:none;line-height:1}
@@ -452,10 +453,6 @@ input[type=range]::-moz-range-thumb{font-size:0 !important}
   .custom-link-row{display:flex !important;flex-direction:column !important;gap:6px !important}
   .custom-link-row input[style*="flex:0 0 120px"]{flex:unset !important;width:100% !important}
   .custom-link-row,.custom-link-row input,.custom-link-row button{font-size:16px !important}
-  .s-name-role-desktop{display:none !important}
-  .s-name-role-mobile{display:flex !important}
-  .cl-row input,.cl-row .cl-url-input{flex:unset !important;width:100% !important;font-size:16px !important}
-  .cl-row button{font-size:16px !important}
   #staff-modal label,#staff-modal input,#staff-modal select,#staff-modal textarea,#staff-modal button,#staff-modal .modal-title{font-size:16px !important}
 
   /* WhatsApp Templates */
@@ -921,7 +918,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   </div>
   <!-- Staff form view -->
   <div class="modal-body" id="s-main-view">
-    <!-- Zeile 1: Avatar + Kalender | Zeile 2: Anzeigename | Zeile 3: Rolle -->
+    <!-- Zeile 1: Avatar + Kalender | Zeile 2 (mobile): Anzeigename | Zeile 3 (mobile): Rolle -->
     <div style="margin-bottom:16px">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
         <div style="flex-shrink:0">
@@ -940,8 +937,8 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
           <div id="s-gcal-name-label" style="font-size:7px;color:var(--muted);text-align:center;max-width:52px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 2px"></div>
           <input type="hidden" id="s-gcal-id-label">
         </div>
-        <!-- Anzeigename + Rolle nebeneinander auf Desktop -->
-        <div class="s-name-role-desktop" style="display:flex;gap:10px;flex:1;min-width:0">
+        <!-- Anzeigename + Rolle: desktop nebeneinander -->
+        <div class="s-name-role-wrap" style="display:flex;gap:10px;flex:1;min-width:0">
           <div class="field" style="margin-bottom:0;flex:1;min-width:0">
             <label>Anzeigename *</label>
             <input type="text" id="s-display" placeholder="z.B. Niran T." required oninput="updateModalAvatar()" style="width:100%">
@@ -950,17 +947,6 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
             <label>Rolle</label>
             <input type="text" id="s-role" placeholder="z.B. Massagetherapeutin" style="width:100%">
           </div>
-        </div>
-      </div>
-      <!-- Anzeigename + Rolle untereinander auf Mobile -->
-      <div class="s-name-role-mobile" style="display:none;flex-direction:column;gap:10px">
-        <div class="field" style="margin-bottom:0">
-          <label>Anzeigename *</label>
-          <input type="text" id="s-display-m" placeholder="z.B. Niran T." required oninput="document.getElementById('s-display').value=this.value;updateModalAvatar()" style="width:100%">
-        </div>
-        <div class="field" style="margin-bottom:0">
-          <label>Rolle</label>
-          <input type="text" id="s-role-m" placeholder="z.B. Massagetherapeutin" oninput="document.getElementById('s-role').value=this.value" style="width:100%">
         </div>
       </div>
     </div>
@@ -2373,6 +2359,13 @@ function renderSvcBody(s,vars){
     +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'
       +'<div class="field" style="flex:0 0 40%;margin-bottom:0"><label>Name <span style="color:var(--tg)">*</span></label><input type="text" id="svc-f-name-'+s.id+'" value="'+esc(s.name)+'" style="background:rgba(90,45,130,.12);border-color:var(--tpl)"></div>'
       +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0;margin-top:20px">'
+        +'<input type="file" id="svc-f-img-'+s.id+'" accept="image/*" style="display:none" onchange="handleSvcImageUpload(event,\''+s.id+'\')">'
+        +'<button type="button" onclick="document.getElementById(\'svc-f-img-'+s.id+'\').click()" style="width:30px;height:30px;border-radius:7px;border:1px solid var(--border);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:all .15s" onmouseover="this.style.borderColor=\'var(--tpl)\';this.style.color=\'var(--tpl)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.color=\'var(--muted)\'" title="Foto hochladen">'
+          +'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>'
+        +'</button>'
+        +'<span style="font-size:9px;color:var(--muted)">Foto</span>'
+      +'</div>'
+      +'<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0;margin-top:20px">'
         +'<label class="toggle-sw" title="Im Widget aktiv"><input type="checkbox" id="svc-f-aktiv-'+s.id+'" '+(s.aktiv?'checked':'')+' onchange="(function(el){var b=document.getElementById(\'svc-badge-'+s.id+'\');if(b){b.textContent=el.checked?\'Aktiv\':\'Inaktiv\';b.className=\'badge \'+(el.checked?\'\':\'off\');}})(this)"><span class="slider"></span></label>'
         +'<span style="font-size:9px;color:var(--muted)">Aktiv</span>'
       +'</div>'
@@ -3542,8 +3535,6 @@ function openStaffModal(data){
   document.getElementById('s-name').value='';
   document.getElementById('s-display').value='';
   document.getElementById('s-role').value='';
-  var sdm2=document.getElementById('s-display-m');var srm2=document.getElementById('s-role-m');
-  if(sdm2)sdm2.value='';if(srm2)srm2.value='';
   document.getElementById('s-email').value='';
   document.getElementById('s-cal').value='';
   var avUrlEl=document.getElementById('s-avatar-url');
@@ -3589,9 +3580,6 @@ function openStaffModal(data){
   document.getElementById('s-name').value=m.name||'';
   document.getElementById('s-display').value=m.display_name||'';
   document.getElementById('s-role').value=m.role||'';
-  var sdm=document.getElementById('s-display-m');var srm=document.getElementById('s-role-m');
-  if(sdm)sdm.value=m.display_name||'';
-  if(srm)srm.value=m.role||'';
   document.getElementById('s-email').value=m.email||'';
   document.getElementById('s-cal').value=m.google_calendar_id||'';
   updateGcalStatus(m.google_calendar_id||'');
