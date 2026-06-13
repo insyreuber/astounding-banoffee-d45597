@@ -297,8 +297,7 @@ html,body{overflow-x:hidden;max-width:100vw}
             <col style="width:70px">
             <col style="width:120px">
             <col>
-            <col style="width:36px">
-            <col style="width:300px">
+            <col style="width:340px">
           </colgroup>
           <thead><tr>
             <th style="padding:6px 14px;text-align:left;font-weight:700;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Status</th>
@@ -672,6 +671,7 @@ function renderTicker(rows,varianteMap,staffMap){
     aktionen+=btn('Bestätigung',waLink(phone,msgBestaetigung),canBestaetigen,'#27ae60');
     aktionen+=btn('Erinnerung',waLink(phone,msgErinnerung),canErinnern,'#e67e22');
     aktionen+=btn('Storno',waLink(phone,msgStorno),canStorno,'#e74c3c');
+    aktionen+='<a href="'+successUrl+'" target="_blank" onclick="event.stopPropagation()" style="flex-shrink:0;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;background:#5a2d82;border:1px solid #5a2d82;color:#fff;box-shadow:0 0 4px #5a2d8266;border-radius:6px;text-decoration:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>';
     if(isKachelErledigt){
       aktionen+='<div style="width:26px;height:26px;border-radius:6px;background:#27ae60;border:1.5px solid #27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:auto"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.5\" stroke-linecap=\"round\"><polyline points=\"10 3 5 9 2 6\"/></svg></div>';
     }else{
@@ -688,8 +688,7 @@ function renderTicker(rows,varianteMap,staffMap){
       +'<td style="font-weight:500;color:var(--tpl);width:70px">'+price+'</td>'
       +'<td style="width:120px"><div style="display:flex;align-items:center;gap:6px"><a href="#" onclick="openStaffOverlay(\''+esc(b.mitarbeiter_id||'')+'\');return false;" title="Profil ansehen" style="flex-shrink:0;text-decoration:none;cursor:pointer">'+renderAvatar(staffObj,36)+'</a><span style="color:var(--tg);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+staffName+'</span></div></td>'
       +'<td style="white-space:nowrap">'+esc(dateStr)+'</td>'
-      +'<td style="width:36px;text-align:center"><a href="'+successUrl+'" target="_blank" style="flex-shrink:0;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;background:#5a2d82;border:1px solid #5a2d82;color:#fff;box-shadow:0 0 4px #5a2d8266;border-radius:6px;text-decoration:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></td>'
-      +'<td style="font-size:13px;width:300px">'+aktionen+'</td>'
+      +'<td style="font-size:13px;width:340px">'+aktionen+'</td>'
     +'</tr>';
   }).join('');
   el.innerHTML='<table class="ticker-table" style="table-layout:fixed;width:100%"><tbody>'+tbody+'</tbody></table>';
@@ -836,6 +835,7 @@ function updateErledigtVisual(id,done){
     aktionen+=btn2('Bestätigung',waLink(phone,applyTemplate('bestaetigung',tplVars)),canBestaetigen,'#27ae60');
     aktionen+=btn2('Erinnerung',waLink(phone,applyTemplate('erinnerung',tplVars)),canErinnern,'#e67e22');
     aktionen+=btn2('Storno',waLink(phone,applyTemplate('storno',tplVars)),canStorno,'#e74c3c');
+    aktionen+='<a href="'+successUrl+'" target="_blank" onclick="event.stopPropagation()" style="flex-shrink:0;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;background:#5a2d82;border:1px solid #5a2d82;color:#fff;box-shadow:0 0 4px #5a2d8266;border-radius:6px;text-decoration:none;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>';
     aktionen+=alreadyDone
       ?'<div style="width:26px;height:26px;border-radius:6px;background:#27ae60;border:1.5px solid #27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:auto"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="10 3 5 9 2 6"/></svg></div>'
       :'<div onclick="tickerErledigt(\''+b.id+'\')" style="width:26px;height:26px;border-radius:6px;border:2px solid #c8bcd8;background:#f5f5f5;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;margin-left:auto;transition:all .2s"></div>';
