@@ -2224,7 +2224,6 @@ async function loadFeatureSettings(){
     if(!window._pData)window._pData={};
     window._pData.feature_settings=res.data.feature_settings||{};
   }
-  updateProfilStatus();
   if(res.error||!res.data||!res.data.feature_settings)return;
   var f=res.data.feature_settings;
   // WhatsApp Benachrichtigungen
