@@ -1115,26 +1115,28 @@ function mkSumCard(){
     +'<button class="book-btn" '+(canBook()?'':'disabled')+' onclick="submitBooking()">Termin buchen →</button>';
 }
 
+var _accordionState={};
+
 function applyVarAccordions(){
   document.querySelectorAll('.var-wrap').forEach(function(wrap){
     if(wrap.dataset.accordion)return;
     wrap.dataset.accordion='1';
     var children=Array.from(wrap.children);
     if(!children.length)return;
-    // Measure first row height
     var firstTop=children[0].getBoundingClientRect().top;
     var firstRowItems=children.filter(function(c){return Math.abs(c.getBoundingClientRect().top-firstTop)<10;});
-    if(firstRowItems.length===children.length)return; // all fit in one row, no accordion needed
-    // Hide items from second row onward
+    if(firstRowItems.length===children.length)return;
     var hiddenItems=children.slice(firstRowItems.length);
-    hiddenItems.forEach(function(c){c.style.display='none';});
-    // Add toggle button after wrap
+    var svcId=wrap.id.replace('varw-','');
+    var isOpen=_accordionState[svcId];
+    hiddenItems.forEach(function(c){c.style.display=isOpen?'inline-flex':'none';});
     var btn=document.createElement('button');
-    btn.textContent='+ '+(hiddenItems.length)+' weitere';
+    btn.textContent=isOpen?'▲ Weniger':'+ '+hiddenItems.length+' weitere';
     btn.style.cssText='margin-top:5px;background:none;border:none;font-size:11px;color:var(--tpl);cursor:pointer;font-weight:600;padding:0;font-family:inherit;display:block';
     btn.onclick=function(e){
       e.stopPropagation();
       var open=hiddenItems[0].style.display!=='none';
+      _accordionState[svcId]=!open;
       hiddenItems.forEach(function(c){c.style.display=open?'none':'inline-flex';});
       btn.textContent=open?'+ '+hiddenItems.length+' weitere':'▲ Weniger';
     };
@@ -1193,7 +1195,7 @@ function render(){
     +'Services</div>'
     +'<div class="svc-grid">'+mkSvcCards()+'</div>'
     +'</div>';
-  setTimeout(applyVarAccordions,60);
+  setTimeout(applyVarAccordions,0);
 
   // ── Schritt 2: Mitarbeiter — gesperrt bis Service+Variante ──
   var lock2 = !staffChosen;
