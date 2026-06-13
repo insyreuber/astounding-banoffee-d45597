@@ -35,6 +35,9 @@ html,body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:
 /* Hide floating arrows on mobile */
 @media(max-width:768px){
   .s-name-role-wrap{flex-direction:column !important}
+  .cl-row{flex-wrap:wrap !important}
+  .cl-row input[style*="flex:0 0"]{flex:1 1 100% !important;width:100% !important}
+  .cl-row .cl-url-input{flex:1 1 100% !important;width:100% !important}
   #profil-bar-prev,#profil-bar-next{display:none!important}
 }
 .nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:600;color:#fff;letter-spacing:.01em;text-transform:none;line-height:1}
