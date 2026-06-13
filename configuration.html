@@ -4409,7 +4409,10 @@ function _pSaved(id){
     return Object.keys(az).some(function(k){return az[k]&&az[k].aktiv;});
   }
   if(id==='service') return (typeof servicesData!=='undefined'&&servicesData.length>0);
-  if(id==='team')    return (typeof staffData!=='undefined'&&staffData.length>0);
+  if(id==='team'){
+    if(typeof staffData==='undefined'||staffData.length===0)return false;
+    return staffData.some(function(s){return s.mitarbeiter&&s.mitarbeiter.is_online;});
+  }
   if(id==='sonstiges') return !!(d.note||(d.custom_links&&d.custom_links.length));
   return false;
 }
