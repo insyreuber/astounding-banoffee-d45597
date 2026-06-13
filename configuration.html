@@ -4411,7 +4411,7 @@ function _pSaved(id){
   if(id==='service') return (typeof servicesData!=='undefined'&&servicesData.length>0);
   if(id==='team'){
     if(typeof staffData==='undefined'||staffData.length===0)return false;
-    return staffData.some(function(s){return s.mitarbeiter&&s.mitarbeiter.is_online;});
+    return staffData.some(function(s){return s.mitarbeiter&&s.mitarbeiter.aktiv!==false;});
   }
   if(id==='sonstiges') return !!(d.note||(d.custom_links&&d.custom_links.length));
   return false;
